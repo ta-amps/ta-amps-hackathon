@@ -1,0 +1,38 @@
+name: Correction
+description: Something in the hackathon guide (hackathon/) is wrong or out of date
+title: "Correction: "
+labels: [correction]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The file and section, for example hackathon/event/10-credits.md, "Claiming the credit"
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What is wrong
+      description: Quote the line in the guide that is wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: source-says
+    attributes:
+      label: What the source says
+      description: In your own words; a short quote only where exact wording matters.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source URL
+    validations:
+      required: true
+  - type: input
+    id: checked
+    attributes:
+      label: Date you checked it (YYYY-MM-DD)
+    validations:
+      required: true

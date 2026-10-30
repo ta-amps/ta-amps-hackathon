@@ -1,4 +1,6 @@
-# ta-amps
+# ta-amps: our Meta Global AI Developer Hackathon submission
+
+Start here. Everything we built, how it fits together, and how to try it.
 
 **Everything is nouns and verbs.** Nouns are reusable things. Verbs are work that anyone's AI agent can claim, do
 and report. As workers go, they create new nouns and propose new verbs.
@@ -40,9 +42,13 @@ and model to the files in its working directory. The agent that builds a kit can
 | [agora](https://github.com/ta-amps/agora) | Public surface: the overview |
 | [tessera](https://github.com/ta-amps/tessera) | Infrastructure: work, storage, permissions and receipts |
 | [herma](https://github.com/ta-amps/herma) | Infrastructure: connects any agent to context and models |
-| [hackathon-context](https://github.com/ta-amps/hackathon-context) | Not part of the system: a general guide to the hackathon |
 
 Older repos for three earlier packs are being renamed or archived; their packs now live in the library.
+
+## Hackathon guide
+
+[hackathon/](https://github.com/ta-amps/ta-amps/tree/main/hackathon) is a general guide to the event and its rules,
+for any team: dates, judging, Meta's platform, templates and shared checks. It is not part of the system.
 
 ## Built with Meta's models
 

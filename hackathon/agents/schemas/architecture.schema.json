@@ -1,0 +1,522 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ta-amps/ta-amps/blob/main/hackathon/agents/schemas/architecture.schema.json",
+  "title": "Repository architecture",
+  "description": "The architecture of one repo as data, so people, models and tools can review it and scripts/check_architecture.py can prove it still matches the code. Paths are relative to the repo root. A test reference is a path or path::test_name.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "name",
+    "summary",
+    "status",
+    "docs",
+    "read_order",
+    "commands",
+    "components",
+    "invariants",
+    "claims"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "description": "One paragraph: what it is, for whom, and the main idea"
+    },
+    "status": {
+      "type": "object",
+      "required": [
+        "as_of",
+        "stage"
+      ],
+      "properties": {
+        "as_of": {
+          "type": "string",
+          "format": "date"
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "idea",
+            "prototype",
+            "alpha",
+            "beta",
+            "stable"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "docs": {
+      "type": "object",
+      "description": "Where each review document lives",
+      "properties": {
+        "summary": {
+          "type": "string"
+        },
+        "architecture": {
+          "type": "string"
+        },
+        "setup": {
+          "type": "string"
+        },
+        "comparison": {
+          "type": "string"
+        },
+        "generalizing": {
+          "type": "string"
+        },
+        "decisions": {
+          "type": "string"
+        },
+        "glossary": {
+          "type": "string"
+        },
+        "review": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "read_order": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The documents a newcomer or a model should read, in order; llms-full.txt follows it"
+    },
+    "commands": {
+      "type": "object",
+      "description": "The commands that set up, check, run and demo the repo",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "path": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "library",
+              "service",
+              "cli",
+              "web",
+              "worker",
+              "edge",
+              "data",
+              "tests",
+              "docs",
+              "config"
+            ]
+          },
+          "role": {
+            "type": "string"
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interfaces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "domain": {
+            "type": "string",
+            "enum": [
+              "neutral",
+              "specific",
+              "mixed"
+            ],
+            "description": "Whether the component knows anything about one problem domain"
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "served_by"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "http",
+              "mcp",
+              "cli",
+              "library",
+              "web",
+              "file",
+              "queue",
+              "graphql"
+            ]
+          },
+          "served_by": {
+            "type": "string"
+          },
+          "spec": {
+            "type": "string"
+          },
+          "auth": {
+            "type": "string"
+          },
+          "entry_points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "data_stores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "owned_by"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "owned_by": {
+            "type": "string"
+          },
+          "holds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "path": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "boundaries": {
+      "type": "array",
+      "description": "Trust boundaries: where a request crosses from less trusted to more trusted",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "between",
+          "rule"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "between": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "rule": {
+            "type": "string"
+          },
+          "enforced_by": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "checked_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "description": "Properties that must always hold, each with the tests that check it",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "statement",
+          "checked_by"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string"
+          },
+          "enforced_by": {
+            "type": "string"
+          },
+          "checked_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "import_rules": {
+      "type": "array",
+      "description": "Layering rules checked against Python imports",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "package",
+          "package_root",
+          "files",
+          "must_not_import"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "package": {
+            "type": "string",
+            "description": "Dotted name of the package that package_root holds"
+          },
+          "package_root": {
+            "type": "string",
+            "description": "Directory that maps to package, for example src/my_app"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Files or directories in this layer"
+          },
+          "must_not_import": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Module prefixes this layer may not import"
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "description": "What the project says it does, each marked built, partial or planned, with evidence",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "claim",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "claim": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "built",
+              "partial",
+              "planned"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "verify": {
+            "type": "string",
+            "description": "A command a reviewer can run"
+          }
+        }
+      }
+    },
+    "deployment": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "how"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "how": {
+            "type": "string"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "generalization": {
+      "type": "object",
+      "properties": {
+        "neutral": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "specific": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "extension_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "what",
+              "how"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "what": {
+                "type": "string"
+              },
+              "how": {
+                "type": "string"
+              },
+              "path": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "feedback": {
+      "type": "object",
+      "properties": {
+        "how": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
