@@ -2,9 +2,13 @@
 
 Newest first. Each entry names what changed and the date the facts were checked.
 
+## 2026-10-30
+
+- The repository is now named ta-amps/ta-amps-hackathon. Links, clone commands, workspace paths (`../ta-amps-hackathon/hackathon/`), the schema ids and the `check_architecture.py` docstring use the new name directly instead of relying on GitHub redirects; see [MOVED.md](MOVED.md). No facts changed.
+
 ## 2026-10-29
 
-- Moved the kit into the `hackathon/` folder of ta-amps/ta-amps, so there are fewer repos. Links, clone commands and workspace paths now point there; see [MOVED.md](MOVED.md). No facts changed.
+- Moved the kit into the `hackathon/` folder of ta-amps/ta-amps-hackathon, so there are fewer repos. Links, clone commands and workspace paths now point there; see [MOVED.md](MOVED.md). No facts changed.
 - Filled [event/05-problem-statements.md](event/05-problem-statements.md). Meta's event page and the Cerebral Valley event page publish no separate problem statements, only two themes and two tracks. The page quotes their official text, names the Meta tools the pages list, notes that there are no per-theme prize categories or video-length rules, points to the Official Rules pages for the judging weights, and adds a short note on choosing a theme. The overview, themes, communications and FAQ pages, the event index and the README now say the same. Sources: https://dev.meta.ai/events/global-hackathon, https://cerebralvalley.ai/e/meta-ai-developer-hackathon and the Official Rules, checked 2026-10-29; the participants-only details page was checked signed out.
 - Added [nouns and verbs in one minute](guides/nouns-and-verbs.md): a plain four-part explanation (nouns, verbs, surfaces, infrastructure) with an accessible SVG diagram that follows light and dark themes, plus its Mermaid source, for teams to copy into their READMEs. The README, the guides index, the worker-first policy, the AGENTS.md template and the reviewable repo guide now point to it. Kit design guidance, not an event rule.
 - Clarified the required [worker-first architecture](guides/worker-first-execution.md): nouns, verbs, surfaces and narrow supporting infrastructure; seed packs bundle nouns and verbs, while project is only a human label. Updated the repository and reusable agent/Claude instructions so implementation, review and handoffs retain these boundaries. This is kit design policy, not an event rule or proof of completed runtime migration.

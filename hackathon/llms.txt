@@ -3,51 +3,51 @@
 > A context kit any team can clone for the Meta Global AI Developer Hackathon (Oct 26 to Nov 4, 2026). It breaks the event into short sections you can check in a minute, collects notes on Meta's developer platform, and ships agent configs, guides, templates and a few stdlib tools. It names no project: point your own repos at it.
 
 ## Start here
-- [README.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/README.md): what this is and how to run it
-- [AGENTS.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/AGENTS.md): rules every agent follows here
-- [INDEX.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/INDEX.md): every file with a description
-- [KEYWORDS.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/KEYWORDS.md): where each term appears
-- [llms-full.txt](https://github.com/ta-amps/ta-amps/blob/main/hackathon/llms-full.txt): the main documents in full, in reading order
+- [README.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/README.md): what this is and how to run it
+- [AGENTS.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/AGENTS.md): rules every agent follows here
+- [INDEX.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/INDEX.md): every file with a description
+- [KEYWORDS.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/KEYWORDS.md): where each term appears
+- [llms-full.txt](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/llms-full.txt): the main documents in full, in reading order
 
 ## Documents
-- [CHANGELOG.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/CHANGELOG.md): Changelog
-- [CLAUDE.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/CLAUDE.md): Mandatory architecture and handoff direction
-- [CONTRIBUTING.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/CONTRIBUTING.md): Contributing
-- [DISCLAIMER.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/DISCLAIMER.md): Disclaimer
-- [MOVED.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/MOVED.md): Moved here on October 29, 2026
-- [SECURITY.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/SECURITY.md): Security
-- [event/01-overview.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/01-overview.md): Overview
-- [event/02-key-dates.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/02-key-dates.md): Key dates
-- [event/03-tracks.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/03-tracks.md): Tracks
-- [event/04-themes.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/04-themes.md): Themes
-- [event/05-problem-statements.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/05-problem-statements.md): Problem statements
-- [event/06-eligibility.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/06-eligibility.md): Eligibility
-- [event/07-official-rules-summary.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/07-official-rules-summary.md): Official Rules, section by section
-- [event/08-judging.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/08-judging.md): Judging
-- [event/09-prizes-and-payout.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/09-prizes-and-payout.md): Prizes and payout
-- [event/10-credits.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/10-credits.md): Credits
-- [event/11-submission.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/11-submission.md): Submission
-- [event/12-models-and-tools.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/12-models-and-tools.md): Models and tools
-- [event/13-acceptable-use-and-data.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/13-acceptable-use-and-data.md): Acceptable use, data use and geography
-- [event/14-communications.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/14-communications.md): Communications
-- [event/15-schedule-and-workshops.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/15-schedule-and-workshops.md): Schedule and workshops
-- [event/16-faq.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/16-faq.md): FAQ (unofficial)
-- [event/README.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/event/README.md): Meta Global AI Developer Hackathon at a glance
-- [guides/README.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/README.md): Guides
-- [guides/agent-recovery-and-review.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/agent-recovery-and-review.md): Typed agent recovery and lightweight review
-- [guides/agent-workflow.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/agent-workflow.md): Agent workflow
-- [guides/compliance-checklist.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/compliance-checklist.md): Compliance checklist
-- [guides/external-agent-access.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/external-agent-access.md): How an external agent connects: anonymous vs keyed
-- [guides/hosting.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/hosting.md): Hosting: local first, then a permanent address
-- [guides/nouns-and-verbs.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/nouns-and-verbs.md): Nouns and verbs in one minute
-- [guides/reviewable-repo.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/reviewable-repo.md): A reviewable repo
-- [guides/ten-day-plan.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/ten-day-plan.md): A ten-day plan
-- [guides/worker-first-execution.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/worker-first-execution.md): Worker-first execution and private work
-- [guides/worker-verb-examples.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/guides/worker-verb-examples.md): Work suitable for claimed verbs
-- [meta-platform/README.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/meta-platform/README.md): Meta platform notes
-- [meta-platform/astryx.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/meta-platform/astryx.md): Astryx
-- [meta-platform/model-api.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/meta-platform/model-api.md): Meta Model API
-- [meta-platform/models-and-pricing.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/meta-platform/models-and-pricing.md): Models, prices and limits
-- [meta-platform/muse-code.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/meta-platform/muse-code.md): Muse Code
-- [meta-platform/open-weights-and-safety-tools.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/meta-platform/open-weights-and-safety-tools.md): Open weights and safety tools
-- [meta-platform/speech-to-text.md](https://github.com/ta-amps/ta-amps/blob/main/hackathon/meta-platform/speech-to-text.md): Speech to text (Muse Voice Transcribe)
+- [CHANGELOG.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/CHANGELOG.md): Changelog
+- [CLAUDE.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/CLAUDE.md): Mandatory architecture and handoff direction
+- [CONTRIBUTING.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/CONTRIBUTING.md): Contributing
+- [DISCLAIMER.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/DISCLAIMER.md): Disclaimer
+- [MOVED.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/MOVED.md): Moved here on October 29, 2026
+- [SECURITY.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/SECURITY.md): Security
+- [event/01-overview.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/01-overview.md): Overview
+- [event/02-key-dates.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/02-key-dates.md): Key dates
+- [event/03-tracks.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/03-tracks.md): Tracks
+- [event/04-themes.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/04-themes.md): Themes
+- [event/05-problem-statements.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/05-problem-statements.md): Problem statements
+- [event/06-eligibility.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/06-eligibility.md): Eligibility
+- [event/07-official-rules-summary.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/07-official-rules-summary.md): Official Rules, section by section
+- [event/08-judging.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/08-judging.md): Judging
+- [event/09-prizes-and-payout.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/09-prizes-and-payout.md): Prizes and payout
+- [event/10-credits.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/10-credits.md): Credits
+- [event/11-submission.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/11-submission.md): Submission
+- [event/12-models-and-tools.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/12-models-and-tools.md): Models and tools
+- [event/13-acceptable-use-and-data.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/13-acceptable-use-and-data.md): Acceptable use, data use and geography
+- [event/14-communications.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/14-communications.md): Communications
+- [event/15-schedule-and-workshops.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/15-schedule-and-workshops.md): Schedule and workshops
+- [event/16-faq.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/16-faq.md): FAQ (unofficial)
+- [event/README.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/event/README.md): Meta Global AI Developer Hackathon at a glance
+- [guides/README.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/README.md): Guides
+- [guides/agent-recovery-and-review.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/agent-recovery-and-review.md): Typed agent recovery and lightweight review
+- [guides/agent-workflow.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/agent-workflow.md): Agent workflow
+- [guides/compliance-checklist.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/compliance-checklist.md): Compliance checklist
+- [guides/external-agent-access.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/external-agent-access.md): How an external agent connects: anonymous vs keyed
+- [guides/hosting.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/hosting.md): Hosting: local first, then a permanent address
+- [guides/nouns-and-verbs.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/nouns-and-verbs.md): Nouns and verbs in one minute
+- [guides/reviewable-repo.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/reviewable-repo.md): A reviewable repo
+- [guides/ten-day-plan.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/ten-day-plan.md): A ten-day plan
+- [guides/worker-first-execution.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/worker-first-execution.md): Worker-first execution and private work
+- [guides/worker-verb-examples.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/guides/worker-verb-examples.md): Work suitable for claimed verbs
+- [meta-platform/README.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platform/README.md): Meta platform notes
+- [meta-platform/astryx.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platform/astryx.md): Astryx
+- [meta-platform/model-api.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platform/model-api.md): Meta Model API
+- [meta-platform/models-and-pricing.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platform/models-and-pricing.md): Models, prices and limits
+- [meta-platform/muse-code.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platform/muse-code.md): Muse Code
+- [meta-platform/open-weights-and-safety-tools.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platform/open-weights-and-safety-tools.md): Open weights and safety tools
+- [meta-platform/speech-to-text.md](https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platform/speech-to-text.md): Speech to text (Muse Voice Transcribe)

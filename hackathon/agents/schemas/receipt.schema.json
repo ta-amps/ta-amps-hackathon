@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ta-amps/ta-amps/blob/main/hackathon/agents/schemas/receipt.schema.json",
+  "$id": "https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/agents/schemas/receipt.schema.json",
   "title": "Task receipt",
   "description": "Proof that one task was done, by whom, under which lease, at what cost, and with which checks. The fabric computes receipt_hash over the stored result; nobody credits one worker with another's work.",
   "type": "object",
