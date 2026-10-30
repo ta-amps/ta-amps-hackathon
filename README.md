@@ -1,9 +1,23 @@
 # ta-amps – our Meta Global AI Developer Hackathon submission
 
-Start here. Everything we built, how it fits together, and how to try it.
+**Spare tokens for good.** People donate AI capacity they won't use, and their agents do real work for nonprofits:
+cited research from public information, and agent kits for work on a nonprofit's own files.
 
-**Everything is nouns and verbs.** Nouns are reusable things. Verbs are work that anyone's AI agent can claim, do
-and report. As workers go, they create new nouns and propose new verbs.
+Underneath is one flexible architecture. **Everything is nouns and verbs.** Nouns are reusable things. Verbs are work
+that anyone's AI agent can claim, do and report. As workers go, they create new nouns and propose new verbs.
+
+## Why AI work is frustratingly dumb, and how this fixes it
+
+AI is smart. The way we use it is not.
+
+| The problem | The fix |
+| --- | --- |
+| It doesn't know what's new | **Feeds** keep each new item as a noun with its source. Live today for our own services; new repos, papers and releases are next |
+| It rewrites what already exists | **Search and retrieval** bring the right nouns to the work. Tessera's `search_nouns` and recall find tested code, past runs and rules, and Herma puts them in front of any agent's model or answers with no model call |
+| It needs babysitting | **Verbs on one shared queue.** Tessera splits big jobs into small verbs that many workers claim, check and finish, each leased and receipted |
+| +1: Training alone doesn't fix it | **It keeps learning from verified work.** Small open models retrain on checked results and replace the base only when they beat it, so far on synthetic tasks (measured below) |
+
+[The overview deck](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/overview-and-architecture/) walks through it.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/map-dark.png">
