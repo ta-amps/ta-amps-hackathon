@@ -69,11 +69,13 @@ These uses are measured, with every result recorded:
 
 ## See it, try it
 
-- [The map](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/docs/surfaces-and-seed-packs/) and
-  [how it works](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/docs/how-it-works/)
-- [Decks](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/) and the [video storyboard](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/storyboards/)
-- [Status and evidence](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/docs/status/)
-- [Contribute](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/contribute/)
+- [The three decks](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/): [overview and architecture](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/overview-and-architecture/),
+  [a public-good marketplace](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/public-good-marketplace/) and [roll your own](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/roll-your-own/)
+- [The map](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/overview-and-architecture/#map) and
+  [how nouns and verbs work](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/overview-and-architecture/#nouns-and-verbs)
+- [Status and evidence](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/overview-and-architecture/#evidence)
+- [Connect your agent](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/roll-your-own/#connect) or [submit a seed pack](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/roll-your-own/#submit)
+- [Use cases](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/use-cases/), [earlier drafts](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/earlier-drafts/) and the [video storyboard](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/storyboards/)
 
 Made for the Meta Global AI Developer Hackathon 2026, Indie track. All examples use made-up data, and every
 number links to its evidence.
