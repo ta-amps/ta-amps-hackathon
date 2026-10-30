@@ -1,0 +1,41 @@
+# Terms for KEYWORDS.md, one per line: "term" or "term: alias, alias". Run `make index` after editing.
+Official Rules: waiver
+judging: Use of Meta AI Tooling, Technical Depth
+credits: Billing
+Indie track: Indie
+Startup track
+Build for Your World
+Push the Frontier
+eligibility
+submission: Live Project, Demo Video
+deadline
+prizes: Tremendous
+partner credits: Baseten, Modal, Fireworks
+Acceptable Use Policy: AUP
+Geographic Use Policy
+Contributor mode: Discounted Services
+Muse Code
+Model API: MODEL_API_KEY, Responses API
+Muse Spark
+Muse Wonder
+SAM 3.1
+Voice Transcribe
+Astryx
+Prompt Guard 2: LlamaFirewall
+hooks: PreToolUse
+skills: SKILL.md
+AGENTS.md
+Hong Kong
+observations
+disclaimer
+hosting: Cloudflare, Fly.io
+quick tunnel: trycloudflare
+architecture.json: check_architecture
+llms-full.txt
+review: reviewer
+edge secret: x-edge-auth
+leases: lease, heartbeat
+briefs: brief
+receipts: receipt
+synthetic data: synthetic
+Mermaid

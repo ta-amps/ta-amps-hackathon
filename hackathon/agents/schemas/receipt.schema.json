@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ta-amps/ta-amps/blob/main/hackathon/agents/schemas/receipt.schema.json",
+  "title": "Task receipt",
+  "description": "Proof that one task was done, by whom, under which lease, at what cost, and with which checks. The fabric computes receipt_hash over the stored result; nobody credits one worker with another's work.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "worker", "fencing_token", "receipt_hash", "started_at", "finished_at", "cost_usd", "checks"],
+  "properties": {
+    "task_id": { "type": "string" },
+    "worker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "type": "string", "enum": ["claude-code", "muse-code", "muse-assistant", "human"] },
+        "id": { "type": "string", "description": "Worker id, for example muse-01" },
+        "model": { "type": "string", "description": "Model id the worker ran on, if any" }
+      }
+    },
+    "fencing_token": { "type": "integer", "minimum": 1 },
+    "receipt_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "SHA-256 over the stored result" },
+    "started_at": { "type": "string", "format": "date-time" },
+    "finished_at": { "type": "string", "format": "date-time" },
+    "cost_usd": { "type": "number", "minimum": 0 },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "passed"],
+        "properties": {
+          "name": { "type": "string" },
+          "passed": { "type": "boolean" },
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" },
+    "handed_over_from": { "type": "string", "description": "Previous worker id when a task changed hands" }
+  }
+}

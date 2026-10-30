@@ -1,0 +1,29 @@
+# Secrets and private material never belong here
+.env
+.env.*
+!.env.example
+private/
+
+# Audio, video and transcripts: keep them out of the repo
+*.wav
+*.mp3
+*.m4a
+*.mp4
+*.mov
+*.webm
+transcripts/
+out/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp

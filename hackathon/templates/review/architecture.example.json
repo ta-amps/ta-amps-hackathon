@@ -1,0 +1,181 @@
+{
+  "$schema": "https://github.com/ta-amps/ta-amps/blob/main/hackathon/agents/schemas/architecture.schema.json",
+  "schema_version": 1,
+  "name": "my-app",
+  "summary": "<One paragraph: what it is, for whom, and the main idea.>",
+  "status": {
+    "as_of": "2026-10-26",
+    "stage": "prototype",
+    "notes": "<what works today and what doesn't>"
+  },
+  "docs": {
+    "summary": "docs/summary.md",
+    "architecture": "docs/architecture.md",
+    "setup": "docs/setup.md",
+    "comparison": "docs/comparison.md",
+    "generalizing": "docs/generalizing.md",
+    "decisions": "docs/decisions.md",
+    "glossary": "docs/glossary.md",
+    "review": "docs/review.md"
+  },
+  "read_order": [
+    "README.md",
+    "docs/summary.md",
+    "docs/architecture.md",
+    "docs/setup.md",
+    "docs/comparison.md",
+    "docs/generalizing.md",
+    "docs/decisions.md",
+    "docs/glossary.md",
+    "docs/review.md"
+  ],
+  "commands": {
+    "setup": "make setup",
+    "check": "make check",
+    "run": "make dev",
+    "demo": "make demo"
+  },
+  "components": [
+    {
+      "id": "store",
+      "title": "Store",
+      "path": "src/my_app/store.py",
+      "kind": "library",
+      "role": "Owns all state; every operation is one transaction",
+      "domain": "neutral",
+      "tests": [
+        "tests/test_store.py"
+      ]
+    },
+    {
+      "id": "api",
+      "title": "HTTP API",
+      "path": "src/my_app/api.py",
+      "kind": "service",
+      "role": "Checks keys and inputs, then calls the store",
+      "depends_on": [
+        "store"
+      ],
+      "interfaces": [
+        "http"
+      ],
+      "domain": "neutral"
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "http",
+      "kind": "http",
+      "served_by": "api",
+      "spec": "docs/architecture.md",
+      "auth": "Bearer key, stored hashed",
+      "entry_points": [
+        "POST /v1/items",
+        "GET /v1/items/{id}"
+      ]
+    }
+  ],
+  "data_stores": [
+    {
+      "id": "db",
+      "kind": "sqlite",
+      "owned_by": "store",
+      "holds": [
+        "items",
+        "events"
+      ],
+      "location": "MY_APP_DB, default ./data/app.db"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "public-api",
+      "between": [
+        "internet",
+        "api"
+      ],
+      "rule": "Every write needs a valid key",
+      "enforced_by": "src/my_app/api.py",
+      "checked_by": [
+        "tests/test_store.py::test_claim_is_exclusive"
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "I1",
+      "statement": "An item is claimed by at most one worker at a time",
+      "enforced_by": "store",
+      "checked_by": [
+        "tests/test_store.py::test_claim_is_exclusive"
+      ]
+    }
+  ],
+  "import_rules": [
+    {
+      "id": "storage-below-web",
+      "package": "my_app",
+      "package_root": "src/my_app",
+      "files": [
+        "src/my_app/store.py"
+      ],
+      "must_not_import": [
+        "my_app.api",
+        "fastapi"
+      ],
+      "why": "Storage never depends on the web layer"
+    }
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "claim": "Two workers never claim the same item",
+      "status": "built",
+      "evidence": [
+        "tests/test_store.py::test_claim_is_exclusive"
+      ],
+      "verify": "make test"
+    },
+    {
+      "id": "C2",
+      "claim": "Runs on a free hosted tier",
+      "status": "planned"
+    }
+  ],
+  "deployment": [
+    {
+      "id": "local",
+      "how": "make dev",
+      "parts": [
+        "API on 127.0.0.1:8080"
+      ]
+    }
+  ],
+  "generalization": {
+    "neutral": [
+      "store",
+      "api"
+    ],
+    "specific": [
+      "<what only fits your domain>"
+    ],
+    "extension_points": [
+      {
+        "id": "new-item-kind",
+        "what": "A new kind of item",
+        "how": "Add a schema and a handler; the store doesn't change",
+        "path": "src/my_app"
+      }
+    ]
+  },
+  "limitations": [
+    "<what it doesn't do>"
+  ],
+  "open_questions": [
+    "<what you want reviewers to weigh in on>"
+  ],
+  "feedback": {
+    "how": "Open an issue with the review label",
+    "url": "https://github.com/<owner>/<repo>/issues"
+  }
+}
