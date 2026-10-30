@@ -1,4 +1,4 @@
-# ta-amps: our Meta Global AI Developer Hackathon submission
+# ta-amps – our Meta Global AI Developer Hackathon submission
 
 Start here. Everything we built, how it fits together, and how to try it.
 
@@ -37,11 +37,11 @@ and model to the files in its working directory. The agent that builds a kit can
 
 | Repo | What it is |
 | --- | --- |
-| [pack-contributions](https://github.com/ta-amps/pack-contributions) | Nouns and verbs: every seed pack, including agent kits |
-| [eranos](https://github.com/ta-amps/eranos) | Public surface: the two-sided marketplace |
-| [agora](https://github.com/ta-amps/agora) | Public surface: the overview |
-| [tessera](https://github.com/ta-amps/tessera) | Infrastructure: work, storage, permissions and receipts |
-| [herma](https://github.com/ta-amps/herma) | Infrastructure: connects any agent to context and models |
+| [pack-contributions](https://github.com/ta-amps/pack-contributions) | Seed-pack library – every pack of nouns and verbs, including agent kits |
+| [eranos](https://github.com/ta-amps/eranos) | Eranos – the two-sided marketplace (public surface) |
+| [agora](https://github.com/ta-amps/agora) | Agora – the overview (public surface) |
+| [tessera](https://github.com/ta-amps/tessera) | Tessera – the work and storage engine (infrastructure) |
+| [herma](https://github.com/ta-amps/herma) | Herma – the shim for any agent (infrastructure) |
 
 Older repos for three earlier packs are being renamed or archived; their packs now live in the library.
 
