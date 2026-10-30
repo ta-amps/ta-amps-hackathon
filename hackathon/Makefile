@@ -1,6 +1,6 @@
 PYTHON ?= python3
-# This kit is the hackathon/ folder of ta-amps/ta-amps, so links in llms.txt and llms-full.txt point there.
-INDEX_BASE_URL ?= https://github.com/ta-amps/ta-amps/blob/main/hackathon
+# This kit is the hackathon/ folder of ta-amps/ta-amps-hackathon, so links in llms.txt and llms-full.txt point there.
+INDEX_BASE_URL ?= https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon
 
 .PHONY: check public docs test architecture help index index-check
 

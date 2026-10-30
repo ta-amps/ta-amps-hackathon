@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ta-amps/ta-amps/blob/main/hackathon/agents/schemas/architecture.schema.json",
+  "$id": "https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/agents/schemas/architecture.schema.json",
   "title": "Repository architecture",
   "description": "The architecture of one repo as data, so people, models and tools can review it and scripts/check_architecture.py can prove it still matches the code. Paths are relative to the repo root. A test reference is a path or path::test_name.",
   "type": "object",

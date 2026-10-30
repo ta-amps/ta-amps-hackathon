@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Clone this kit and your own repos side by side into one workspace folder.
-# The kit is the hackathon/ folder of the ta-amps/ta-amps repo, so it lands in ta-amps/hackathon/.
+# The kit is the hackathon/ folder of the ta-amps/ta-amps-hackathon repo, so it lands in ta-amps-hackathon/hackathon/.
 # Usage: scripts/bootstrap-workspace.sh WORKSPACE_DIR [REPO ...]
 #   REPO is owner/name (cloned from GitHub) or any git URL.
 # Example: scripts/bootstrap-workspace.sh ~/hackathon you/your-app you/your-backend
 # Uses `gh repo clone` for owner/name when gh is installed and signed in, otherwise git over HTTPS.
 set -euo pipefail
 
-KIT="ta-amps/ta-amps"
+KIT="ta-amps/ta-amps-hackathon"
 WORKSPACE="${1:?usage: scripts/bootstrap-workspace.sh WORKSPACE_DIR [REPO ...]}"
 shift
 
@@ -40,8 +40,8 @@ for repo in "$@"; do clone "$repo"; done
 cat <<EOT
 
 Workspace ready in $(pwd). Next:
-  1. ta-amps/hackathon/scripts/check-prereqs.sh
-  2. In each of your repos, install the agent templates: ta-amps/hackathon/agents/README.md
-  3. Plan with ta-amps/hackathon/guides/ten-day-plan.md; check rules with guides/compliance-checklist.md
+  1. ta-amps-hackathon/hackathon/scripts/check-prereqs.sh
+  2. In each of your repos, install the agent templates: ta-amps-hackathon/hackathon/agents/README.md
+  3. Plan with ta-amps-hackathon/hackathon/guides/ten-day-plan.md; check rules with guides/compliance-checklist.md
   4. Keep keys in each repo's .env (gitignored); never paste them into a chat.
 EOT

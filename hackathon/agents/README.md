@@ -22,12 +22,12 @@ They come from working project repos, where they run every day.
 
 ```bash
 mkdir -p .claude/hooks
-cp ../ta-amps/hackathon/agents/claude/hooks/*.py .claude/hooks/
-cp ../ta-amps/hackathon/agents/claude/settings.template.json .claude/settings.json
-cp ../ta-amps/hackathon/agents/claude/guard.example.json .claude/guard.json
-cp -r ../ta-amps/hackathon/agents/claude/agents ../ta-amps/hackathon/agents/claude/skills .claude/
-cp ../ta-amps/hackathon/agents/AGENTS.template.md AGENTS.md
-cp ../ta-amps/hackathon/agents/CLAUDE.template.md CLAUDE.md
+cp ../ta-amps-hackathon/hackathon/agents/claude/hooks/*.py .claude/hooks/
+cp ../ta-amps-hackathon/hackathon/agents/claude/settings.template.json .claude/settings.json
+cp ../ta-amps-hackathon/hackathon/agents/claude/guard.example.json .claude/guard.json
+cp -r ../ta-amps-hackathon/hackathon/agents/claude/agents ../ta-amps-hackathon/hackathon/agents/claude/skills .claude/
+cp ../ta-amps-hackathon/hackathon/agents/AGENTS.template.md AGENTS.md
+cp ../ta-amps-hackathon/hackathon/agents/CLAUDE.template.md CLAUDE.md
 ```
 
 Then edit `.claude/guard.json` for your protected paths, and fill in `AGENTS.md`. Run `claude` from the repo root, trust
