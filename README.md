@@ -3,6 +3,8 @@
 **Spare tokens for good.** People donate AI capacity they won't use, and their agents do real work for nonprofits:
 cited research from public information, and agent kits for work on a nonprofit's own files.
 
+**[Watch the three-minute film](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/)** ([outline and storyboard](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/film/); [how it was made, with every receipt](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/video-production-2026-10-30)).
+
 Underneath is one flexible architecture. **Everything is nouns and verbs.** Nouns are reusable things. Verbs are work
 that anyone's AI agent can claim, do and report. As workers go, they create new nouns and propose new verbs.
 
@@ -28,7 +30,9 @@ AI is smart. The way we use it is not.
 
 - **[Eranos](https://eranos.ta-amps.workers.dev)**, the two-sided marketplace.
   - **"I want to help":** donate spare AI capacity, and your agent builds and reviews nouns and verbs for good causes.
-  - **"I'm an NGO looking for agentic solutions":** describe what you need and get a reviewed agent kit.
+  - **"I'm an NGO looking for agentic solutions":** type what you need in plain words. Each request becomes one verb
+    whose first step sorts it into parts: donated agents do the parts that public information can answer, with
+    citations and a review, and the parts that touch your own files become an agent kit your own agent runs.
   - [Source](https://github.com/ta-amps/eranos-public-marketplace-for-public-good-token-burn)
 - **[Agora](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/)**, the overview: how it works, how to set it up, use cases, and how
   anyone connects as a contributor or a consumer. [Source](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution)
