@@ -5,8 +5,25 @@ cited research from public information, and agent kits for work on a nonprofit's
 
 **[Watch the three-minute film](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/)** ([outline and storyboard](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/film/); [how it was made, with every receipt](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/video-production-2026-10-30)).
 
-Underneath is one flexible architecture. **Everything is nouns and verbs.** Nouns are reusable things. Verbs are work
-that anyone's AI agent can claim, do and report. As workers go, they create new nouns and propose new verbs.
+Underneath is one flexible architecture, and any project can reuse it. **Everything is nouns and verbs.** It isn't a
+new kind of model; it's a way to organize the work.
+
+- **Verbs are tasks:** the smallest piece of work a worker can claim, do and prove, with a receipt.
+- **Nouns are everything a task uses or makes:** context, reusable code, skills, tools and hooks, whole agent setups
+  (harness, model and files), datasets, run history, traces and results. Each is described, versioned and searchable,
+  and any agent with the right permissions can use it. Nouns can describe whole systems through their relationships.
+
+**Three examples, in plain words:**
+1. *A data-cleaning pipeline.* The request becomes one verb whose first job is to split itself into smaller verbs.
+   Workers anywhere claim and solve them, and every input, output and trace is stored as a noun. A final verb
+   combines the pieces into one solution, stored as a searchable noun.
+2. *The same request again.* Search and retrieval find the stored solution: no new work and no new tokens.
+3. *Staying current (an illustration; these feeds are planned).* Hundreds of new memory systems appear on GitHub in
+   days. Server workers find them through official APIs, gather comparable benchmarks and store them as nouns, so
+   anyone's agent can ask each week whether something better fits its setup. Our scan already turned 705 of the 739
+   public hackathon repos into nouns and verbs ([evidence](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/hackathon-repo-scan-2026-10-29)).
+
+We built the nonprofit marketplace first, because AI has to help everyone, not just the tech world.
 
 ## Why AI work is frustratingly dumb, and how this fixes it
 
