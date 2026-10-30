@@ -57,8 +57,10 @@ These uses are measured, with every result recorded:
 - **Llama 3.2 1B and 3B,** tuned in a continuous loop built from nouns and verbs on one local GPU. On a frozen,
   synthetic tool-calling test, exact-match accuracy rose from 12% to 51% (1B) and from 52% to 73% (3B).
   [Method and results](https://github.com/ta-amps/tessera/blob/main/docs/continuous-tuning.md)
-- **Muse Glimmer 30B,** tuned on free cloud GPUs on the same synthetic test, rose from 87% to 99%. It counts only
-  after a fresh test, which is under way.
+- **Muse Glimmer 30B,** tuned with QLoRA on free cloud GPUs for the same synthetic task. On a fresh test set whose
+  hashes were registered before scoring, exact match rose from 93% to 99%: +6 points, 95% interval +2 to +11. A
+  fresh reload reproduced its outputs byte for byte, and the loop's pre-registered promotion rule passed all 12
+  checks. It's one synthetic task, so this shows the loop works; it isn't a general benchmark.
 - **Muse Spark and Muse Wonder** run inside workers. **Muse Code** was one of six agent programs that each finished
   a scoped task on the shared queue.
 
