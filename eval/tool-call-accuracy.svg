@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 440" role="img" aria-labelledby="acc-title acc-desc">
+  <title id="acc-title">Strict Exact-Match Accuracy Before and After PEFT LoRA / QLoRA Fine-Tuning</title>
+  <desc id="acc-desc">Comparison of unchanged base models versus PEFT LoRA and QLoRA specialist adapters on unseen Tessera MCP tool-call holdout splits (n=150 per split): Llama 3.2 1B rises from 12.0% to 50.7%, Llama 3.2 3B rises from 52.0% to 72.7%, Muse Glimmer 30B frozen test rises from 87.3% to 98.7%, and Muse Glimmer 30B pre-registered fresh holdout rises from 93.3% to 99.3%.</desc>
+  <rect width="860" height="440" rx="12" fill="#fbfaf7"/>
+  <rect x="1" y="1" width="858" height="438" rx="11" fill="none" stroke="#d8d3c8" stroke-width="1.5"/>
+
+  <text x="32" y="40" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="19" font-weight="700" fill="#181816">Typed Tool-Call Exact Match on Unseen Holdout Splits (n = 150 each)</text>
+  <text x="32" y="64" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="13" fill="#525049">Synthetic Tessera MCP specialist task -- proves continuous Task/Task-Object loop mechanics, not general capability</text>
+
+  <!-- Legend -->
+  <rect x="32" y="82" width="14" height="14" rx="3" fill="#9a9488"/>
+  <text x="52" y="94" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="12.5" font-weight="600" fill="#2c2b28">Unchanged Base Model</text>
+  <rect x="220" y="82" width="14" height="14" rx="3" fill="#1e5a46"/>
+  <text x="240" y="94" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="12.5" font-weight="600" fill="#2c2b28">Promoted PEFT LoRA / QLoRA Adapter</text>
+
+  <!-- Grid lines (0%, 25%, 50%, 75%, 100%) mapped from x=270 to x=770 (width 500) -->
+  <g stroke="#e5e0d5" stroke-width="1">
+    <line x1="270" y1="116" x2="270" y2="386"/>
+    <line x1="395" y1="116" x2="395" y2="386"/>
+    <line x1="520" y1="116" x2="520" y2="386"/>
+    <line x1="645" y1="116" x2="645" y2="386"/>
+    <line x1="770" y1="116" x2="770" y2="386"/>
+  </g>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#5c5952" text-anchor="middle">
+    <text x="270" y="406">0%</text>
+    <text x="395" y="406">25%</text>
+    <text x="520" y="406">50%</text>
+    <text x="645" y="406">75%</text>
+    <text x="770" y="406">100%</text>
+  </g>
+
+  <!-- Row 1: Llama 3.2 1B Instruct -->
+  <text x="32" y="143" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="13.5" font-weight="700" fill="#181816">Llama 3.2 1B Instruct</text>
+  <text x="32" y="161" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="11.5" fill="#5c5952">bf16 LoRA r=16 (1x RTX 3060)</text>
+  <rect x="270" y="128" width="60" height="16" rx="3" fill="#9a9488"/>
+  <text x="336" y="140" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#3b3935">12.0%</text>
+  <rect x="270" y="148" width="253.5" height="18" rx="3" fill="#1e5a46"/>
+  <text x="530" y="161" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="700" fill="#1e5a46">50.7% (+38.7 pts, R3)</text>
+
+  <!-- Row 2: Llama 3.2 3B Instruct -->
+  <text x="32" y="211" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="13.5" font-weight="700" fill="#181816">Llama 3.2 3B Instruct</text>
+  <text x="32" y="229" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="11.5" fill="#5c5952">bf16 LoRA r=16 (1x RTX 3060)</text>
+  <rect x="270" y="196" width="260" height="16" rx="3" fill="#9a9488"/>
+  <text x="536" y="208" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#3b3935">52.0%</text>
+  <rect x="270" y="216" width="363.5" height="18" rx="3" fill="#1e5a46"/>
+  <text x="640" y="229" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="700" fill="#1e5a46">72.7% (+20.7 pts, R1)</text>
+
+  <!-- Row 3: Muse Glimmer 30B (Frozen test) -->
+  <text x="32" y="279" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="13.5" font-weight="700" fill="#181816">Muse Glimmer 30B (Frozen)</text>
+  <text x="32" y="297" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="11.5" fill="#5c5952">4-bit QLoRA r=16 (free 2x T4)</text>
+  <rect x="270" y="264" width="436.5" height="16" rx="3" fill="#9a9488"/>
+  <text x="713" y="276" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#3b3935">87.3%</text>
+  <rect x="270" y="284" width="493.5" height="18" rx="3" fill="#1e5a46"/>
+  <text x="770" y="297" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="700" fill="#1e5a46" text-anchor="start" dx="6">98.7%</text>
+
+  <!-- Row 4: Muse Glimmer 30B (Pre-registered fresh holdout) -->
+  <text x="32" y="347" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="13.5" font-weight="700" fill="#181816">Muse Glimmer 30B (Fresh)</text>
+  <text x="32" y="365" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="11.5" fill="#5c5952">Pre-registered SHA-256 holdout</text>
+  <rect x="270" y="332" width="466.5" height="16" rx="3" fill="#9a9488"/>
+  <text x="743" y="344" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#3b3935">93.3%</text>
+  <rect x="270" y="352" width="496.5" height="18" rx="3" fill="#1e5a46"/>
+  <text x="770" y="365" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="700" fill="#1e5a46" text-anchor="start" dx="6">99.3%</text>
+
+  <text x="32" y="427" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="11.5" fill="#5c5952">Guard proof: Llama 3.2 3B Round 2 hit 79.3% exact match but dropped schema validity by 0.025 (limit 0.020), so the pre-registered gate kept Round 1.</text>
+</svg>
