@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 440" width="920" height="440" role="img" aria-label="Modular Specialist Subspace Orthogonality and Role Probe Specialization on Llama 3.2 3B">
+  <rect width="920" height="440" fill="#0f172a" rx="12"/>
+  <text x="32" y="40" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700">Modular LoRA Subspace Orthogonality vs TIES Merge Dilution (392 Tensors Verified)</text>
+  <text x="32" y="64" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="13">Measured over 6 persisted 97.3 MB safetensors checkpoints (24.3M trainable params each, disabled_vs_base max_abs = 0.0)</text>
+
+  <!-- Left panel: Alignment with target specialist -->
+  <rect x="32" y="86" width="420" height="312" fill="#1e293b" rx="8" stroke="#334155"/>
+  <text x="52" y="114" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="15" font-weight="600">Cosine Alignment With Active Role Specialist</text>
+
+  <text x="52" y="162" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">Modular Routed (set_adapter)</text>
+  <rect x="236" y="146" width="180" height="22" fill="#10b981" rx="4"/>
+  <text x="422" y="162" fill="#34d399" font-family="monospace" font-size="12" font-weight="700">1.0000</text>
+
+  <text x="52" y="212" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">PEFT TIES Merge (4 roles)</text>
+  <rect x="236" y="196" width="68.9" height="22" fill="#f59e0b" rx="4"/>
+  <text x="312" y="212" fill="#fbbf24" font-family="monospace" font-size="12" font-weight="700">0.3827 avg</text>
+
+  <text x="52" y="262" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">Cross-Role Specialist Pair</text>
+  <rect x="236" y="246" width="2" height="22" fill="#64748b" rx="1"/>
+  <text x="246" y="262" fill="#94a3b8" font-family="monospace" font-size="12">|cos| &lt;= 0.00054 (orthogonal)</text>
+
+  <text x="52" y="316" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="12">Why routing beats weight-averaging:</text>
+  <text x="52" y="338" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">Decomposer, Retriever, Builder &amp; Verifier occupy orthogonal</text>
+  <text x="52" y="356" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">rank-16 subspaces; TIES attenuates 61.7% of each update,</text>
+  <text x="52" y="374" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">while set_adapter(role) switches lossless weights at 0 base VRAM.</text>
+
+  <!-- Right panel: Held-out Decomposer Probe Cross-Entropy -->
+  <rect x="468" y="86" width="420" height="312" fill="#1e293b" rx="8" stroke="#334155"/>
+  <text x="488" y="114" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="15" font-weight="600">Held-Out Decomposer Probe NLL (Lower = Better)</text>
+
+  <text x="488" y="162" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">Unchanged Base (3B)</text>
+  <rect x="652" y="146" width="131.0" height="22" fill="#64748b" rx="4"/>
+  <text x="790" y="162" fill="#cbd5e1" font-family="monospace" font-size="12">1.3098</text>
+
+  <text x="488" y="206" fill="#34d399" font-family="system-ui, sans-serif" font-size="12" font-weight="700">lora.task-decomposer</text>
+  <rect x="652" y="190" width="36.8" height="22" fill="#10b981" rx="4"/>
+  <text x="696" y="206" fill="#34d399" font-family="monospace" font-size="12" font-weight="700">0.3681 (-71.9%)</text>
+
+  <text x="488" y="250" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">lora.builder-toolcalls</text>
+  <rect x="652" y="234" width="163.6" height="22" fill="#ef4444" rx="4"/>
+  <text x="822" y="250" fill="#fca5a5" font-family="monospace" font-size="12">1.6365</text>
+
+  <text x="488" y="294" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">lora.verifier-dpo</text>
+  <rect x="652" y="278" width="176.5" height="22" fill="#ef4444" rx="4"/>
+  <text x="834" y="294" fill="#fca5a5" font-family="monospace" font-size="12">1.7651</text>
+
+  <text x="488" y="338" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="12">lora.shim-retriever</text>
+  <rect x="652" y="322" width="188.5" height="22" fill="#ef4444" rx="4"/>
+  <text x="846" y="338" fill="#fca5a5" font-family="monospace" font-size="12">1.8855</text>
+
+  <text x="488" y="382" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">Peak 2xT4 Train VRAM: 11,275 MiB (GPU0) / 11,025 MiB (GPU1)</text>
+</svg>

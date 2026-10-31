@@ -46,6 +46,15 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 
 ![Vertical 4-Tier Compute Cascade and Modular Specialist LoRAs](vertical-modular-architecture.svg)
 
+### Measured 15-Adapter Data-Scaling & Subspace Orthogonality (`Llama-3.2-3B-Instruct`, Free Kaggle `2x T4`)
+
+![15-Adapter Data-Scaling Flywheel Across 64, 256, and 1,600 Synthetic Swarm Traces](data-scaling-flywheel.svg)
+
+![Role-Switched Specialist LoRA Orthogonality vs Static TIES Merge Attenuation](modular-vs-monolithic-loras.svg)
+
+- **15 PEFT SFT/DPO Adapters + 2 Linear/TIES Merges (`glimmer-modular-swarm-2026-10-31`):** Across `64 -> 256 -> 1,600` synthetic OpenCode-Swarm traces on free Kaggle `2x Tesla T4` GPUs (`11.27 GiB` / `11.03 GiB` peak VRAM, `$0` spend), `lora.shim-retriever` SFT loss dropped **`0.769 -> 0.440 -> 0.355`**, `lora.task-decomposer` cut held-out decomposition cross-entropy **`1.310 -> 0.368` (`-71.9%`)**, and `lora.verifier-dpo` (`SFT + DPO` on chosen vs `noun.negative_tombstone` pairs) expanded preference margin **`+13.64 -> +20.12 -> +24.54`** (`100.0%` batch win rate).
+- **Why Dynamic `set_adapter(role)` Beats Static Weight Merging:** Direct inspection of the six `97.3 MB` `.safetensors` checkpoints (`392` `F32` tensors, `24,313,856` trainable parameters each) shows pairwise cosine similarity **`|cos| <= 0.00054`** across the four specialist roles (near-exact mathematical orthogonality), whereas static `add_weighted_adapter(..., combination_type="ties")` attenuates alignment with each specialist to **`0.377..0.388`** (`~61.7%` loss of directional alignment). *(Honesty note: Stage 4 batched greedy generation at `batch_size=13..25, max_new_tokens=1,472` hit T4 VRAM OOM after saving all 17 manifests and 6 `.safetensors` checkpoints, so no batched greedy holdout exact-match score is claimed from that scaling run.)*
+
 ---
 
 ## Three Anti-Cheating Guarantees
