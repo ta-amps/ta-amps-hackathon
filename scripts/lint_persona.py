@@ -26,15 +26,23 @@ from typing import Any
 
 RESERVED_AGENT_NAMES: frozenset[str] = frozenset(
     {
+        "admin",
         "bash",
+        "claude",
+        "codex",
+        "copilot",
+        "cursor",
         "default",
         "explore",
         "general-purpose",
         "main",
+        "operator",
         "plan",
         "research",
+        "root",
         "self",
         "statusline-setup",
+        "system",
     }
 )
 
@@ -67,6 +75,9 @@ BIDI_CODEPOINTS: frozenset[int] = frozenset(
 ZERO_WIDTH_CODEPOINTS: frozenset[int] = frozenset(
     set(range(0x200B, 0x2010)) | set(range(0x2060, 0x2065)) | {0xFEFF}
 )
+VARIATION_SELECTOR_CODEPOINTS: frozenset[int] = frozenset(
+    set(range(0xFE00, 0xFE10)) | set(range(0xE0100, 0xE01F0))
+)
 
 BYPASS_RE = re.compile(
     r"\b(?:bypassPermissions|dangerously-skip-permissions|autoApprove|yolo_mode|trust_all_projects)\b",
@@ -76,8 +87,14 @@ HOOK_KEY_RE = re.compile(
     r"(?:^|\s|\"|')(?:hooks|PreToolUse|PostToolUse|SessionStart|UserPromptSubmit)\s*[:=]",
     re.MULTILINE,
 )
+MCP_INJECT_RE = re.compile(
+    r"(?:^|\s|\"|')(?:mcpServers|mcp_servers|\.cursor/mcp\.json)\s*[:=]?|\bhttps?://[^\s\"']+/mcp\b",
+    re.IGNORECASE | re.MULTILINE,
+)
 AUTHORITY_SPOOF_RE = re.compile(
     r"\b(?:acting as (?:the )?(?:ceo|ciso|root|system administrator)|"
+    r"(?:approved|authorized)\s+(?:root\s+)?(?:admin|steward|operator)|"
+    r"bypass\s+(?:independent\s+)?review|"
     r"override all (?:prior|previous) (?:safety|security|system) (?:rules|policies|instructions)|"
     r"pre-authorized by security to bypass|ignore all tool restrictions)\b",
     re.IGNORECASE,
@@ -201,6 +218,15 @@ def scan_security_risks(raw: str, parsed_name: str) -> list[dict[str, Any]]:
                         "detail": f"Invisible zero-width character U+{cp:04X} (Rules File Backdoor vector).",
                     }
                 )
+            elif cp in VARIATION_SELECTOR_CODEPOINTS:
+                findings.append(
+                    {
+                        "severity": "high",
+                        "vector": "variation_selector_stego",
+                        "line": line_no,
+                        "detail": f"Invisible Unicode Variation Selector U+{cp:04X} (steganographic prompt smuggling).",
+                    }
+                )
         if tag_chars:
             findings.append(
                 {
@@ -238,6 +264,17 @@ def scan_security_risks(raw: str, parsed_name: str) -> list[dict[str, Any]]:
                 "detail": f"Executable lifecycle hook key '{match.group(0).strip()}' requires manual review.",
             }
         )
+    for match in MCP_INJECT_RE.finditer(raw):
+        matched_str = match.group(0).strip()
+        if "ta-amps.workers.dev" not in matched_str:
+            findings.append(
+                {
+                    "severity": "high",
+                    "vector": "silent_mcp_injection",
+                    "line": raw[: match.start()].count("\n") + 1,
+                    "detail": f"Untrusted MCP server config directive '{matched_str}' (CVE-2025-54135 class).",
+                }
+            )
     for match in AUTHORITY_SPOOF_RE.finditer(raw):
         findings.append(
             {
