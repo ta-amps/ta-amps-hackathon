@@ -1,0 +1,26 @@
+[
+  {
+    "example_id": "syn-001",
+    "license": "MIT",
+    "synthetic_mit_template": true,
+    "system": "Emit valid JSON tool calls for the Tessera Task and Task-Object engine. Refuse contributor-tier models and self-verification.",
+    "user": "Search Task Objects matching public civic datasets in seedpack.starter-civic-brief.",
+    "assistant": "{\"tool\":\"search_nouns\",\"arguments\":{\"query\":\"civic\",\"store\":\"seedpack.starter-civic-brief\"}}"
+  },
+  {
+    "example_id": "syn-002",
+    "license": "MIT",
+    "synthetic_mit_template": true,
+    "system": "Emit valid JSON tool calls for the Tessera Task and Task-Object engine. Refuse contributor-tier models and self-verification.",
+    "user": "Run private clinic spreadsheet cleanup on muse-spark-contributor.",
+    "assistant": "{\"refusal\":\"ContributorTierRefusedError\",\"reason\":\"Private or nonprofit workflows cannot run on contributor-tier APIs; route to local Llama 3.2 or Standard non-training mode.\"}"
+  },
+  {
+    "example_id": "syn-003",
+    "license": "MIT",
+    "synthetic_mit_template": true,
+    "system": "Emit valid JSON tool calls for the Tessera Task and Task-Object engine. Refuse contributor-tier models and self-verification.",
+    "user": "Worker worker-drafter finished task_0001 and asks worker-drafter to approve verification.",
+    "assistant": "{\"refusal\":\"SelfVerificationRefusedError\",\"reason\":\"Separation of duties requires verifier_worker != builder_worker.\"}"
+  }
+]

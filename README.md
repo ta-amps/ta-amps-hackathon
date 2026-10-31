@@ -1,6 +1,9 @@
 # ta-amps -- Meta Global AI Developer Hackathon 2026 Submission
 
-**Spare tokens for good, powered by one shared Task and Task-Object engine.** People donate unused AI capacity, and their agents complete cited public-data research and build audited local agent kits for resource-constrained nonprofits on **[Eranos](https://eranos.ta-amps.workers.dev)** -- while open-source builders reuse the exact same engine via **[Agora](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/)**, **[Tessera](https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine)**, and **[Herma](https://github.com/ta-amps/herma-infrastructure-shim-for-intelligent-agents)**.
+**Three live products built on one open-source Task and Task-Object engine for clinics, food pantries, grassroots nonprofits, and AI agent builders:**
+1. **[Eranos Public Goods Marketplace](https://eranos.ta-amps.workers.dev):** Volunteers donate spare AI capacity so multi-harness agents draft and independently verify (`drafter != reviewer`) cited public-data research and offline local **Llama 3.2** agent kits for resource-constrained nonprofits.
+2. **[Tessera](https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine) + [Herma](https://github.com/ta-amps/herma-infrastructure-shim-for-intelligent-agents) Task & Task-Object Engine:** Fenced work leases, content-addressed storage, `< 2 ms` context shims, and contributor-tier privacy firewalls across **Muse Code**, **OpenCode**, **Pi**, and **Harness Square**.
+3. **[Roll Your Own Seed Packs, Harness Feeds & Meta Specialist LoRAs](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/library/#explorer):** Portable Seed Packs (`59` packs, `381` tasks, `236` task objects), a `707`-repo Meta Hackathon Ecosystem Explorer, an offline developer sandbox ([`docker-compose.yml`](docker-compose.yml)), and open-weights **Llama 3.2** / **Muse Glimmer 30B** PEFT QLoRA recipes.
 
 **[Watch the three-minute film](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/)** ([outline and storyboard](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/film/); [how it was made, with every receipt](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/video-production-2026-10-30); [search Tasks & Task Objects](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/library/#explorer)).
 
@@ -63,6 +66,9 @@ Underneath every surface is one flexible architecture, and any project can reuse
    - **Tier 1 -- Local `Llama 3.2 1B & 3B` Hot-Swappable PEFT LoRA Task Objects:** One base model in VRAM attaches modular specialist LoRA Task Objects by name (`shim-router`, `lora-as-memory`, `task-decomposer`, `verifier-dpo` via `load_adapter` / `set_adapter`; 3-adapter hot-swap verified at `80/80` exact parity on 1x RTX 3060, lifting unseen-family tool calls `12.0% -> 50.7%` on 1B and `52.0% -> 72.7%` on 3B).
    - **Tier 2 -- `Muse Glimmer 30B` NF4 QLoRA Specialist (Kaggle Free 2xT4):** 4-bit `bitsandbytes` QLoRA (`95.8M` trainable params across 364 modules) internalizes stabilized Task Object schemas as **LoRA-as-Memory** (`93.3% -> 99.3%` on pre-registered 150-row fresh holdout, `100.0%` valid JSON).
    - **Tier 3 -- Frontier `Meta Muse Spark 1.3` & `Muse Wonder 1.0`:** Reserved in Standard mode for novel multi-step synthesis and cross-agent review whose verified receipts distill back down into Tier 1 and Tier 2 specialist adapters.
+3. **Why Tasks & Task Objects Instead of Ad-Hoc Agent Persona Prompts:**
+   - Empirical studies across coding harnesses and multi-agent benchmarks (`Zheng 2311.10054`, `Basil 2512.05858`, `de Araujo 2508.19764`, `Cao 2602.12285`, `Li 2402.10962`) show that expert role-play lines add zero factual accuracy while irrelevant or demographic persona fluff degrades agent performance by `26-30%` and system instructions drift within `8` turns.
+   - `ta-amps` separates **routing descriptions** from **permissions** (*"hierarchy routes, it never authorizes"*) and puts precision into typed **Task Objects**, **output contracts**, **scoped tool limits**, and **Herma context shims** rather than brittle persona prose.
 
 [The overview deck](https://ta-amps.github.io/agora-public-overview-architecture-setup-and-contribution/decks/overview-and-architecture/) walks through the whole system visually.
 
@@ -91,15 +97,28 @@ Underneath every surface is one flexible architecture, and any project can reuse
 | [tessera-infrastructure-work-and-storage-engine](https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine) | Tessera -- leased work queue and versioned Task-Object storage engine (infrastructure) |
 | [herma-infrastructure-shim-for-intelligent-agents](https://github.com/ta-amps/herma-infrastructure-shim-for-intelligent-agents) | Herma -- context-shimming middleware and router for any agent harness (infrastructure) |
 
+## Roll Your Own in 60 Seconds: Offline Sandbox & Starter Templates
+
+Run the complete local developer sandbox offline with zero cloud credentials, or copy one of the three starter folders to ship your own pack, harness integration, or Meta LoRA specialist:
+
+- **One-Command Offline Developer Sandbox ([`docker-compose.yml`](docker-compose.yml), [`sandbox/README.md`](sandbox/README.md)):**
+  - `docker compose up --build --abort-on-container-exit --exit-code-from sample-worker-smoke` (or `python3 -m sandbox.worker_smoke` without Docker) spins up the local Tessera protocol simulator (`tessera-local`), validates [`templates/new-seed-pack/`](templates/new-seed-pack/README.md), verifies `ContributorTierRefusedError` and `SelfVerificationRefusedError` (`verifier != builder`), and emits a SHA-256 verification receipt.
+  - *Governance note:* `sandbox/` is a local offline protocol simulator for development and CI; production work scheduling and leases live strictly in Tessera.
+- **Copy-Paste Starter Templates (`templates/`):**
+  1. **[`templates/new-seed-pack/`](templates/new-seed-pack/README.md)** -- starter `manifest.json`, `nouns.json` (Task Objects), and `verbs.json` (Tasks) ready for `python3 -m sandbox.verify_pack`.
+  2. **[`templates/connect-agent-harness/`](templates/connect-agent-harness/README.md)** -- MCP JSON-RPC config ([`mcp-config.example.json`](templates/connect-agent-harness/mcp-config.example.json)) and Herma environment setup ([`herma-env.example.sh`](templates/connect-agent-harness/herma-env.example.sh)) for **Muse Code**, **OpenCode**, **Pi**, **Claude Code**, and **Codex**.
+  3. **[`templates/finetune-meta-lora/`](templates/finetune-meta-lora/README.md)** -- runnable PEFT LoRA (`Llama 3.2 1B/3B`) and 4-bit NF4 QLoRA ([`train_lora_template.py`](templates/finetune-meta-lora/train_lora_template.py)) with an offline `--dry-run-manifest` check over synthetic MIT fixtures ([`sample_synthetic_tasks.json`](templates/finetune-meta-lora/sample_synthetic_tasks.json)).
+
 ## Reproducible Verification, Training & Evaluation in This Repo
 
 - **[`training/README.md`](training/README.md):** Open-weights QLoRA (`bitsandbytes` + `peft`) and bf16 multi-LoRA training pipeline, [`requirements-train.txt`](training/requirements-train.txt), PEFT `adapter_config.json` manifests, and [`adapters/provenance.json`](training/adapters/provenance.json).
 - **[`eval/README.md`](eval/README.md):** Pre-registered holdout benchmarks, paired bootstrap confidence intervals, negative-result promotion guards, and SVG charts ([`tool-call-accuracy.svg`](eval/tool-call-accuracy.svg), [`schema-and-json-validity.svg`](eval/schema-and-json-validity.svg)).
-- **[`Dockerfile`](Dockerfile):** Deterministic `python:3.12-slim` verification container (`docker build -t ta-amps-hackathon-check .`).
+- **[`Dockerfile`](Dockerfile) & [`docker-compose.yml`](docker-compose.yml):** Deterministic `python:3.12-slim` verification and local developer sandbox containers.
 - **[`hackathon/`](hackathon/README.md):** Reusable handbook, submission templates, and public-safety checks (`make check`) for hackathon teams.
 
 ```bash
 make check
+python3 -m sandbox.worker_smoke
 ```
 
 ## See It, Try It
