@@ -1,0 +1,8 @@
+name = "my-eranos-surface"
+main = "src/worker.ts"
+compatibility_date = "2026-10-01"
+
+[vars]
+TESSERA_BASE_URL = "https://my-tessera-engine.example.workers.dev"
+HERMA_BASE_URL = "https://my-herma-shim.example.workers.dev"
+SURFACE_ID = "eranos"

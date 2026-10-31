@@ -1,7 +1,7 @@
 {
   "schema": "ta-amps.adapter-provenance.v1",
   "note": "Reference manifests and SHA-256 provenance for open-weights LoRA and QLoRA specialist runs. Adapter weights stay private under base model licenses; nothing here is promoted to a hosted production service or claimed as a general benchmark gain.",
-  "task": "Synthetic Tessera MCP typed tool-call specialist (unseen held-out tool families + refusal checks)",
+  "task": "Synthetic Tessera MCP typed tool-call, LoRA-as-Memory post-cutoff Task-Object recall, and NGO intake decomposition specialists",
   "promotion_rule": {
     "rule_id": "tool-call-specialist.promotion",
     "version": 1,
@@ -30,6 +30,41 @@
         "fresh_paired_bootstrap_95ci": [0.02, 0.106667],
         "json_valid_rate": [0.966667, 1.0],
         "promotion_checks_passed": "12/12"
+      }
+    },
+    "glimmer-30b-lora-memory": {
+      "base_model": "Muse Glimmer 30B (pinned Hugging Face revision)",
+      "method": "2-GPU layer-24 sharded fp16 PEFT LoRA-as-Memory (rank 16, alpha 32, dropout 0.05, 364 linear modules, 95,846,400 trainable params, 48 steps)",
+      "hardware": "2x NVIDIA T4 16 GB (free Kaggle cloud GPUs, peak 10,505 MiB / 11,619 MiB)",
+      "base_shards_sha256": {
+        "model-00001-of-00002.safetensors": "8eef61530e1283642c77ce2e6721feb5c6f348fa055c00e90f2844a136372694",
+        "model-00002-of-00002.safetensors": "b58cc2144ba1ba1af4420f67f4ca3ced7f09298510b80464cc75018a0be14381",
+        "tokenizer.json": "c9dbee66967b58f31a7c27f723c3760da3526ccd0427578e8905b0abb0031c4d"
+      },
+      "recorded_artifacts_sha256": {
+        "adapter_config.json": "4b16e9001ea8a0193731ecdf5b46027bef09a4c034502b04f2de6736da77b854",
+        "adapter_model.safetensors": "09f14d81fcf8f61f6902f33ec1e3ad607da5c8137ab122de4c25a2d1e8d7d42f",
+        "test_holdout.jsonl": "a5f59267b0d62e65c04242f81d829068e567d6a92229a2ab8f9c493062f9cbc2",
+        "train.jsonl": "bd2ec78aee249ad4b4c6277337380c9b185814a9c3b6d2cb98854b0f2411ca61",
+        "raw_results.json": "440cb5cabd77e615744119737b2ae82d0fc0fc97da1a26446b621a5e0e210f28"
+      },
+      "metrics": {
+        "base_closed_book_exact_match": 0.0,
+        "base_plus_bm25_top2_shim_exact_match": 0.291667,
+        "lora_memory_zero_shim_exact_match": 0.625,
+        "hybrid_lora_plus_pointer_exact_match": 0.55,
+        "hybrid_subtask_a_object_id_f1": 0.944444,
+        "lora_vs_base_paired_95ci": [0.533333, 0.708333],
+        "lora_vs_bm25_shim_paired_95ci": [0.225, 0.441667],
+        "json_and_schema_valid_rate": [1.0, 1.0],
+        "builder_neq_reviewer_rate": 1.0,
+        "contributor_tier_safety_refusal_rate": 1.0,
+        "median_latency_p50_seconds": {
+          "base_plus_bm25_shim": 19.754,
+          "lora_memory_zero_shim": 8.668
+        },
+        "reload_byte_exact": "8/8",
+        "promotion_decision": "promote_candidate"
       }
     },
     "llama-3.2-1b-lora": {

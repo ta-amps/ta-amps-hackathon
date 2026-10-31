@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" width="1180" height="620" role="img" aria-label="Horizontal scaling from 1 to 256 workers across 1 to 4 local workerd cells">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="opsArea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+  <rect width="1180" height="620" fill="url(#bgGrad)" rx="14"/>
+  <text x="42" y="46" fill="#f8fafc" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="22" font-weight="700">Horizontal Sharded Swarm Scaling: 1 to 256 Workers Across 4 workerd Cells (q01..q16)</text>
+  <text x="42" y="72" fill="#94a3b8" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="13.5">Measured on 4 parallel local Miniflare/workerd SQLite Durable Object + D1 cells with 256 distinct scoped principals</text>
+  <rect x="33" y="84" width="539" height="451" rx="10" fill="#1e293b" fill-opacity="0.55" stroke="#334155" stroke-width="1"/>
+  <rect x="603" y="84" width="539" height="451" rx="10" fill="#1e293b" fill-opacity="0.55" stroke="#334155" stroke-width="1"/>
+  <text x="85" y="108" fill="#e2e8f0" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="600">A. Aggregate Throughput (MCP Ops/sec &amp; Tasks/sec)</text>
+  <text x="655" y="108" fill="#e2e8f0" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="600">B. Per-RPC Tail Latency (p50 / p95 / p99 in ms)</text>
+  <line x1="85" y1="483.0" x2="550" y2="483.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="75" y="487.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">0</text>
+  <line x1="85" y1="410.0" x2="550" y2="410.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="75" y="414.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">80</text>
+  <line x1="85" y1="337.0" x2="550" y2="337.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="75" y="341.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">160</text>
+  <line x1="85" y1="264.0" x2="550" y2="264.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="75" y="268.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">240</text>
+  <line x1="85" y1="191.0" x2="550" y2="191.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="75" y="195.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">320</text>
+  <line x1="85" y1="118.0" x2="550" y2="118.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="75" y="122.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">400</text>
+  <line x1="655" y1="483.0" x2="1120" y2="483.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="645" y="487.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">0ms</text>
+  <line x1="655" y1="410.0" x2="1120" y2="410.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="645" y="414.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">364ms</text>
+  <line x1="655" y1="337.0" x2="1120" y2="337.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="645" y="341.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">728ms</text>
+  <line x1="655" y1="264.0" x2="1120" y2="264.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="645" y="268.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">1092ms</text>
+  <line x1="655" y1="191.0" x2="1120" y2="191.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="645" y="195.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">1456ms</text>
+  <line x1="655" y1="118.0" x2="1120" y2="118.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+  <text x="645" y="122.0" text-anchor="end" fill="#94a3b8" font-family="monospace" font-size="11.5">1820ms</text>
+  <path d="M 123.0,483.0 L 123.0,421.1 L 220.2,415.9 L 317.5,328.5 L 414.8,272.8 L 512.0,237.5 L 512.0,483.0 Z" fill="url(#opsArea)"/>
+  <polyline fill="none" stroke="#38bdf8" stroke-width="3" points="123.0,421.1 220.2,415.9 317.5,328.5 414.8,272.8 512.0,237.5"/>
+  <polyline fill="none" stroke="#34d399" stroke-width="2.6" stroke-dasharray="6,3" points="123.0,463.2 220.2,461.1 317.5,433.5 414.8,418.3 512.0,412.9"/>
+  <circle cx="123.0" cy="421.1" r="5" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="123.0" y="410.1" text-anchor="middle" fill="#7dd3fc" font-family="monospace" font-size="11.5" font-weight="700">68/s</text>
+  <circle cx="123.0" cy="463.2" r="4.5" fill="#34d399" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="123.0" y="454.2" text-anchor="middle" fill="#6ee7b7" font-family="monospace" font-size="10.5">22t/s</text>
+  <text x="123.0" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">1w / 1c</text>
+  <text x="123.0" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">4q</text>
+  <circle cx="220.2" cy="415.9" r="5" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="220.2" y="404.9" text-anchor="middle" fill="#7dd3fc" font-family="monospace" font-size="11.5" font-weight="700">74/s</text>
+  <circle cx="220.2" cy="461.1" r="4.5" fill="#34d399" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="220.2" y="452.1" text-anchor="middle" fill="#6ee7b7" font-family="monospace" font-size="10.5">24t/s</text>
+  <text x="220.2" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">4w / 1c</text>
+  <text x="220.2" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">4q</text>
+  <circle cx="317.5" cy="328.5" r="5" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="317.5" y="317.5" text-anchor="middle" fill="#7dd3fc" font-family="monospace" font-size="11.5" font-weight="700">169/s</text>
+  <circle cx="317.5" cy="433.5" r="4.5" fill="#34d399" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="317.5" y="424.5" text-anchor="middle" fill="#6ee7b7" font-family="monospace" font-size="10.5">54t/s</text>
+  <text x="317.5" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">16w / 2c</text>
+  <text x="317.5" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">8q</text>
+  <circle cx="414.8" cy="272.8" r="5" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="414.8" y="261.8" text-anchor="middle" fill="#7dd3fc" font-family="monospace" font-size="11.5" font-weight="700">230/s</text>
+  <circle cx="414.8" cy="418.3" r="4.5" fill="#34d399" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="414.8" y="409.3" text-anchor="middle" fill="#6ee7b7" font-family="monospace" font-size="10.5">71t/s</text>
+  <text x="414.8" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">64w / 4c</text>
+  <text x="414.8" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">16q</text>
+  <circle cx="512.0" cy="237.5" r="5" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="512.0" y="226.5" text-anchor="middle" fill="#7dd3fc" font-family="monospace" font-size="11.5" font-weight="700">269/s</text>
+  <circle cx="512.0" cy="412.9" r="4.5" fill="#34d399" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="512.0" y="403.9" text-anchor="middle" fill="#6ee7b7" font-family="monospace" font-size="10.5">77t/s</text>
+  <text x="512.0" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">256w / 4c</text>
+  <text x="512.0" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">16q</text>
+  <polyline fill="none" stroke="#a78bfa" stroke-width="2.8" points="693.0,477.0 790.2,442.8 887.5,435.2 984.8,319.1 1082.0,174.7"/>
+  <polyline fill="none" stroke="#fbbf24" stroke-width="2.6" points="693.0,478.2 790.2,463.2 887.5,446.3 984.8,400.2 1082.0,211.3"/>
+  <polyline fill="none" stroke="#4ade80" stroke-width="2.6" points="693.0,480.3 790.2,473.7 887.5,466.3 984.8,444.8 1082.0,346.8"/>
+  <circle cx="693.0" cy="477.0" r="4.5" fill="#c4b5fd" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="693.0" y="467.0" text-anchor="middle" fill="#c4b5fd" font-family="monospace" font-size="10.5">29.9</text>
+  <circle cx="693.0" cy="478.2" r="4.5" fill="#fde68a" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="693.0" y="469.2" text-anchor="middle" fill="#fde68a" font-family="monospace" font-size="10.5">24.0</text>
+  <circle cx="693.0" cy="480.3" r="4.5" fill="#86efac" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="693.0" y="496.3" text-anchor="middle" fill="#86efac" font-family="monospace" font-size="10.5">13.2</text>
+  <text x="693.0" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">1w / 1c</text>
+  <text x="693.0" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">0 collisions</text>
+  <circle cx="790.2" cy="442.8" r="4.5" fill="#c4b5fd" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="790.2" y="432.8" text-anchor="middle" fill="#c4b5fd" font-family="monospace" font-size="10.5">200.5</text>
+  <circle cx="790.2" cy="463.2" r="4.5" fill="#fde68a" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="790.2" y="454.2" text-anchor="middle" fill="#fde68a" font-family="monospace" font-size="10.5">98.5</text>
+  <circle cx="790.2" cy="473.7" r="4.5" fill="#86efac" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="790.2" y="489.7" text-anchor="middle" fill="#86efac" font-family="monospace" font-size="10.5">46.6</text>
+  <text x="790.2" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">4w / 1c</text>
+  <text x="790.2" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">0 collisions</text>
+  <circle cx="887.5" cy="435.2" r="4.5" fill="#c4b5fd" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="887.5" y="425.2" text-anchor="middle" fill="#c4b5fd" font-family="monospace" font-size="10.5">238.4</text>
+  <circle cx="887.5" cy="446.3" r="4.5" fill="#fde68a" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="887.5" y="437.3" text-anchor="middle" fill="#fde68a" font-family="monospace" font-size="10.5">182.8</text>
+  <circle cx="887.5" cy="466.3" r="4.5" fill="#86efac" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="887.5" y="482.3" text-anchor="middle" fill="#86efac" font-family="monospace" font-size="10.5">83.3</text>
+  <text x="887.5" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">16w / 2c</text>
+  <text x="887.5" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">0 collisions</text>
+  <circle cx="984.8" cy="319.1" r="4.5" fill="#c4b5fd" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="984.8" y="309.1" text-anchor="middle" fill="#c4b5fd" font-family="monospace" font-size="10.5">817.1</text>
+  <circle cx="984.8" cy="400.2" r="4.5" fill="#fde68a" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="984.8" y="391.2" text-anchor="middle" fill="#fde68a" font-family="monospace" font-size="10.5">412.6</text>
+  <circle cx="984.8" cy="444.8" r="4.5" fill="#86efac" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="984.8" y="460.8" text-anchor="middle" fill="#86efac" font-family="monospace" font-size="10.5">190.5</text>
+  <text x="984.8" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">64w / 4c</text>
+  <text x="984.8" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">0 collisions</text>
+  <circle cx="1082.0" cy="174.7" r="4.5" fill="#c4b5fd" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="1082.0" y="164.7" text-anchor="middle" fill="#c4b5fd" font-family="monospace" font-size="10.5">1537.2</text>
+  <circle cx="1082.0" cy="211.3" r="4.5" fill="#fde68a" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="1082.0" y="202.3" text-anchor="middle" fill="#fde68a" font-family="monospace" font-size="10.5">1355.0</text>
+  <circle cx="1082.0" cy="346.8" r="4.5" fill="#86efac" stroke="#0f172a" stroke-width="1.3"/>
+  <text x="1082.0" y="362.8" text-anchor="middle" fill="#86efac" font-family="monospace" font-size="10.5">679.0</text>
+  <text x="1082.0" y="505.0" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12" font-weight="600">256w / 4c</text>
+  <text x="1082.0" y="521.0" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">0 collisions</text>
+  <rect x="99" y="130" width="215" height="46" rx="6" fill="#0f172a" fill-opacity="0.82" stroke="#334155"/>
+  <line x1="109" y1="145" x2="133" y2="145" stroke="#38bdf8" stroke-width="3"/>
+  <text x="140" y="149" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="11.5">MCP Tool Ops / sec</text>
+  <line x1="109" y1="164" x2="133" y2="164" stroke="#34d399" stroke-width="2.6" stroke-dasharray="6,3"/>
+  <text x="140" y="168" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="11.5">Completed Verb Leases / sec</text>
+  <rect x="669" y="130" width="225" height="62" rx="6" fill="#0f172a" fill-opacity="0.82" stroke="#334155"/>
+  <circle cx="685" cy="145" r="4.5" fill="#c4b5fd"/><text x="697" y="149" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="11.5">p99 RPC Latency (ms)</text>
+  <circle cx="685" cy="162" r="4.5" fill="#fde68a"/><text x="697" y="166" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="11.5">p95 RPC Latency (ms)</text>
+  <circle cx="685" cy="179" r="4.5" fill="#86efac"/><text x="697" y="183" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="11.5">p50 Median Latency (ms)</text>
+  <rect x="33" y="548" width="1114" height="52" rx="9" fill="#064e3b" fill-opacity="0.45" stroke="#10b981" stroke-width="1.2"/>
+  <text x="54" y="579" fill="#ecfdf5" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="600">Fencing &amp; Authority Invariants:  Split-Brain Collisions = 0   |   Expired Leases Reaped &amp; Fenced (HTTP 409 stale_lease) = 16/16   |   Self-Approvals Refused (HTTP 403) = 32/32   |   Flawed Drafts Repaired via Tombstone = 150/150</text>
+</svg>

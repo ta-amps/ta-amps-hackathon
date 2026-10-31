@@ -1,0 +1,15 @@
+name = "my-tessera-engine"
+main = "worker/src/index.ts"
+compatibility_date = "2026-10-01"
+
+[[durable_objects.bindings]]
+name = "TESSERA_SHARD"
+class_name = "TesseraShard"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["TesseraShard"]
+
+[vars]
+TESSERA_PUBLIC_NAMESPACE = "main"
+TESSERA_DEMO_SESSION_TTL_SECONDS = "3600"
