@@ -1,0 +1,18 @@
+{
+  "pack_id": "starter-civic-brief",
+  "title": "Starter Civic Brief",
+  "version": "0.1.0",
+  "status": "proposal_only",
+  "license": "MIT",
+  "summary": "Copy-pasteable starter Seed Pack bundling Task Objects (nouns) and Tasks (verbs) for cited public-record research briefs with strict separation of duties.",
+  "nouns": [
+    "pack:starter-civic-brief",
+    "source:public-civic-portal",
+    "shim:plain-language-guardrail"
+  ],
+  "verbs": [
+    "verb.probe_source",
+    "verb.solve_draft",
+    "verb.verify_gate"
+  ]
+}

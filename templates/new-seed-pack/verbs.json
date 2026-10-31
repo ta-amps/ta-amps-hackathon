@@ -1,0 +1,69 @@
+{
+  "tasks": [
+    {
+      "brief": {
+        "template_id": "verb.probe_source",
+        "title": "Fetch and snapshot public civic dataset metadata",
+        "plain_summary": "Read official public source metadata and record SHA-256 content hashes before drafting.",
+        "inputs": [
+          "source:public-civic-portal"
+        ],
+        "outputs": [
+          "artifact:source-snapshot"
+        ],
+        "execution": {
+          "network": {
+            "mode": "read_only"
+          },
+          "privacy": {
+            "refuse_contributor_tier": true
+          }
+        }
+      }
+    },
+    {
+      "brief": {
+        "template_id": "verb.solve_draft",
+        "title": "Draft cited public civic brief",
+        "plain_summary": "Turn the verified public snapshot into a plain-English one-page brief with inline URLs.",
+        "inputs": [
+          "artifact:source-snapshot",
+          "shim:plain-language-guardrail"
+        ],
+        "outputs": [
+          "artifact:civic-brief-v1"
+        ],
+        "execution": {
+          "network": {
+            "mode": "local_only"
+          },
+          "privacy": {
+            "refuse_contributor_tier": true
+          }
+        }
+      }
+    },
+    {
+      "brief": {
+        "template_id": "verb.verify_gate",
+        "title": "Independently verify citations and privacy boundaries",
+        "plain_summary": "An independent reviewer worker checks every cited number and confirms verifier != builder.",
+        "inputs": [
+          "artifact:source-snapshot",
+          "artifact:civic-brief-v1"
+        ],
+        "outputs": [
+          "receipt:verified-civic-brief"
+        ],
+        "execution": {
+          "network": {
+            "mode": "read_only"
+          },
+          "separation_of_duties": {
+            "require_distinct_verifier": true
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "peft_type": "LORA",
+  "task_type": "CAUSAL_LM",
+  "base_model_name_or_path": "Muse-Glimmer-30B-pinned-revision",
+  "r": 16,
+  "lora_alpha": 32,
+  "lora_dropout": 0.05,
+  "bias": "none",
+  "inference_mode": true,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "_ta_amps_provenance": {
+    "status": "unadmitted_candidate_manifest",
+    "admitted": false,
+    "weights_published": false,
+    "quantization": "4-bit bitsandbytes QLoRA (fp16 compute) across 2x NVIDIA T4 GPUs",
+    "trainable_params": 95846400,
+    "lora_modules": 364,
+    "recorded_adapter_config_sha256": "4b16e9001ea8a0193731ecdf5b46027bef09a4c034502b04f2de6736da77b854",
+    "recorded_adapter_safetensors_sha256": "0cfeb8d0d76beb8c1a053a349291b42aefb613859e1d5b0debce17efd26d2b5a",
+    "fresh_holdout_exact_match_base": 0.933333,
+    "fresh_holdout_exact_match_adapter": 0.993333,
+    "evidence_bundle": "https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/glimmer-30b-2026-10-29"
+  }
+}

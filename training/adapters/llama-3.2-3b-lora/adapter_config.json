@@ -1,0 +1,32 @@
+{
+  "peft_type": "LORA",
+  "task_type": "CAUSAL_LM",
+  "base_model_name_or_path": "meta-llama/Llama-3.2-3B-Instruct",
+  "r": 16,
+  "lora_alpha": 32,
+  "lora_dropout": 0.05,
+  "bias": "none",
+  "inference_mode": true,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "_ta_amps_provenance": {
+    "status": "unadmitted_candidate_manifest",
+    "admitted": false,
+    "weights_published": false,
+    "license": "Llama 3.2 Community License -- Built with Llama",
+    "precision": "bfloat16 LoRA with gradient checkpointing on 1x NVIDIA RTX 3060 12 GB",
+    "recipe_id": "lora-sft-r16",
+    "trainable_params_approx": 24300000,
+    "champion_round": 1,
+    "frozen_test_exact_match_base": 0.52,
+    "frozen_test_exact_match_adapter": 0.727,
+    "evidence_summary": "https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine/blob/main/examples/continuous_tuning/evidence/llama-3.2-3b-instruct-2026-10-29.json"
+  }
+}

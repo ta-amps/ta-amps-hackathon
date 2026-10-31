@@ -1,0 +1,19 @@
+# Open-weights LoRA / QLoRA fine-tuning dependencies for ta-amps GPU workers.
+# Core repositories run offline tests on the Python standard library; install this
+# file only inside an authorized GPU worker environment (CUDA 12.x).
+#
+# Recorded versions in measured October 29, 2026 runs:
+# - Muse Glimmer 30B QLoRA (2x T4, Kaggle): torch 2.11.0+cu128, transformers 5.22.0,
+#   peft 0.21.2, bitsandbytes 0.50.2, accelerate 1.15.0, safetensors 0.8.0,
+#   huggingface_hub 1.33.0, tokenizers 0.23.1
+# - Llama 3.2 1B & 3B LoRA (RTX 3060 12 GB): torch 2.15.0+cu132, transformers 5.22.0,
+#   peft 0.21.2, accelerate 1.15.0
+
+torch>=2.5.0
+transformers>=4.46.0
+peft>=0.13.0
+bitsandbytes>=0.44.0
+accelerate>=1.1.0
+safetensors>=0.4.5
+huggingface_hub>=0.26.0
+tokenizers>=0.20.0

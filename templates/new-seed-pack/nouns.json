@@ -1,0 +1,36 @@
+{
+  "records": [
+    {
+      "key": "pack:starter-civic-brief",
+      "value": {
+        "role": "pack",
+        "category_id": "noun.skill_pack",
+        "title": "A collection of nouns and verbs for drafting cited civic research briefs from official public records",
+        "plain_summary": "Starter template showing how reusable Task Objects and scoped Tasks fit together in one auditable folder.",
+        "synthetic_template": true
+      }
+    },
+    {
+      "key": "source:public-civic-portal",
+      "value": {
+        "role": "source",
+        "category_id": "noun.public_source",
+        "title": "Official public civic dataset registry",
+        "purpose": "Read-only public records requiring primary URL citations and retrieval timestamps.",
+        "allowed_domains": [
+          "data.gov",
+          "census.gov"
+        ]
+      }
+    },
+    {
+      "key": "shim:plain-language-guardrail",
+      "value": {
+        "role": "guardrail",
+        "category_id": "noun.shim_provision",
+        "title": "Plain-language clarity and separation-of-duties rule",
+        "rule": "Keep private data local, refuse contributor-tier APIs, cite every quantitative claim, and require verifier != builder."
+      }
+    }
+  ]
+}

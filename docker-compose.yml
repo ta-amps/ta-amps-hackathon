@@ -1,0 +1,44 @@
+# One-command offline developer sandbox for ta-amps-hackathon.
+# Spins up the local Tessera protocol simulator, verifies the starter Seed Pack,
+# and runs an end-to-end two-worker lease + independent verification smoke test
+# with zero cloud credentials or external network traffic.
+#
+# Run:
+#   docker compose up --build --abort-on-container-exit --exit-code-from sample-worker-smoke
+
+services:
+  tessera-local:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python3", "-m", "sandbox.local_server", "--host", "0.0.0.0", "--port", "8787"]
+    ports:
+      - "8787:8787"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python3",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8787/health', timeout=2).read()",
+        ]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+  seed-pack-verifier:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python3", "-m", "sandbox.verify_pack", "templates/new-seed-pack"]
+
+  sample-worker-smoke:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      tessera-local:
+        condition: service_healthy
+      seed-pack-verifier:
+        condition: service_completed_successfully
+    command: ["python3", "-m", "sandbox.worker_smoke", "--endpoint", "http://tessera-local:8787"]

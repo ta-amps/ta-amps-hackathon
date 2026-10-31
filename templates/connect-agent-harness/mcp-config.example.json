@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "tessera-local-sandbox": {
+      "type": "http",
+      "url": "http://127.0.0.1:8787/mcp",
+      "description": "Offline local developer sandbox (no cloud credentials required)"
+    },
+    "tessera-remote": {
+      "type": "http",
+      "url": "https://tessera.ta-amps.workers.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer <SCOPED_KEY>"
+      },
+      "disabled": true,
+      "description": "Shared Tessera Task and Task-Object engine (enable after setting a scoped worker key)"
+    }
+  }
+}
