@@ -111,7 +111,7 @@ a paid reviewer to every interaction.
 
 As of 2026-10-29, the public event pages publish no separate problem statements; see
 [event/05-problem-statements.md](event/05-problem-statements.md). The workshop schedule is on the participants-only
-[details page](https://cerebralvalley.ai/e/meta-ai-developer-hackathon/details) and is not summarized here yet.
+[details page](https://cerebralvalley.ai/e/meta-ai-developer-hackathon/details) and stays on that participants-only page.
 Corrections are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Licence
@@ -749,7 +749,7 @@ fraud, privacy or people's rights. A checklist that also covers other platforms'
 | Clause | What it means for a project |
 |---|---|
 | No furthering illegal activity, naming human trafficking and exploitation among the examples | Detecting risk is the opposite of furthering it, but never generate material that works as a how-to or as a usable fake |
-| No generating, promoting or furthering fraud | Synthetic job ads, contracts or receipts must be visibly marked so nobody could use them as real |
+| No generating, promoting or furthering fraud | Invented example job ads, contracts or receipts must be visibly marked so nobody could use them as real |
 | No collecting, processing, generating or inferring private or sensitive information about individuals without the right to | Use invented people; never seed with real names, ID numbers or cases |
 | No classifying individuals by social behaviour or personal traits in a way that leads to unfavourable treatment | Assess documents and terms, not people |
 | No relying on outputs for decisions that affect someone's fundamental rights, health or safety without a qualified person reviewing them | Serious outcomes go to a person |
@@ -788,7 +788,7 @@ Meta's [Geographic Use Policy](https://dev.meta.ai/legal/geographic-use-policy) 
 restricted territories. It names the People's Republic of China "including Hong Kong SAR and Macau SAR". You may not
 offer an integrated product to end users located there, or knowingly let them use it.
 
-- Writing synthetic scenarios set under Hong Kong law is a different thing from serving users in Hong Kong. The
+- Writing made-up test scenarios set under Hong Kong law is a different thing from serving users in Hong Kong. The
   restriction is about end users and access.
 - To claim the $150 credit you must live in a country on the policy's list.
 
@@ -1052,7 +1052,7 @@ A backend's service credential may see private records that a public visitor can
 
 ## Record attempts and limits
 
-For each experiment, save the configuration and source revision, synthetic input, actual tool events, expected/observed output, failure reason, usage when measured, and evidence fingerprint. Keep failed attempts. Do not treat a passing HTTP probe as native-harness certification, a checksum as a correctness proof, request-size limits as a request-rate quota, or declared attribution metadata as independent provenance verification.
+For each experiment, save the configuration and source revision, made-up test input, actual tool events, expected/observed output, failure reason, usage when measured, and evidence fingerprint. Keep failed attempts. Do not treat a passing HTTP probe as native-harness certification, a checksum as a correctness proof, request-size limits as a request-rate quota, or declared attribution metadata as independent provenance verification.
 
 A short release note should state what failed before, what changed, which checks actually ran, what remains untested, and how to disable or roll back the change. Keep provider secrets in secure runtime bindings and avoid publishing raw transcripts containing credentials or private work.
 
@@ -1181,7 +1181,7 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 ## 3. Code and hosting platforms
 
 - [ ] **GitHub** ([Acceptable Use Policies](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies)):
-      no defamatory or fraudulent content, no misuse of personal information, and label synthetic media that
+      no defamatory or fraudulent content, no misuse of personal information, and label AI-generated media that
       could mislead.
 - [ ] **Cloudflare** ([terms](https://www.cloudflare.com/terms/)) and **Fly.io**
       ([acceptable use](https://fly.io/legal/acceptable-use-policy/)): no illegal use; on Fly.io, no security
@@ -1189,13 +1189,13 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 
 ## 4. Data and people
 
-- [ ] **Synthetic data by default.** Invented people, companies and numbers; phone numbers from ranges your
+- [ ] **Made-up data by default.** Invented people, companies and numbers; phone numbers from ranges your
       country's regulator reserves for fiction (for example 555-0100 to 555-0199 in North America; unverified
       here, so check the regulator's page); example domains ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)).
       Adults only.
 - [ ] **Real personal data** brings in privacy law (GDPR, CCPA, PDPA, PDPO and others). If you must use it, do a
       privacy review first and keep it out of Contributor services.
-- [ ] **Label what a model made.** Mark generated documents and images as synthetic in their text and pixels.
+- [ ] **Label what a model made.** Mark AI-generated documents and images clearly in their text and pixels.
 
 ## 5. If your project judges people, companies or content
 
@@ -1211,8 +1211,8 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 
 - [ ] Every repo passes a secret scan (`scripts/check_public.py`) and has no `.env` in history.
 - [ ] Licences of every dependency are kept; your own licence file is present.
-- [ ] The README says what is real, what is simulated and what is planned.
-- [ ] The demo video shows only synthetic data and your own accounts.
+- [ ] The README states plainly what is live and what is simulated, with evidence.
+- [ ] The demo video shows only made-up test data and your own accounts.
 
 ========================================================================
 FILE: guides/external-agent-access.md
@@ -1259,7 +1259,7 @@ export AGENT_TOKEN AGENT_NAMESPACE
 rm -f "$agent_session_file"
 ```
 
-Keep the returned namespace, labels, expiry, and limits in the agent's private session state. Use synthetic fixtures only. A demo principal must not be able to change its labels, escape its namespace, read another principal's private objects, or create administrative keys. Enforce quota limits on both actions and session issuance so opening more sessions cannot trivially bypass the limits.
+Keep the returned namespace, labels, expiry, and limits in the agent's private session state. Use made-up fixtures only. A demo principal must not be able to change its labels, escape its namespace, read another principal's private objects, or create administrative keys. Enforce quota limits on both actions and session issuance so opening more sessions cannot trivially bypass the limits.
 
 ## Mode B: scoped API keys
 
@@ -1542,7 +1542,7 @@ Aim to submit by midday Nov 4.
 | Gate | By | Passes when |
 |---|---|---|
 | G1 Skeleton | Oct 27 | One request goes end to end (interface, API, one model call) on your machine, and CI runs your checks |
-| G2 Core | Oct 30 | The main flow works on real-looking synthetic data and every task's `done_when` check passes |
+| G2 Core | Oct 30 | The main flow works on realistic made-up test data and every task's `done_when` check passes |
 | G3 Frozen | Oct 31 | Evaluation data frozen and hashed; nothing after this changes it |
 | G4 Hosted | Nov 1 | The demo runs at a public address ([hosting.md](hosting.md)) and from an offline build |
 | G5 Numbers | Nov 2 | Every number in the write-up comes from a script you can rerun; deploys freeze in the evening |

@@ -48,7 +48,7 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 ## 3. Code and hosting platforms
 
 - [ ] **GitHub** ([Acceptable Use Policies](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies)):
-      no defamatory or fraudulent content, no misuse of personal information, and label synthetic media that
+      no defamatory or fraudulent content, no misuse of personal information, and label AI-generated media that
       could mislead.
 - [ ] **Cloudflare** ([terms](https://www.cloudflare.com/terms/)) and **Fly.io**
       ([acceptable use](https://fly.io/legal/acceptable-use-policy/)): no illegal use; on Fly.io, no security
@@ -56,13 +56,13 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 
 ## 4. Data and people
 
-- [ ] **Synthetic data by default.** Invented people, companies and numbers; phone numbers from ranges your
+- [ ] **Made-up data by default.** Invented people, companies and numbers; phone numbers from ranges your
       country's regulator reserves for fiction (for example 555-0100 to 555-0199 in North America; unverified
       here, so check the regulator's page); example domains ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)).
       Adults only.
 - [ ] **Real personal data** brings in privacy law (GDPR, CCPA, PDPA, PDPO and others). If you must use it, do a
       privacy review first and keep it out of Contributor services.
-- [ ] **Label what a model made.** Mark generated documents and images as synthetic in their text and pixels.
+- [ ] **Label what a model made.** Mark AI-generated documents and images clearly in their text and pixels.
 
 ## 5. If your project judges people, companies or content
 
@@ -78,5 +78,5 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 
 - [ ] Every repo passes a secret scan (`scripts/check_public.py`) and has no `.env` in history.
 - [ ] Licences of every dependency are kept; your own licence file is present.
-- [ ] The README says what is real, what is simulated and what is planned.
-- [ ] The demo video shows only synthetic data and your own accounts.
+- [ ] The README states plainly what is live and what is simulated, with evidence.
+- [ ] The demo video shows only made-up test data and your own accounts.

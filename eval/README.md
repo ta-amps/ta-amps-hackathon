@@ -1,8 +1,8 @@
 # Pre-Registered Evaluation, LoRA-as-Memory & Scalability Benchmarks
 
-Every model-tuning round in `ta-amps` is scored by a deterministic evaluation Task (`verb.benchmark_harness`) and gated by a pre-registered promotion rule Task Object (`tool-call-specialist.promotion` v1, `sha256: bf0fa821717c2400faab77652f067ea85f2616eea329c6e139af33a423e4b3b7`) fixed before training runs.
+Every model-tuning round in `ta-amps` is scored by a deterministic evaluation Task (`verb.benchmark_harness`) and gated by a pre-registered promotion rule task object (`tool-call-specialist.promotion` v1, `sha256: bf0fa821717c2400faab77652f067ea85f2616eea329c6e139af33a423e4b3b7`) fixed before training runs.
 
-> **What these benchmarks show -- and what they do not:** All splits evaluate bounded, synthetic Tasks (producing schema-valid Tessera MCP JSON tool calls, recalling post-cutoff 2026 Task Objects without context bloat, or decomposing nonprofit intake briefs with `builder != reviewer` and contributor-tier privacy checks). They prove that the continuous Task and Task-Object learning loop measures real specialist gains, blocks contaminated rows, and rejects regressions; they are not general LLM capability claims.
+> **What these benchmarks show -- and what they do not:** All splits evaluate bounded, synthetic Tasks (producing schema-valid Tessera MCP JSON tool calls, recalling post-cutoff 2026 task objects without context bloat, or decomposing nonprofit intake briefs with `builder != reviewer` and contributor-tier privacy checks). They prove that the continuous task and task-object learning loop measures real specialist gains, blocks contaminated rows, and rejects regressions; they are not general LLM capability claims.
 
 ## 1. Typed MCP Tool-Call Specialist Accuracy (`n = 150`)
 
@@ -22,7 +22,7 @@ Every model-tuning round in `ta-amps` is scored by a deterministic evaluation Ta
 
 ## 2. Muse Glimmer 30B LoRA-as-Memory Benchmark (`n = 120`, Pre-Registered SHA-256 Holdout)
 
-Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle `2x Tesla T4` GPUs) internalize post-cutoff 2026 Agent Harness & Fabric **Task Objects** (`Subtask A`, `n=60`) and plain-English nonprofit intake decomposition (`Subtask B`, `n=60`) directly into weights -- eliminating repetitive `[NOUN/VERB CONTEXT]` shim tokens at inference time?
+Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle `2x Tesla T4` GPUs) internalize post-cutoff 2026 Agent Harness & Fabric **task objects** (`Subtask A`, `n=60`) and plain-English nonprofit intake decomposition (`Subtask B`, `n=60`) directly into weights -- eliminating repetitive `[NOUN/VERB CONTEXT]` shim tokens at inference time?
 
 ![Muse Glimmer 30B LoRA-as-Memory Benchmark](glimmer-30b-lora-memory.svg)
 
@@ -42,7 +42,7 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 
 ![Horizontal Scaling Across 256 Scoped OpenCode & Multi-Harness Workers](horizontal-scaling-256-workers.svg)
 
-- **Measured 256-Worker OpenCode / MCP Swarm (`SCALABILITY_BENCHMARK.json`):** `256` distinct scoped worker principals across `4` `workerd` cells (`q01..q16` queues) executed `1,000` synthetic workflows (`5,000` leased Tasks, `25,620` MCP JSON-RPC calls at `54.4 ms` p50 latency, `0` lease collisions, `0` self-approvals, `100%` contributor-tier refusal on private fixtures), emitting `2,500` verified synthetic training rows and `200` disjoint holdout rows (`0` overlap).
+- **Measured 256-Worker OpenCode / MCP Swarm (`SCALABILITY_BENCHMARK.json`):** `256` distinct scoped worker principals across `4` `workerd` cells (`q01..q16` queues) executed `1,000` synthetic workflows (`5,000` leased tasks (things to do), `25,620` MCP JSON-RPC calls at `54.4 ms` p50 latency, `0` lease collisions, `0` self-approvals, `100%` contributor-tier refusal on private fixtures), emitting `2,500` verified synthetic training rows and `200` disjoint holdout rows (`0` overlap).
 
 ![Vertical 4-Tier Compute Cascade and Modular Specialist LoRAs](vertical-modular-architecture.svg)
 

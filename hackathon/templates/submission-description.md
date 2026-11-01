@@ -36,7 +36,7 @@ Fill each section in plain sentences. Every number should trace to a file in the
 
 ## Data
 
-<"Every case is synthetic and labelled. No real people, businesses or personal data were used." Say how the data was
+<"Every case is made-up and labelled. No real people, businesses or personal data were used." Say how the data was
 made and where the data card is.>
 
 ## Prior work and tools (disclosure)
