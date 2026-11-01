@@ -117,7 +117,7 @@ Corrections are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Licence
 
 MIT for everything in this folder ([LICENSE](LICENSE)). Official documents we link to belong to their owners.
-"Meta", "Muse", "Llama" and other names are trademarks of their owners; this kit is not affiliated with or
+"Meta", "Muse" and other names are trademarks of their owners; this kit is not affiliated with or
 endorsed by Meta or Cerebral Valley.
 
 ========================================================================
@@ -206,7 +206,7 @@ Rules and the official pages yourself. They govern, and these notes don't.
    Where these notes and a source disagree, the source wins.
 6. **Not affiliated.** This kit is independent. It is not affiliated with, sponsored by or endorsed by Meta Platforms, Inc.,
    Cerebral Valley Enterprises, Inc., or any partner named here.
-7. **Trademarks.** Meta, Muse, Llama, Cerebral Valley and other names are trademarks of their owners, used here only
+7. **Trademarks.** Meta, Muse, Cerebral Valley and other names are trademarks of their owners, used here only
    to identify their products and the event.
 8. **Verify before you act.** Check dates, amounts, eligibility and deadlines at the source before relying on them,
    especially anything involving money, eligibility or your submission.
@@ -749,7 +749,7 @@ fraud, privacy or people's rights. A checklist that also covers other platforms'
 | Clause | What it means for a project |
 |---|---|
 | No furthering illegal activity, naming human trafficking and exploitation among the examples | Detecting risk is the opposite of furthering it, but never generate material that works as a how-to or as a usable fake |
-| No generating, promoting or furthering fraud | Synthetic job ads, contracts or receipts must be visibly marked so nobody could use them as real |
+| No generating, promoting or furthering fraud | Made-up job ads, contracts or receipts must be visibly marked so nobody could use them as real |
 | No collecting, processing, generating or inferring private or sensitive information about individuals without the right to | Use invented people; never seed with real names, ID numbers or cases |
 | No classifying individuals by social behaviour or personal traits in a way that leads to unfavourable treatment | Assess documents and terms, not people |
 | No relying on outputs for decisions that affect someone's fundamental rights, health or safety without a qualified person reviewing them | Serious outcomes go to a person |
@@ -788,7 +788,7 @@ Meta's [Geographic Use Policy](https://dev.meta.ai/legal/geographic-use-policy) 
 restricted territories. It names the People's Republic of China "including Hong Kong SAR and Macau SAR". You may not
 offer an integrated product to end users located there, or knowingly let them use it.
 
-- Writing synthetic scenarios set under Hong Kong law is a different thing from serving users in Hong Kong. The
+- Writing made-up scenarios set under Hong Kong law is a different thing from serving users in Hong Kong. The
   restriction is about end users and access.
 - To claim the $150 credit you must live in a country on the policy's list.
 
@@ -1052,7 +1052,7 @@ A backend's service credential may see private records that a public visitor can
 
 ## Record attempts and limits
 
-For each experiment, save the configuration and source revision, synthetic input, actual tool events, expected/observed output, failure reason, usage when measured, and evidence fingerprint. Keep failed attempts. Do not treat a passing HTTP probe as native-harness certification, a checksum as a correctness proof, request-size limits as a request-rate quota, or declared attribution metadata as independent provenance verification.
+For each experiment, save the configuration and source revision, made-up input, actual tool events, expected/observed output, failure reason, usage when measured, and evidence fingerprint. Keep failed attempts. Do not treat a passing HTTP probe as native-harness certification, a checksum as a correctness proof, request-size limits as a request-rate quota, or declared attribution metadata as independent provenance verification.
 
 A short release note should state what failed before, what changed, which checks actually ran, what remains untested, and how to disable or roll back the change. Keep provider secrets in secure runtime bindings and avoid publishing raw transcripts containing credentials or private work.
 
@@ -1181,7 +1181,7 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 ## 3. Code and hosting platforms
 
 - [ ] **GitHub** ([Acceptable Use Policies](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies)):
-      no defamatory or fraudulent content, no misuse of personal information, and label synthetic media that
+      no defamatory or fraudulent content, no misuse of personal information, and label AI-generated media that
       could mislead.
 - [ ] **Cloudflare** ([terms](https://www.cloudflare.com/terms/)) and **Fly.io**
       ([acceptable use](https://fly.io/legal/acceptable-use-policy/)): no illegal use; on Fly.io, no security
@@ -1189,13 +1189,13 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 
 ## 4. Data and people
 
-- [ ] **Synthetic data by default.** Invented people, companies and numbers; phone numbers from ranges your
+- [ ] **Made-up data by default.** Invented people, companies and numbers; phone numbers from ranges your
       country's regulator reserves for fiction (for example 555-0100 to 555-0199 in North America; unverified
       here, so check the regulator's page); example domains ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)).
       Adults only.
 - [ ] **Real personal data** brings in privacy law (GDPR, CCPA, PDPA, PDPO and others). If you must use it, do a
       privacy review first and keep it out of Contributor services.
-- [ ] **Label what a model made.** Mark generated documents and images as synthetic in their text and pixels.
+- [ ] **Label what a model made.** Mark generated documents and images as made-up examples in their text and pixels.
 
 ## 5. If your project judges people, companies or content
 
@@ -1212,7 +1212,7 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 - [ ] Every repo passes a secret scan (`scripts/check_public.py`) and has no `.env` in history.
 - [ ] Licences of every dependency are kept; your own licence file is present.
 - [ ] The README says what is real, what is simulated and what is planned.
-- [ ] The demo video shows only synthetic data and your own accounts.
+- [ ] The demo video shows only made-up data and your own accounts.
 
 ========================================================================
 FILE: guides/external-agent-access.md
@@ -1259,7 +1259,7 @@ export AGENT_TOKEN AGENT_NAMESPACE
 rm -f "$agent_session_file"
 ```
 
-Keep the returned namespace, labels, expiry, and limits in the agent's private session state. Use synthetic fixtures only. A demo principal must not be able to change its labels, escape its namespace, read another principal's private objects, or create administrative keys. Enforce quota limits on both actions and session issuance so opening more sessions cannot trivially bypass the limits.
+Keep the returned namespace, labels, expiry, and limits in the agent's private session state. Use made-up fixtures only. A demo principal must not be able to change its labels, escape its namespace, read another principal's private objects, or create administrative keys. Enforce quota limits on both actions and session issuance so opening more sessions cannot trivially bypass the limits.
 
 ## Mode B: scoped API keys
 
@@ -1542,7 +1542,7 @@ Aim to submit by midday Nov 4.
 | Gate | By | Passes when |
 |---|---|---|
 | G1 Skeleton | Oct 27 | One request goes end to end (interface, API, one model call) on your machine, and CI runs your checks |
-| G2 Core | Oct 30 | The main flow works on real-looking synthetic data and every task's `done_when` check passes |
+| G2 Core | Oct 30 | The main flow works on real-looking made-up data and every task's `done_when` check passes |
 | G3 Frozen | Oct 31 | Evaluation data frozen and hashed; nothing after this changes it |
 | G4 Hosted | Nov 1 | The demo runs at a public address ([hosting.md](hosting.md)) and from an offline build |
 | G5 Numbers | Nov 2 | Every number in the write-up comes from a script you can rerun; deploys freeze in the evening |
@@ -1880,7 +1880,7 @@ change, so check the source before relying on a number.
 | [muse-code.md](muse-code.md) | Installing and running Meta's coding agent safely: sandbox, Contributor mode, headless flags, config, hooks, skills, MCP |
 | [speech-to-text.md](speech-to-text.md) | Muse Voice Transcribe for files and realtime audio |
 | [astryx.md](astryx.md) | Meta's open-source React design system |
-| [open-weights-and-safety-tools.md](open-weights-and-safety-tools.md) | Prompt Guard 2, LlamaFirewall, Synthetic Data Kit, ARE, Faiss, Ax, partner inference |
+| [open-weights-and-safety-tools.md](open-weights-and-safety-tools.md) | Prompt Guard 2, ARE, Faiss, Ax, partner inference |
 
 Hackathon-specific rules about which tools to use are in [../event/12-models-and-tools.md](../event/12-models-and-tools.md).
 Terms of use and geography are in [../event/13-acceptable-use-and-data.md](../event/13-acceptable-use-and-data.md).
@@ -2169,14 +2169,12 @@ URL: https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platf
 
 | Tool | What it is | Notes |
 |---|---|---|
-| Llama Prompt Guard 2 | A small classifier for prompt injection and jailbreak attempts | Open weights only, not served by the Model API ([Llama and Model API](https://dev.meta.ai/help/about-model-api/llama-and-model-api)). On Hugging Face as `meta-llama/Llama-Prompt-Guard-2-86M` and `-22M`, gated with manual approval, so request access early |
-| LlamaFirewall | A guardrail framework that runs scanners such as Prompt Guard over inputs, tool outputs and agent traces | `pip install llamafirewall` (1.0.3, May 2025) pulls in torch and transformers; Python 3.10+ ([repo](https://github.com/meta-llama/PurpleLlama/tree/main/LlamaFirewall)). Its AlignmentCheck scanner needs a key for a non-Meta inference provider, so projects that keep every model call on Meta need their own trace review |
+| Prompt Guard 2 | A small classifier for prompt injection and jailbreak attempts | Open weights, gated on Hugging Face with manual approval, so request access early. Unverified here: whether the Model API serves it |
 
 ## Data and evaluation
 
 | Tool | What it is |
 |---|---|
-| [Synthetic Data Kit](https://github.com/meta-llama/synthetic-data-kit) | A pipeline to ingest material, generate examples, curate them with a judge and save them. Check whether it can point at the Model API or needs local weights |
 | [ARE and Gaia2](https://huggingface.co/blog/gaia2) | Meta's agent research environment: simulated worlds with apps, timed and triggered events, and JSON traces |
 | [Faiss](https://github.com/facebookresearch/faiss) | Vector similarity search; handy for finding duplicates and related items |
 | [Ax](https://github.com/facebook/Ax) | Adaptive experimentation and Bayesian optimization; handy for tuning a few settings against a metric |

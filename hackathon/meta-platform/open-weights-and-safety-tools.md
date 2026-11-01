@@ -6,14 +6,12 @@
 
 | Tool | What it is | Notes |
 |---|---|---|
-| Llama Prompt Guard 2 | A small classifier for prompt injection and jailbreak attempts | Open weights only, not served by the Model API ([Llama and Model API](https://dev.meta.ai/help/about-model-api/llama-and-model-api)). On Hugging Face as `meta-llama/Llama-Prompt-Guard-2-86M` and `-22M`, gated with manual approval, so request access early |
-| LlamaFirewall | A guardrail framework that runs scanners such as Prompt Guard over inputs, tool outputs and agent traces | `pip install llamafirewall` (1.0.3, May 2025) pulls in torch and transformers; Python 3.10+ ([repo](https://github.com/meta-llama/PurpleLlama/tree/main/LlamaFirewall)). Its AlignmentCheck scanner needs a key for a non-Meta inference provider, so projects that keep every model call on Meta need their own trace review |
+| Prompt Guard 2 | A small classifier for prompt injection and jailbreak attempts | Open weights, gated on Hugging Face with manual approval, so request access early. Unverified here: whether the Model API serves it |
 
 ## Data and evaluation
 
 | Tool | What it is |
 |---|---|
-| [Synthetic Data Kit](https://github.com/meta-llama/synthetic-data-kit) | A pipeline to ingest material, generate examples, curate them with a judge and save them. Check whether it can point at the Model API or needs local weights |
 | [ARE and Gaia2](https://huggingface.co/blog/gaia2) | Meta's agent research environment: simulated worlds with apps, timed and triggered events, and JSON traces |
 | [Faiss](https://github.com/facebookresearch/faiss) | Vector similarity search; handy for finding duplicates and related items |
 | [Ax](https://github.com/facebook/Ax) | Adaptive experimentation and Bayesian optimization; handy for tuning a few settings against a metric |

@@ -104,5 +104,5 @@ Corrections are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Licence
 
 MIT for everything in this folder ([LICENSE](LICENSE)). Official documents we link to belong to their owners.
-"Meta", "Muse", "Llama" and other names are trademarks of their owners; this kit is not affiliated with or
+"Meta", "Muse" and other names are trademarks of their owners; this kit is not affiliated with or
 endorsed by Meta or Cerebral Valley.

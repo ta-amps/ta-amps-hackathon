@@ -14,7 +14,7 @@ fraud, privacy or people's rights. A checklist that also covers other platforms'
 | Clause | What it means for a project |
 |---|---|
 | No furthering illegal activity, naming human trafficking and exploitation among the examples | Detecting risk is the opposite of furthering it, but never generate material that works as a how-to or as a usable fake |
-| No generating, promoting or furthering fraud | Synthetic job ads, contracts or receipts must be visibly marked so nobody could use them as real |
+| No generating, promoting or furthering fraud | Made-up job ads, contracts or receipts must be visibly marked so nobody could use them as real |
 | No collecting, processing, generating or inferring private or sensitive information about individuals without the right to | Use invented people; never seed with real names, ID numbers or cases |
 | No classifying individuals by social behaviour or personal traits in a way that leads to unfavourable treatment | Assess documents and terms, not people |
 | No relying on outputs for decisions that affect someone's fundamental rights, health or safety without a qualified person reviewing them | Serious outcomes go to a person |
@@ -53,7 +53,7 @@ Meta's [Geographic Use Policy](https://dev.meta.ai/legal/geographic-use-policy) 
 restricted territories. It names the People's Republic of China "including Hong Kong SAR and Macau SAR". You may not
 offer an integrated product to end users located there, or knowingly let them use it.
 
-- Writing synthetic scenarios set under Hong Kong law is a different thing from serving users in Hong Kong. The
+- Writing made-up scenarios set under Hong Kong law is a different thing from serving users in Hong Kong. The
   restriction is about end users and access.
 - To claim the $150 credit you must live in a country on the policy's list.
 

@@ -21,7 +21,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from sandbox.local_server import make_server
+from sandbox.local_server import DEFAULT_MODEL, make_server
 from sandbox.verify_pack import verify_pack_dir
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -85,9 +85,10 @@ def run_smoke(endpoint: str, pack_dir: Path = DEFAULT_PACK) -> dict:
     if refused_code != 403 or refused_body.get("error") != "ContributorTierRefusedError":
         raise RuntimeError(f"expected ContributorTierRefusedError, got {refused_code}: {refused_body}")
 
-    # Claim with local open-weights Llama 3.2 model, write draft Task Object, and submit for verification.
+    # Claim with a Standard-tier (non-contributor) Muse model label, write the draft Task Object, and submit
+    # for verification. The label is only recorded; the simulator never calls a model.
     claim_code, claim_body = rpc(
-        endpoint, "claim_task", {"task_id": task_id, "worker_id": "worker-drafter", "model": "llama3.2:3b"}
+        endpoint, "claim_task", {"task_id": task_id, "worker_id": "worker-drafter", "model": DEFAULT_MODEL}
     )
     if claim_code != 200:
         raise RuntimeError(f"claim_task failed: {claim_body}")
@@ -99,7 +100,7 @@ def run_smoke(endpoint: str, pack_dir: Path = DEFAULT_PACK) -> dict:
         {
             "store": store_name,
             "key": "artifact:civic-brief-v1",
-            "value": {"role": "draft_brief", "citations": ["https://data.gov/"], "synthetic_demo": True},
+            "value": {"role": "draft_brief", "citations": ["https://data.gov/"], "practice_demo": True},
         },
     )
     rpc(
@@ -115,14 +116,14 @@ def run_smoke(endpoint: str, pack_dir: Path = DEFAULT_PACK) -> dict:
 
     # Confirm self-verification refusal (verifier == builder -> HTTP 403).
     self_code, self_body = rpc(
-        endpoint, "verify_task", {"task_id": task_id, "verifier_worker": "worker-drafter", "model": "llama3.2:3b"}
+        endpoint, "verify_task", {"task_id": task_id, "verifier_worker": "worker-drafter", "model": DEFAULT_MODEL}
     )
     if self_code != 403 or self_body.get("error") != "SelfVerificationRefusedError":
         raise RuntimeError(f"expected SelfVerificationRefusedError, got {self_code}: {self_body}")
 
     # Independent verification (verifier != builder) succeeds and emits SHA-256 receipt.
     ver_code, ver_body = rpc(
-        endpoint, "verify_task", {"task_id": task_id, "verifier_worker": "worker-reviewer", "model": "llama3.2:3b"}
+        endpoint, "verify_task", {"task_id": task_id, "verifier_worker": "worker-reviewer", "model": DEFAULT_MODEL}
     )
     if ver_code != 200:
         raise RuntimeError(f"verify_task failed: {ver_body}")

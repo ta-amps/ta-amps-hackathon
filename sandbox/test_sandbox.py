@@ -46,11 +46,11 @@ class SandboxTests(unittest.TestCase):
         task = engine.create_task("verb.solve_draft", "Test task")
         with self.assertRaises(ContributorTierRefusedError):
             engine.claim_task(task["task_id"], "w1", model="muse-spark-contributor")
-        claim = engine.claim_task(task["task_id"], "w1", model="llama3.2:3b")
+        claim = engine.claim_task(task["task_id"], "w1", model="muse-spark-1.3")
         engine.submit_draft(task["task_id"], claim["lease_token"], "w1", "noun:1")
         with self.assertRaises(SelfVerificationRefusedError):
-            engine.verify_task(task["task_id"], "w1", model="llama3.2:3b")
-        verified = engine.verify_task(task["task_id"], "w2", model="llama3.2:3b")
+            engine.verify_task(task["task_id"], "w1", model="muse-spark-1.3")
+        verified = engine.verify_task(task["task_id"], "w2", model="muse-spark-1.3")
         self.assertEqual("verified", verified["status"])
         self.assertEqual(64, len(verified["receipt_sha256"]))
 
@@ -85,9 +85,40 @@ class SandboxTests(unittest.TestCase):
             text=True,
         )
         manifest = json.loads(out)
-        self.assertEqual("synthetic_template_run", manifest["status"])
+        self.assertEqual("practice_template_run", manifest["status"])
         self.assertFalse(manifest["admitted_artifact"])
         self.assertEqual(3, manifest["examples_verified"])
+
+    def test_lora_template_requires_base_model_for_training(self) -> None:
+        import subprocess
+        import sys
+
+        script = ROOT / "templates" / "finetune-meta-lora" / "train_lora_template.py"
+        proc = subprocess.run([sys.executable, str(script)], capture_output=True, text=True)
+        self.assertEqual(2, proc.returncode)
+        self.assertIn("--base-model is required", proc.stderr)
+
+    def test_lora_template_renders_examples_with_the_tokenizers_own_chat_template(self) -> None:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "train_lora_template", ROOT / "templates" / "finetune-meta-lora" / "train_lora_template.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        class WithTemplate:
+            chat_template = "template"
+
+            def apply_chat_template(self, messages, tokenize=False):
+                return "|".join(f"{m['role']}={m['content']}" for m in messages)
+
+        class WithoutTemplate:
+            chat_template = None
+
+        row = {"system": "s", "user": "u", "assistant": "a"}
+        self.assertEqual("system=s|user=u|assistant=a", module.render_example(WithTemplate(), row))
+        self.assertEqual("system: s\nuser: u\nassistant: a", module.render_example(WithoutTemplate(), row))
 
 
 if __name__ == "__main__":

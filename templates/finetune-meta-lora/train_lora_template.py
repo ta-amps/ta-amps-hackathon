@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Starter PEFT LoRA / 4-bit NF4 QLoRA fine-tuning template for Meta open weights.
+"""Starter PEFT LoRA / 4-bit NF4 QLoRA fine-tuning template for open weights.
 
 Supports:
   1. Offline schema + provenance check (`--dry-run-manifest`) with stdlib only,
-     emitting a deterministic `synthetic_template_run` receipt for CI and prep.
-  2. Real bf16 PEFT LoRA (`Llama 3.2 1B/3B`) or 4-bit NF4 `bitsandbytes` QLoRA
-     (`--qlora-4bit`) when `torch`, `transformers`, and `peft` are installed.
+     emitting a deterministic `practice_template_run` receipt for CI and prep.
+  2. Real bf16 PEFT LoRA or 4-bit NF4 `bitsandbytes` QLoRA (`--qlora-4bit`) on the
+     open-weights base named by `--base-model` (required, no default), when `torch`,
+     `transformers`, and `peft` are installed.
 """
 from __future__ import annotations
 
@@ -15,18 +16,18 @@ import json
 import sys
 from pathlib import Path
 
-DEFAULT_DATASET = Path(__file__).resolve().with_name("sample_synthetic_tasks.json")
+DEFAULT_DATASET = Path(__file__).resolve().with_name("sample_practice_tasks.json")
 TARGET_MODULES = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
 
 
-def load_verified_synthetic_examples(dataset_path: Path) -> tuple[list[dict], str]:
+def load_verified_practice_examples(dataset_path: Path) -> tuple[list[dict], str]:
     raw = dataset_path.read_bytes()
     rows = json.loads(raw.decode("utf-8"))
     if not isinstance(rows, list) or not rows:
         raise ValueError("dataset must be a non-empty JSON list")
     for idx, row in enumerate(rows):
-        if not row.get("synthetic_mit_template"):
-            raise ValueError(f"row {idx}: synthetic_mit_template=true is required")
+        if not row.get("practice_mit_template"):
+            raise ValueError(f"row {idx}: practice_mit_template=true is required")
         for key in ("system", "user", "assistant"):
             if not isinstance(row.get(key), str) or not row[key].strip():
                 raise ValueError(f"row {idx}: missing non-empty {key!r}")
@@ -36,7 +37,7 @@ def load_verified_synthetic_examples(dataset_path: Path) -> tuple[list[dict], st
 
 def build_dry_run_manifest(args: argparse.Namespace, rows: list[dict], sha256_hex: str) -> dict:
     return {
-        "status": "synthetic_template_run",
+        "status": "practice_template_run",
         "admitted_artifact": False,
         "base_model": args.base_model,
         "quantization": "nf4_4bit_qlora" if args.qlora_4bit else "bf16_peft_lora",
@@ -46,6 +47,18 @@ def build_dry_run_manifest(args: argparse.Namespace, rows: list[dict], sha256_he
         "examples_verified": len(rows),
         "dataset_sha256": sha256_hex,
     }
+
+
+def render_example(tokenizer, row: dict) -> str:
+    """Render one example with the base model's own chat template (plain text if it has none)."""
+    messages = [
+        {"role": "system", "content": row["system"]},
+        {"role": "user", "content": row["user"]},
+        {"role": "assistant", "content": row["assistant"]},
+    ]
+    if getattr(tokenizer, "chat_template", None):
+        return tokenizer.apply_chat_template(messages, tokenize=False)
+    return "\n".join(f"{m['role']}: {m['content']}" for m in messages)
 
 
 def run_peft_training(args: argparse.Namespace, rows: list[dict], sha256_hex: str) -> dict:
@@ -90,11 +103,7 @@ def run_peft_training(args: argparse.Namespace, rows: list[dict], sha256_hex: st
     final_loss = 0.0
     for _ in range(args.epochs):
         for row in rows:
-            prompt = (
-                f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n{row['system']}\n"
-                f"<|start_header_id|>user<|end_header_id|>\n{row['user']}\n"
-                f"<|start_header_id|>assistant<|end_header_id|>\n{row['assistant']}"
-            )
+            prompt = render_example(tokenizer, row)
             batch = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512).to(peft_model.device)
             batch["labels"] = batch["input_ids"].clone()
             out = peft_model(**batch)
@@ -115,7 +124,11 @@ def run_peft_training(args: argparse.Namespace, rows: list[dict], sha256_hex: st
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--base-model", default="meta-llama/Llama-3.2-3B-Instruct")
+    parser.add_argument(
+        "--base-model",
+        default=None,
+        help="Open-weights base: a local path or Hugging Face id you are licensed to use (required for training)",
+    )
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
     parser.add_argument("--output-dir", default="/tmp/ta-amps-lora-template")
     parser.add_argument("--qlora-4bit", action="store_true", help="Enable 4-bit NF4 QLoRA via bitsandbytes")
@@ -129,8 +142,10 @@ def main(argv: list[str] | None = None) -> int:
         help="Validate dataset offline and write deterministic receipt JSON (pass '-' for stdout)",
     )
     args = parser.parse_args(argv)
+    if not args.dry_run_manifest and not args.base_model:
+        parser.error("--base-model is required for training (it is optional with --dry-run-manifest)")
 
-    rows, sha256_hex = load_verified_synthetic_examples(args.dataset)
+    rows, sha256_hex = load_verified_practice_examples(args.dataset)
     if args.dry_run_manifest:
         manifest = build_dry_run_manifest(args, rows, sha256_hex)
         payload = json.dumps(manifest, indent=2, sort_keys=True)

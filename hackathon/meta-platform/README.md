@@ -12,7 +12,7 @@ change, so check the source before relying on a number.
 | [muse-code.md](muse-code.md) | Installing and running Meta's coding agent safely: sandbox, Contributor mode, headless flags, config, hooks, skills, MCP |
 | [speech-to-text.md](speech-to-text.md) | Muse Voice Transcribe for files and realtime audio |
 | [astryx.md](astryx.md) | Meta's open-source React design system |
-| [open-weights-and-safety-tools.md](open-weights-and-safety-tools.md) | Prompt Guard 2, LlamaFirewall, Synthetic Data Kit, ARE, Faiss, Ax, partner inference |
+| [open-weights-and-safety-tools.md](open-weights-and-safety-tools.md) | Prompt Guard 2, ARE, Faiss, Ax, partner inference |
 
 Hackathon-specific rules about which tools to use are in [../event/12-models-and-tools.md](../event/12-models-and-tools.md).
 Terms of use and geography are in [../event/13-acceptable-use-and-data.md](../event/13-acceptable-use-and-data.md).
