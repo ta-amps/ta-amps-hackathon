@@ -29,6 +29,15 @@ class SubmissionContractsTest(unittest.TestCase):
         report = verify_pack_dir(ROOT / "templates" / "new-seed-pack")
         self.assertTrue(report["ok"], report)
 
+    def test_readme_declares_startup_track_light_only_and_rubric(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Startup Track", readme)
+        self.assertIn("Teleion Labs Incorporated", readme)
+        self.assertIn("Muse-System1", readme)
+        self.assertIn("My NGO needs help", readme)
+        self.assertNotIn("Indie team", readme)
+        self.assertNotIn("prefers-color-scheme: dark", readme)
+
 
 if __name__ == "__main__":
     unittest.main()
