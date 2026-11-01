@@ -1,7 +1,7 @@
 {
   "schema": "ta-amps.adapter-provenance.v1",
   "note": "Reference manifests and SHA-256 provenance for open-weights LoRA and QLoRA specialist runs. Adapter weights stay private under base model licenses; nothing here is promoted to a hosted production service or claimed as a general benchmark gain.",
-  "task": "Synthetic Tessera MCP typed tool-call specialist (unseen held-out tool families + refusal checks)",
+  "task": "Synthetic Tessera MCP typed tool-call, LoRA-as-Memory post-cutoff Task-Object recall, and NGO intake decomposition specialists",
   "promotion_rule": {
     "rule_id": "tool-call-specialist.promotion",
     "version": 1,
@@ -30,6 +30,41 @@
         "fresh_paired_bootstrap_95ci": [0.02, 0.106667],
         "json_valid_rate": [0.966667, 1.0],
         "promotion_checks_passed": "12/12"
+      }
+    },
+    "glimmer-30b-lora-memory": {
+      "base_model": "Muse Glimmer 30B (pinned Hugging Face revision)",
+      "method": "2-GPU layer-24 sharded fp16 PEFT LoRA-as-Memory (rank 16, alpha 32, dropout 0.05, 364 linear modules, 95,846,400 trainable params, 48 steps)",
+      "hardware": "2x NVIDIA T4 16 GB (free Kaggle cloud GPUs, peak 10,505 MiB / 11,619 MiB)",
+      "base_shards_sha256": {
+        "model-00001-of-00002.safetensors": "8eef61530e1283642c77ce2e6721feb5c6f348fa055c00e90f2844a136372694",
+        "model-00002-of-00002.safetensors": "b58cc2144ba1ba1af4420f67f4ca3ced7f09298510b80464cc75018a0be14381",
+        "tokenizer.json": "c9dbee66967b58f31a7c27f723c3760da3526ccd0427578e8905b0abb0031c4d"
+      },
+      "recorded_artifacts_sha256": {
+        "adapter_config.json": "4b16e9001ea8a0193731ecdf5b46027bef09a4c034502b04f2de6736da77b854",
+        "adapter_model.safetensors": "09f14d81fcf8f61f6902f33ec1e3ad607da5c8137ab122de4c25a2d1e8d7d42f",
+        "test_holdout.jsonl": "a5f59267b0d62e65c04242f81d829068e567d6a92229a2ab8f9c493062f9cbc2",
+        "train.jsonl": "bd2ec78aee249ad4b4c6277337380c9b185814a9c3b6d2cb98854b0f2411ca61",
+        "raw_results.json": "440cb5cabd77e615744119737b2ae82d0fc0fc97da1a26446b621a5e0e210f28"
+      },
+      "metrics": {
+        "base_closed_book_exact_match": 0.0,
+        "base_plus_bm25_top2_shim_exact_match": 0.291667,
+        "lora_memory_zero_shim_exact_match": 0.625,
+        "hybrid_lora_plus_pointer_exact_match": 0.55,
+        "hybrid_subtask_a_object_id_f1": 0.944444,
+        "lora_vs_base_paired_95ci": [0.533333, 0.708333],
+        "lora_vs_bm25_shim_paired_95ci": [0.225, 0.441667],
+        "json_and_schema_valid_rate": [1.0, 1.0],
+        "builder_neq_reviewer_rate": 1.0,
+        "contributor_tier_safety_refusal_rate": 1.0,
+        "median_latency_p50_seconds": {
+          "base_plus_bm25_shim": 19.754,
+          "lora_memory_zero_shim": 8.668
+        },
+        "reload_byte_exact": "8/8",
+        "promotion_decision": "promote_candidate"
       }
     },
     "llama-3.2-1b-lora": {
@@ -63,6 +98,33 @@
         "round2_rejected_candidate_exact_match": 0.793,
         "round2_rejection_reason": "Schema validity dropped 0.025 against pre-registered 0.02 guard",
         "stringified_argument_rate": [0.175, 0.0]
+      }
+    },
+    "llama-3.2-3b-modular-swarm": {
+      "base_model": "meta-llama/Llama-3.2-3B-Instruct",
+      "attribution": "Built with Llama (Llama 3.2 Community License)",
+      "method": "15 role-switched PEFT LoRA + DPO adapters across 64/256/1,600 synthetic OpenCode-Swarm traces + 2 PEFT linear/TIES merges (rank 16, alpha 32, 392 F32 tensors, 24,313,856 trainable params per adapter)",
+      "hardware": "2x NVIDIA T4 16 GB (free Kaggle cloud GPUs, peak 11,275 MiB / 11,025 MiB, $0 spend)",
+      "base_shards_sha256": {
+        "config.json": "39fb36dc5416f445ebc4e71cb71fbcf6727e80a35836d8ba1a1474c318467b7a",
+        "tokenizer.json": "bbc1904d35169c542dffbe1f7589a5994ec7426d9e5b609d07bab876f32e97ab"
+      },
+      "recorded_artifacts_sha256": {
+        "decomposer_1600_safetensors": "290e0c28a328c0afb4d33c47e03705a72cc8cc7c08bd62a41b65ee9805dd5ef4",
+        "retriever_1600_safetensors": "567596a253fad7ec6cba8ec796a8bc7de33aa28d6513609a83b1714c28c4cc86",
+        "builder_1600_safetensors": "c855137afee481a9a3e7f4aa434b90fb6dc2815151d6d088436a471cddff6434",
+        "verifier_1600_safetensors": "795f41fdbf6e8acb977589809fd626db3c63721e26f482c4fb9fd45ae45e43be",
+        "monolithic_1600_safetensors": "4dd4ed96ec0a2f835405ca03d95179b238dbc6a4eaea6e65d7fd13d1c9111ccf",
+        "merged_ties_1600_safetensors": "b818293142c5a93e65e71ec9ea263404140a9684adc1f87cc6d6f021616a3baa"
+      },
+      "metrics": {
+        "disabled_adapter_vs_base_max_abs_diff_all_15": 0.0,
+        "decomposer_probe_cross_entropy_base_to_1600": [1.30984, 0.36813],
+        "retriever_sft_loss_64_256_1600": [0.76865, 0.43977, 0.35491],
+        "verifier_dpo_preference_margin_64_256_1600": [13.6435, 20.1166, 24.5428],
+        "specialist_pairwise_max_abs_cosine_similarity": 0.000537,
+        "ties_merge_cosine_alignment_retention": [0.376933, 0.387526],
+        "stage4_batched_decode_note": "Batched greedy holdout generation (batch_size=13..25, max_new_tokens=1472) hit T4 VRAM OOM after reload and TIES merge checkpoints saved; no batched greedy exact-match score claimed from this 15-adapter scaling run."
       }
     }
   }

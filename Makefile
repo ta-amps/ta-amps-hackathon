@@ -18,6 +18,7 @@ docs:
 
 sandbox:
 	$(PYTHON) -m unittest discover -s sandbox -p 'test_*.py'
+	$(PYTHON) -m unittest discover -s tests -p 'test_*.py'
 
 guide:
 	$(MAKE) -C hackathon check PYTHON="$(PYTHON)"

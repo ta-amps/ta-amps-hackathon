@@ -36,4 +36,4 @@ Newest first. Each entry names what changed and the date the facts were checked.
   Oct 26 participant emails, all checked Oct 26.
 - Meta platform notes from dev.meta.ai docs, the npm registry and Astryx docs, checked Oct 26.
 - Agent templates, brief and receipt schemas, the transcription tool and scripts.
-- Not yet covered: the problem statements and the workshop schedule (participants-only details page), and kickoff notes.
+- Outside this public snapshot: separate problem statements, the participants-only workshop schedule, and kickoff notes.

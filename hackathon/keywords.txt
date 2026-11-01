@@ -37,5 +37,5 @@ edge secret: x-edge-auth
 leases: lease, heartbeat
 briefs: brief
 receipts: receipt
-synthetic data: synthetic
+made-up data: made-up, invented
 Mermaid

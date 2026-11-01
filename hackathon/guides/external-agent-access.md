@@ -38,7 +38,7 @@ export AGENT_TOKEN AGENT_NAMESPACE
 rm -f "$agent_session_file"
 ```
 
-Keep the returned namespace, labels, expiry, and limits in the agent's private session state. Use synthetic fixtures only. A demo principal must not be able to change its labels, escape its namespace, read another principal's private objects, or create administrative keys. Enforce quota limits on both actions and session issuance so opening more sessions cannot trivially bypass the limits.
+Keep the returned namespace, labels, expiry, and limits in the agent's private session state. Use made-up fixtures only. A demo principal must not be able to change its labels, escape its namespace, read another principal's private objects, or create administrative keys. Enforce quota limits on both actions and session issuance so opening more sessions cannot trivially bypass the limits.
 
 ## Mode B: scoped API keys
 

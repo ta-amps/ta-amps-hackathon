@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 680" width="1180" height="680" role="img" aria-label="4-tier vertical model cascade and composable Multi-LoRA modular swarm architecture">
+  <defs>
+    <linearGradient id="bgV" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#60a5fa"/>
+    </marker>
+    <marker id="arrGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399"/>
+    </marker>
+  </defs>
+  <rect width="1180" height="680" fill="url(#bgV)" rx="14"/>
+  <text x="38" y="44" fill="#f8fafc" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700">Vertical Model Cascade &amp; Composable Multi-LoRA Swarm Flywheel Architecture</text>
+  <text x="38" y="68" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="13.5">Separating horizontal shard concurrency (4 workerd cells, q01..q16) from vertical model routing and specialist LoRA adaptation</text>
+  <rect x="34" y="92" width="530" height="450" rx="12" fill="#0f172a" fill-opacity="0.78" stroke="#3b82f6" stroke-width="1.3"/>
+  <text x="54" y="120" fill="#93c5fd" font-family="Inter, sans-serif" font-size="15.5" font-weight="700">4-Tier Vertical Compute &amp; Model Cascade</text>
+  <rect x="54" y="136" width="490" height="82" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.4"/>
+  <text x="70" y="160" fill="#34d399" font-family="Inter, sans-serif" font-size="13.5" font-weight="700">Tier 0: 0-Call Reflex Lookup &amp; In-Process Context Shim (&lt; 1 ms, $0)</text>
+  <text x="70" y="181" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12">BM25 lexical index + structural tag affinity + RRF(k=60) + 0/1 DP token-budget</text>
+  <text x="70" y="199" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11.5">knapsack; injects mandatory negative tombstones before Attempt-2 repairs</text>
+  <rect x="54" y="232" width="490" height="82" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.4"/>
+  <text x="70" y="256" fill="#7dd3fc" font-family="Inter, sans-serif" font-size="13.5" font-weight="700">Tier 1: Calibrated Compact Router &amp; Deterministic Checks (1B Gate)</text>
+  <text x="70" y="277" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12">Temperature-scaled skill logits + normalized Shannon entropy abstention gate;</text>
+  <text x="70" y="295" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11.5">executes schema, SHA-256 CAS, coverage, and embargo unit checks at zero model cost</text>
+  <rect x="54" y="328" width="490" height="96" rx="8" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="70" y="352" fill="#c4b5fd" font-family="Inter, sans-serif" font-size="13.5" font-weight="700">Tier 2: Shared Base Backbone (Llama-3.2-3B) + 4 Hot-Swapped LoRA Modules</text>
+  <rect x="70" y="366" width="108" height="44" rx="5" fill="#312e81" stroke="#818cf8"/><text x="124" y="386" text-anchor="middle" fill="#e0e7ff" font-family="Inter, sans-serif" font-size="11" font-weight="600">Decomposer</text><text x="124" y="401" text-anchor="middle" fill="#a5b4fc" font-family="monospace" font-size="10">SFT LoRA</text>
+  <rect x="188" y="366" width="108" height="44" rx="5" fill="#312e81" stroke="#818cf8"/><text x="242" y="386" text-anchor="middle" fill="#e0e7ff" font-family="Inter, sans-serif" font-size="11" font-weight="600">Retriever Shim</text><text x="242" y="401" text-anchor="middle" fill="#a5b4fc" font-family="monospace" font-size="10">SFT LoRA</text>
+  <rect x="306" y="366" width="108" height="44" rx="5" fill="#312e81" stroke="#818cf8"/><text x="360" y="386" text-anchor="middle" fill="#e0e7ff" font-family="Inter, sans-serif" font-size="11" font-weight="600">Builder MCP</text><text x="360" y="401" text-anchor="middle" fill="#a5b4fc" font-family="monospace" font-size="10">SFT LoRA</text>
+  <rect x="424" y="366" width="106" height="44" rx="5" fill="#4c1d95" stroke="#c084fc"/><text x="477" y="386" text-anchor="middle" fill="#f3e8ff" font-family="Inter, sans-serif" font-size="11" font-weight="600">Verifier Align</text><text x="477" y="401" text-anchor="middle" fill="#d8b4fe" font-family="monospace" font-size="10">DPO LoRA</text>
+  <rect x="54" y="438" width="490" height="88" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.4"/>
+  <text x="70" y="462" fill="#fcd34d" font-family="Inter, sans-serif" font-size="13.5" font-weight="700">Tier 3: Frontier Synthesis Escalation (10 Real OpenCode v2.1.2 Runs)</text>
+  <text x="70" y="483" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12">kimi-k2.7-code &amp; muse-spark-1.3-contributor behind hard $0.40 spend gate</text>
+  <text x="70" y="502" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11.5">Observed total spend = $0.0007 USD; solutions distill downward into Tier 2 LoRAs</text>
+  <rect x="602" y="92" width="544" height="450" rx="12" fill="#0f172a" fill-opacity="0.78" stroke="#10b981" stroke-width="1.3"/>
+  <text x="622" y="120" fill="#6ee7b7" font-family="Inter, sans-serif" font-size="15.5" font-weight="700">5 Modular Worker Roles (256 Scoped Principals) -&gt; 4 Cells</text>
+  <rect x="622" y="138" width="96" height="58" rx="7" fill="#1e293b" stroke="#64748b"/><text x="670" y="162" text-anchor="middle" fill="#f1f5f9" font-family="Inter, sans-serif" font-size="12" font-weight="700">Requesters</text><text x="670" y="182" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="12">48 keys</text>
+  <rect x="726" y="138" width="96" height="58" rx="7" fill="#1e293b" stroke="#64748b"/><text x="774" y="162" text-anchor="middle" fill="#f1f5f9" font-family="Inter, sans-serif" font-size="12" font-weight="700">Decomposers</text><text x="774" y="182" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="12">32 keys</text>
+  <rect x="830" y="138" width="96" height="58" rx="7" fill="#1e293b" stroke="#64748b"/><text x="878" y="162" text-anchor="middle" fill="#f1f5f9" font-family="Inter, sans-serif" font-size="12" font-weight="700">Retrievers</text><text x="878" y="182" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="12">32 keys</text>
+  <rect x="934" y="138" width="96" height="58" rx="7" fill="#1e293b" stroke="#64748b"/><text x="982" y="162" text-anchor="middle" fill="#f1f5f9" font-family="Inter, sans-serif" font-size="12" font-weight="700">Builders</text><text x="982" y="182" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="12">88 keys</text>
+  <rect x="1038" y="138" width="92" height="58" rx="7" fill="#1e293b" stroke="#10b981"/><text x="1084" y="162" text-anchor="middle" fill="#f1f5f9" font-family="Inter, sans-serif" font-size="12" font-weight="700">Verifiers</text><text x="1084" y="182" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="12">56 keys</text>
+  <rect x="622" y="226" width="120" height="84" rx="8" fill="#172554" stroke="#60a5fa" stroke-width="1.3"/><text x="682" y="250" text-anchor="middle" fill="#bfdbfe" font-family="Inter, sans-serif" font-size="13" font-weight="700">cell-01</text><text x="682" y="270" text-anchor="middle" fill="#93c5fd" font-family="monospace" font-size="11.5">q01 .. q04</text><text x="682" y="290" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">SQLite DO + D1</text>
+  <rect x="750" y="226" width="120" height="84" rx="8" fill="#172554" stroke="#60a5fa" stroke-width="1.3"/><text x="810" y="250" text-anchor="middle" fill="#bfdbfe" font-family="Inter, sans-serif" font-size="13" font-weight="700">cell-02</text><text x="810" y="270" text-anchor="middle" fill="#93c5fd" font-family="monospace" font-size="11.5">q05 .. q08</text><text x="810" y="290" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">SQLite DO + D1</text>
+  <rect x="878" y="226" width="120" height="84" rx="8" fill="#172554" stroke="#60a5fa" stroke-width="1.3"/><text x="938" y="250" text-anchor="middle" fill="#bfdbfe" font-family="Inter, sans-serif" font-size="13" font-weight="700">cell-03</text><text x="938" y="270" text-anchor="middle" fill="#93c5fd" font-family="monospace" font-size="11.5">q09 .. q12</text><text x="938" y="290" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">SQLite DO + D1</text>
+  <rect x="1006" y="226" width="124" height="84" rx="8" fill="#172554" stroke="#60a5fa" stroke-width="1.3"/><text x="1068" y="250" text-anchor="middle" fill="#bfdbfe" font-family="Inter, sans-serif" font-size="13" font-weight="700">cell-04</text><text x="1068" y="270" text-anchor="middle" fill="#93c5fd" font-family="monospace" font-size="11.5">q13 .. q16</text><text x="1068" y="290" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10.5">SQLite DO + D1</text>
+  <rect x="622" y="334" width="508" height="84" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="638" y="357" fill="#fde68a" font-family="Inter, sans-serif" font-size="13" font-weight="700">DAG Split &amp; Negative-Tombstone Self-Correction Loop</text>
+  <text x="638" y="378" fill="#cbd5e1" font-family="monospace" font-size="11.5">request -&gt; split(search -&gt; build -&gt; verify -&gt; independent_review)</text>
+  <text x="638" y="398" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11.5">15% Attempt-1 flaws -&gt; verifier writes swarm.tombstones -&gt; Attempt-2 repair -&gt; DPO pair</text>
+  <rect x="622" y="438" width="508" height="88" rx="8" fill="#064e3b" fill-opacity="0.55" stroke="#34d399" stroke-width="1.4"/>
+  <text x="638" y="462" fill="#6ee7b7" font-family="Inter, sans-serif" font-size="13.5" font-weight="700">Verified Trace Flywheel Output (2700 SHA-256-Pinned Rows)</text>
+  <text x="638" y="484" fill="#ecfdf5" font-family="monospace" font-size="11.5">swarm_sft_decomposer | swarm_sft_retriever_shim | swarm_sft_builder_toolcalls</text>
+  <text x="638" y="504" fill="#a7f3d0" font-family="monospace" font-size="11.5">swarm_dpo_verifier_pairs (Att2 chosen vs Att1 rejected) + 200 unseen holdout</text>
+  <line x1="564" y1="274" x2="616" y2="274" stroke="#60a5fa" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="622" y1="482" x2="550" y2="392" stroke="#34d399" stroke-width="2.5" marker-end="url(#arrGreen)"/>
+  <rect x="34" y="564" width="1112" height="90" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1.2"/>
+  <text x="54" y="592" fill="#f8fafc" font-family="Inter, sans-serif" font-size="14" font-weight="700">Closed-Loop Data Starvation Solution: Modularity + Horizontal Sharding + Vertical Distillation</text>
+  <text x="54" y="615" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12.5">1. Horizontal scalability shards stateful leases across independent SQLite Durable Object cells (cell-01..04, q01..q16) with zero lock contention.</text>
+  <text x="54" y="636" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="12.5">2. Every verified receipt and Attempt-1 -&gt; Attempt-2 tombstone repair compiles directly into SFT + DPO adapters (`verifier_key != builder_key`).</text>
+</svg>
