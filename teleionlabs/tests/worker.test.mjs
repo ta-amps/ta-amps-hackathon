@@ -273,6 +273,7 @@ test("every page is plain text: first line is for agents, no stylesheet file, no
     const text = await handle(new Request(`https://teleionlabs.com${twin}`), { ASSETS: assets() }, ctx);
     assert.equal(text.status, 200);
     assert.match(text.headers.get("Content-Type"), /text\/plain/);
+    assert.match(await text.text(), /Teleion Labs Incorporated/, `${twin} keeps the whole page`);
   }
 });
 

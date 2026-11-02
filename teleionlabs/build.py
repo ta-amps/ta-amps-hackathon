@@ -93,8 +93,8 @@ class ToText(HTMLParser):
         self.out.append("\n" * n)
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
-        if tag in ("style", "script", "button", "canvas", "video", "head", "title") or "hidden" in a:
-            self.skip += 1 if tag not in ("input",) else 0
+        if tag in ("style", "script", "button", "canvas", "video", "head", "title") :
+            self.skip += 1
             return
         if self.skip:
             return
@@ -142,6 +142,8 @@ class ToText(HTMLParser):
 
 def to_text(markup: str) -> str:
     p = ToText()
+    markup = re.sub(r'<p id="film-controls".*?</p>', "", markup, flags=re.S)
+    markup = re.sub(r'<script\b.*?</script>', "", markup, flags=re.S)
     p.feed(markup)
     text = "".join(p.out)
     text = "\n".join(line.strip() if not line.startswith(" ") else line.rstrip() for line in text.split("\n"))
