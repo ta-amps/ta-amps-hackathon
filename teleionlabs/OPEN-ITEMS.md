@@ -29,7 +29,7 @@ Things the pages leave out or word as "fair use" until the infrastructure or the
    `hello@teleionlabs.com`. The owner's test message (OPEN-QUESTIONS.md item 4, step 3) isn't confirmed yet; the lead
    may hold the address until it is.
 2. **Company details.** Only "Teleion Labs Incorporated" appears (OPEN-QUESTIONS.md item 3).
-3. **Prices and payments** (items 1 and 2). The plans page (v0.2) shows the structure only.
+3. **No payments** (owner, Nov 2): no plans, prices or checkout anywhere; `/plans/` is removed.
 4. **Free model capacity** (item 5.1). Workers on Meta's Muse models are outside free use while the cap is $0.00.
 
 ## Site
@@ -37,13 +37,12 @@ Things the pages leave out or word as "fair use" until the infrastructure or the
 1. **Left out of v0.2:** `/connect.json` and `/.well-known/agent-card.json` for this site (llms.txt points agents at
    Tessera's own connection file instead), privacy and terms pages (owner-confirmed facts only, OPEN-QUESTIONS.md
    item 3), and the 429, 402 and 503 pages, which need the free-use enforcement above.
-2. **Plans** show the structure only: every price reads "Contact us", and the paid columns say what grows ("More than
-   Free", "Set with you") without numbers. The owner sets prices and limits (OPEN-QUESTIONS.md items 1 and 2).
-3. **security.txt** lists `mailto:hello@teleionlabs.com` and the security page as contacts, and expires on
+2. **security.txt** lists `mailto:hello@teleionlabs.com` and the security page as contacts, and expires on
    2027-05-01. If the owner picks support@ for security reports, change `content/security.json`.
-4. **Content source.** The copy is Task Objects in `content/*.json`, built at deploy time. Moving them into Tessera
+3. **Content source.** The copy is Task Objects in `content/*.json`, built at deploy time. Moving them into Tessera
    (`teleion.instructions/*`) needs a keyed write by the operator.
-5. **`www.teleionlabs.com` answers 530 today** (bound to agora). It should answer 301 once this Worker owns it.
+4. **`www.teleionlabs.com` stays on the `www-canonical-redirect` Worker,** which answers 301 to the apex with
+   path and query kept. This Worker takes the apex only (DEPLOY.md).
 
 ## Shared tooling (found while building this site)
 
