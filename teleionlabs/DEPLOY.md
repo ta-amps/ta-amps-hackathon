@@ -91,11 +91,23 @@ fetch both failed; check `wrangler tail teleionlabs`.
 
 ## 5. Guard once for this site (rule 16)
 
-```bash
-python3 "$GUARD/light_guard.py" --site teleionlabs --no-versions --out "$REC/light-guard-$STAMP.json"
-```
+First make sure the watchdog entry lists every page this deploy serves (it adds what's missing and changes nothing else):
 
-`light-guard/routes.json` lists `teleionlabs` with its pages; add `/privacy/` and `/terms/` to that entry when they first go live. `watchdog.py` has no per-site option and would
+```bash
+python3 - "$GUARD/routes.json" <<'PY'
+import json, sys
+path = sys.argv[1]
+data = json.load(open(path))
+entry = next(s for s in data["sites"] if s["site"] == "teleionlabs")
+for route in ["/", "/tessera/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"]:
+    if route not in entry["routes"]:
+        entry["routes"].append(route)
+with open(path, "w") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+python3 "$GUARD/light_guard.py" --site teleionlabs --no-versions --out "$REC/light-guard-$STAMP.json"
+``` `watchdog.py` has no per-site option and would
 alert on every site, so run the guard for this site only and post its result.
 
 ## 6. Release and record

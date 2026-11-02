@@ -51,3 +51,9 @@ Things the pages leave out or word as "fair use" until the infrastructure or the
    leading `b` and its hash doesn't match. This site's v0.1 test file had exactly that, and it was replaced before
    any push. `tests/check_words.py` strips escapes before hashing; the shared script (copied unchanged into every
    repo) needs the same fix from its owner.
+
+## Privacy page
+
+1. **Log retention follows the Workers plan.** `/privacy/` says Cloudflare keeps request logs for 3 days, which is the
+   Workers Free plan (the owner's choice, Oct 29). A move to Workers Paid makes it 7 days, and the page must change then.
+2. **Contact:** one address everywhere, hello@teleionlabs.com, because only hello@ has its own routing rule.
