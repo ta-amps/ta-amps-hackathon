@@ -367,18 +367,18 @@
       const { W, H, u } = v, x = W * 0.16, w = W * 0.68;
       head(v);
       v.s.steps.forEach((s, i) => {
-        const a = chars(s).map((q) => q.ch).join(""), d = a.lastIndexOf(":"), pct = parseFloat(a.slice(d + 1)), y = H * 0.27 + i * 92 * u, k = ease((v.t - 1 - i * 1.2) / 1.6);
+        const a = chars(s).map((q) => q.ch).join(""), d = a.lastIndexOf(":"), pct = parseFloat(a.slice(d + 1)), y = H * 0.25 + i * 66 * u, k = ease((v.t - 0.8 - i * 0.9) / 1.4);
         text(a.slice(0, d), { x, y, size: 22 * u, maxW: w * 0.7 });
-        text(`${(pct * k).toFixed(1)}%`, { x: x + w - 110 * u, y, size: 30 * u, weight: 700, maxW: 140 * u, color: i ? MUTED : BLUE });
-        c.fillStyle = LINE; c.fillRect(x, y + 14 * u, w, 22 * u);
-        c.fillStyle = i ? MUTED : BLUE; c.fillRect(x, y + 14 * u, w * (pct / 100) * k, 22 * u);
+        text(`${(pct * k).toFixed(1)}%`, { x: x + w - 110 * u, y, size: 26 * u, weight: 700, maxW: 140 * u, color: i ? MUTED : BLUE });
+        c.fillStyle = LINE; c.fillRect(x, y + 10 * u, w, 16 * u);
+        c.fillStyle = i ? MUTED : BLUE; c.fillRect(x, y + 10 * u, w * (pct / 100) * k, 16 * u);
       });
       text(v.s.ps[0], { x: W / 2, y: H * 0.84, size: 22 * u, align: "center", maxW: W * 0.74, alpha: fade(v, 5), color: SOFT });
     },
     live(v) {
       const { W, H, u } = v, n = live.net;
       head(v, 0.12, 38);
-      const mw = Math.min(W * 0.62, H * 1.2), mh = mw * 0.435, mx = W * 0.04, my = H * 0.2, sc = mw / 1000;
+      const mw = Math.min(W * 0.62, (H * 0.46) / 0.435), mh = mw * 0.435, mx = W * 0.04, my = H * 0.19, sc = mw / 1000;
       if (live.map) {
         c.fillStyle = "#CFC8B8";
         const r = Math.max(0.8, 1.5 * sc);
@@ -409,7 +409,7 @@
       if (claims.length) {
         const i = Math.floor(Math.max(0, v.t - 3) / 3.2) % claims.length, r = claims[i], via = r.via && (r.via.city || r.via.continent);
         const meta = [r.model && r.model.name, via].filter(Boolean).join(" · ");
-        const y = text(r.title, { x: W * 0.06, y: H * 0.72, size: 22 * u, maxW: W * 0.88, shown: typed(v, 3 + i * 3.2, 70) });
+        const y = text(r.title, { x: W * 0.06, y: my + mh + 44 * u, size: 22 * u, maxW: W * 0.88, shown: typed(v, 3 + i * 3.2, 70) });
         text(meta, { x: W * 0.06, y: y + 2 * u, size: 18 * u, maxW: W * 0.88, color: MUTED });
       }
       text(v.s.ps[0], { x: W / 2, y: H * 0.93, size: 17 * u, align: "center", maxW: W * 0.86, color: MUTED, alpha: fade(v, 1) });
