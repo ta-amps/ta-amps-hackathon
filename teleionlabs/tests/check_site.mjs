@@ -31,6 +31,7 @@ const PAGES = [
   { path: "/privacy/", name: "privacy" },
   { path: "/terms/", name: "terms" },
   { path: "/company/", name: "company" },
+  { path: "/video/", name: "video" },
   { path: "/this-page-does-not-exist/", name: "not-found", status: 404 },
 ];
 const VIEWPORTS = [

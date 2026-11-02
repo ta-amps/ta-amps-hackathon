@@ -30,7 +30,7 @@ SHARED_WORDS = Path(os.environ.get("BANNED_WORDS") or HERE.parents[2] / "coordin
 WORD_CATEGORIES = ("always", "visible_text", "agent_apps_outside_models_page")
 WORKER_WORDS = HERE / "worker" / "banned.generated.js"
 
-PAGES = ["home", "tessera", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
+PAGES = ["home", "tessera", "free", "docs", "status", "security", "privacy", "terms", "company", "video", "errors"]
 REQUIRED = ["site", "llms", *PAGES]
 
 
@@ -132,6 +132,26 @@ class Renderer:
 
     def b_page_head(self, b, where):
         return self._head(b, where, "page-head")
+
+    def b_video_head(self, b, where):
+        return self._head(b, where, "page-head video-head")
+
+    def b_video(self, b, where):
+        media = esc(req(b, "media", where))
+        captions = esc(req(b, "captions", where))
+        transcript = "".join(f'<p>{self.inline(p)}</p>' for p in req(b, "transcript", where))
+        return (
+            '<div class="wrap video-body"><figure class="video-player">'
+            f'<video controls playsinline preload="none" width="1920" height="1080" poster="{esc(req(b, "poster", where))}" '
+            f'aria-label="{esc(req(b, "label", where))}" aria-describedby="video-context">'
+            f'<source src="{media}" type="video/mp4">'
+            f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(b, "captions_label", where))}" default>'
+            f'<a href="{media}">{esc(req(b, "download", where))}</a></video>'
+            f'<figcaption id="video-context">{self.inline(req(b, "context", where))}</figcaption></figure>'
+            f'<p class="video-download"><a href="{media}" download>{esc(b["download"])}</a> · '
+            f'<a href="{captions}">{esc(req(b, "captions_download", where))}</a></p>'
+            f'<details class="video-transcript"><summary>{esc(req(b, "transcript_label", where))}</summary>{transcript}</details></div>'
+        )
 
     def _section(self, b: dict, where: str, inner: str, cls: str = "section") -> str:
         sid = esc(req(b, "id", where))

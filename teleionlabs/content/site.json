@@ -1,14 +1,14 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/site",
-  "version": 4,
+  "version": 5,
   "updated": "2026-11-02",
   "status": "draft for review",
   "why": "Every visible string on teleionlabs.com is a Task Object (MUST-FOLLOW rule 12). The build reads these files and fails if one is missing; the templates hold no copy.",
   "lang": "en",
   "origin": "https://teleionlabs.com",
-  "title_suffix": "Tessera · Teleion Labs",
-  "external_mark": " ↗",
+  "title_suffix": "Tessera \u00b7 Teleion Labs",
+  "external_mark": " \u2197",
   "skip_link": "Skip to content",
   "brand": {
     "name": "Teleion Labs",
@@ -35,6 +35,10 @@
       {
         "label": "Docs",
         "href": "/docs/"
+      },
+      {
+        "label": "Video",
+        "href": "/video/"
       },
       {
         "label": "Company",

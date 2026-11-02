@@ -195,3 +195,17 @@ code { background: var(--sunken); border-radius: var(--radius-xs); padding: 1px 
 .refs li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .ref__link { font-weight: 600; }
 .ref__text { color: var(--text-2); font-size: var(--fs-ui); line-height: var(--lh-ui); }
+
+/* Native video preview; retain the light site palette and readable transcript. */
+.video-head { text-align: center; }
+.video-head .lead { margin-left: auto; margin-right: auto; }
+.video-head h1 { margin-left: auto; margin-right: auto; text-wrap: balance; }
+.video-head .actions { justify-content: center; }
+.video-body { max-width: 1040px; padding-bottom: 64px; }
+.video-player { margin: 0; }
+.video-player video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
+.video-player figcaption { margin-top: 20px; max-width: 85ch; font-size: 15px; line-height: 1.65; color: var(--text-2); }
+.video-download { font-size: 15px; line-height: 1.7; margin: 20px 0; }
+.video-transcript { border-top: 1px solid var(--line); padding-top: 20px; }
+.video-transcript summary { cursor: pointer; font-weight: 600; }
+.video-transcript p { max-width: 72ch; line-height: 1.7; }

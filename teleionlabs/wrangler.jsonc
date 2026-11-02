@@ -26,5 +26,6 @@
     { "binding": "HERMA", "service": "herma" },
     { "binding": "ERANOS", "service": "eranos" }
   ],
-  "observability": { "enabled": true }
+  // Preserve the live Worker's disabled request logging during this page-only release.
+  "observability": { "enabled": false }
 }
