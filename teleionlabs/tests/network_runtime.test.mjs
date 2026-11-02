@@ -10,7 +10,7 @@ const installed = process.env.MINIFLARE || fileURLToPath(new URL("../../../../po
 const { Miniflare, Log, LogLevel, convertV4MiniflareOptions } = require(installed);
 let mf;
 before(async () => {
-  const modules = await Promise.all(["network.js", "lib.js", "banned.generated.js", "media-range.js", "media.generated.js"].map(async (name) => ({
+  const modules = await Promise.all(["network.js", "lib.js", "link.js", "text.generated.js", "banned.generated.js", "media-range.js", "media.generated.js"].map(async (name) => ({
     type: "ESModule", path: name, contents: await readFile(new URL(`../worker/${name}`, import.meta.url), "utf8"),
   })));
   const options = { log: new Log(LogLevel.NONE), workers: [{ name: "network-runtime-test", compatibilityDate: "2026-04-01", modules: [

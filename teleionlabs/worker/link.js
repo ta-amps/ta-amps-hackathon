@@ -8,7 +8,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 
 const HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
-  "Cache-Control": "no-store",
+  "Cache-Control": "no-store, no-transform",
   "Referrer-Policy": "no-referrer",
   "X-Robots-Tag": "noindex, nofollow",
   "Strict-Transport-Security": "max-age=31536000",
@@ -24,6 +24,9 @@ function page(body, status = 200) {
 }
 
 const para = (s) => `<p>${esc(s)}</p>`;
+// What the person is deciding on is shown exactly as written, line breaks kept. Never masked: changing a word here
+// could change what they agree to. These pages are private and not indexed, so the public word filter doesn't apply.
+const quote = (s) => `<blockquote>${esc(s)}</blockquote>`;
 const ended = () => page(`<h1>${esc(T.ended_heading)}</h1>${para(T.ended)}`);
 const unavailable = () => page(para(T.unavailable), 503);
 
@@ -34,7 +37,7 @@ function left(expires, now) {
   return T.ends.replace("{minutes}", text);
 }
 
-function form(link, now) {
+function form(link, now, message = "") {
   const from = link.agent_label ? para(`${T.from} ${link.agent_label}`) : "";
   const note = link.agent_note ? para(`${T.note} ${link.agent_note}`) : "";
   const no = `<button type="submit" name="answer" value="decline">${esc(T.decline)}</button>`;
@@ -42,8 +45,8 @@ function form(link, now) {
   const controls = ask
     ? `<p><label for="value">${esc(T.answer_label)}</label><br><input id="value" name="value" maxlength="2000" autocomplete="off"></p><p><button type="submit" name="answer" value="send">${esc(T.send)}</button> ${no}</p>`
     : `<p><button type="submit" name="answer" value="confirm">${esc(T.confirm)}</button> ${no}</p>`;
-  return page(`<h1>${esc(ask ? T.ask_heading : T.confirm_heading)}</h1>${from}${para(link.text)}${note}` +
-    `${para(left(link.expires_at, now))}<form method="post">${controls}</form>${para(T.unexpected)}`);
+  return page(`<h1>${esc(ask ? T.ask_heading : T.confirm_heading)}</h1>${from}${quote(link.text)}${note}${message ? para(message) : ""}` +
+    `${para(left(link.expires_at, now))}<form method="post">${controls}</form>${para(ask ? T.private : T.unexpected)}`);
 }
 
 async function call(env, init) {
@@ -63,6 +66,7 @@ export async function linkResponse(request, env, token, now = Date.now()) {
       const res = await call(env, { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (res.status >= 500) return unavailable();
       const out = await res.json().catch(() => ({}));
+      if (res.status === 400 && out.state === "open") return form(out, now, T.need_answer);
       const done = { confirmed: T.done_confirmed, declined: T.done_declined, answered: T.done_answered }[out.state];
       return done && res.ok ? page(para(done)) : ended();
     }

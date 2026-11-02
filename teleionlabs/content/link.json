@@ -24,5 +24,7 @@
  "done_answered": "Sent. Your agent has your answer. You can close this page.",
  "ended_heading": "This link has ended.",
  "ended": "It was already used, or its time ran out. If you still want this done, ask your agent for a new link.",
- "unavailable": "We couldn't reach the service just now. Nothing changed. Please try again in a moment."
+ "unavailable": "We couldn't reach the service just now. Nothing changed. Please try again in a moment.",
+ "need_answer": "Please type an answer, or choose Say no.",
+ "private": "Please leave out private information. Your agent will see what you type."
 }

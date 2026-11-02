@@ -207,7 +207,7 @@ test("upstream strings pass the shared banned-words list before they leave the W
 });
 
 test("HTML pages carry no-transform, so the zone injects nothing the CSP would block", async () => {
-  for (const path of ["/", "/free/", "/nope/"]) {
+  for (const path of ["/", "/free/", "/nope/", "/status/", `/l/${"a".repeat(43)}`]) {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     assert.match(res.headers.get("Cache-Control"), /no-transform/, path);
   }
@@ -318,4 +318,16 @@ test("a link page reads without acting, posts one answer, and sends the token on
   const bad = await handle(new Request("https://teleionlabs.com/l/nope"), { ASSETS: assets(), TESSERA }, ctx);
   assert.match(await bad.text(), /This link has ended/);
   assert.equal(calls.length, 2);
+});
+
+test("a blank answer keeps the link open and says so", async () => {
+  const token = "b".repeat(43);
+  const open = { state: "open", kind: "ask", text: "Line one\nLine two", agent_label: "bot", expires_at: new Date(Date.now() + 600000).toISOString() };
+  const TESSERA = { fetch: async () => new Response(JSON.stringify({ ...open, error: "value_required" }), { status: 400 }) };
+  const res = await handle(new Request(`https://teleionlabs.com/l/${token}`, { method: "POST", body: new URLSearchParams({ answer: "send", value: "" }) }), { ASSETS: assets(), TESSERA }, ctx);
+  const html = await res.text();
+  assert.match(html, /Please type an answer/);
+  assert.match(html, /<form method="post">/);
+  assert.match(html, /Line one\nLine two/);
+  assert.match(res.headers.get("Cache-Control"), /no-transform/);
 });

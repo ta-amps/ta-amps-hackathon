@@ -266,7 +266,7 @@ export async function handle(request, env, ctx) {
     extra["Cache-Control"] = /no-transform/.test(cc) ? cc : `${cc}, no-transform`;
   }
   if ((servedPath === "/status.txt" || servedPath === "/status/") && asset.status === 200) {
-    return withHeaders(await withLiveStatus(asset, request, env, ctx, servedPath), { ...extra, "Cache-Control": "no-store" });
+    return withHeaders(await withLiveStatus(asset, request, env, ctx, servedPath), { ...extra, "Cache-Control": "no-store, no-transform" });
   }
   return withHeaders(asset, extra);
 }

@@ -82,8 +82,8 @@ VERSION_ID="$(grep -oE 'Current Version ID: [0-9a-f-]+' "$REC/deploy-$STAMP.log"
 
 ```bash
 curl -s https://teleionlabs.com/ | grep -o '<title>[^<]*</title>'
-#   <title>Tessera · supercharge your agents · Teleion Labs</title>
-curl -s -o /dev/null -w '%{http_code}\n' https://teleionlabs.com/start/                       #   200
+#   <title>Teleion Labs · Supercharge your AI agents</title>
+curl -s -o /dev/null -w '%{http_code}\n' https://teleionlabs.com/free.txt                      #   200
 curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' 'https://www.teleionlabs.com/free/?a=1'
 #   301 https://teleionlabs.com/free/?a=1
 curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' 'http://teleionlabs.com/start/?a=1'

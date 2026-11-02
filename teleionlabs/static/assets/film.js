@@ -257,7 +257,7 @@
         const st = 1 + i * 2, y = y0 + i * (bh + gap), k = ease((v.t - st) / 1.2);
         c.strokeStyle = RULE; c.lineWidth = 1; c.strokeRect(x, y, bw, bh);
         c.fillStyle = BLUE; c.fillRect(x, y, bw * sv * k, bh);
-        c.fillStyle = INK; c.fillRect(x + bw * sv, y, bw * (1 - sv) * ease((v.t - st - 1) / 1), bh);
+        c.fillStyle = MUTED; c.fillRect(x + bw * sv, y, bw * (1 - sv) * ease((v.t - st - 1) / 1), bh);
       });
       text(v.s.ps[0], { x: W / 2, y: H * 0.72, size: 24 * u, align: "center", maxW: W * 0.76, alpha: fade(v, 7), color: SOFT });
     },
