@@ -100,15 +100,16 @@
      "steps": []
     },
     {
-     "kind": "fixes",
+     "kind": "parts",
      "seconds": 18,
-     "heading": "Three problems. Three fixes.",
-     "paragraphs": [
-      "Bring in what's new. Keep knowledge with its source: 88.6% vs 1.7% top-1 match on held-out queries.",
-      "Reuse what already works. Search checked work first: 62.5% vs 29.2% correct structured answers.",
-      "Keep long work moving. Claims run out, another worker takes over: 16 of 16 late reports refused in a local test."
-     ],
-     "steps": []
+     "heading": "Four parts. Together they solve all three.",
+     "paragraphs": [],
+     "steps": [
+      "Durable Tasks: work survives a crash. A claim runs out, and another worker picks it up.",
+      "Durable Task Objects: what agents make is kept, with its source and every version, so the next agent starts ahead.",
+      "The shim: sits between any agent and its model, and adds the Task Objects that fit.",
+      "Custom-trained Meta models: Muse Glimmer 30B, tuned on recorded work to route, match and check."
+     ]
     },
     {
      "kind": "link",
@@ -199,13 +200,15 @@
     {
      "kind": "bars",
      "seconds": 14,
-     "heading": "More correct, structured answers.",
+     "heading": "Measured, with the conditions.",
      "paragraphs": [
-      "120 held-out cases, across recall and request splitting, with a fixed response budget."
+      "Offline tests on held-out cases. Details are on the benchmarks page."
      ],
      "steps": [
-      "Tuned model: 62.5%",
-      "Baseline with retrieval: 29.2%"
+      "Tuned Muse Glimmer 30B, top-1 Task Object match: 88.6%",
+      "Base model, same held-out queries: 1.7%",
+      "Tuned model, correct structured answers: 62.5%",
+      "Baseline with retrieval, same 120 tests: 29.2%"
      ]
     },
     {

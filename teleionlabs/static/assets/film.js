@@ -108,7 +108,86 @@
     c.lineTo(x1 + (x2 - x1) * k, y1 + (y2 - y1) * k); c.stroke();
   }
 
+  // 2.5D: a light isometric world of tiles, drawn from three shades of one colour.
+  const iso = (v, ox, oy, s) => ({
+    p: (x, y, z = 0) => [ox + (x - y) * s, oy + (x + y) * s * 0.5 - z * s],
+    s,
+  });
+  function poly(pts, fill, stroke) {
+    c.beginPath(); pts.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.closePath();
+    if (fill) { c.fillStyle = fill; c.fill(); }
+    if (stroke) { c.strokeStyle = stroke; c.lineWidth = 1; c.stroke(); }
+  }
+  function cube(w, x, y, z, sx, sy, h, top, left, right, edge) {
+    const P = w.p;
+    poly([P(x, y + sy, z), P(x + sx, y + sy, z), P(x + sx, y + sy, z + h), P(x, y + sy, z + h)], left, edge);
+    poly([P(x + sx, y, z), P(x + sx, y + sy, z), P(x + sx, y + sy, z + h), P(x + sx, y, z + h)], right, edge);
+    poly([P(x, y, z + h), P(x + sx, y, z + h), P(x + sx, y + sy, z + h), P(x, y + sy, z + h)], top, edge);
+  }
+  const BLUES = ["#3A69B8", "#24519B", "#1A3D78"], INKS = ["#3B424C", "#22272F", "#11161F"], PAPERS = ["#FFFDF8", "#E9E3D5", "#D8D1C1"], RUSTS = ["#C4562F", "#A23E1C", "#7E2F14"];
+  const block = (w, x, y, z, sx, sy, h, pal) => cube(w, x, y, z, sx, sy, h, pal[0], pal[1], pal[2], null);
+  function floor(v, w, n, a) {
+    c.globalAlpha *= a;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const wave = Math.sin(F.now / 900 + (i + j) * 0.5) * 0.015;
+      cube(w, i + 0.04, j + 0.04, 0, 0.92, 0.92, 0.06 + wave, "#FFFDF8", "#E2DCCF", "#D8D1C1", null);
+    }
+    c.globalAlpha = 1;
+  }
+
   const draw = {
+    parts(v) {
+      const { W, H, u } = v, n = v.s.steps.length, start = 1.2, each = (v.s.secs - start - 0.8) / n;
+      head(v, 0.11, 36);
+      const narrow = W < 700, s = (narrow ? 30 : 46) * u * (narrow ? 1.6 : 1), drift = Math.sin(F.now / 2600) * 10 * u;
+      const w = iso(v, W / 2 + drift, H * 0.34, s), G = 8;
+      floor(v, w, G, fade(v, 0, 0.8));
+      const on = (i) => v.t >= start + i * each, rise = (i) => ease((v.t - start - i * each) / 0.8), z0 = 0.08;
+      // Durable Tasks: a Task travels the row; the first worker stops; the next one takes over.
+      if (on(0)) {
+        const k = ease((v.t - start) / 0.6);
+        c.globalAlpha = k;
+        for (let i = 0; i < G; i++) cube(w, i + 0.12, 3.12, z0, 0.76, 0.76, 0.04, "#DCE5F3", "#C5D3EA", "#B4C5E2", null);
+        const lap = ((v.t - start) % 4) / 4, x = lap * (G - 1);
+        const fail = lap > 0.38 && lap < 0.5;
+        block(w, x + 0.25, 3.25, z0 + 0.05, 0.5, 0.5, 0.5, fail ? RUSTS : BLUES);
+        c.globalAlpha = 1;
+      }
+      // Durable Task Objects: stacks that grow, one block per kept version.
+      if (on(1)) {
+        const heights = [3, 5, 2, 4], k = rise(1);
+        heights.forEach((m, i) => {
+          const shown = Math.ceil(m * k * Math.min(1, (v.t - start - each + 1) / 2));
+          for (let z = 0; z < shown; z++) block(w, 1 + i * 1.6, 5.3, z0 + z * 0.34, 0.8, 0.8, 0.3, z === shown - 1 ? BLUES : PAPERS);
+        });
+      }
+      // The shim: a thin layer that lifts between the agent and its model.
+      if (on(2)) {
+        const k = rise(2), z = 2.3 * k;
+        c.globalAlpha = 0.55 * k;
+        poly([w.p(0.6, 0.4, z), w.p(4.4, 0.4, z), w.p(4.4, 2.6, z), w.p(0.6, 2.6, z)], "#DCE5F3", BLUE);
+        c.globalAlpha = 1;
+        block(w, 1.2, 1, z0, 0.9, 0.9, 1.1, INKS);
+        const pulse = (F.now / 900) % 1;
+        const [ax, ay] = w.p(1.65, 1.45, z0 + 1.1), [bx, by] = w.p(3.3, 1.45, 3.1 * k);
+        seg(ax, ay, bx, by, 1, BLUE);
+        c.fillStyle = BLUE; c.beginPath(); c.arc(ax + (bx - ax) * pulse, ay + (by - ay) * pulse, 4 * u, 0, Math.PI * 2); c.fill();
+      }
+      // The custom-trained model: the piece that turns slowly above the layer.
+      if (on(3)) {
+        const k = rise(3), bob = Math.sin(F.now / 700) * 0.06;
+        block(w, 2.9, 1, 2.9 + bob, 0.9 * k, 0.9 * k, 0.9 * k, BLUES);
+      }
+      const cur = Math.min(n - 1, Math.floor(Math.max(0, v.t - start) / each));
+      const tag = (i, gx, gy, gz) => {
+        if (!on(i)) return;
+        const [x, y] = w.p(gx, gy, gz), name = chars(v.s.steps[i]).map((q) => q.ch).join("").split(":")[0];
+        text(name, { x: Math.max(8, Math.min(W - 8 - name.length * 8.6 * u, x)), y, size: 15 * u, weight: i === cur ? 700 : 400, maxW: W, color: i === cur ? BLUE : SOFT, alpha: rise(i) });
+      };
+      tag(0, 8.3, 3.2, 0.2); tag(1, -1.4, 7.4, 0); tag(2, 4.7, 0.2, 2.3); tag(3, 3.9, 0.6, 3.5);
+      if (v.t >= start) caption(v, v.s.steps, v.s.steps.map((_, i) => start + i * each), H * 0.88);
+      return cur;
+    },
     title(v) {
       const y = text(v.s.h, { x: v.W / 2, y: v.H * 0.44, size: 60 * v.u, weight: 700, align: "center", maxW: v.W * 0.86, shown: typed(v, 0.2, 26) });
       text(v.s.ps[0], { x: v.W / 2, y: y + 24 * v.u, size: 24 * v.u, align: "center", maxW: v.W * 0.7, alpha: fade(v, 2), color: MUTED });
@@ -244,21 +323,20 @@
       else text(v.s.ps[0], { x: W / 2, y: H * 0.86, size: 22 * u, align: "center", maxW: W * 0.8, alpha: fade(v, 0.3), color: SOFT });
     },
     queue(v) {
-      const { W, H, u } = v, y = H * 0.46, sp = Math.min(W * 0.24, 300 * u), x0 = W / 2 - sp * 1.5;
+      const { W, H } = v, narrow = W < 700, u = v.u, s = (narrow ? 26 : 44) * u * (narrow ? 1.5 : 1);
       head(v);
-      const keys = [[0,0],[1.4,0],[2.8,1],[4.2,1.45],[5,1.45],[6,0],[6.6,0],[7.6,1],[9.2,2],[10.6,3],[99,3]];
+      const w = iso(v, W / 2 + Math.sin(F.now / 2600) * 10 * u, H * 0.3, s), G = 8;
+      floor(v, w, G, fade(v, 0, 0.8));
+      const row = 3.5, stops = [0.5, 2.8, 5, 7];
+      const keys = [[0, 0], [1.4, 0], [2.8, 1], [4.2, 1.45], [5, 1.45], [6, 0], [6.6, 0], [7.6, 1], [9.2, 2], [10.6, 3], [99, 3]];
       let p = 3;
       for (let i = 0; i < keys.length - 1; i++) if (v.t >= keys[i][0] && v.t < keys[i + 1][0]) { p = keys[i][1] + (keys[i + 1][1] - keys[i][1]) * ease((v.t - keys[i][0]) / (keys[i + 1][0] - keys[i][0])); break; }
-      seg(x0, y, x0 + sp * 3, y, 1, RULE);
-      for (let i = 0; i < 4; i++) {
-        const x = x0 + i * sp, done = v.t > 10.6 && i === 3;
-        c.fillStyle = done ? BLUE : PAPER; c.strokeStyle = done ? BLUE : INK; c.lineWidth = 2;
-        c.beginPath(); c.arc(x, y, 20 * u, 0, Math.PI * 2); c.fill(); c.stroke();
-      }
-      const bad = v.t >= 4.2 && v.t < 6, tx = x0 + p * sp;
-      c.fillStyle = bad ? RUST : v.t > 10.6 ? PAPER : INK;
-      c.fillRect(tx - 9 * u, y - 9 * u, 18 * u, 18 * u);
-      caption(v, v.s.steps, [0, 1.4, 4.2, 6.6, 9.2], H * 0.68);
+      const lit = v.t > 10.6, bad = v.t >= 4.2 && v.t < 6;
+      for (let i = 0; i < G; i++) cube(w, i + 0.12, row - 0.38, 0.08, 0.76, 0.76, 0.03, "#DCE5F3", "#C5D3EA", "#B4C5E2", null);
+      stops.forEach((x, i) => block(w, x - 0.2, row - 1.3, 0.08, 0.5, 0.5, i === 3 ? 1 : 0.7, i === 3 && lit ? BLUES : INKS));
+      const at = p <= 1 ? stops[0] + (stops[1] - stops[0]) * p : p <= 2 ? stops[1] + (stops[2] - stops[1]) * (p - 1) : stops[2] + (stops[3] - stops[2]) * (p - 2);
+      block(w, at - 0.2, row - 0.2, 0.12, 0.42, 0.42, 0.42, bad ? RUSTS : lit ? BLUES : INKS);
+      caption(v, v.s.steps, [0, 1.4, 4.2, 6.6, 9.2], H * 0.86);
     },
     workers(v) {
       const { W, H, u } = v, n = 2, bw = W * 0.38, gap = 32 * u, top = H * 0.32;
@@ -273,27 +351,29 @@
       return n;
     },
     reuse(v) {
-      const { W, H, u } = v, bw = W * 0.56, x = W / 2 - bw / 2, bh = 34 * u, gap = 26 * u, y0 = H * 0.32;
+      const { W, H } = v, narrow = W < 700, u = v.u, s = (narrow ? 26 : 44) * u * (narrow ? 1.5 : 1);
       head(v);
-      [0, 0.5, 0.8].forEach((sv, i) => {
-        const st = 1 + i * 2, y = y0 + i * (bh + gap), k = ease((v.t - st) / 1.2);
-        c.strokeStyle = RULE; c.lineWidth = 1; c.strokeRect(x, y, bw, bh);
-        c.fillStyle = BLUE; c.fillRect(x, y, bw * sv * k, bh);
-        c.fillStyle = MUTED; c.fillRect(x + bw * sv, y, bw * (1 - sv) * ease((v.t - st - 1) / 1), bh);
+      const w = iso(v, W / 2, H * 0.3, s), G = 8;
+      floor(v, w, G, fade(v, 0, 0.8));
+      [[1, 0], [3.5, 0.55], [6, 0.85]].forEach(([x, saved], i) => {
+        const st = 0.8 + i * 1.6, k = ease((v.t - st) / 1), H0 = 3;
+        const reused = H0 * saved * k, fresh = H0 * (1 - saved) * ease((v.t - st - 0.8) / 1);
+        if (reused > 0.02) block(w, x, 3, 0.08, 1, 1, reused, BLUES);
+        if (fresh > 0.02) block(w, x, 3, 0.08 + reused, 1, 1, fresh, INKS);
       });
-      text(v.s.ps[0], { x: W / 2, y: H * 0.72, size: 24 * u, align: "center", maxW: W * 0.76, alpha: fade(v, 7), color: SOFT });
+      text(v.s.ps[0], { x: W / 2, y: H * 0.86, size: 24 * u, align: "center", maxW: W * 0.78, alpha: fade(v, 5), color: SOFT });
     },
     bars(v) {
       const { W, H, u } = v, x = W * 0.16, w = W * 0.68;
       head(v);
       v.s.steps.forEach((s, i) => {
-        const a = chars(s).map((q) => q.ch).join(""), d = a.lastIndexOf(":"), pct = parseFloat(a.slice(d + 1)), y = H * 0.36 + i * 110 * u, k = ease((v.t - 1.5 - i * 1.2) / 1.6);
+        const a = chars(s).map((q) => q.ch).join(""), d = a.lastIndexOf(":"), pct = parseFloat(a.slice(d + 1)), y = H * 0.27 + i * 92 * u, k = ease((v.t - 1 - i * 1.2) / 1.6);
         text(a.slice(0, d), { x, y, size: 22 * u, maxW: w * 0.7 });
         text(`${(pct * k).toFixed(1)}%`, { x: x + w - 110 * u, y, size: 30 * u, weight: 700, maxW: 140 * u, color: i ? MUTED : BLUE });
         c.fillStyle = LINE; c.fillRect(x, y + 14 * u, w, 22 * u);
         c.fillStyle = i ? MUTED : BLUE; c.fillRect(x, y + 14 * u, w * (pct / 100) * k, 22 * u);
       });
-      text(v.s.ps[0], { x: W / 2, y: H * 0.74, size: 22 * u, align: "center", maxW: W * 0.74, alpha: fade(v, 5), color: SOFT });
+      text(v.s.ps[0], { x: W / 2, y: H * 0.84, size: 22 * u, align: "center", maxW: W * 0.74, alpha: fade(v, 5), color: SOFT });
     },
     live(v) {
       const { W, H, u } = v, n = live.net;
