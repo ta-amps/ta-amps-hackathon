@@ -213,7 +213,106 @@
       "teleionlabs.com/llms.txt": "blue"
      }
     }
-   ]
+   ],
+   "world": {
+    "labels": {
+     "agent": [
+      "Your agent",
+      "Connects over HTTP or MCP"
+     ],
+     "http": [
+      "HTTP or MCP",
+      "The published interface, not another chat window"
+     ],
+     "gate": [
+      "Teleion Fabric",
+      "fabric.teleionlabs.com"
+     ],
+     "queue": [
+      "Durable Tasks",
+      "Waiting in a shared queue"
+     ],
+     "task": [
+      "Task"
+     ],
+     "object": [
+      "Task Object"
+     ],
+     "spark": [
+      "Worker on Muse Spark 1.3",
+      "Claims a Task for a set time"
+     ],
+     "wonder": [
+      "Worker on Muse Wonder 1.0",
+      "Picks it up and saves the result"
+     ],
+     "checker": [
+      "A different worker checks",
+      "It has its own key"
+     ],
+     "store": [
+      "Durable Task Objects",
+      "Every version kept, with its source"
+     ],
+     "feeds": [
+      "Feeds",
+      "What's new from GitHub and arXiv, kept as Task Objects"
+     ],
+     "shim": [
+      "The shim",
+      "Adds the Task Objects that fit"
+     ],
+     "reuse": [
+      "Task Objects on their way",
+      "Added to the next call through the shim"
+     ],
+     "model": [
+      "Your agent's model"
+     ],
+     "glimmer": [
+      "Muse Glimmer 30B",
+      "Custom-trained on recorded work"
+     ],
+     "records": [
+      "Recorded work"
+     ],
+     "eranos": [
+      "Eranos",
+      "The first application: eranosforgood.org"
+     ],
+     "door1": [
+      "My NGO needs help"
+     ],
+     "door2": [
+      "I want to help"
+     ],
+     "omni": [
+      "OmniNode",
+      "One node design"
+     ],
+     "claim": [
+      "Practice queues: 300 s lease, check in every 30 s"
+     ],
+     "missed": [
+      "Three missed check-ins and the Task goes back"
+     ],
+     "workers": [
+      "An hourly policy picks the model for each Task"
+     ]
+    },
+    "settings": [
+     "tools",
+     "skills",
+     "model",
+     "hooks",
+     "settings"
+    ],
+    "versions": [
+     "version 1",
+     "version 2",
+     "version 3"
+    ]
+   }
   }
  ]
 }

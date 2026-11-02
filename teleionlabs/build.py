@@ -232,7 +232,7 @@ class Renderer:
             steps = f"<ul>{steps}</ul>" if steps else ""
             secs.append(f'<section data-scene="{esc(s["kind"])}" data-seconds="{int(s["seconds"])}"><h2>{marked(req(s, "heading", where), m)}</h2>{ps}{steps}</section>')
         buttons = "".join(f'<button type="button" data-film="{k}">{esc(c[k])}</button>' for k in ("back", "pause", "next"))
-        words = {**c, **{f"live_{k}": v for k, v in live.items()}}
+        words = {**c, **{f"live_{k}": v for k, v in live.items()}, "world": req(b, "world", where)}
         blob = json.dumps(words, ensure_ascii=False).replace("<", "\\u003c")
         return (f'<canvas id="film" role="img" aria-label="{esc(req(b, "label", where))}" hidden></canvas>'
                 f'<p id="film-controls" hidden>{buttons} <span id="film-pos"></span> <a href="#text">{esc(c["read"])}</a></p>'
@@ -991,7 +991,7 @@ def build(out: Path) -> list[str]:
     layout = (TEMPLATES / "layout.html").read_text(encoding="utf-8")
     if out.exists():
         shutil.rmtree(out)
-    keep = {"film.js", "network-geo.json", "favicon.svg", "favicon-32.png", "apple-touch-icon.png", "og-teleion-1200x630.png", "video-poster-teleion.svg", "video-preview.svg"}
+    keep = {"film.js", "film3d.js", "three-0.187.0.min.js", "network-geo.json", "favicon.svg", "favicon-32.png", "apple-touch-icon.png", "og-teleion-1200x630.png", "video-poster-teleion.svg", "video-preview.svg"}
     def ignore(folder, names):
         if Path(folder) == STATIC:
             return [n for n in names if n == "fonts"]

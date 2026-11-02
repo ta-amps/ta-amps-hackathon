@@ -426,10 +426,25 @@
     },
   };
 
+  // The 3D world, loaded after first paint. Until it arrives, or if it can't run, the 2D drawings above stay.
+  let world = null, onScreen = true;
+  if ("IntersectionObserver" in window) new IntersectionObserver((e) => { onScreen = e[e.length - 1].isIntersecting; }).observe(cv);
+  const loadWorld = () => {
+    if (reduced) return;
+    import("/assets/film3d.js").then((m) => {
+      scenes.forEach((s, i) => { s.prevWorld = i > 0 && m.isWorld(scenes[i - 1].kind); });
+      world = m.create({ target: cv, scenes, words, api: { text, chars, wrap, typed, FONT } });
+      cv.filmWorld = world;
+    }).catch(() => { world = null; });
+  };
+  requestAnimationFrame(() => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(loadWorld, { timeout: 1500 }) : loadWorld()), 0));
+  cv.addEventListener("film-seek", (e) => { F.t = Math.max(0, Math.min(total, e.detail)); F.playing = false; F.idx = -1; label(); });
+
   function frame(now) {
     F.now = now;
     const dt = F.last ? Math.min(0.1, (now - F.last) / 1000) : 0;
     F.last = now;
+    if (!onScreen) { requestAnimationFrame(frame); return; }
     if (F.playing) {
       F.t += dt;
       if (F.t >= total) { F.t = total; F.playing = false; label(); }
@@ -444,8 +459,14 @@
       c.setTransform(dpr, 0, 0, dpr, 0, 0);
       c.globalAlpha = 1; c.fillStyle = PAPER; c.fillRect(0, 0, W, H);
       const s = scenes[idx], rest = reduced && !F.playing, t = rest ? s.secs + 60 : F.t - s.start;
-      c.globalAlpha = rest || idx === scenes.length - 1 ? 1 : clamp((s.secs - t) / 0.3);
-      draw[s.kind]({ W, H, u: Math.max(0.42, Math.min(W / 1280, H / 720)), t, s });
+      const v = { W, H, u: Math.max(0.42, Math.min(W / 1280, H / 720)), t, s };
+      if (world && world.has(s.kind)) {
+        const nextScene = scenes[idx + 1];
+        world.draw(c, v, F.t, !!nextScene && world.has(nextScene.kind));
+      } else {
+        c.globalAlpha = rest || idx === scenes.length - 1 ? 1 : clamp((s.secs - t) / 0.3);
+        draw[s.kind](v);
+      }
       c.globalAlpha = 1; c.fillStyle = INK; c.fillRect(0, H - 2, W * (F.t / total), 2);
     }
     requestAnimationFrame(frame);
