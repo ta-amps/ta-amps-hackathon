@@ -107,8 +107,10 @@ with open(path, "w") as f:
     f.write("\n")
 PY
 python3 "$GUARD/light_guard.py" --site teleionlabs --no-versions --out "$REC/light-guard-$STAMP.json"
-``` `watchdog.py` has no per-site option and would
-alert on every site, so run the guard for this site only and post its result.
+```
+
+`watchdog.py` has no per-site option and would alert on every site, so run the guard for this site only and post its
+result.
 
 ## 6. Release and record
 

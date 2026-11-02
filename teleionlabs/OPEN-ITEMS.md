@@ -56,4 +56,6 @@ Things the pages leave out or word as "fair use" until the infrastructure or the
 
 1. **Log retention follows the Workers plan.** `/privacy/` says Cloudflare keeps request logs for 3 days, which is the
    Workers Free plan (the owner's choice, Oct 29). A move to Workers Paid makes it 7 days, and the page must change then.
-2. **Contact:** one address everywhere, hello@teleionlabs.com, because only hello@ has its own routing rule.
+2. **Contact:** one address everywhere, hello@teleionlabs.com. Email Routing has its own rules for hello@, support@,
+   contact@, admin@, team@, credits@ and founder@; **security@ has none** and would reach us only through the catch-all,
+   so the pages and security.txt don't use it until the owner adds a rule and sends a test.
