@@ -14,11 +14,12 @@ function assets() {
       const url = new URL(typeof req === "string" ? req : req.url);
       let path = url.pathname;
       if (path.endsWith("/")) path += "index.html";
+      const type = path.endsWith(".html") ? { "Content-Type": "text/html; charset=utf-8" } : {};
       try {
         const body = await readFile(DIST + path.slice(1));
-        return new Response(body, { status: 200 });
+        return new Response(body, { status: 200, headers: type });
       } catch {
-        return new Response("not found", { status: 404 });
+        return new Response("not found", { status: 404, headers: { "Content-Type": "text/html; charset=utf-8" } });
       }
     },
   };
@@ -79,7 +80,7 @@ test("/api/status reads only the listed health checks and keeps only state and v
   });
   const res = await handle(new Request("https://teleionlabs.com/api/status"), { ASSETS: assets() }, ctx);
   assert.equal(res.status, 200);
-  assert.equal(res.headers.get("Cache-Control"), "public, max-age=60");
+  assert.equal(res.headers.get("Cache-Control"), "no-store", "browsers never keep the status");
   const body = await res.json();
   assert.deepEqual(Object.keys(body).sort(), ["checked_at", "services"]);
   assert.deepEqual(body.services, [
@@ -135,4 +136,32 @@ test("upstream strings pass the shared banned-words list before they leave the W
   t.mock.method(globalThis, "fetch", async () => Response.json({ ok: true, version: "abcdef0123456789" }));
   const body = await (await handle(new Request("https://teleionlabs.com/api/status"), { ASSETS: assets() }, ctx)).json();
   assert.ok(body.services.every((s) => s.state === "up" && !("version" in s)), "the refused version is dropped, the state stays");
+});
+
+test("HTML pages carry no-transform, so the zone injects nothing the CSP would block", async () => {
+  for (const path of ["/", "/free/", "/nope/"]) {
+    const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
+    assert.match(res.headers.get("Cache-Control"), /no-transform/, path);
+  }
+  const css = await handle(new Request("https://teleionlabs.com/assets/site.css"), { ASSETS: assets() }, ctx);
+  assert.doesNotMatch(css.headers.get("Cache-Control") || "", /no-transform/);
+});
+
+test("/api/status: the Worker keeps a 60 s copy at the edge; browsers get no-store, also on a cache hit", async (t) => {
+  const store = new Map();
+  const pending = [];
+  globalThis.caches = { default: {
+    async match(req) { const r = store.get(req.url); return r ? r.clone() : undefined; },
+    async put(req, res) { store.set(req.url, res); },
+  } };
+  t.after(() => { delete globalThis.caches; });
+  t.mock.method(globalThis, "fetch", async () => Response.json({ ok: true, version: "1" }));
+  const waitCtx = { waitUntil(p) { pending.push(p); } };
+  const first = await handle(new Request("https://teleionlabs.com/api/status"), { ASSETS: assets() }, waitCtx);
+  await Promise.all(pending);
+  assert.equal(first.headers.get("Cache-Control"), "no-store");
+  assert.equal(store.get("https://teleionlabs.com/api/status").headers.get("Cache-Control"), "public, max-age=60");
+  const second = await handle(new Request("https://teleionlabs.com/api/status"), { ASSETS: assets() }, waitCtx);
+  assert.equal(second.headers.get("Cache-Control"), "no-store");
+  assert.deepEqual(await second.json(), await first.json());
 });

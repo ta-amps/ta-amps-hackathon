@@ -140,23 +140,29 @@ async function probe(env, source) {
   }
 }
 
+// The Worker keeps its own copy for STATUS_TTL_SECONDS in the Cache API; browsers get no-store, because the zone
+// rewrites cacheable answers to hours (so "about a minute old" would stop being true in a browser).
+function forClient(res) {
+  const out = new Response(res.body, res);
+  out.headers.set("Cache-Control", "no-store");
+  return out;
+}
+
 export async function statusResponse(request, env, ctx, now = () => new Date()) {
   const cache = globalThis.caches && globalThis.caches.default;
   const key = new Request(`https://${APEX}/api/status`, { method: "GET" });
   if (cache) {
     const hit = await cache.match(key);
-    if (hit) return hit;
+    if (hit) return forClient(hit);
   }
   const sources = await loadSources(env);
   const services = await Promise.all(sources.map((s) => probe(env, s)));
-  const res = new Response(JSON.stringify({ checked_at: now().toISOString(), services }), {
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": `public, max-age=${STATUS_TTL_SECONDS}`,
-    },
-  });
-  if (cache && ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(cache.put(key, res.clone()));
-  return res;
+  const body = JSON.stringify({ checked_at: now().toISOString(), services });
+  const type = { "Content-Type": "application/json; charset=utf-8" };
+  if (cache && ctx && typeof ctx.waitUntil === "function") {
+    ctx.waitUntil(cache.put(key, new Response(body, { headers: { ...type, "Cache-Control": `public, max-age=${STATUS_TTL_SECONDS}` } })));
+  }
+  return new Response(body, { headers: { ...type, "Cache-Control": "no-store" } });
 }
 
 export async function handle(request, env, ctx) {
@@ -189,5 +195,10 @@ export async function handle(request, env, ctx) {
     extra["Cache-Control"] = cacheControlFor(url.pathname);
   }
   if (TEXT_FILES.has(url.pathname) && asset.status === 200) extra["Content-Type"] = "text/plain; charset=utf-8";
+  // no-transform on every HTML page: the zone would otherwise inject an analytics beacon, which the CSP blocks.
+  if ((asset.headers.get("Content-Type") || "").startsWith("text/html")) {
+    const cc = extra["Cache-Control"] || asset.headers.get("Cache-Control") || "public, max-age=0, must-revalidate";
+    extra["Cache-Control"] = /no-transform/.test(cc) ? cc : `${cc}, no-transform`;
+  }
   return withHeaders(asset, extra);
 }

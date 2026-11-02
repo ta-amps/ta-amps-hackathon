@@ -16,7 +16,7 @@
     });
   }
 
-  fetch(list.getAttribute("data-status-src"), { headers: { Accept: "application/json" }, credentials: "omit" })
+  fetch(list.getAttribute("data-status-src"), { headers: { Accept: "application/json" }, credentials: "omit", cache: "no-store" })
     .then(function (res) { if (!res.ok) throw new Error(String(res.status)); return res.json(); })
     .then(function (data) {
       var seen = {};
