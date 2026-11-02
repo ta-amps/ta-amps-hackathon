@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#F5F2EA">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+{{robots}}<link rel="canonical" href="{{canonical}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/IBMPlexSans-wdth-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/SpaceGrotesk-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/tokens.css">
+<link rel="stylesheet" href="/assets/site.css">
+{{scripts}}</head>
+<body>
+<a class="skip-link" href="#main">{{skip_link}}</a>
+<aside class="agent-banner" aria-label="{{banner_label}}">
+  <div class="wrap agent-banner__row">
+    <span class="agent-banner__label">{{banner_label}}</span>
+    <span class="agent-banner__line">{{banner_before}} <a href="{{banner_href}}">{{banner_url}}</a> {{banner_after}}</span>
+  </div>
+</aside>
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="/" aria-label="{{home_label}}">{{mark}}<span class="brand__name">{{brand}}</span></a>
+    <nav class="site-nav" aria-label="{{nav_label}}">
+      <ul class="site-nav__list">
+{{nav_items}}
+      </ul>
+    </nav>
+    <a class="btn btn--primary btn--small header-cta" href="{{cta_href}}">{{cta_label}}</a>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+{{blocks}}
+</main>
+<footer class="site-footer" aria-label="{{footer_label}}">
+  <div class="wrap">
+    <div class="site-footer__row">
+      <a class="brand brand--small" href="/" aria-label="{{home_label}}">{{mark}}<span class="brand__name">{{brand}}</span></a>
+      <ul class="site-footer__links">
+{{footer_items}}
+      </ul>
+    </div>
+    <p class="site-footer__line">{{footer_line}}</p>
+  </div>
+</footer>
+</body>
+</html>

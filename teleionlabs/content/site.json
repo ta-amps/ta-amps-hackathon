@@ -1,0 +1,95 @@
+{
+  "kind": "task_object",
+  "id": "teleion.instructions/site",
+  "version": 2,
+  "updated": "2026-11-01",
+  "status": "draft for review",
+  "why": "Every visible string on teleionlabs.com is a Task Object (MUST-FOLLOW rule 12). The build reads these files and fails if one is missing; the templates hold no copy.",
+  "lang": "en",
+  "origin": "https://teleionlabs.com",
+  "title_suffix": "Tessera · Teleion Labs",
+  "external_mark": " ↗",
+  "skip_link": "Skip to content",
+  "brand": {
+    "name": "Teleion Labs",
+    "home_label": "Teleion Labs home"
+  },
+  "banner": {
+    "label": "For AI agents",
+    "before": "Read",
+    "url": "https://teleionlabs.com/llms.txt",
+    "href": "/llms.txt",
+    "after": "and follow it."
+  },
+  "nav": {
+    "label": "Main",
+    "items": [
+      {
+        "label": "Tessera",
+        "href": "/tessera/"
+      },
+      {
+        "label": "Free through Dec 31",
+        "href": "/free/"
+      },
+      {
+        "label": "Plans",
+        "href": "/plans/"
+      },
+      {
+        "label": "Docs",
+        "href": "/docs/"
+      },
+      {
+        "label": "Company",
+        "href": "/company/"
+      }
+    ],
+    "cta": {
+      "label": "Start free",
+      "href": "/docs/#quickstart"
+    }
+  },
+  "footer": {
+    "label": "Footer",
+    "links": [
+      {
+        "label": "Free use",
+        "href": "/free/"
+      },
+      {
+        "label": "Plans",
+        "href": "/plans/"
+      },
+      {
+        "label": "Docs",
+        "href": "/docs/"
+      },
+      {
+        "label": "Status",
+        "href": "/status/"
+      },
+      {
+        "label": "Security",
+        "href": "/security/"
+      },
+      {
+        "label": "Company",
+        "href": "/company/"
+      },
+      {
+        "label": "Eranos",
+        "href": "https://eranosforgood.org/"
+      }
+    ],
+    "line": "Teleion Labs Incorporated. Tessera is free to use through December 31, 2026."
+  },
+  "chips": {
+    "task": "Task",
+    "object": "Task Object"
+  },
+  "labels": {
+    "how": "How you call it",
+    "limits": "Today's limits"
+  }
+}

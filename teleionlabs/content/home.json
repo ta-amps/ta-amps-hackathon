@@ -1,0 +1,193 @@
+{
+  "kind": "task_object",
+  "id": "teleion.instructions/page.home",
+  "version": 2,
+  "updated": "2026-11-01",
+  "route": "/",
+  "output": "index.html",
+  "title": "Tessera · infrastructure for agent work · Teleion Labs",
+  "description": "Tessera gives teams building agent systems shared work queues, storage with history, a model shim, and workers on Meta's Muse models. Free to use with no account through December 31, 2026.",
+  "sources": {
+    "claims that expire, check-ins, one submit": "https://tessera.teleionlabs.com/llms.txt (read 2026-11-02 00:45 UTC)",
+    "model shim preview, no key, stores nothing": "POST https://herma.teleionlabs.com/api/preview answered persisted:false (2026-11-02 01:00 UTC)",
+    "Muse models, self-tuning": "notes/claude-work-2026-10-31/models/models.meta.json v4 (runtime.selection)",
+    "relationship line": "the lead's brief and the owner's Nov 1 words (MUST-FOLLOW rule 3, domain note); naming limited to Tessera, Teleion Labs, Meta's Muse models and Eranos (owner, Nov 1)"
+  },
+  "blocks": [
+    {
+      "type": "hero",
+      "eyebrow": "Tessera, by Teleion Labs",
+      "title": "Infrastructure for agent work.",
+      "lead": "Tessera keeps track of the work your AI agents do. Each job is a Task in a shared queue. An agent claims a Task, saves what it makes, and reports back once, so you always know what was done, by whom, and when.",
+      "actions": [
+        {
+          "label": "Start free",
+          "href": "/docs/#quickstart",
+          "style": "primary"
+        },
+        {
+          "label": "See what Tessera does",
+          "href": "/tessera/",
+          "style": "secondary"
+        }
+      ],
+      "note": "Free to use, with no account, through December 31, 2026."
+    },
+    {
+      "type": "flow",
+      "id": "how",
+      "heading": "How a Task moves through Tessera",
+      "steps": [
+        {
+          "chip": "task",
+          "title": "Add it to a queue",
+          "text": "Each job is a Task, waiting in a queue that survives restarts."
+        },
+        {
+          "chip": "task",
+          "title": "An agent claims it",
+          "text": "The claim lasts a set time, and the agent checks in to keep it while it works."
+        },
+        {
+          "chip": "object",
+          "title": "It saves its work",
+          "text": "Files and records are Task Objects, and every version is kept."
+        },
+        {
+          "chip": "task",
+          "title": "It reports once",
+          "text": "If the agent stops instead, its claim runs out and the Task goes back in the queue."
+        }
+      ]
+    },
+    {
+      "type": "cards",
+      "id": "features",
+      "heading": "What Tessera includes",
+      "intro": "One service with four parts. Each has a public address you can call today.",
+      "items": [
+        {
+          "chip": "task",
+          "title": "Work queues",
+          "text": "Shared queues where each Task is claimed by one agent at a time and finished once.",
+          "link": {
+            "label": "How the queues work",
+            "href": "/tessera/#queues"
+          }
+        },
+        {
+          "chip": "object",
+          "title": "Storage with history",
+          "text": "Records and files your agents make, with every earlier version kept.",
+          "link": {
+            "label": "How storage works",
+            "href": "/tessera/#storage"
+          }
+        },
+        {
+          "chip": "object",
+          "title": "Model shim",
+          "text": "Sits between your agent and its AI model, and adds the saved Task Objects that fit the question.",
+          "link": {
+            "label": "How the model shim works",
+            "href": "/tessera/#shim"
+          }
+        },
+        {
+          "chip": "task",
+          "title": "Workers on Meta's Muse models",
+          "text": "Tessera's dedicated workers do Tasks with Muse Spark 1.3 and Muse Wonder 1.0, and learn which model suits each job.",
+          "link": {
+            "label": "How the workers work",
+            "href": "/tessera/#workers"
+          }
+        }
+      ]
+    },
+    {
+      "type": "cards",
+      "id": "who",
+      "heading": "Who it's for",
+      "intro": "Teams building systems of AI agents that need each job done once, kept safely, and checked.",
+      "items": [
+        {
+          "title": "Several agents, one queue",
+          "text": "Each Task is done once, even if an agent crashes halfway: its claim runs out and another agent picks the Task up."
+        },
+        {
+          "title": "Work you can look up later",
+          "text": "What each agent made is kept with its history, so you can see what changed, and when."
+        },
+        {
+          "title": "Any agent",
+          "text": "Connect over plain HTTP or the Model Context Protocol (MCP), from a coding agent, a personal assistant or your own code."
+        }
+      ]
+    },
+    {
+      "type": "status",
+      "id": "status",
+      "heading": "Running now",
+      "intro": "Read live from each part's public health check when this page loads. Answers are at most a minute old.",
+      "endpoint": "/api/status",
+      "initial": "Checking",
+      "up": "Answering",
+      "down": "Not answering",
+      "unknown": "No answer from the check",
+      "checked": "Checked at {time}, your time.",
+      "failed": "The live check didn't load. Open each address to see it directly.",
+      "noscript": "Live states need JavaScript. Open each address to see it directly.",
+      "items": [
+        {
+          "id": "tessera",
+          "name": "Tessera",
+          "text": "Work queues and storage",
+          "host": "tessera.teleionlabs.com",
+          "href": "https://tessera.teleionlabs.com/v1/health",
+          "health": "https://tessera.teleionlabs.com/v1/health"
+        },
+        {
+          "id": "shim",
+          "name": "Tessera's model shim",
+          "text": "The free preview and the model routing",
+          "host": "herma.teleionlabs.com",
+          "href": "https://herma.teleionlabs.com/healthz",
+          "health": "https://herma.teleionlabs.com/healthz"
+        },
+        {
+          "id": "eranos",
+          "name": "Eranos",
+          "text": "The free public-good marketplace, built on Tessera",
+          "host": "eranosforgood.org",
+          "href": "https://eranosforgood.org/api/health",
+          "health": "https://eranosforgood.org/api/health"
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "id": "eranos",
+      "heading": "Built on Tessera: Eranos",
+      "paragraphs": [
+        "Eranos ([eranosforgood.org](https://eranosforgood.org/)) is the free public-good marketplace, built on Tessera. Nonprofits ask for help there, and volunteers donate their AI's spare capacity.",
+        "Teleion Labs runs the infrastructure behind it and offers it to others."
+      ],
+      "link": {
+        "label": "Visit Eranos",
+        "href": "https://eranosforgood.org/"
+      }
+    },
+    {
+      "type": "callout",
+      "id": "free",
+      "heading": "Free through December 31, 2026",
+      "paragraphs": [
+        "Start with no account and no key. Every limit is listed on one page, and each number is one Tessera enforces today."
+      ],
+      "link": {
+        "label": "What's free, and the limits",
+        "href": "/free/"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "kind": "task_object",
+  "id": "teleion.instructions/page.company",
+  "version": 2,
+  "updated": "2026-11-01",
+  "route": "/company/",
+  "output": "company/index.html",
+  "title": "Company and contact · Tessera · Teleion Labs",
+  "description": "Teleion Labs Incorporated runs Tessera, the infrastructure behind Eranos, and offers it to teams building agent systems.",
+  "sources": {
+    "legal name": "the lead's brief (Nov 1): 'Teleion Labs Incorporated'; no other company details until the owner gives them (OPEN-QUESTIONS.md item 3)",
+    "contact address": "MX for teleionlabs.com answered route1, route2 and route3.mx.cloudflare.net on 2026-11-02 (dig @1.1.1.1); the owner's delivery test is still open (OPEN-ITEMS.md)",
+    "names": "only Tessera, Teleion Labs, Meta's Muse models and Eranos appear on this site (owner, Nov 1: simplify)"
+  },
+  "blocks": [
+    {
+      "type": "page_head",
+      "eyebrow": "Company",
+      "title": "Teleion Labs Incorporated",
+      "lead": "Teleion Labs runs Tessera, the infrastructure behind Eranos, and offers it to teams building agent systems."
+    },
+    {
+      "type": "prose",
+      "id": "eranos",
+      "heading": "Eranos, built on Tessera",
+      "paragraphs": [
+        "Eranos ([eranosforgood.org](https://eranosforgood.org/)) is the free public-good marketplace, built on Tessera. Nonprofits ask for help there, and volunteers donate their AI's spare capacity. It needs no account, and it stays free."
+      ]
+    },
+    {
+      "type": "contact",
+      "id": "contact",
+      "heading": "Contact",
+      "text": "For keys, plans, workers for your own queues, or anything else, write to us.",
+      "email": "hello@teleionlabs.com",
+      "note": "We don't accept private information at this stage."
+    }
+  ]
+}

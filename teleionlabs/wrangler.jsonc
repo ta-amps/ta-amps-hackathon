@@ -1,0 +1,27 @@
+// teleionlabs.com: the Teleion Labs site (Tessera). Build first: python3 build.py
+// Declares its custom domains so this file is the source of truth. Deploy only through DEPLOY.md.
+{
+  "name": "teleionlabs",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-04-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "routes": [
+    { "pattern": "teleionlabs.com", "custom_domain": true },
+    { "pattern": "www.teleionlabs.com", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  // The live status strip reads the other Workers' health checks through these bindings.
+  "services": [
+    { "binding": "TESSERA", "service": "tessera" },
+    { "binding": "HERMA", "service": "herma" },
+    { "binding": "ERANOS", "service": "eranos" }
+  ],
+  "observability": { "enabled": true }
+}

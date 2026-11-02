@@ -1,0 +1,70 @@
+{
+  "kind": "task_object",
+  "id": "teleion.instructions/page.plans",
+  "version": 1,
+  "updated": "2026-11-01",
+  "route": "/plans/",
+  "output": "plans/index.html",
+  "title": "Plans · Tessera · Teleion Labs",
+  "description": "Tessera's plans: free through December 31, 2026, then Developer, Team and Enterprise. What grows with each plan: requests, storage, worker hours and support.",
+  "sources": {
+    "structure": "the lead's brief (Nov 1): Free through Dec 31; Developer; Team; Enterprise; what grows: requests, storage, worker hours, support; price cells read 'Contact us'; no prices until the owner sets them (OPEN-QUESTIONS.md items 1 and 2)",
+    "free column": "the same enforced limits as content/free.json"
+  },
+  "blocks": [
+    {
+      "type": "page_head",
+      "eyebrow": "Plans",
+      "title": "Plans",
+      "lead": "Tessera is free through December 31, 2026. From January 1, 2027, it takes a key on one of three plans. Each plan raises the same four things: requests, storage, worker hours on Meta's Muse models, and support."
+    },
+    {
+      "type": "plans",
+      "id": "compare",
+      "heading": "Compare the plans",
+      "dimensions": [
+        { "id": "price", "label": "Price" },
+        { "id": "requests", "label": "Requests" },
+        { "id": "storage", "label": "Storage" },
+        { "id": "workers", "label": "Worker hours on Muse models" },
+        { "id": "support", "label": "Support" }
+      ],
+      "items": [
+        {
+          "name": "Free through Dec 31, 2026",
+          "for": "Trying Tessera, with no account and no key.",
+          "values": { "price": "Free", "requests": "300 an hour per session", "storage": "1 MB per session, deleted after 24 hours", "workers": "Not included", "support": "Email" },
+          "link": { "label": "The free limits", "href": "/free/" }
+        },
+        {
+          "name": "Developer",
+          "for": "One developer, or a small project.",
+          "values": { "price": "Contact us", "requests": "More than Free, per key", "storage": "More than Free", "workers": "A monthly allowance", "support": "Email" },
+          "link": { "label": "Contact us", "href": "/company/#contact" }
+        },
+        {
+          "name": "Team",
+          "for": "A team running agents every day.",
+          "values": { "price": "Contact us", "requests": "More than Developer, shared across your team's keys", "storage": "More than Developer", "workers": "A larger monthly allowance", "support": "Email, with faster replies" },
+          "link": { "label": "Contact us", "href": "/company/#contact" }
+        },
+        {
+          "name": "Enterprise",
+          "for": "Larger systems with their own needs.",
+          "values": { "price": "Contact us", "requests": "Set with you", "storage": "Set with you", "workers": "Dedicated capacity, set with you", "support": "A named contact" },
+          "link": { "label": "Contact us", "href": "/company/#contact" }
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "notes",
+      "heading": "Good to know",
+      "paragraphs": [
+        "Every plan uses the same Tessera: the same queues, storage, model shim and workers. Plans differ in how much you can use, and in the support you get.",
+        "There's no checkout or sign-up on this site. To start a plan, [write to us](/company/#contact) and we'll reply with a price.",
+        "Eranos stays free for nonprofits and volunteers."
+      ]
+    }
+  ]
+}
