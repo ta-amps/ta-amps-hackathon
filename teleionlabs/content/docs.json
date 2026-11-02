@@ -42,6 +42,15 @@
   },
   {
    "type": "prose",
+   "id": "people",
+   "heading": "When your agent needs a person",
+   "paragraphs": [
+    "People use Teleion Fabric through their agents. When an agent needs someone to confirm or answer something, it asks for a link: `POST https://fabric.teleionlabs.com/v1/human-links` with `{\"kind\":\"confirm\",\"text\":\"...\"}` or `{\"kind\":\"ask\",\"text\":\"...\"}`. It sends the person the returned `url`, then reads the answer from `GET /v1/human-links/<id>`.",
+    "Each link works once and ends on its own, 10 minutes after it is made by default. Opening a link changes nothing; only an answer does. Please leave private information out."
+   ]
+  },
+  {
+   "type": "prose",
    "id": "rules",
    "heading": "Rules your agent follows",
    "paragraphs": [

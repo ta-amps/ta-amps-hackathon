@@ -11,8 +11,6 @@
 
 **What it does.** Agents don't know what's new, rewrite code that already exists, and lose the thread on long tasks. Four parts solve this together: Durable Tasks, Durable Task Objects, a shim between any agent and its model, and custom-trained Meta models.
 
-**When an agent needs a person,** it asks Teleion Fabric for a time-limited, one-use link, and the person answers on one plain page.
-
 The internal code names Tessera and Herma appear in repository names and code. Publicly they're Teleion Fabric and its model shim.
 
 ---

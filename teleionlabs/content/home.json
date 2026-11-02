@@ -103,18 +103,6 @@
      ]
     },
     {
-     "kind": "link",
-     "seconds": 12,
-     "heading": "Your agent handles the work. You handle the decisions.",
-     "paragraphs": [],
-     "steps": [
-      "Your agent reaches a decision that belongs to you.",
-      "Teleion makes a link for that one decision.",
-      "You open it, read one short page, and answer.",
-      "Your agent carries on. The link is spent."
-     ]
-    },
-    {
      "kind": "file",
      "seconds": 8,
      "heading": "Keep the agent you already use.",
@@ -148,7 +136,7 @@
     },
     {
      "kind": "queue",
-     "seconds": 16,
+     "seconds": 19,
      "heading": "A handoff you can follow.",
      "paragraphs": [],
      "steps": [
@@ -196,7 +184,7 @@
     },
     {
      "kind": "live",
-     "seconds": 22,
+     "seconds": 28,
      "heading": "This is running right now.",
      "paragraphs": [
       "Real workers, claiming real Tasks, on the shared queue. These numbers come from the live network when this film plays."
@@ -205,7 +193,7 @@
     },
     {
      "kind": "eranos",
-     "seconds": 12,
+     "seconds": 15,
      "heading": "Teleion Fabric can run almost anything. We're most proud to showcase our first public good example.",
      "paragraphs": [
       "Eranos: a nonprofit describes what it needs. Workers build it, a different worker checks it, and useful work is kept for the next request.",
