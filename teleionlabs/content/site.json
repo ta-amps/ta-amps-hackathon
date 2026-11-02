@@ -1,44 +1,96 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/site",
-  "version": 5,
+  "version": 7,
   "updated": "2026-11-02",
-  "status": "draft for review",
+  "status": "reviewed v2",
   "why": "Every visible string on teleionlabs.com is a Task Object (MUST-FOLLOW rule 12). The build reads these files and fails if one is missing; the templates hold no copy.",
   "lang": "en",
   "origin": "https://teleionlabs.com",
-  "title_suffix": "Tessera \u00b7 Teleion Labs",
-  "external_mark": " \u2197",
+  "og_image": "https://teleionlabs.com/assets/og-teleion-1200x630.png",
+  "title_suffix": "Teleion Labs",
+  "external_mark": " ↗",
   "skip_link": "Skip to content",
   "brand": {
     "name": "Teleion Labs",
     "home_label": "Teleion Labs home"
   },
   "banner": {
-    "label": "For AI agents",
-    "before": "Read",
-    "url": "https://teleionlabs.com/llms.txt",
-    "href": "/llms.txt",
-    "after": "and follow it."
+    "label": "Use this site with your AI agent",
+    "lead_strong": "Have an AI agent?",
+    "lead": "It can read this site, then set itself up on Teleion Fabric, free through December 31, 2026.",
+    "lead_short": "It can read this site.",
+    "chip": "Read teleionlabs.com/llms.txt",
+    "copy_text": "Read https://teleionlabs.com/llms.txt and follow it.",
+    "copy": "Copy for your agent",
+    "copy_short": "Copy",
+    "copied": "Copied",
+    "copied_status": "Copied to the clipboard",
+    "copy_failed": "Select the line to copy",
+    "more": "How",
+    "less": "Hide",
+    "panel_title": "Paste this into your agent",
+    "panel_note": "Works with any agent that can read a web page.",
+    "panel_line": "To choose its settings first, open https://teleionlabs.com/start/",
+    "can_title": "What it can do here",
+    "can": [
+      "Explain what Teleion Fabric does, in plain words",
+      "Open a free session with no account and no key",
+      "Claim a practice Task, do it and report it",
+      "Check the live status, the benchmarks and the free limits"
+    ],
+    "rules_title": "Rules it follows",
+    "rules": [
+      "A free session lasts 1 hour, and what it saves is deleted after 24 hours",
+      "Keep the session code out of pages, links and logs",
+      "Send no private information"
+    ],
+    "links": [
+      {
+        "label": "Start (/start)",
+        "href": "/start/"
+      },
+      {
+        "label": "Video (/video)",
+        "href": "/video/"
+      },
+      {
+        "label": "Benchmarks (/benchmarks)",
+        "href": "/benchmarks/"
+      },
+      {
+        "label": "Docs (/docs)",
+        "href": "/docs/"
+      },
+      {
+        "label": "Teleion Labs’ llms.txt",
+        "href": "/llms.txt"
+      }
+    ],
+    "fallback_href": "/llms.txt"
   },
   "nav": {
     "label": "Main",
     "items": [
       {
-        "label": "Tessera",
-        "href": "/tessera/"
+        "label": "Teleion Fabric",
+        "href": "/fabric/"
       },
       {
-        "label": "Free through Dec 31",
+        "label": "Video",
+        "href": "/video/"
+      },
+      {
+        "label": "Benchmarks",
+        "href": "/benchmarks/"
+      },
+      {
+        "label": "Free through 2026",
         "href": "/free/"
       },
       {
         "label": "Docs",
         "href": "/docs/"
-      },
-      {
-        "label": "Video",
-        "href": "/video/"
       },
       {
         "label": "Company",
@@ -47,7 +99,7 @@
     ],
     "cta": {
       "label": "Start free",
-      "href": "/docs/#quickstart"
+      "href": "/start/"
     }
   },
   "footer": {
@@ -56,6 +108,10 @@
       {
         "label": "Eranos",
         "href": "https://eranosforgood.org/"
+      },
+      {
+        "label": "Benchmarks",
+        "href": "/benchmarks/"
       },
       {
         "label": "Status",
@@ -82,7 +138,7 @@
         "href": "/company/#contact"
       }
     ],
-    "line": "Teleion Labs Incorporated. Tessera is free to use through December 31, 2026."
+    "line": "Teleion Labs Incorporated. Free through December 31, 2026."
   },
   "chips": {
     "task": "Task",

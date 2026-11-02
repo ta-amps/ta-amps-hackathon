@@ -21,9 +21,9 @@ from urllib.parse import urlsplit
 
 HERE = Path(__file__).resolve().parent.parent
 DIST = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "dist"
-URL = re.compile(r"https?://[^\s'\"<>()\\]+")
+URL = re.compile(r"https?://[^\s'\"<>()\\`$]+")  # stops at template-literal parts such as ${path}
 OWN_HOST = "teleionlabs.com"
-WORKER_ROUTES = {"/api/status"}  # answered by worker/lib.js, not a file in dist/
+WORKER_ROUTES = {"/api/status", "/api/network", "/products", "/products/", "/tessera", "/tessera/", "/video", "/film", "/film/"}  # answered by worker/lib.js, not a file in dist/
 EMAIL = re.compile(r"^mailto:[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
 
 
@@ -39,7 +39,7 @@ class Links(HTMLParser):
         a = dict(attrs)
         if a.get("id"):
             self.ids.add(a["id"])
-        for k in ("href", "src"):
+        for k in ("href", "src", "poster"):
             if a.get(k) and not (tag == "link" and a.get("rel") in ("canonical",)) and not (tag == "meta"):
                 self.links.append(a[k])
         if tag == "pre":

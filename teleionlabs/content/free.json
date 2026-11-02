@@ -1,25 +1,25 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/page.free",
-  "version": 4,
-  "updated": "2026-11-01",
+  "version": 6,
+  "updated": "2026-11-02",
   "route": "/free/",
   "output": "free/index.html",
-  "title": "Free through December 31, 2026 · Tessera · Teleion Labs",
-  "description": "What anyone can use on Tessera with no account or key until 11:59 PM Eastern on December 31, 2026, the limits Tessera enforces today, and what changes on January 1, 2027.",
+  "title": "Free through December 31, 2026 · Teleion Labs",
+  "description": "What anyone can use on Teleion Fabric with no account or key until 11:59 PM Eastern on December 31, 2026, the limits Teleion Fabric enforces today, and what changes on January 1, 2027.",
   "sources": {
     "numbers in the limits table": "DEMO_QUOTAS in tessera deploy/cloudflare/cloud_access.js (head e37df89) and the checks that use each one: session expiry (line 374), deletion after 24 hours (484), request size (531), requests an hour and storage (550), claims an hour and open-Task claims (562-564), sessions per address (377), one claim at a time (cloud_store.js 2407); the same values the live https://tessera.teleionlabs.com/connect.json advertised on 2026-11-02. 1 MB and 64 KB are 1,048,576 and 65,536 bytes, rounded down.",
     "16,000 characters": "the shim's deploy/cloudflare/worker.js (evaluatePublicPreview)",
     "end date": "the owner, Nov 1: free use 'until December 31' (2026); MUST-FOLLOW rule 3, domain note",
     "not stated as numbers": "limits not enforced in code yet are written as fair use; see OPEN-ITEMS.md",
-    "after December 31": "claude-design-teleionlabs.v1.json after_free_period (no plans link, no paid wording; owner, Nov 2: no payments anywhere)"
+    "after December 31": "claude-design-teleionlabs.v1.json after_free_period (owner, Nov 2: everything free, zero money words anywhere)"
   },
   "blocks": [
     {
       "type": "page_head",
       "eyebrow": "Free use",
       "title": "Free through December 31, 2026",
-      "lead": "Until 11:59 PM Eastern on December 31, 2026, anyone can use Tessera with no account and no key, within the limits below. Each number is one Tessera enforces today."
+      "lead": "Until 11:59 PM Eastern on December 31, 2026, anyone can use Teleion Fabric with no account and no key, within the limits below. Each number is one Teleion Fabric enforces today."
     },
     {
       "type": "table",
@@ -73,7 +73,7 @@
         ]
       ],
       "notes": [
-        "Tessera also spaces out new sessions across everyone, so at busy times it may ask you to try again later. Where no number is shown, fair use applies: if one source crowds out others, we may slow it down."
+        "Teleion Fabric also spaces out new sessions across everyone, so at busy times it may ask you to try again later. Where no number is shown, fair use applies: if one source crowds out others, we may slow it down."
       ]
     },
     {

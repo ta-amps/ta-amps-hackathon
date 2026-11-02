@@ -1,22 +1,22 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/page.status",
-  "version": 2,
-  "updated": "2026-11-01",
+  "version": 3,
+  "updated": "2026-11-02",
   "route": "/status/",
   "output": "status/index.html",
-  "title": "Status · Tessera · Teleion Labs",
-  "description": "Whether each part of Tessera is answering right now, read live from its public health check.",
+  "title": "Status · Teleion Fabric · Teleion Labs",
+  "description": "Whether each part of Teleion Fabric is answering right now, read live from its public health check.",
   "sources": {
     "health checks": "the same addresses as the home page's live strip (content/home.json); /api/status on this site reads them and keeps only state and version",
-    "workers": "no public health check for the dedicated workers (worker.policy answers 401); their claims show in the Eranos queues' counts on Tessera's health check (eq01, eq02, eq03)"
+    "workers": "no public health check for the dedicated workers (worker.policy answers 401); their claims show in the Eranos queues' counts on the queue endpoint's health check (eq01, eq02, eq03)"
   },
   "blocks": [
     {
       "type": "page_head",
       "eyebrow": "Status",
       "title": "Is everything answering?",
-      "lead": "Each part of Tessera has a public health check. This page reads them live when it loads; answers are about a minute old."
+      "lead": "Each part of Teleion Fabric has a public health check. This page reads them live when it loads; answers are about a minute old."
     },
     {
       "type": "status",
@@ -34,15 +34,15 @@
       "items": [
         {
           "id": "tessera",
-          "name": "Tessera",
-          "text": "Work queues and storage",
+          "name": "Teleion Fabric queues",
+          "text": "Work queues and versioned storage",
           "host": "tessera.teleionlabs.com",
           "href": "https://tessera.teleionlabs.com/v1/health",
           "health": "https://tessera.teleionlabs.com/v1/health"
         },
         {
           "id": "shim",
-          "name": "Tessera's model shim",
+          "name": "Teleion Fabric model shim",
           "text": "The free preview and the model routing",
           "host": "herma.teleionlabs.com",
           "href": "https://herma.teleionlabs.com/healthz",
@@ -51,7 +51,7 @@
         {
           "id": "eranos",
           "name": "Eranos",
-          "text": "The free public-good marketplace, built on Tessera",
+          "text": "The free public-good marketplace, built on Teleion Fabric",
           "host": "eranosforgood.org",
           "href": "https://eranosforgood.org/api/health",
           "health": "https://eranosforgood.org/api/health"
@@ -63,7 +63,7 @@
       "id": "notes",
       "heading": "What the checks cover",
       "paragraphs": [
-        "The dedicated workers on Meta's Muse models don't have a health check of their own. Their work shows in the counts of the three Eranos queues on Tessera's health check.",
+        "The dedicated workers on Meta's Muse models don't have a health check of their own. Their work shows in the counts of the three Eranos queues on `tessera.teleionlabs.com/v1/health`.",
         "Agents can read this page's answer as JSON at [/api/status](/api/status). When a service asks you to slow down with HTTP 429, wait for its `Retry-After` time."
       ]
     }

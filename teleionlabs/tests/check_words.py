@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Word gate and copy check for teleionlabs.com (rule 16).
+"""Word gate and copy check for teleionlabs.com (rule 16 + brand contract T1-T11).
 
 1. The ONE shared banned-words list, read from outside this repo (never copied into it): its regex
    patterns and its private names, which exist only as SHA-256 hashes of lowercase word tokens.
@@ -7,11 +7,14 @@
        all patterns and the private-name hashes;
      - this site's own source files (everything git would commit under teleionlabs/): the 'always'
        patterns and the private-name hashes, so no banned or private word lands in the public repo.
-2. Site rules (owner, Nov 1: "simplify anything that could potentially be confusing"): teleionlabs.com
-   names only Tessera, Teleion Labs, Meta's Muse models and Eranos; the model shim's own name appears
-   at most once per page and once in llms.txt, as its address; no rates or other unverified numbers.
+2. Site rules (owner, Nov 1: "simplify anything that could potentially be confusing", plus brand T7):
+   teleionlabs.com names only Tessera, Teleion Labs, Meta's Muse models and Eranos; the model shim's
+   own name appears at most once per page and once in llms.txt, as its address. The owner’s Nov 2
+   slide-site direction permits a clearly proposed human-payment handoff on /story only. Percentage
+   comparisons may appear there and on /benchmarks/ with linked technical evidence.
 3. No hard-coded copy: every visible text node and text attribute in dist/*.html appears in a content
-   Task Object.
+   Task Object. Code and setup blocks marked data-generated are built from content/*.json, so they pass
+   the word gate without plain-text stripping mismatches.
 
 Usage: python3 tests/check_words.py [DIST]   (BANNED_WORDS=path overrides the shared list's location)
 Exit 1 on any hit, 2 when the shared list can't be read. Stdlib only.
@@ -24,6 +27,7 @@ import os
 import re
 import subprocess
 import sys
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -39,16 +43,24 @@ SITE_RULES = [
     ("agent apps", r"muse code|openclaw|\bopencode\b|\bhermes\b"),
     ("stamp", r"not ready yet"),
     ("hash", r"\bhash(es|ed)?\b"),
-    ("percent sign: no unverified rates", r"%"),
+    ("brand T7 (misspelling)", r"tel[e]on"),
     ("unverified numbers from other sessions", r"28\.6|99\.85|40\+"),
 ]
-ALLOWED_NAMES = "Tessera, Teleion Labs, Meta's Muse models, Eranos"
+COMMERCE_RULE = re.compile(r"\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", re.I)
+PERCENT_RULE = re.compile(r"%")
+ALLOWED_NAMES = "Teleion Fabric, Teleion Labs, Tessera (endpoint), Meta's Muse models, Eranos"
 SHIM = re.compile(r"herma", re.I)
 TEXT_ATTRS = ("aria-label", "title", "alt", "placeholder")
 META_TEXT = ("description", "og:title", "og:description")
-DATA_ATTRS_SKIP = {"data-status-src", "data-service", "data-state", "data-state-text", "data-checked-note"}
+DATA_ATTRS_SKIP = {
+    "data-status-src", "data-service", "data-state", "data-state-text",
+    "data-checked-note", "data-bench-filter", "data-bench-group", "data-benchmarks",
+    "data-act", "data-mode", "data-source", "data-state-chip",
+    "data-scene", "data-start", "data-end", "data-go",
+    "data-duration", "data-story-scene", "data-story-go",
+}
 AGENT_FILES = ("llms.txt", "robots.txt", "sitemap.xml", "status.sources.json", ".well-known/security.txt")
-BINARY = {".woff2", ".woff", ".png", ".jpg", ".ico"}
+BINARY = {".woff2", ".woff", ".png", ".jpg", ".ico", ".mp4", ".webm"}
 TOKEN = re.compile(r"[^\W_]+")
 ESCAPE = re.compile(r"\\[a-z]")
 
@@ -74,12 +86,16 @@ class Page(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.text: list[str] = []
         self.attrs: list[str] = []
+        self.generated: list[str] = []
         self.skip = 0
+        self.gen: str | None = None
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
         if tag in ("script", "style"):
             self.skip += 1
+        if "data-generated" in a and self.gen is None:
+            self.gen = tag
         for k in TEXT_ATTRS:
             if a.get(k):
                 self.attrs.append(a[k])
@@ -92,30 +108,32 @@ class Page(HTMLParser):
     def handle_endtag(self, tag):
         if tag in ("script", "style") and self.skip:
             self.skip -= 1
+        if tag == self.gen:
+            self.gen = None
 
     def handle_data(self, data):
         if not self.skip and data.strip():
-            self.text.append(data.strip())
+            (self.generated if self.gen else self.text).append(data.strip())
 
 
-def content_strings(include_notes: bool) -> list[str]:
-    out: list[str] = []
+def content_strings_by_file(include_notes: bool) -> list[tuple[str, str]]:
+    out: list[tuple[str, str]] = []
     notes = ("sources", "why", "kind", "id", "status", "updated", "version", "owner")
 
-    def walk(o, key=""):
+    def walk(fname: str, o, key=""):
         if not include_notes and key in notes:
             return
         if isinstance(o, str):
-            out.append(o)
+            out.append((fname, o))
         elif isinstance(o, list):
             for x in o:
-                walk(x, key)
+                walk(fname, x, key)
         elif isinstance(o, dict):
             for k, v in o.items():
-                walk(v, k)
+                walk(fname, v, k)
 
     for p in sorted(CONTENT.glob("*.json")):
-        walk(json.loads(p.read_text(encoding="utf-8")))
+        walk(p.name, json.loads(p.read_text(encoding="utf-8")))
     return out
 
 
@@ -133,6 +151,40 @@ def source_files() -> list[Path]:
         return [p for p in HERE.rglob("*") if p.is_file() and "dist" not in p.parts and ".wrangler" not in p.parts]
 
 
+def check_benchmarks_contract(hits: list[str]) -> None:
+    bench_path = CONTENT / "benchmarks.json"
+    if not bench_path.is_file():
+        hits.append("content/benchmarks.json: missing")
+        return
+    data = json.loads(bench_path.read_text(encoding="utf-8"))
+    entries = []
+    has_methodology_link = False
+    for b in data.get("blocks", []):
+        if b.get("type") == "benchmarks":
+            entries.extend(b.get("entries", []))
+            if "/benchmarks/methodology/" in (b.get("rerun", {}).get("text") or ""):
+                has_methodology_link = True
+    meth_path = CONTENT / "methodology.json"
+    has_methodology_records = False
+    if has_methodology_link and meth_path.is_file():
+        mdata = json.loads(meth_path.read_text(encoding="utf-8"))
+        for b in mdata.get("blocks", []):
+            if b.get("type") == "links":
+                if any(str(it.get("href", "")).startswith("/records/") for it in b.get("items", [])):
+                    has_methodology_records = True
+    if not entries:
+        hits.append("content/benchmarks.json: no benchmark entries")
+        return
+    for e in entries:
+        lbl = e.get("label", "<unnamed>")[:40]
+        if e.get("value") is not None:
+            if not e.get("date") or not (e.get("record_href") or has_methodology_records):
+                hits.append(f"benchmarks.json ({lbl}): measured entry lacks date or linked methodology records")
+        else:
+            if e.get("record_href") is not None:
+                hits.append(f"benchmarks.json ({lbl}): pending entry should have null record_href")
+
+
 def main() -> int:
     try:
         shared = Shared(SHARED)
@@ -142,7 +194,7 @@ def main() -> int:
     hits: list[str] = []
     site_rules = [(label, re.compile(p, re.I)) for label, p in SITE_RULES]
 
-    def gate(where: str, text: str, full: bool = True):
+    def gate(where: str, text: str, full: bool = True, allow_percent: bool = False, allow_handoff: bool = False):
         groups = [("shared list", shared.always)]
         if full:
             groups += [("shared list", shared.visible)]
@@ -157,22 +209,36 @@ def main() -> int:
             for label, rx in site_rules:
                 for m in rx.finditer(text):
                     hits.append(f"{where}: {label}: {mask(text, m)}")
+            if not allow_handoff:
+                for m in COMMERCE_RULE.finditer(text):
+                    hits.append(f"{where}: commerce copy outside the proposed story: {mask(text, m)}")
+            if not allow_percent:
+                for m in PERCENT_RULE.finditer(text):
+                    hits.append(f"{where}: percent sign outside /benchmarks/: {mask(text, m)}")
 
     def mask(text: str, m: re.Match) -> str:
         before = text[max(0, m.start() - 25): m.start()].replace("\n", " ")
         after = text[m.end(): m.end() + 25].replace("\n", " ")
         return f"...{before}[{len(m.group(0))} masked chars]{after}..."
 
-    strings = content_strings(include_notes=False)
-    corpus = "\n".join(plain(s) for s in strings)
+    check_benchmarks_contract(hits)
+    vis_pairs = content_strings_by_file(include_notes=False)
+    vis_set = {s for _, s in vis_pairs}
+    corpus = "\n".join(unescape(plain(s)) for _, s in vis_pairs)
     mark = json.loads((CONTENT / "site.json").read_text(encoding="utf-8"))["external_mark"].strip()
 
     pages = sorted(DIST.rglob("*.html"))
     for p in pages:
         parser = Page()
-        parser.feed(p.read_text(encoding="utf-8"))
+        raw_html = p.read_text(encoding="utf-8")
+        parser.feed(raw_html)
         rel = str(p.relative_to(DIST))
-        gate(rel, "\n".join(parser.text + parser.attrs))
+        allow_pct = rel in ("benchmarks/index.html", "benchmarks/methodology/index.html", "story/index.html")
+        allow_handoff = rel == "story/index.html"
+        gate(rel, "\n".join(parser.text + parser.attrs + parser.generated), allow_percent=allow_pct, allow_handoff=allow_handoff)
+        # Also verify raw HTML carries zero T7 banned strings (including hrefs and metadata).
+        for m in re.finditer(r"ta-amps|tel[e]on" + ("" if allow_handoff else r"|\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b"), raw_html, re.I):
+            hits.append(f"{rel} (raw html): T7 hit: {mask(raw_html, m)}")
         shim = len(SHIM.findall("\n".join(parser.text)))
         if shim > 1:
             hits.append(f"{rel}: the shim's name appears {shim} times in visible text (at most once, as its address)")
@@ -189,13 +255,25 @@ def main() -> int:
         gate(name, text)
         if name == "llms.txt" and len(SHIM.findall(text)) > 1:
             hits.append("llms.txt: the shim's name appears more than once")
-    for s in content_strings(include_notes=True):
-        gate("content", s, full=s in strings)
+    for rec in sorted((DIST / "records").glob("*.json")):
+        rtext = rec.read_text(encoding="utf-8")
+        gate(f"record {rec.name}", rtext, full=False)
+        for m in re.finditer(r"ta-amps|tel[e]on|\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", rtext, re.I):
+            hits.append(f"record {rec.name}: T7 hit: {mask(rtext, m)}")
+    media_dir = DIST / "media"
+    if media_dir.is_dir():
+        for vtt in sorted(media_dir.glob("*.vtt")):
+            vtext = vtt.read_text(encoding="utf-8")
+            gate(f"captions {vtt.name}", vtext, allow_percent=False)
+            for m in re.finditer(r"ta-amps|tel[e]on|\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", vtext, re.I):
+                hits.append(f"captions {vtt.name}: T7 hit: {mask(vtext, m)}")
+    for fname, s in content_strings_by_file(include_notes=True):
+        gate(f"content/{fname}", s, full=s in vis_set, allow_percent=(fname in ("benchmarks.json", "methodology.json", "story.json")), allow_handoff=fname == "story.json")
     sources = [p for p in source_files() if p.suffix not in BINARY and p.is_file()]
     for p in sources:
         gate(f"source {p.relative_to(HERE)}", p.read_text(encoding="utf-8", errors="replace"), full=False)
 
-    print(f"checked {len(pages)} pages, {len(AGENT_FILES)} agent-readable files, {len(strings)} content strings and "
+    print(f"checked {len(pages)} pages, {len(AGENT_FILES)} agent-readable files, {len(vis_pairs)} content strings and "
           f"{len(sources)} source files against the shared list (v{json.loads(SHARED.read_text())['version']}); "
           f"names allowed: {ALLOWED_NAMES}")
     if hits:
@@ -203,7 +281,7 @@ def main() -> int:
         for h in hits:
             print(f"  {h}")
         return 1
-    print("PASS shared banned words 0, private names 0, site names, shim name at most once, no hard-coded copy")
+    print("PASS shared banned words 0, private names 0, T7 brand gate 0, cited benchmarks, shim name at most once, no hard-coded copy")
     return 0
 
 

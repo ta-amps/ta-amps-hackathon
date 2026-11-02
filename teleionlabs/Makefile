@@ -8,11 +8,11 @@ build:
 	$(PYTHON) build.py
 
 test: build
-	node --test tests/worker.test.mjs
+	node --test tests/worker.test.mjs tests/worker_example.test.mjs tests/network.test.mjs tests/network_client.test.mjs
 
 # Real workerd streaming/Content-Length checks using the existing workspace install.
 range-test:
-	node --test tests/media_range.test.mjs
+	node --test tests/media_range.test.mjs tests/network_runtime.test.mjs
 
 words: build
 	$(PYTHON) tests/check_words.py

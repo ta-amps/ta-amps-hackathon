@@ -1,2 +1,4 @@
 /* Without JavaScript the live states never load, so hide the placeholder state. */
 .status-item__state { display: none; }
+/* Without JavaScript the setup writer's choices can't change the setup, so only the default setup shows. */
+[data-needs-js] { display: none; }

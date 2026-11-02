@@ -24,13 +24,12 @@ CONTENT = HERE / "content"
 TEMPLATES = HERE / "templates"
 STATIC = HERE / "static"
 
-# Rule 16: the ONE shared banned-words list. It lives outside this public repo (it names private words), so the
-# build reads it from the workspace and writes a gitignored module the Worker bundles. No list, no build.
 SHARED_WORDS = Path(os.environ.get("BANNED_WORDS") or HERE.parents[2] / "coordination-2026-10-31" / "rules" / "banned-words.json")
 WORD_CATEGORIES = ("always", "visible_text", "agent_apps_outside_models_page")
 WORKER_WORDS = HERE / "worker" / "banned.generated.js"
+WORKER_MEDIA = HERE / "worker" / "media.generated.js"
 
-PAGES = ["home", "tessera", "free", "docs", "status", "security", "privacy", "terms", "company", "video", "errors"]
+PAGES = ["home", "start", "fabric", "video", "story", "network", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
 REQUIRED = ["site", "llms", *PAGES]
 
 
@@ -67,7 +66,16 @@ class Renderer:
         self.chips = req(site, "chips", "site")
         self.labels = req(site, "labels", "site")
 
-    # Links and inline text
+    def banner(self) -> str:
+        noun = req(self.site, "banner", "site")
+        for k in BANNER_FIELDS:
+            req(noun, k, "site/banner")
+        value = {"schema_version": 1, "kind": "instructions", "key": "agent-banner", **{k: noun[k] for k in BANNER_FIELDS}}
+        blob = json.dumps(value, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+        return (f'<ta-agent-banner class="agent-banner"><script type="application/json">{blob}</script>'
+                f'<p class="agent-fallback">{BANNER_ICON}<span class="agent-fallback-lead"><b>{esc(noun["lead_strong"])}</b> {esc(noun["lead"])}</span> '
+                f'<a href="{esc(req(noun, "fallback_href", "site/banner"))}">{esc(noun["chip"])}</a></p></ta-agent-banner>')
+
     def is_external(self, href: str) -> bool:
         parts = urlsplit(href)
         return bool(parts.scheme in ("http", "https") and parts.hostname and parts.hostname != self.host)
@@ -103,9 +111,8 @@ class Renderer:
         return self.link(req(item, "label", where), req(item, "href", where), f"btn btn--{esc(style)}")
 
     def code(self, text: str) -> str:
-        return f'<pre class="code"><code>{esc(text)}</code></pre>'
+        return f'<pre class="code" data-generated><code>{esc(text)}</code></pre>'
 
-    # Blocks
     def block(self, b: dict, where: str) -> str:
         kind = req(b, "type", where)
         fn = getattr(self, f"b_{kind}", None)
@@ -120,8 +127,15 @@ class Renderer:
         parts.append(f'<h1 id="page-title">{esc(req(b, "title", where))}</h1>')
         if b.get("lead"):
             parts.append(f'<p class="lead">{self.inline(b["lead"])}</p>')
+        if b.get("sub"):
+            parts.append(f'<p class="hero__sub">{self.inline(b["sub"])}</p>')
         if b.get("actions"):
             parts.append('<div class="actions">' + "".join(self.button(a, where) for a in b["actions"]) + "</div>")
+        if b.get("fixes"):
+            fx = b["fixes"]
+            pills = "".join(self.link(req(it, "label", where), req(it, "href", where), "hero__fix-pill")
+                            for it in req(fx, "items", where))
+            parts.append(f'<div class="hero__fixes"><span class="hero__fixes-label">{esc(req(fx, "label", where))}</span>{pills}</div>')
         if b.get("note"):
             parts.append(f'<p class="hero__note">{self.inline(b["note"])}</p>')
         parts.append("</div></section>")
@@ -132,26 +146,6 @@ class Renderer:
 
     def b_page_head(self, b, where):
         return self._head(b, where, "page-head")
-
-    def b_video_head(self, b, where):
-        return self._head(b, where, "page-head video-head")
-
-    def b_video(self, b, where):
-        media = esc(req(b, "media", where))
-        captions = esc(req(b, "captions", where))
-        transcript = "".join(f'<p>{self.inline(p)}</p>' for p in req(b, "transcript", where))
-        return (
-            '<div class="wrap video-body"><figure class="video-player">'
-            f'<video controls playsinline preload="none" width="1920" height="1080" poster="{esc(req(b, "poster", where))}" '
-            f'aria-label="{esc(req(b, "label", where))}" aria-describedby="video-context">'
-            f'<source src="{media}" type="video/mp4">'
-            f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(b, "captions_label", where))}" default>'
-            f'<a href="{media}">{esc(req(b, "download", where))}</a></video>'
-            f'<figcaption id="video-context">{self.inline(req(b, "context", where))}</figcaption></figure>'
-            f'<p class="video-download"><a href="{media}" download>{esc(b["download"])}</a> · '
-            f'<a href="{captions}">{esc(req(b, "captions_download", where))}</a></p>'
-            f'<details class="video-transcript"><summary>{esc(req(b, "transcript_label", where))}</summary>{transcript}</details></div>'
-        )
 
     def _section(self, b: dict, where: str, inner: str, cls: str = "section") -> str:
         sid = esc(req(b, "id", where))
@@ -228,7 +222,7 @@ class Renderer:
         paras = "".join(f"<p>{self.inline(p)}</p>" for p in req(b, "paragraphs", where))
         link = self.button({"label": b["link"]["label"], "href": b["link"]["href"]}, where) if b.get("link") else ""
         return (f'<section class="section" id="{sid}" aria-labelledby="{sid}-title"><div class="wrap"><div class="callout">'
-                f'<h2 id="{sid}-title">{esc(req(b, "heading", where))}</h2>{paras}{link}</div></div></section>')
+                f'<div class="callout__body"><h2 id="{sid}-title">{esc(req(b, "heading", where))}</h2>{paras}</div>{link}</div></div></section>')
 
     def b_contact(self, b, where):
         email = req(b, "email", where)
@@ -245,7 +239,504 @@ class Renderer:
     def b_actions(self, b, where):
         return '<div class="wrap"><div class="actions actions--page">' + "".join(self.button(a, where) for a in req(b, "items", where)) + "</div></div>"
 
-    # Page
+    def b_problems(self, b, where):
+        items = []
+        for idx, it in enumerate(req(b, "items", where), start=1):
+            pid = esc(it.get("id") or f"why-{idx}")
+            bench = self.link(it["link"]["label"], it["link"]["href"], "problem__bench") if it.get("link") else ""
+            items.append(
+                f'<li class="problem" id="{pid}"><h3 class="problem__title">{esc(req(it, "problem", where))}</h3>'
+                f'<p class="problem__text">{self.inline(req(it, "problem_text", where))}</p>'
+                f'<div class="problem__fix"><p class="problem__label">{esc(req(b, "fix_label", where))}</p>'
+                f'<p class="problem__fix-title">{esc(req(it, "fix", where))}</p>'
+                f'<p class="problem__fix-text">{self.inline(req(it, "fix_text", where))}</p>{bench}</div></li>')
+        fourth_html = ""
+        if b.get("fourth"):
+            f4 = b["fourth"]
+            fid = esc(f4.get("id") or "why-4")
+            flink = self.link(f4["link"]["label"], f4["link"]["href"], "problem__bench") if f4.get("link") else ""
+            fourth_html = (
+                f'<article class="problem-fourth" id="{fid}">'
+                f'<div class="problem-fourth__main"><h3 class="problem__title">{esc(req(f4, "title", where))}</h3>'
+                f'<p class="problem__fix-text">{self.inline(req(f4, "text", where))}</p></div>'
+                f'{flink}</article>')
+        under = f'<p class="problems__under">{self.inline(b["under"])}</p>' if b.get("under") else ""
+        return self._section(b, where, f'<ul class="problems">{"".join(items)}</ul>{fourth_html}{under}', "section section--problems")
+
+    def b_metrics(self, b, where):
+        cards = []
+        for it in req(b, "items", where):
+            rec = self.link(req(it["record"], "label", where), req(it["record"], "href", where), "metric-card__record") if it.get("record") else ""
+            cards.append(
+                f'<li class="metric-card">'
+                f'<span class="metric-card__value">{esc(req(it, "value", where))}</span>'
+                f'<p class="metric-card__text">{self.inline(req(it, "label", where))}</p>'
+                f'<span class="metric-card__meta"><span>{esc(req(it, "meta", where))}</span>{rec}</span></li>')
+        more = f'<p class="metrics-more">{self.link(b["link"]["label"], b["link"]["href"], "metrics-more__link")}</p>' if b.get("link") else ""
+        return self._section(b, where, f'<ul class="metric-grid">{"".join(cards)}</ul>{more}', "section")
+
+    def b_kits(self, b, where):
+        sid = esc(req(b, "id", where))
+        cards = []
+        for k in req(b, "kits", where):
+            bullets = "".join(f"<li>{self.inline(pt)}</li>" for pt in req(k, "points", where))
+            klink = self.link(req(k["link"], "label", where), req(k["link"], "href", where), "btn btn--secondary btn--small kit-card__btn")
+            cards.append(
+                f'<article class="kit-card">'
+                f'<span class="kit-card__id">{esc(req(k, "kit_id", where))}</span>'
+                f'<h3>{esc(req(k, "title", where))}</h3>'
+                f'<p>{self.inline(req(k, "text", where))}</p>'
+                f'<ul class="kit-card__list">{bullets}</ul>'
+                f'{klink}</article>')
+        vet = req(b, "vetting", where)
+        vsteps = "".join(
+            f'<li><span class="kits-step-num" aria-hidden="true">{i}</span><span>{self.inline(s)}</span></li>'
+            for i, s in enumerate(req(vet, "steps", where), start=1))
+        reuse = req(b, "reuse", where)
+        pills = "".join(f'<li class="kits-pill">{esc(p)}</li>' for p in req(reuse, "parts", where))
+        lib_link = self.link(req(reuse["link"], "label", where), req(reuse["link"], "href", where), "feature__link")
+        cmd = self.code(req(b, "code", where))
+        inner = (
+            f'<p class="section__intro">{self.inline(req(b, "intro", where))}</p>'
+            f'<div class="kit-grid">{"".join(cards)}</div>'
+            f'<div class="kits-subgrid">'
+            f'<div class="kits-col"><h3>{esc(req(vet, "heading", where))}</h3><ol class="kits-steps">{vsteps}</ol></div>'
+            f'<div class="kits-col"><h3>{esc(req(reuse, "heading", where))}</h3><p>{self.inline(req(reuse, "text", where))}</p>'
+            f'<ul class="kits-pills">{pills}</ul><p class="kits-safety">{self.inline(req(reuse, "safety", where))}</p>{lib_link}</div>'
+            f'</div>'
+            f'<div class="kits-cmd"><h3 class="feature__label">{esc(self.labels["how"])}</h3><p>{self.inline(req(b, "how", where))}</p>{cmd}</div>'
+        )
+        return (f'<section class="section section--kits" id="{sid}" aria-labelledby="{sid}-title"><div class="wrap">'
+                f'{self.chip(b.get("chip"))}<h2 id="{sid}-title">{esc(req(b, "heading", where))}</h2>{inner}</div></section>')
+
+    def b_benchmarks(self, b, where):
+        method = req(b, "method", where)
+        m_items = "".join(f"<li>{self.inline(x)}</li>" for x in req(method, "items", where))
+        head_html = (
+            f'<section class="page-head bench-head" aria-labelledby="page-title"><div class="wrap bench-head__grid">'
+            f'<div><p class="eyebrow">{esc(req(b, "eyebrow", where))}</p>'
+            f'<h1 id="page-title">{esc(req(b, "title", where))}</h1>'
+            f'<p class="lead">{self.inline(req(b, "lead", where))}</p></div>'
+            f'<aside class="bench-method" aria-labelledby="bench-method-title">'
+            f'<h2 id="bench-method-title" class="bench-method__title">{esc(req(method, "heading", where))}</h2>'
+            f'<ul class="bench-method__list">{m_items}</ul></aside></div></section>'
+        )
+        groups = req(b, "groups", where)
+        chips = []
+        for g in groups:
+            key = req(g, "key", where)
+            pressed = "true" if key == "all" else "false"
+            chips.append(
+                f'<button type="button" class="bench-chip" aria-pressed="{pressed}" data-bench-filter="{esc(key)}">'
+                f'{esc(req(g, "label", where))}</button>')
+        entries = req(b, "entries", where)
+        sections = []
+        for g in groups:
+            key = req(g, "key", where)
+            if key == "all":
+                continue
+            g_entries = [e for e in entries if e.get("group") == key]
+            cards = []
+            for e in g_entries:
+                val = e.get("value")
+                if val:
+                    rec = (
+                        self.link(req(b, "record_label", where), e["record_href"], "metric-card__record")
+                        if e.get("record_href") and b.get("record_label")
+                        else ""
+                    )
+                    meta = f'{esc(req(e, "setup", where))}<span aria-hidden="true"> · </span>{esc(req(e, "date", where))}'
+                    cards.append(
+                        f'<article class="metric-card">'
+                        f'<span class="metric-card__value">{esc(val)}</span>'
+                        f'<p class="metric-card__text">{self.inline(req(e, "label", where))}</p>'
+                        f'<span class="metric-card__meta"><span>{meta}</span>{rec}</span></article>')
+                else:
+                    cards.append(
+                        f'<article class="metric-card metric-card--pending">'
+                        f'<span class="metric-card__pending">{esc(req(b, "pending_label", where))}</span>'
+                        f'<p class="metric-card__text">{self.inline(req(e, "label", where))}</p>'
+                        f'<p class="metric-card__note">{self.inline(req(b, "pending_note", where))}</p>'
+                        f'<span class="metric-card__meta"><span>{esc(req(e, "setup", where))}</span></span></article>')
+            sections.append(
+                f'<section class="bench-group" id="bench-{esc(key)}" aria-labelledby="bench-{esc(key)}-title" data-bench-group="{esc(key)}">'
+                f'<h2 id="bench-{esc(key)}-title">{esc(req(g, "label", where))}</h2>'
+                f'<div class="metric-grid">{"".join(cards)}</div></section>')
+        rerun = req(b, "rerun", where)
+        body_html = (
+            f'<div class="section bench-body" data-benchmarks><div class="wrap">'
+            f'<div class="bench-filters" role="group" aria-label="{esc(req(b, "filter_label", where))}" data-needs-js>{"".join(chips)}</div>'
+            f'{"".join(sections)}'
+            f'<section class="bench-rerun" aria-labelledby="bench-rerun-title">'
+            f'<h2 id="bench-rerun-title">{esc(req(rerun, "heading", where))}</h2>'
+            f'<p>{self.inline(req(rerun, "text", where))}</p></section>'
+            f'</div></div>'
+        )
+        return head_html + body_html
+
+    def b_video_teaser(self, b, where):
+        sid = esc(req(b, "id", where))
+        actions = "".join(self.button(a, where) for a in req(b, "actions", where))
+        meta = "".join(f'<span class="video-pill">{esc(m)}</span>' for m in req(b, "meta", where))
+        poster = req(b, "poster", where)
+        poster_href = req(b, "poster_href", where)
+        poster_alt = req(b, "poster_alt", where)
+        return (
+            f'<section class="section video-teaser" id="{sid}" aria-labelledby="{sid}-title"><div class="wrap video-teaser__grid">'
+            f'<div class="video-teaser__text">'
+            f'<p class="eyebrow">{esc(req(b, "eyebrow", where))}</p>'
+            f'<h2 id="{sid}-title">{esc(req(b, "heading", where))}</h2>'
+            f'<p>{self.inline(req(b, "text", where))}</p>'
+            f'<div class="video-pills">{meta}</div>'
+            f'<div class="actions">{actions}</div>'
+            f'</div>'
+            f'<a class="video-teaser__frame" href="{esc(poster_href)}">'
+            f'<img src="{esc(poster)}" alt="{esc(poster_alt)}" width="960" height="540" loading="lazy">'
+            f'</a></div></section>'
+        )
+
+    def b_video_head(self, b, where):
+        return self._head(b, where, "page-head video-head")
+
+    def b_video(self, b, where):
+        media = esc(req(b, "media", where))
+        captions = esc(req(b, "captions", where))
+        transcript = "".join(f'<p>{self.inline(p)}</p>' for p in req(b, "transcript", where))
+        return (
+            '<div class="wrap video-body"><figure class="video-player">'
+            f'<video controls playsinline preload="none" width="1920" height="1080" poster="{esc(req(b, "poster", where))}" '
+            f'aria-label="{esc(req(b, "label", where))}" aria-describedby="video-context">'
+            f'<source src="{media}" type="video/mp4">'
+            f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(b, "captions_label", where))}" default>'
+            f'<a href="{media}">{esc(req(b, "download", where))}</a></video>'
+            f'<figcaption id="video-context">{self.inline(req(b, "context", where))}</figcaption></figure>'
+            f'<p class="video-download"><a href="{media}" download>{esc(b["download"])}</a> · '
+            f'<a href="{captions}">{esc(req(b, "captions_download", where))}</a></p>'
+            f'<details class="video-transcript"><summary>{esc(req(b, "transcript_label", where))}</summary>{transcript}</details></div>'
+        )
+
+    def b_band(self, b, where):
+        sid = esc(req(b, "id", where))
+        paras = "".join(f"<p>{self.inline(p)}</p>" for p in b.get("paragraphs", []))
+        facts = "".join(f"<li>{self.inline(x)}</li>" for x in b.get("facts", []))
+        facts = f'<ul class="facts">{facts}</ul>' if facts else ""
+        links = "".join(self.link(l["label"], l["href"], "band__link") for l in b.get("links", []))
+        links = f'<p class="band__links">{links}</p>' if links else ""
+        if b.get("diagram"):
+            aside = self.diagram(b["diagram"], f"{where}/diagram", sid)
+        elif b.get("code"):
+            cap = f'<figcaption class="band__caption">{self.inline(b["code_caption"])}</figcaption>' if b.get("code_caption") else ""
+            aside = (f'<figure class="band__figure band__figure--code">{cap}'
+                     f'<pre class="code code--band" tabindex="0" aria-label="{esc(req(b, "code_label", where))}" data-generated><code>{esc(b["code"])}</code></pre></figure>')
+        else:
+            raise BuildError(f"{where}: a band needs a diagram or code")
+        return (f'<section class="section band" id="{sid}" aria-labelledby="{sid}-title"><div class="wrap band__grid">'
+                f'<div class="band__text">{self.chip(b.get("chip"))}<h2 id="{sid}-title">{esc(req(b, "heading", where))}</h2>'
+                f'{paras}{facts}{links}</div>{aside}</div></section>')
+
+    TONES = ("task", "object", "check", "plain", "muted")
+
+    def diagram(self, d: dict, where: str, sid: str) -> str:
+        w, h = int(req(d, "width", where)), int(req(d, "height", where))
+        nodes = {}
+        for n in req(d, "nodes", where):
+            tone = n.get("tone", "plain")
+            if tone not in self.TONES:
+                raise BuildError(f"{where}: unknown tone '{tone}'")
+            nodes[req(n, "id", where)] = n
+        out = [f'<figure class="band__figure"><svg class="diagram" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" '
+               f'aria-labelledby="{sid}-dt {sid}-dd" focusable="false"><title id="{sid}-dt">{esc(req(d, "title", where))}</title>'
+               f'<desc id="{sid}-dd">{esc(req(d, "desc", where))}</desc>'
+               f'<defs><marker id="{sid}-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
+               f'<path d="M0 0L10 5L0 10z" class="diagram__head"/></marker></defs>']
+        for g in d.get("groups", []):
+            x, y, gw, gh = (int(g[k]) for k in ("x", "y", "w", "h"))
+            out.append(f'<g class="diagram__group diagram__group--{esc(g.get("tone", "plain"))}"><rect x="{x}" y="{y}" width="{gw}" height="{gh}" rx="14"/>'
+                       f'<text class="diagram__group-label" x="{x + 14}" y="{y + 24}">{esc(req(g, "label", where))}</text></g>')
+        for e in d.get("edges", []):
+            a, z = nodes[req(e, "from", where)], nodes[req(e, "to", where)]
+            pts = self._route(a, z, e)
+            path = "M" + " L".join(f"{px} {py}" for px, py in pts)
+            dashed = " diagram__edge--refused" if e.get("refused") else ""
+            out.append(f'<g class="diagram__edge{dashed}"><path d="{path}" marker-end="url(#{sid}-arrow)"/>'
+                       + ("" if e.get("refused") else f'<path class="diagram__flow" d="{path}"/>'))
+            if e.get("label"):
+                lx, ly, auto = self._mid(pts)
+                if e.get("label_at"):
+                    lx, ly = e["label_at"]
+                anchor = e.get("anchor", auto)
+                out.append(f'<text class="diagram__label" x="{lx}" y="{ly}" text-anchor="{esc(anchor)}">{esc(e["label"])}</text>')
+            out.append("</g>")
+        for n in nodes.values():
+            x, y, nw, nh = (int(n[k]) for k in ("x", "y", "w", "h"))
+            sub = n.get("sub")
+            ty = y + nh / 2 + (-4 if sub else 6)
+            out.append(f'<g class="diagram__node diagram__node--{esc(n.get("tone", "plain"))}"><rect x="{x}" y="{y}" width="{nw}" height="{nh}" rx="10"/>'
+                       f'<text class="diagram__title" x="{x + nw / 2:g}" y="{ty:g}" text-anchor="middle">{esc(req(n, "title", where))}</text>')
+            if sub:
+                out.append(f'<text class="diagram__sub" x="{x + nw / 2:g}" y="{ty + 20:g}" text-anchor="middle">{esc(sub)}</text>')
+            out.append("</g>")
+        out.append("</svg>")
+        if d.get("caption"):
+            out.append(f'<figcaption class="band__caption">{self.inline(d["caption"])}</figcaption>')
+        out.append("</figure>")
+        return "".join(out)
+
+    @staticmethod
+    def _side(n: dict, side: str) -> tuple[float, float]:
+        x, y, w, h = (int(n[k]) for k in ("x", "y", "w", "h"))
+        return {"right": (x + w, y + h / 2), "left": (x, y + h / 2), "top": (x + w / 2, y), "bottom": (x + w / 2, y + h)}[side]
+
+    def _route(self, a: dict, z: dict, e: dict) -> list[tuple[float, float]]:
+        if e.get("points"):
+            return [tuple(p) for p in e["points"]]
+        ax, ay = int(a["x"]) + int(a["w"]) / 2, int(a["y"]) + int(a["h"]) / 2
+        zx, zy = int(z["x"]) + int(z["w"]) / 2, int(z["y"]) + int(z["h"]) / 2
+        horizontal = abs(zx - ax) >= abs(zy - ay)
+        s = e.get("from_side") or (("right" if zx > ax else "left") if horizontal else ("bottom" if zy > ay else "top"))
+        t = e.get("to_side") or (("left" if zx > ax else "right") if horizontal else ("top" if zy > ay else "bottom"))
+        p0, p1 = self._side(a, s), self._side(z, t)
+        if p0[0] == p1[0] or p0[1] == p1[1]:
+            return [p0, p1]
+        if s in ("left", "right") and t in ("left", "right"):
+            mx = (p0[0] + p1[0]) / 2
+            return [p0, (mx, p0[1]), (mx, p1[1]), p1]
+        if s in ("top", "bottom") and t in ("top", "bottom"):
+            my = (p0[1] + p1[1]) / 2
+            return [p0, (p0[0], my), (p1[0], my), p1]
+        return [p0, (p1[0], p0[1]), p1] if s in ("left", "right") else [p0, (p0[0], p1[1]), p1]
+
+    @staticmethod
+    def _mid(pts: list[tuple[float, float]]) -> tuple[float, float, str]:
+        best = max(zip(pts, pts[1:]), key=lambda s: abs(s[1][0] - s[0][0]) + abs(s[1][1] - s[0][1]))
+        (x0, y0), (x1, y1) = best
+        if y0 == y1:
+            return ((x0 + x1) / 2, y0 - 8, "middle")
+        return (x0 + 8, (y0 + y1) / 2 + 5, "start")
+
+    def b_setup(self, b, where):
+        sid = esc(req(b, "id", where))
+        values, fields = {}, []
+        for ch in req(b, "choices", where):
+            name = req(ch, "name", where)
+            values[name] = req(ch, "default", where)
+            opts = "".join(
+                f'<label class="choice"><input type="radio" name="{esc(name)}" value="{esc(req(o, "value", where))}"'
+                f'{" checked" if o["value"] == ch["default"] else ""} data-setup-input><span>{esc(req(o, "label", where))}</span></label>'
+                for o in req(ch, "options", where))
+            fields.append(f'<fieldset class="setup__group"><legend>{esc(req(ch, "legend", where))}</legend>{opts}</fieldset>')
+        adv = req(b, "advanced", where)
+        extra = []
+        for f in req(adv, "fields", where):
+            name, kind = req(f, "name", where), req(f, "kind", where)
+            fid = f"{sid}-{esc(name)}"
+            hint = f'<span class="setup__hint" id="{fid}-hint">{self.inline(f["hint"])}</span>' if f.get("hint") else ""
+            described = f' aria-describedby="{fid}-hint"' if f.get("hint") else ""
+            if kind == "text":
+                values[name] = req(f, "default", where)
+                extra.append(f'<div class="setup__field"><label for="{fid}">{esc(req(f, "label", where))}</label>'
+                             f'<input id="{fid}" name="{esc(name)}" type="text" value="{esc(f["default"])}" maxlength="64" '
+                             f'autocomplete="off" spellcheck="false" data-setup-input{described}>{hint}</div>')
+            elif kind == "select":
+                values[name] = req(f, "default", where)
+                opts = "".join(f'<option value="{esc(o["value"])}"{" selected" if o["value"] == f["default"] else ""}>{esc(o["label"])}</option>'
+                               for o in req(f, "options", where))
+                extra.append(f'<div class="setup__field"><label for="{fid}">{esc(req(f, "label", where))}</label>'
+                             f'<select id="{fid}" name="{esc(name)}" data-setup-input{described}>{opts}</select>{hint}</div>')
+            elif kind == "checkbox":
+                values[name] = bool(f.get("default"))
+                extra.append(f'<div class="setup__field setup__field--check"><label class="choice"><input id="{fid}" name="{esc(name)}" type="checkbox"'
+                             f'{" checked" if f.get("default") else ""} data-setup-input{described}><span>{esc(req(f, "label", where))}</span></label>{hint}</div>')
+            else:
+                raise BuildError(f"{where}: unknown field kind '{kind}'")
+        show = req(b, "show", where)
+        values["show"] = req(show, "default", where)
+        tabs = "".join(
+            f'<label class="choice choice--tab"><input type="radio" name="show" value="{esc(o["value"])}"'
+            f'{" checked" if o["value"] == show["default"] else ""} data-setup-input><span>{esc(o["label"])}</span></label>'
+            for o in req(show, "options", where))
+        data = {k: b[k] for k in ("templates", "tokens")}
+        data["copy"] = req(b, "copy", where)
+        for key in data["templates"]:
+            if len(key.split(".")) != 3:
+                raise BuildError(f"{where}: template key '{key}' is not goal.via.show")
+        default = setup_text(data, values)
+        blob = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+        copy = data["copy"]
+        return (
+            f'<section class="section band band--setup" id="{sid}" aria-labelledby="{sid}-title"><div class="wrap">'
+            f'<div class="setup" data-setup><div class="setup__choices"><h2 id="{sid}-title">{esc(req(b, "heading", where))}</h2>'
+            f'<div class="setup__inputs" data-needs-js>{"".join(fields)}'
+            f'<details class="setup__more"><summary>{esc(req(adv, "summary", where))}</summary><div class="setup__fields">{"".join(extra)}</div></details></div>'
+            f'<p class="setup__note">{self.inline(req(b, "note", where))}</p>'
+            f'<noscript><p class="setup__note">{esc(req(b, "noscript", where))}</p></noscript></div>'
+            f'<div class="setup__out"><fieldset class="setup__tabs" data-needs-js><legend>{esc(req(show, "legend", where))}</legend>{tabs}</fieldset>'
+            f'<pre class="code setup__code" tabindex="0" aria-label="{esc(req(b, "output_label", where))}" data-generated><code data-setup-output>{esc(default)}</code></pre>'
+            f'<div class="setup__actions" data-needs-js><button type="button" class="btn btn--secondary btn--small" data-setup-copy>{esc(copy["label"])}</button>'
+            f'<span class="setup__status" role="status" aria-live="polite" data-setup-status></span></div></div></div>'
+            f'<script type="application/json" id="setup-data">{blob}</script></div></section>')
+
+    def b_network(self, b, where):
+        page = req(b, "words", where)
+        text = attr = esc
+        geo = json.loads((STATIC / "assets/network-geo.json").read_text(encoding="utf-8"))
+        def network_json(value):
+            return json.dumps(value, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+        def network_world(_nouns, label, _page):
+            if not re.fullmatch(r"[0-9Mmh. -]+", geo["dots"]):
+                raise BuildError("network land must be a plain dot path")
+            return (f'<div class="nw-stage"><svg class="nw-world" viewBox="{esc(" ".join(map(str, geo["viewbox"])))}" role="img" aria-label="{esc(label)}" focusable="false">'
+                    f'<path class="nw-land" d="{esc(geo["dots"])}"/></svg><div class="nw-layer" data-layer></div>'
+                    '<div class="nw-pulses" data-pulses aria-hidden="true"></div><div class="nw-card" data-card role="group" hidden></div></div>')
+        def network_geo_block(_nouns):
+            data = {key: geo[key] for key in ("viewbox", "projection", "continents")}
+            return f'<script type="application/json" class="nw-geo">{network_json(data)}</script>'
+        nouns = None
+        c, f = page["controls"], page["feed"]
+        legend = page["legend"]
+        how = page["how"]
+        action = lambda name, label: (f'<button type="button" class="nw-action" data-act="{name}" aria-pressed="false" hidden>'
+                                      f"<span>{text(label)}</span></button>")
+        cols = lambda items: "".join(f'<th scope="col">{text(x)}</th>' for x in items)
+        shows = "".join(f"<li>{text(x)}</li>" for x in how["shows"])
+        never = "".join(f"<li>{text(x)}</li>" for x in how["never"])
+        t = page["table"]
+        main = "\n".join([
+            f'<section class="nw" data-network data-mode="page" data-source="{attr(page["source"])}">',
+            '<div class="wrap page-head pg-head nw-head">',
+            '<div class="nw-head-text">',
+            f'<p class="pg-kicker">{text(page["eyebrow"])}</p>',
+            f'<h1 id="page-title">{text(page["heading"])}</h1>',
+            f'<p class="lead">{text(page["lead"])}</p>',
+            "</div>",
+            '<div class="nw-headline">',
+            f'<p class="nw-big" role="status" data-totals-big>{text(page["loading"])}</p>',
+            '<p class="nw-sub" data-totals-sub></p>',
+            "</div>",
+            "</div>",
+            '<div class="wrap nw-page">',
+            '<div class="nw-controls">',
+            '<div class="nw-actions">' + action("replay", c["replay"]) + action("pause", c["pause"]) + action("table", c["table"]) + "</div>",
+            f'<div class="nw-group" role="group" aria-label="{attr(page["filter"]["label"])}" data-kinds hidden>'
+            f'<span class="nw-group-label">{text(page["filter"]["label"])}</span></div>',
+            "</div>",
+            f'<p class="nw-band" data-band hidden><b>{text(page["replay_band"]["label"])}</b><span aria-hidden="true"> · </span><span>{text(page["replay_band"]["text"])}</span></p>',
+            '<p class="nw-status" data-status role="status"></p><p class="nw-freshness" data-freshness></p>',
+            '<div class="nw-body">',
+            '<div class="nw-view" data-view-map>',
+            '<figure class="nw-map">',
+            network_world(nouns, page["loading"], True),
+            '<p class="nw-line" data-quiet hidden></p><p class="nw-line" data-empty hidden></p>',
+            '<figcaption class="nw-legend">'
+            f'<span class="nw-legend-item"><span class="nw-key nw-key-dot" aria-hidden="true"></span>{text(legend["data_center"])}</span>'
+            f'<span class="nw-legend-item"><span class="nw-key nw-key-continent" aria-hidden="true"></span>{text(legend["continent"])}</span>'
+            "</figcaption>",
+            "</figure>",
+            "</div>",
+            # Beside the map the feed is as tall as the map and scrolls; under it, on a phone, it shows the latest few.
+            '<div class="nw-feed" data-feed-card hidden><div class="nw-feed-in">',
+            f'<div class="nw-feed-head"><h2 id="nw-feed-h" data-feed-title>{text(f["title"])}</h2>'
+            f'<span class="nw-state" data-state-chip data-state="unknown" hidden>{text(f["state"]["unknown"])}</span></div>',
+            '<div class="nw-feed-scroll" role="region" aria-labelledby="nw-feed-h" tabindex="0">',
+            '<ol class="nw-feed-list" data-feed></ol>',
+            '<p class="nw-feed-empty" data-feed-empty hidden></p>',
+            "</div>",
+            "</div></div>",
+            "</div>",
+            '<div class="nw-tables" data-view-table hidden>',
+            f'<div class="nw-table-wrap"><table class="nw-table"><caption>{text(t["centers_caption"])}</caption><thead><tr>{cols(t["centers_cols"])}</tr></thead>'
+            '<tbody data-rows-centers></tbody></table></div>',
+            f'<div class="nw-table-wrap"><table class="nw-table"><caption>{text(t["claims_caption"])}</caption><thead><tr>{cols(t["claims_cols"])}</tr></thead>'
+            '<tbody data-rows-claims></tbody></table></div>',
+            "</div>",
+            f'<p class="nw-shown">{text(page["shown"]["text"])} <a href="#{attr(how["id"])}">{text(page["shown"]["link"])}</a> · '
+            f'<a href="{attr(page["herma"]["dashboard"])}">{text(page["shown"]["herma"])} ↗</a></p>',
+            f'<noscript><p class="nw-noscript">{text(page["noscript"])}</p></noscript>',
+            f'<script type="application/json" class="nw-words">{network_json(page)}</script>',
+            network_geo_block(nouns),
+            "</div>",
+            "</section>",
+            '<div class="wrap nw-page nw-page-more">',
+            f'<section id="{attr(how["id"])}" class="nw-about" aria-labelledby="nw-about-h">',
+            f'<h2 id="nw-about-h">{text(how["heading"])}</h2>',
+            '<div class="nw-about-grid">',
+            f'<div><h3>{text(how["shows_heading"])}</h3><ul>{shows}</ul></div>',
+            f'<div><h3>{text(how["never_heading"])}</h3><ul>{never}</ul></div>',
+            "</div>",
+            f'<p class="nw-optout">{text(how["opt_out"])}</p>',
+            f'<p class="nw-source">{text(how["source"])} <a href="{attr(page["source"])}">{text(how["data_link"])}</a></p>',
+            f'<p class="nw-credits">{text(how["credits"])}</p>',
+            '<div class="actions">' + ''.join(self.button(action, where) for action in page['actions']) + '</div>',
+            "</section>",
+            "</div>",
+
+        ])
+        return main
+
+    def b_story(self, b, where):
+        labels = req(b, "labels", where)
+        scenes = req(b, "scenes", where)
+        duration = req(b, "duration_seconds", where)
+        data_labels = " ".join(
+            f'data-label-{esc(key.replace("_", "-"))}="{esc(value)}"'
+            for key, value in labels.items()
+        )
+        total = len(scenes)
+        parts = [
+            f'<div class="story" id="teleion-story" data-duration="{esc(duration)}" {data_labels}>',
+            '<div class="story-topbar">',
+            f'<span class="study-label">{esc(labels["study"])}</span>',
+            f'<button type="button" class="text-button js-only" id="story-contents-button" aria-expanded="false" aria-controls="story-contents">{esc(labels["contents"])}</button>',
+            '</div>',
+            f'<nav class="contents" id="story-contents" aria-label="{esc(labels["contents_navigation"])}" hidden>',
+        ]
+        for i, scene in enumerate(scenes):
+            title = req(scene, "title", where)
+            parts.append(
+                f'<button type="button" data-story-go="{i}" aria-current="{str(i == 0).lower()}">'
+                f'<span class="mono" data-generated>{i + 1:02d}</span><span>{esc(title)}</span></button>'
+            )
+        parts.extend([
+            '</nav>',
+            f'<noscript><p class="story-fallback">{esc(labels["no_script"])}</p></noscript>',
+            f'<div class="presentation" id="story-presentation" tabindex="-1" role="region" aria-label="{esc(labels["presentation"])}">',
+        ])
+        for i, scene in enumerate(scenes):
+            title = req(scene, "title", where)
+            markup = req(scene, "html", where)
+            # This is authored local content, never worker- or user-supplied HTML.
+            # Keep the static presentation compatible with the site's CSP.
+            if re.search(r"<\s*(script|style|iframe|object|embed)\b|\s(?:style|on[a-z]+)\s*=", markup, re.I):
+                raise BuildError(f"{where}: unsupported active markup in story scene {i + 1}")
+            if i == 0:
+                markup = markup.replace('<h1 ', '<h1 id="page-title" ', 1)
+            accessible = labels["scene_announcement"].format(current=i + 1, total=total, name=title)
+            parts.append(
+                f'<section class="slide {esc(scene.get("class_name", ""))}" '
+                f'data-story-scene="{esc(req(scene, "id", where))}" '
+                f'data-start="{esc(req(scene, "start", where))}" data-end="{esc(req(scene, "end", where))}" '
+                f'data-title="{esc(title)}" aria-label="{esc(title)}">{markup}</section>'
+            )
+        parts.extend([
+            '</div>',
+            '<div class="control-deck js-only">',
+            f'<progress class="progress-track" id="story-progress" max="{esc(duration)}" value="0" aria-label="{esc(labels["progress"])}"></progress>',
+            '<div class="control-main">',
+            f'<div class="scene-position"><span id="story-count" data-generated>01 / {total}</span><span id="story-name">{esc(scenes[0]["title"])}</span></div>',
+            '<div class="transport">',
+            f'<button type="button" class="nav-button" id="story-back" aria-label="{esc(labels["previous"])}" disabled>← <span>{esc(labels["back"])}</span></button>',
+            f'<button type="button" class="play-button" id="story-play" aria-pressed="false">{esc(labels["play"])}</button>',
+            f'<button type="button" class="nav-button" id="story-next" aria-label="{esc(labels["next"])}"><span>{esc(labels["forward"])}</span> →</button>',
+            '</div>',
+            '<div class="clock"><span id="story-clock" data-generated>0:00</span><span data-generated> / 3:00</span></div>',
+            '</div>',
+            f'<div class="control-notes"><span>{esc(labels["keyboard_hint"])}</span><label><input id="story-reduce-motion" type="checkbox">{esc(labels["reduce_motion"])}</label></div>',
+            '</div>',
+            '<p class="sr-only" id="story-announcement" role="status" aria-live="polite"></p>',
+            '</div>',
+        ])
+        return "".join(parts)
+
     def page(self, page: dict, layout: str) -> str:
         where = page["id"]
         route = req(page, "route", where)
@@ -257,26 +748,34 @@ class Renderer:
             nav_items.append(f'        <li><a href="{esc(it["href"])}"{current}>{esc(it["label"])}</a></li>')
         footer = req(site, "footer", "site")
         footer_items = "\n".join(f"        <li>{self.link(it['label'], it['href'])}</li>" for it in req(footer, "links", "site/footer"))
-        scripts = ""
-        if any(b.get("type") == "status" for b in page["blocks"]):
-            scripts = ('<script src="/assets/status.js" defer></script>\n'
-                       '<noscript><link rel="stylesheet" href="/assets/noscript.css"></noscript>\n')
+        scripts = '<script src="/assets/agent-banner.js" defer></script>\n'
+        kinds = {b.get("type") for b in page["blocks"]}
+        if "status" in kinds:
+            scripts += '<script src="/assets/status.js" defer></script>\n'
+        if "setup" in kinds:
+            scripts += '<script src="/assets/start.js" defer></script>\n'
+        if "story" in kinds:
+            scripts += '<link rel="stylesheet" href="/assets/story.css">\n<script src="/assets/story.js" defer></script>\n'
+        if "network" in kinds:
+            scripts += '<link rel="stylesheet" href="/assets/network.css">\n<script src="/assets/network.js" defer></script>\n'
+        if "benchmarks" in kinds:
+            scripts += '<script src="/assets/benchmarks.js" defer></script>\n'
+        if kinds & {"status", "setup", "benchmarks"}:
+            scripts += '<noscript><link rel="stylesheet" href="/assets/noscript.css"></noscript>\n'
+
         noindex = page.get("noindex", False)
         canonical = self.origin + ("/" if noindex else route)
-        banner = req(site, "banner", "site")
+        banner = self.banner()
         values = {
             "lang": req(site, "lang", "site"),
             "title": req(page, "title", where),
             "description": req(page, "description", where),
             "robots": '<meta name="robots" content="noindex">\n' if noindex else "",
             "canonical": canonical,
+            "site_name": req(site["brand"], "name", "site/brand"),
+            "og_image": req(site, "og_image", "site"),
             "scripts": scripts,
             "skip_link": req(site, "skip_link", "site"),
-            "banner_label": req(banner, "label", "site/banner"),
-            "banner_before": req(banner, "before", "site/banner"),
-            "banner_href": req(banner, "href", "site/banner"),
-            "banner_url": req(banner, "url", "site/banner"),
-            "banner_after": req(banner, "after", "site/banner"),
             "home_label": req(site["brand"], "home_label", "site/brand"),
             "brand": req(site["brand"], "name", "site/brand"),
             "nav_label": req(nav, "label", "site/nav"),
@@ -286,6 +785,7 @@ class Renderer:
             "footer_line": req(footer, "line", "site/footer"),
         }
         raw = {
+            "banner": banner,
             "mark": self.mark,
             "nav_items": "\n".join(nav_items),
             "footer_items": footer_items,
@@ -305,6 +805,24 @@ class Renderer:
         return re.sub(r"\{\{(\w+)\}\}", fill, layout)
 
 
+BANNER_FIELDS = ("label", "lead_strong", "lead", "lead_short", "chip", "copy_text", "copy", "copy_short", "copied", "copied_status",
+                 "copy_failed", "more", "less", "panel_title", "panel_note", "panel_line", "can_title", "can", "rules_title", "rules", "links")
+BANNER_ICON = ('<svg class="agent-fallback-icon" viewBox="0 0 40 40" width="18" height="18" aria-hidden="true" focusable="false">'
+               '<circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="2.6"/>'
+               '<path d="M20 12v-3h-3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>'
+               '<rect x="12" y="14" width="16" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="2.6"/>'
+               '<path d="M17 19v2M23 19v2" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>')
+
+
+def setup_text(data: dict, values: dict) -> str:
+    key = f"{values['goal']}.{values['via']}.{values['show']}"
+    if key not in data["templates"]:
+        raise BuildError(f"setup: no template '{key}'")
+    agent = re.sub(r"[^a-zA-Z0-9 ._:-]", "", str(values["agent"]))[:64] or "agent"
+    swap = {"agent": agent, "queue": values["queue"], "map": data["tokens"]["map_on" if values["map"] else "map_off"]}
+    return re.sub(r"\{(agent|queue|map)\}", lambda m: swap[m.group(1)], data["templates"][key])
+
+
 def render_llms(llms: dict) -> str:
     lines = [f"# {req(llms, 'title', 'llms')}", "", f"> {req(llms, 'summary', 'llms')}", ""]
     for sec in req(llms, "sections", "llms"):
@@ -315,7 +833,6 @@ def render_llms(llms: dict) -> str:
 
 
 def shared_words() -> tuple[list[str], list[str]]:
-    """The shared list's regex patterns and its private-name hashes (matched per lowercase word token)."""
     if not SHARED_WORDS.is_file():
         raise BuildError(f"the shared banned-words list is missing: {SHARED_WORDS} (set BANNED_WORDS to its path)")
     words = json.loads(SHARED_WORDS.read_text(encoding="utf-8"))
@@ -342,8 +859,21 @@ def write_worker_words(patterns: list[str], hashes: list[str]) -> None:
         f"export const PRIVATE_SHA256 = [\n  {hexes},\n];\n", encoding="utf-8")
 
 
+def write_worker_media() -> None:
+    media_dir = STATIC / "media"
+    sizes = {}
+    if media_dir.is_dir():
+        for mp4 in sorted(media_dir.glob("*.mp4")):
+            sizes[f"/media/{mp4.name}"] = mp4.stat().st_size
+    entries = ",\n  ".join(f"{json.dumps(k)}: {v}" for k, v in sizes.items())
+    WORKER_MEDIA.write_text(
+        "// Generated by build.py from static/media/*.mp4 sizes. Gitignored: never commit it.\n"
+        f"export const MEDIA_BYTES = {{\n  {entries}\n}};\n", encoding="utf-8")
+
+
 def build(out: Path) -> list[str]:
     write_worker_words(*shared_words())
+    write_worker_media()
     data = {name: load(name) for name in REQUIRED}
     site = data["site"]
     r = Renderer(site)

@@ -6,6 +6,12 @@ lock, gates, deploy, verify, guard, release. The first move's record and the eme
 
 **The domains today:** `teleionlabs.com` is bound to `teleionlabs`; `www.teleionlabs.com` is bound to
 `www-canonical-redirect`, which answers 301 to the apex with path and query kept. This Worker owns the apex only.
+From v0.4 this Worker also answers any other host that reaches it (the workers.dev alias, preview hosts) and plain HTTP
+with 301 (GET, HEAD) or 308 to the same path on `https://teleionlabs.com`, and `wrangler.jsonc` turns its logs, traces
+and real-time Issues off; the Privacy page says both.
+
+**Heavy jobs** (the build, `make check`, the browser check) run through
+`~/meta_hacakthon/notes/coordination-2026-10-31/heavy/heavy_run.sh`, one at a time across sessions (the lead, Nov 2).
 
 Run every block in one shell, in order. Any failure stops the shell (`set -e`). If that happens before step 3, nothing was
 deployed: release with `python3 "$LOCK" release teleionlabs "$WHO" unchanged "$LIVE" --note "stopped before deploy"`, so
@@ -21,6 +27,7 @@ WHO=claude
 W=~/meta_hacakthon/notes/portal-worker/node_modules/.bin/wrangler       # wrangler 4.154.0
 LOCK=~/meta_hacakthon/notes/coordination-2026-10-31/deploy-locks/deploy_lock.py
 GUARD=~/meta_hacakthon/notes/claude-work-2026-11-01/light-guard
+HEAVY=~/meta_hacakthon/notes/coordination-2026-10-31/heavy/heavy_run.sh
 REC=~/meta_hacakthon/notes/claude-work-2026-11-01/teleionlabs-deploy && mkdir -p "$REC"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 $W whoami >/dev/null 2>&1      # refreshes the OAuth token if it has expired
@@ -45,12 +52,12 @@ test "$(git rev-parse --short=7 HEAD)" = "$REVIEWED"               # ... at the 
 
 # wrangler's build step also runs `python3 build.py && python3 tests/check_words.py` (wrangler.jsonc), so neither a
 # stale dist/ nor a stale generated word list can ship. The build reads the shared banned-words list (rule 16).
-make check                                                         # build, Worker tests, word gate, link check
+$HEAVY make check                                                  # build, Worker tests, word gate, link check
 PORT="$(python3 -c 'import socket; s = socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')"
 $W dev --local --port "$PORT" --ip 127.0.0.1 --show-interactive-dev-session=false >"$REC/dev-$STAMP.log" 2>&1 &
 DEV=$!
 until curl -s -o /dev/null "http://127.0.0.1:$PORT/"; do kill -0 "$DEV" 2>/dev/null || { echo "dev server exited"; exit 1; }; sleep 1; done
-node tests/check_site.mjs --base "http://127.0.0.1:$PORT"          # light (both schemes), layout, axe
+$HEAVY node tests/check_site.mjs --base "http://127.0.0.1:$PORT"   # light (both schemes), layout, bands, setup, axe
 kill "$DEV"
 ```
 
@@ -75,15 +82,26 @@ VERSION_ID="$(grep -oE 'Current Version ID: [0-9a-f-]+' "$REC/deploy-$STAMP.log"
 
 ```bash
 curl -s https://teleionlabs.com/ | grep -o '<title>[^<]*</title>'
-#   <title>Tessera · infrastructure for agent work · Teleion Labs</title>
+#   <title>Tessera · supercharge your agents · Teleion Labs</title>
+curl -s -o /dev/null -w '%{http_code}\n' https://teleionlabs.com/start/                       #   200
 curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' 'https://www.teleionlabs.com/free/?a=1'
 #   301 https://teleionlabs.com/free/?a=1
+curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' 'http://teleionlabs.com/start/?a=1'
+#   301 https://teleionlabs.com/start/?a=1 (the zone may answer this itself; either way it lands on https)
+curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' 'https://teleionlabs.ta-amps.workers.dev/free/'
+#   301 https://teleionlabs.com/free/
+# The Privacy page says this Worker keeps no logs or traces: read the deployed settings back (read-only).
+api "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/scripts/teleionlabs/script-settings" \
+  | jq -e '.result.observability | (.enabled == false) and (.logs.enabled == false) and (.logs.invocation_logs == false) and (.traces.enabled == false)'
+api "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/scripts/www-canonical-redirect/script-settings" \
+  | jq -e '.result.observability == null or .result.observability.enabled == false'
 curl -sI https://teleionlabs.com/ | grep -iE '^(content-security-policy|strict-transport-security|x-content-type-options|cache-control)'
 #   cache-control includes no-transform (no injected beacon for the CSP to block)
 curl -sI https://teleionlabs.com/api/status | grep -i '^cache-control'     #   no-store
 curl -s https://teleionlabs.com/api/status                                 #   three services, each "state":"up"
 curl -s https://teleionlabs.com/.well-known/security.txt | head -3
-node tests/check_site.mjs --base https://teleionlabs.com                   #   includes "no console errors"
+# Only if the request budget allows (the lead, Nov 2): the full live browser check is about 90 page loads.
+# $HEAVY node tests/check_site.mjs --base https://teleionlabs.com           #   includes "no console errors"
 ```
 
 If `/api/status` shows a service as `down` while its own health address answers, the service binding and the public
@@ -99,7 +117,7 @@ import json, sys
 path = sys.argv[1]
 data = json.load(open(path))
 entry = next(s for s in data["sites"] if s["site"] == "teleionlabs")
-for route in ["/", "/tessera/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"]:
+for route in ["/", "/start/", "/tessera/", "/benchmarks/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"]:
     if route not in entry["routes"]:
         entry["routes"].append(route)
 with open(path, "w") as f:
@@ -107,8 +125,10 @@ with open(path, "w") as f:
     f.write("\n")
 PY
 python3 "$GUARD/light_guard.py" --site teleionlabs --no-versions --out "$REC/light-guard-$STAMP.json"
-``` `watchdog.py` has no per-site option and would
-alert on every site, so run the guard for this site only and post its result.
+```
+
+`watchdog.py` has no per-site option and would alert on every site, so run the guard for this site only and post its
+result.
 
 ## 6. Release and record
 

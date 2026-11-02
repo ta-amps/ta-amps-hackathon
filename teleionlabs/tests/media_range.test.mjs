@@ -65,6 +65,7 @@ before(async () => {
         }};
       ` },
       { type: "ESModule", path: "media-range.js", contents: helper },
+      { type: "ESModule", path: "media.generated.js", contents: await readFile(new URL("../worker/media.generated.js", import.meta.url), "utf8") },
       ],
     }],
   };
@@ -145,9 +146,18 @@ test("unsupported syntax and mismatched validators keep the full response", asyn
   assert.deepEqual(await bytes(response), expected(2, 3));
 });
 
-test("native statuses, HEAD and ineligible bodies bypass the fallback", async () => {
+test("HEAD advertises the complete representation and ignores Range without a body", async () => {
+  const {response} = await request("bytes=0-1", {method: "HEAD"});
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("Accept-Ranges"), "bytes");
+  assert.equal(response.headers.get("Content-Range"), null);
+  assert.equal(Number(response.headers.get("Content-Length")), VIDEO_BYTES);
+  assert.equal((await bytes(response)).length, 0);
+});
+
+test("native statuses and ineligible bodies bypass the fallback", async () => {
   for (const options of [
-    {status: 206}, {status: 304}, {status: 416}, {status: 404}, {method: "HEAD"},
+    {status: 206}, {status: 304}, {status: 416}, {status: 404},
     {mode: "wrong-length"}, {mode: "encoded"}, {mode: "html"}, {path: "/other.mp4"},
   ]) {
     const {response} = await request("bytes=0-1", options);

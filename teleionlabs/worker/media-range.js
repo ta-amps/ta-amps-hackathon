@@ -1,10 +1,10 @@
-// Compatibility fallback for the one hosted preview. Native partial/conditional
+// Compatibility fallback for build-allowlisted media. Native partial/conditional
 // responses pass through. No full-file buffering, new storage or remote fetches.
-const VIDEO_PATH = "/media/teleion-fabric-preview-20261102.mp4";
+import { MEDIA_BYTES } from "./media.generated.js";
 // ASSETS may omit Content-Length inside the Worker and add it only at the HTTP
 // boundary. This exact asset's size is checked against the file by the tests.
-export const VIDEO_BYTES = 6600196;
-const MAX_BYTES = 8 * 1024 * 1024;
+export const VIDEO_BYTES = MEDIA_BYTES["/media/teleion-fabric-preview-20261102.mp4"];
+const MAX_BYTES = 25 * 1024 * 1024;
 const WRITE_CHUNK = 64 * 1024;
 
 function singleRange(value, size) {
@@ -32,7 +32,8 @@ function ifRangeMatches(value, asset) {
 
 function partialStream(asset, start, end, size, ctx) {
   const reader = asset.body.getReader();
-  const fixed = new FixedLengthStream(end - start + 1);
+  const hasFixed = typeof globalThis.FixedLengthStream === "function";
+  const fixed = hasFixed ? new globalThis.FixedLengthStream(end - start + 1) : new TransformStream();
   const writer = fixed.writable.getWriter();
   const transfer = (async () => {
     let position = 0;
@@ -62,22 +63,31 @@ function partialStream(asset, start, end, size, ctx) {
   }
   headers.set("Accept-Ranges", "bytes");
   headers.set("Content-Range", `bytes ${start}-${end}/${size}`);
-  // FixedLengthStream, not a manually supplied header, establishes Content-Length.
+  // workerd uses FixedLengthStream; Node-only fixtures need an explicit header.
+  if (!hasFixed) headers.set("Content-Length", String(end - start + 1));
   return new Response(fixed.readable, { status: 206, headers, encodeBody: "manual" });
 }
 
 export async function maybeMediaRange(request, asset, ctx) {
+  const knownBytes = MEDIA_BYTES[new URL(request.url).pathname];
   const encoding = asset.headers.get("Content-Encoding");
   const length = asset.headers.get("Content-Length");
   const contentType = asset.headers.get("Content-Type")?.split(";", 1)[0].trim().toLowerCase();
-  if (request.method !== "GET" || new URL(request.url).pathname !== VIDEO_PATH ||
-      asset.status !== 200 || !asset.body || contentType !== "video/mp4" ||
+  if (!["GET", "HEAD"].includes(request.method) || !knownBytes ||
+      asset.status !== 200 || contentType !== "video/mp4" ||
       (encoding && encoding.toLowerCase() !== "identity") ||
       (length !== null && !/^\d+$/.test(length))) {
     return asset;
   }
-  const size = length === null ? VIDEO_BYTES : Number(length);
-  if (!Number.isSafeInteger(size) || size !== VIDEO_BYTES || size <= 0 || size > MAX_BYTES) return asset;
+  const size = length === null ? knownBytes : Number(length);
+  if (!Number.isSafeInteger(size) || size !== knownBytes || size <= 0 || size > MAX_BYTES) return asset;
+  if (request.method === "HEAD") {
+    const headers = new Headers(asset.headers);
+    headers.set("Accept-Ranges", "bytes");
+    headers.set("Content-Length", String(size));
+    return new Response(null, {status: 200, headers});
+  }
+  if (!asset.body) return asset;
   const range = request.headers.get("Range");
   const selected = range && ifRangeMatches(request.headers.get("If-Range"), asset)
     ? singleRange(range, size) : null;
