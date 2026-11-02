@@ -6,6 +6,9 @@
 //   layout  no sideways scroll; the agent banner above the header nav; one footer row of links
 //   text    no text under 14 px (13 px for monospace)
 //   console no console errors, page errors or CSP violations
+//   banner  the shared <ta-agent-banner> rendered from its inline noun (data-ready)
+//   bands   at 1280 wide, every .band is at most 1280x450, so each one can be filmed as it is
+//   setup   on /start/: the browser writes the same default setup the build wrote, and every setting changes it
 // Then axe (WCAG 2.2 A/AA and best practice) per page and width: no serious or critical issue.
 // Exit 1 on any failure. Needs Playwright and axe-core; set PLAYWRIGHT and AXE to override paths.
 import { createRequire } from "node:module";
@@ -23,7 +26,11 @@ const SHOTS = opt("--shots", "");
 
 const PAGES = [
   { path: "/", name: "home" },
-  { path: "/tessera/", name: "tessera" },
+  { path: "/start/", name: "start" },
+  { path: "/fabric/", name: "fabric" },
+  { path: "/video/", name: "video" },
+  { path: "/benchmarks/", name: "benchmarks" },
+  { path: "/benchmarks/methodology/", name: "methodology" },
   { path: "/free/", name: "free" },
   { path: "/docs/", name: "docs" },
   { path: "/status/", name: "status" },
@@ -82,9 +89,92 @@ function inPage() {
   out.footerRows = tops.size;
   out.footerLines = footer ? footer.querySelectorAll("p").length : 0;
   out.h1 = document.querySelectorAll("h1").length;
+  out.bannerReady = banner ? banner.dataset.ready === "true" : false;
+  out.bands = [...document.querySelectorAll(".band")].map((b) => {
+    const r = b.getBoundingClientRect();
+    return { id: b.id, w: Math.round(r.width), h: Math.round(r.height) };
+  });
   out.storage = (() => { try { return localStorage.length + sessionStorage.length; } catch { return -1; } })();
   out.cookies = document.cookie.length;
+  out.title = document.title;
+  out.ogSiteName = document.querySelector('meta[property="og:site_name"]')?.content || "";
+  out.ogImage = document.querySelector('meta[property="og:image"]')?.content || "";
+  out.headerImgAlt = document.querySelector(".site-header img")?.alt || "";
+  out.footerBrand = document.querySelector("footer b")?.innerText || "";
+  out.footerLineText = document.querySelector("footer p")?.innerText || "";
+  out.imgsOk = [...document.images].every((i) => i.complete && i.naturalWidth > 0);
   return out;
+}
+
+async function checkBenchmarks(page, where) {
+  const total = await page.$$eval("[data-bench-group]", (els) => els.length);
+  if (total !== 5) fail(where, `benchmarks: expected 5 groups, got ${total}`);
+  for (const tag of ["new", "reuse", "queue", "model", "checks"]) {
+    await page.click(`[data-bench-filter="${tag}"]`);
+    const pressed = await page.$eval(`[data-bench-filter="${tag}"]`, (el) => el.getAttribute("aria-pressed"));
+    const visible = await page.$$eval("[data-bench-group]", (els) => els.filter((el) => !el.hidden).length);
+    if (pressed !== "true") fail(where, `benchmarks: chip ${tag} aria-pressed=${pressed}`);
+    if (visible !== 1) fail(where, `benchmarks: chip ${tag} showed ${visible} groups instead of 1`);
+  }
+  await page.click('[data-bench-filter="all"]');
+  const restored = await page.$$eval("[data-bench-group]", (els) => els.filter((el) => !el.hidden).length);
+  if (restored !== total) fail(where, `benchmarks: chip all showed ${restored} of ${total} groups`);
+}
+
+async function checkVideo(page, where) {
+  const info = await page.evaluate(() => {
+    const v = document.querySelector("#watch video");
+    const tr = document.querySelectorAll("#transcript .transcript-row").length;
+    const dl = document.querySelector('#watch a[download][href$=".mp4"]');
+    const track = v ? v.querySelector('track[kind="captions"][default]') : null;
+    return {
+      exists: !!v,
+      controls: v ? v.controls : false,
+      autoplay: v ? v.autoplay : true,
+      poster: v ? v.getAttribute("poster") || "" : "",
+      trackSrc: track ? track.getAttribute("src") || "" : "",
+      transcriptRows: tr,
+      downloadHref: dl ? dl.getAttribute("href") || "" : "",
+    };
+  });
+  if (!info.exists || !info.controls) fail(where, "video: missing click-to-play <video controls>");
+  if (info.autoplay) fail(where, "video: autoplay must be off");
+  if (!info.poster.endsWith(".svg")) fail(where, `video: missing light SVG poster (${info.poster})`);
+  if (!info.trackSrc.endsWith(".vtt")) fail(where, `video: missing default WebVTT captions (${info.trackSrc})`);
+  if (info.transcriptRows < 5) fail(where, `video: expected >= 5 transcript rows, got ${info.transcriptRows}`);
+  if (!info.downloadHref.endsWith(".mp4")) fail(where, `video: missing direct MP4 download link (${info.downloadHref})`);
+}
+
+// The setup writer: the default the browser shows equals the one the build wrote, and each setting changes it.
+async function checkSetup(page, where) {
+  const raw = await (await page.request.get(page.url())).text();
+  const built = raw.match(/<code data-setup-output>([\s\S]*?)<\/code>/)[1]
+    .replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  const shown = () => page.$eval("[data-setup-output]", (el) => el.textContent);
+  if ((await shown()) !== built) fail(where, "setup: the browser's default setup differs from the built one");
+  await page.click("summary");
+  const steps = [
+    ["goal: add", () => page.check('input[name="goal"][value="add"]')],
+    ["via: mcp", () => page.check('input[name="via"][value="mcp"]')],
+    ["show: commands", () => page.check('input[name="show"][value="commands"]')],
+    ["agent name", () => page.fill('input[name="agent"]', "field-agent")],
+    ["queue", () => page.selectOption('select[name="queue"]', "demo.ping")],
+    ["map off", () => page.uncheck('input[name="map"]')],
+    ["show: values", () => page.check('input[name="show"][value="values"]')],
+    ["show: agent", () => page.check('input[name="show"][value="agent"]')],
+    ["via: http", () => page.check('input[name="via"][value="http"]')],
+    ["goal: work", () => page.check('input[name="goal"][value="work"]')],
+  ];
+  for (const [name, act] of steps) {
+    const before = await shown();
+    await act();
+    if ((await shown()) === before) fail(where, `setup: changing ${name} left the setup the same (a dead setting)`);
+  }
+  const last = await shown();
+  for (const want of ['"show_on_map":false', "field-agent", "demo.ping"]) if (!last.includes(want)) fail(where, `setup: the written setup lacks ${want}`);
+  await page.fill('input[name="agent"]', "x\"; rm -rf / #");
+  if ((await shown()).includes('"; rm')) fail(where, "setup: an agent name with quotes reached the setup uncleaned");
+  await page.click("summary");
 }
 
 const failures = [];
@@ -123,6 +213,18 @@ for (const vp of VIEWPORTS) {
       // One row of links (footer.v1.json: it wraps only when the screen is too narrow, so phones may wrap).
       if (r.footerLists !== 1 || r.footerLines !== 1 || (vp.name === "desktop" && r.footerRows !== 1)) fail(where, `footer lists ${r.footerLists}, rows ${r.footerRows}, lines ${r.footerLines}`);
       if (r.h1 !== 1) fail(where, `${r.h1} h1 elements`);
+      if (!r.bannerReady) fail(where, "the shared agent banner did not render from its noun");
+      if (vp.name === "desktop") for (const b of r.bands) if (b.w > 1280 || b.h > 450) fail(where, `band #${b.id} is ${b.w}x${b.h}, over 1280x450`);
+      if (!r.title.includes("Teleion Labs") || /agora|ta-amps/i.test(r.title)) fail(where, `title ${r.title}`);
+      if (r.ogSiteName !== "Teleion Labs") fail(where, `og:site_name ${r.ogSiteName}`);
+      if (r.ogImage !== "https://teleionlabs.com/assets/og-teleion-1200x630.png") fail(where, `og:image ${r.ogImage}`);
+      if (r.headerImgAlt !== "Teleion Labs") fail(where, `header img alt ${r.headerImgAlt}`);
+      if (r.footerBrand !== "Teleion Labs") fail(where, `footer brand ${r.footerBrand}`);
+      if (r.footerLineText !== "Teleion Labs Incorporated. Free through December 31, 2026.") fail(where, `footer line ${r.footerLineText}`);
+      if (!r.imgsOk) fail(where, "broken image on page");
+      if (pg.name === "start" && scheme === "light") await checkSetup(page, where);
+      if (pg.name === "benchmarks" && scheme === "light") await checkBenchmarks(page, where);
+      if (pg.name === "video" && scheme === "light") await checkVideo(page, where);
       if (r.storage !== 0 || r.cookies !== 0) fail(where, "browser storage or cookies used");
       if (pg.name === "home" || pg.name === "status") {
         const states = await page.$$eval("[data-service]", (els) => els.map((e) => e.dataset.state));

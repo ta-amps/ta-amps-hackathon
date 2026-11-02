@@ -1,0 +1,22 @@
+{
+  "kind": "benchmark_record",
+  "id": "teleion.benchmarks/swarm-256-workers-2026-10",
+  "recorded_on": "2026-10-30",
+  "title": "256-worker queue lease, latency and rule-of-two separation run",
+  "setup": "1,000 generated test workflows across 4 local Worker cells (q01..q16 queues) and 256 scoped worker keys",
+  "metrics": {
+    "workers": 256,
+    "workflows": 1000,
+    "leased_tasks": 5000,
+    "mcp_jsonrpc_calls": 25620,
+    "median_call_latency_ms": 54.4,
+    "lease_collisions": 0,
+    "self_approvals": 0,
+    "contributor_tier_privacy_refusal_rate": 1.0
+  },
+  "notes": [
+    "No Task was held by two workers at once (0 lease collisions across 5,000 leased Tasks).",
+    "No worker checked its own work (0 self-approvals; drafter key != reviewer key enforced in code).",
+    "All test workflows used generated test payloads with zero private information."
+  ]
+}

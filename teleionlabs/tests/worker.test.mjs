@@ -62,11 +62,63 @@ test("pages carry the security headers, a CSP of 'self' only, and no alias heade
   assert.equal(res.headers.get("X-Robots-Tag"), null);
 });
 
-test("the workers.dev alias serves the same page with noindex and a canonical link", async () => {
-  const res = await handle(new Request("https://teleionlabs.ta-amps.workers.dev/free/"), { ASSETS: assets() }, ctx);
-  assert.equal(res.status, 200);
-  assert.equal(res.headers.get("X-Robots-Tag"), "noindex");
-  assert.equal(res.headers.get("Link"), '<https://teleionlabs.com/free/>; rel="canonical"');
+test("the workers.dev alias redirects to the same path on the apex (one canonical host)", async () => {
+  const res = await handle(new Request("https://teleionlabs.ta-amps.workers.dev/free/?a=1"), { ASSETS: assets() }, ctx);
+  assert.equal(res.status, 301);
+  assert.equal(res.headers.get("Location"), "https://teleionlabs.com/free/?a=1");
+  assert.equal(res.headers.get("X-Robots-Tag"), null);
+});
+
+test("plain http answers 301 for GET and 308 otherwise, to https on the apex, with HSTS", async () => {
+  const get = await handle(new Request("http://teleionlabs.com/start/?a=1"), { ASSETS: assets() }, ctx);
+  assert.equal(get.status, 301);
+  assert.equal(get.headers.get("Location"), "https://teleionlabs.com/start/?a=1");
+  assert.equal(get.headers.get("Strict-Transport-Security"), "max-age=31536000");
+  const post = await handle(new Request("http://teleionlabs.com/api/x", { method: "POST", body: "{}" }), { ASSETS: assets() }, ctx);
+  assert.equal(post.status, 308);
+  assert.equal(post.headers.get("Location"), "https://teleionlabs.com/api/x");
+  const port = await handle(new Request("https://teleionlabs.com:8443/free/"), { ASSETS: assets() }, ctx);
+  assert.equal(port.headers.get("Location"), "https://teleionlabs.com/free/", "a port is dropped");
+});
+
+test("the deployed config keeps what the Privacy page says: logs, traces and Issues off; https in local dev", async () => {
+  const text = (await readFile(fileURLToPath(new URL("../wrangler.jsonc", import.meta.url)), "utf8")).replace(/^\s*\/\/.*$/gm, "");
+  const config = JSON.parse(text);
+  const o = config.observability || {};
+  assert.equal(o.enabled, false, "observability");
+  assert.equal(o.logs?.enabled, false, "logs");
+  assert.equal(o.logs?.invocation_logs, false, "invocation logs");
+  assert.equal(o.logs?.persist, false, "persisted logs");
+  assert.equal(o.traces?.enabled, false, "traces");
+  assert.equal(o.traces?.persist, false, "persisted traces");
+  assert.equal(o.issues?.enabled, false, "real-time Issues set off explicitly, not left to the server default");
+  assert.equal(config.dev?.upstream_protocol, "https", "local dev presents https URLs, so the redirect keeps it local");
+});
+
+test("the start page carries its setup data and the default setup, built from content/start.json", async () => {
+  const page = await (await handle(new Request("https://teleionlabs.com/start/"), { ASSETS: assets() }, ctx)).text();
+  const data = JSON.parse(page.match(/<script type="application\/json" id="setup-data">(.*?)<\/script>/s)[1]);
+  assert.equal(Object.keys(data.templates).length, 12, "2 goals x 2 ways to connect x 3 views");
+  const shown = page.match(/<code data-setup-output>(.*?)<\/code>/s)[1];
+  const expected = data.templates["work.http.agent"].replace(/\{agent\}/g, "my-agent").replace(/\{queue\}/g, "demo.echo").replace(/\{map\}/g, data.tokens.map_on);
+  const unescape = (s) => s.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  assert.equal(unescape(shown), expected);
+  assert.match(page, /<script src="\/assets\/start\.js" defer><\/script>/);
+});
+
+test("every page carries the shared agent banner, its noun inline and a fallback line", async () => {
+  const banner = await readFile(fileURLToPath(new URL("../static/assets/agent-banner.js", import.meta.url)));
+  const digest = Buffer.from(await crypto.subtle.digest("SHA-256", banner)).toString("hex");
+  assert.equal(digest, "1a9e22452b4667d8601584c29ec3d3475c92c70d8954910336cb455eb1b21d9a", "byte-identical to the shared banner");
+  for (const path of ["/", "/start/", "/free/", "/404.html"]) {
+    const page = await (await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx)).text();
+    assert.equal((page.match(/<ta-agent-banner /g) || []).length, 1, path);
+    const noun = JSON.parse(page.match(/<ta-agent-banner[^>]*><script type="application\/json">(.*?)<\/script>/s)[1]);
+    assert.equal(noun.copy_text, "Read https://teleionlabs.com/llms.txt and follow it.", path);
+    assert.match(page, /<p class="agent-fallback">/, path);
+    assert.match(page, /<script src="\/assets\/agent-banner\.js" defer><\/script>/, path);
+    assert.ok(page.indexOf("<ta-agent-banner") < page.indexOf('<header class="site-header">'), `${path}: banner above the header`);
+  }
 });
 
 test("/api/status reads only the listed health checks and keeps only state and version", async (t) => {
@@ -117,6 +169,47 @@ test("a missing page answers with the 404 page's status", async () => {
   assert.equal(res.status, 404);
 });
 
+test("/products and /tessera redirect 301 to /fabric/, /video and /film redirect 301 to /video/, and legacy Agora routes redirect 301 to agora.eranosforgood.org (T9)", async () => {
+  for (const [from, to] of [
+    ["/products?x=1", "https://teleionlabs.com/fabric/?x=1"],
+    ["/tessera/", "https://teleionlabs.com/fabric/"],
+    ["/tessera?a=2", "https://teleionlabs.com/fabric/?a=2"],
+    ["/video?ref=1", "https://teleionlabs.com/video/?ref=1"],
+    ["/film/", "https://teleionlabs.com/video/"],
+    ["/film", "https://teleionlabs.com/video/"],
+  ]) {
+    const res = await handle(new Request(`https://teleionlabs.com${from}`), { ASSETS: assets() }, ctx);
+    assert.equal(res.status, 301, from);
+    assert.equal(res.headers.get("Location"), to, from);
+  }
+  for (const path of ["/models/", "/network/", "/judges/"]) {
+    const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
+    assert.equal(res.status, 301, path);
+    assert.equal(res.headers.get("Location"), `https://agora.eranosforgood.org${path}`, path);
+  }
+});
+
+test("/benchmarks/, /video/, /media/*.vtt, /records/*.json, /favicon.ico and og:image serve with expected MIME types (T3, T4)", async () => {
+  const bench = await handle(new Request("https://teleionlabs.com/benchmarks/"), { ASSETS: assets() }, ctx);
+  assert.equal(bench.status, 200);
+  const vid = await handle(new Request("https://teleionlabs.com/video/"), { ASSETS: assets() }, ctx);
+  assert.equal(vid.status, 200);
+  assert.match(vid.headers.get("Content-Security-Policy"), /media-src 'self'/);
+  const vtt = await handle(new Request("https://teleionlabs.com/media/teleion-fabric-demo-v1.vtt"), { ASSETS: assets() }, ctx);
+  assert.equal(vtt.status, 200);
+  assert.equal(vtt.headers.get("Content-Type"), "text/vtt; charset=utf-8");
+  assert.match(vtt.headers.get("Cache-Control"), /immutable/);
+  const rec = await handle(new Request("https://teleionlabs.com/records/glimmer-30b-orchestrator-2026-11-02.json"), { ASSETS: assets() }, ctx);
+  assert.equal(rec.status, 200);
+  assert.equal(rec.headers.get("Content-Type"), "application/json; charset=utf-8");
+  const parsed = await rec.json();
+  assert.equal(parsed.metrics.routing_task_object_f1.rank_16_current_adapter, 0.978);
+  const ico = await handle(new Request("https://teleionlabs.com/favicon.ico"), { ASSETS: assets() }, ctx);
+  assert.equal(ico.status, 200);
+  const og = await handle(new Request("https://teleionlabs.com/assets/og-teleion-1200x630.png"), { ASSETS: assets() }, ctx);
+  assert.equal(og.status, 200);
+});
+
 test("agent-readable text files are served as plain text", async () => {
   for (const path of ["/llms.txt", "/robots.txt", "/.well-known/security.txt"]) {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
@@ -124,7 +217,7 @@ test("agent-readable text files are served as plain text", async () => {
     assert.equal(res.headers.get("Content-Type"), "text/plain; charset=utf-8", path);
   }
   const sec = await (await handle(new Request("https://teleionlabs.com/.well-known/security.txt"), { ASSETS: assets() }, ctx)).text();
-  assert.match(sec, /^Contact: mailto:hello@teleionlabs\.com$/m);
+  assert.match(sec, /^Contact: mailto:security@teleionlabs\.com$/m);
   const expires = new Date(sec.match(/^Expires: (.+)$/m)[1]);
   assert.ok(expires - Date.now() < 365 * 86400 * 1000, "Expires is less than a year away (RFC 9116)");
 });
@@ -139,7 +232,7 @@ test("upstream strings pass the shared banned-words list before they leave the W
 });
 
 test("HTML pages carry no-transform, so the zone injects nothing the CSP would block", async () => {
-  for (const path of ["/", "/free/", "/nope/"]) {
+  for (const path of ["/", "/start/", "/free/", "/nope/"]) {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     assert.match(res.headers.get("Cache-Control"), /no-transform/, path);
   }

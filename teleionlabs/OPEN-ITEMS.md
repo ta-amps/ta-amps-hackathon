@@ -37,8 +37,8 @@ Things the pages leave out or word as "fair use" until the infrastructure or the
 1. **Left out of v0.2:** `/connect.json` and `/.well-known/agent-card.json` for this site (llms.txt points agents at
    Tessera's own connection file instead), privacy and terms pages (owner-confirmed facts only, OPEN-QUESTIONS.md
    item 3), and the 429, 402 and 503 pages, which need the free-use enforcement above.
-2. **security.txt** lists `mailto:hello@teleionlabs.com` and the security page as contacts, and expires on
-   2027-05-01. If the owner picks support@ for security reports, change `content/security.json`.
+2. **security.txt** lists `mailto:security@teleionlabs.com` and the security page as contacts, and expires on
+   2027-05-01. security@ has its own forwarding rule now (5a5b9ba3, added by Antigravity; read enabled on Nov 2).
 3. **Content source.** The copy is Task Objects in `content/*.json`, built at deploy time. Moving them into Tessera
    (`teleion.instructions/*`) needs a keyed write by the operator.
 4. **`www.teleionlabs.com` stays on the `www-canonical-redirect` Worker,** which answers 301 to the apex with
@@ -56,6 +56,32 @@ Things the pages leave out or word as "fair use" until the infrastructure or the
 
 1. **Log retention follows the Workers plan.** `/privacy/` says Cloudflare keeps request logs for 3 days, which is the
    Workers Free plan (the owner's choice, Oct 29). A move to Workers Paid makes it 7 days, and the page must change then.
-2. **Contact:** one address everywhere, hello@teleionlabs.com. Email Routing has its own rules for hello@, support@,
-   contact@, admin@, team@, credits@ and founder@; **security@ has none** and would reach us only through the catch-all,
-   so the pages and security.txt don't use it until the owner adds a rule and sends a test.
+2. **Contact:** hello@teleionlabs.com for everything, and security@teleionlabs.com for security problems (the Security
+   and Privacy pages and security.txt). Both have their own Email Routing rules; the owner's delivery test for
+   security@ is still worth sending.
+3. **What Tessera and the shim keep changes with their deploys.** On Nov 2 at 17:10 UTC Tessera kept invocation logs
+   (3 days on Workers Free) and persisted traces (7 days); the shim had invocation logs and traces off. The Privacy page
+   says exactly that, dated. A change to either Worker's `observability` needs the same change here.
+4. **The live v0.2.1 page overstates logging.** After the 10:31 UTC rollback, the live `teleionlabs` Worker's
+   script-settings read `observability: null` (no logs), while its Privacy page still says logs are kept for 3 days.
+   v0.4 sets logs off explicitly and says so.
+
+## v0.4 (Nov 2): what the onboarding spec had that the pages leave out
+
+The start page follows Antigravity's onboarding spec (`notes/coordination-2026-11-02/teleion_onboarding_and_video_walkthrough/`)
+in shape. These parts of it aren't true of live code, so the pages leave them out or say otherwise:
+
+1. **`acct.<tenant>` spaces and share grants.** No such namespace or grant exists. Free sessions get `demo.<id>`;
+   keys get the namespaces named on them. The page says sharing a space "isn't available yet".
+2. **"120 s default lease, 60 to 900 s".** Practice queues use a 300 s lease with a 30 s heartbeat and a miss limit of
+   3 (a claim runs out 90 s after the last check-in); created queues default to 600 s and 60 s, within 1 to 3,600 s.
+3. **"Public activity map: off by default".** It is on by default (`show_on_map` defaults to true); a session or key
+   opened with `show_on_map: false` stays in the totals only. Private Tasks, including every practice Task, never
+   appear. The start page offers the switch and says this.
+4. **Counts** ("40+ AI agents", "596 Tasks", "22 vetted kits") and **"Muse Glimmer 45% to 98%"**. No counts on the
+   pages; they link to the live network page, which separates workers run by us from volunteers' AIs. Eranos's 22
+   kits are marked as examples. Muse Glimmer is described as measured and not taking live work, with no figures.
+5. **OmniNode and "always free feeds".** Not Tessera's words; `GET /v1/feeds` needs a key. Left out.
+6. **Submitting Tasks through the shim.** The shim's `/q/*` gateway keeps a priority ledger of its own beside Tessera's
+   queues. The start page sticks to Tessera's queues and says the shim adds Task Objects to model calls.
+

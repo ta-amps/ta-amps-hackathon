@@ -8,7 +8,7 @@ build:
 	$(PYTHON) build.py
 
 test: build
-	node --test tests/worker.test.mjs
+	node --test tests/worker.test.mjs tests/worker_example.test.mjs
 
 words: build
 	$(PYTHON) tests/check_words.py

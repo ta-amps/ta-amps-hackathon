@@ -53,5 +53,6 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 
 ## Raw Receipts & Reproducible Verifiers
 
+- **Muse Glimmer 30B Orchestrator, Abstention & Retrieval (`2026-11-02`):** [`glimmer-orchestrator-2026-11-02/README.md`](glimmer-orchestrator-2026-11-02/README.md)
 - **Muse Glimmer 30B Evidence Bundle:** [`agora/evidence/glimmer-30b-2026-10-29/`](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/glimmer-30b-2026-10-29)
 - **Adapter Configs, Step-by-Step Kaggle Guides & Provenance Digests:** [`../training/README.md`](../training/README.md)

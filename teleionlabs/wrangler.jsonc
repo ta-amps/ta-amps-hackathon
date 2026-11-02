@@ -26,5 +26,14 @@
     { "binding": "HERMA", "service": "herma" },
     { "binding": "ERANOS", "service": "eranos" }
   ],
-  "observability": { "enabled": true }
+  // No invocation logs, traces or real-time Issues are kept for this Worker (finding F-PRIV-LOGS-001), so Cloudflare
+  // stores no per-visit record for it; the Privacy page says so. `wrangler tail` still shows live events while it runs.
+  "observability": {
+    "enabled": false,
+    "logs": { "enabled": false, "invocation_logs": false, "persist": false },
+    "traces": { "enabled": false, "persist": false },
+    "issues": { "enabled": false }
+  },
+  // The Worker redirects plain HTTP to HTTPS; local dev must present https URLs so it stays local.
+  "dev": { "upstream_protocol": "https" }
 }

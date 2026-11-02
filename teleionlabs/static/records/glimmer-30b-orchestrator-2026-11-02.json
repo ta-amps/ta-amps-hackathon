@@ -1,0 +1,161 @@
+{
+  "kind": "benchmark_record",
+  "id": "teleion.benchmarks/glimmer-30b-orchestrator-2026-11-02",
+  "recorded_on": "2026-11-02",
+  "title": "Muse Glimmer 30B held-out orchestrator evaluations, paired ablations, 2x T4 memory experiment, and operational policy snapshot",
+  "serving_status": {
+    "as_of_utc": "2026-11-02T17:25:00Z",
+    "glimmer_adapter_endpoint": "Adopted rank-16 none-fix adapter verified on dedicated serverless H100 evaluation endpoint at 17:25 UTC on 2026-11-02 (7 verification calls; 3.27 s warm median latency, 55.2 s cold first call). Adapter weights stay private under base model terms.",
+    "eranos_live_worker_fleet": "Live dedicated workers serving Eranos do not call the Glimmer evaluation endpoint today; they run Meta's hosted Muse Spark 1.3 and Muse Wonder 1.0 under the hourly Thompson-sampling policy."
+  },
+  "setup": {
+    "h100_orchestrator_runs": "One NVIDIA H100 80GB; full bfloat16 (bf16) base weights of Muse Glimmer 30B + rank-16 LoRA on 7 projections across 52 text layers (95,846,400 trainable parameters, no 4-bit quantization), 1 epoch over 1,762 training rows; greedy decoding in a single shared session",
+    "t4_lora_as_memory_experiment": "Separate 2026-10-31 experiment on 2x NVIDIA T4 using 4-bit NF4 QLoRA over 120 held-out Tasks (60 post-cutoff 2026 Task Object recalls + 60 nonprofit intake splits)",
+    "operational_policy_snapshot": "Hourly Thompson-sampling policy (tuner_version 28, read 2026-11-02, 15 recorded outcomes) over Muse Spark 1.3 and Muse Wonder 1.0 variants"
+  },
+  "holdout_provenance": {
+    "preregistered_splits": {
+      "registered_at_utc": "2026-11-02T00:33:21Z",
+      "counts": {
+        "retrieval_total": 194,
+        "retrieval_with_match": 175,
+        "retrieval_no_match": 19,
+        "review_total": 204,
+        "review_valid": 78,
+        "review_flawed": 126,
+        "routing_requests": 106,
+        "tool_calls": 150,
+        "sanity": 40
+      },
+      "isolation": "Frozen before training; shares no seed pack, sentence bank, or normalized user text with training rows; zero Meta API outputs in training data."
+    },
+    "derived_abstention_split": {
+      "derived_after_initial_registration": true,
+      "queries_with_no_match": 153,
+      "construction": "Derived from the retrieval holdout by replacing each matched Task Object with a non-matching same-kind sibling; manual audit of 54 filtered rows found 0 wrong labels (95% upper bound 6.6%)."
+    }
+  },
+  "paired_ablation_comparison": {
+    "arms": {
+      "original_multirole_rank_16": {
+        "retrieval_hit_at_1_175": 0.891429,
+        "retrieval_recall_at_5_175": 0.971429,
+        "abstention_accuracy_153": 0.509804,
+        "routing_task_object_f1_106": 0.977987,
+        "routing_exact_match_106": 0.962264,
+        "review_balanced_accuracy_204": 0.992063,
+        "flawed_reports_accepted_of_126": 2,
+        "flawed_report_false_accept_rate": 0.015873,
+        "tool_exact_match_256_cap_150": 0.993333
+      },
+      "adopted_none_fix_rank_16": {
+        "retrieval_hit_at_1_175": 0.885714,
+        "retrieval_recall_at_5_175": 0.891429,
+        "top_pick_precision_when_naming_object": 0.99359,
+        "abstention_accuracy_153": 0.836601,
+        "routing_task_object_f1_106": 0.979245,
+        "routing_exact_match_106": 0.962264,
+        "review_balanced_accuracy_204": 0.996031,
+        "flawed_reports_accepted_of_126": 1,
+        "flawed_report_false_accept_rate": 0.007937,
+        "tool_exact_match_256_cap_150": 0.993333
+      },
+      "rank_64_ablation": {
+        "retrieval_hit_at_1_175": 0.897143,
+        "retrieval_recall_at_5_175": 0.977143,
+        "abstention_accuracy_153": 0.359477,
+        "routing_task_object_f1_106": 0.896226,
+        "routing_exact_match_106": 0.886792,
+        "review_balanced_accuracy_204": 1.0,
+        "flawed_reports_accepted_of_126": 0,
+        "tool_exact_match_256_cap_150": 0.986667
+      }
+    },
+    "none_fix_minus_multirole_bootstrap_95_ci": {
+      "resamples": 2000,
+      "retrieval_hit_at_1": { "delta": -0.005714, "ci_95": [-0.034286, 0.017143] },
+      "retrieval_recall_at_5": { "delta": -0.08, "ci_95": [-0.12, -0.04], "note": "8-point recall@5 tradeoff when abstaining on 19 of 175 matched queries; callers fall back to lexical top-5 search." },
+      "abstention_accuracy_153": { "delta": 0.326797, "ci_95": [0.254902, 0.405229] },
+      "routing_task_object_f1": { "delta": 0.001258, "ci_95": [-0.00566, 0.009434] },
+      "review_false_accept_rate": { "delta": -0.007937, "ci_95": [-0.036232, 0.016529], "note": "Interval includes zero; 2 of 126 vs 1 of 126 is a sample observation." }
+    }
+  },
+  "response_budget_comparison": {
+    "tool_calling_150_cases": {
+      "registered_256_token_cap": {
+        "base": 0.94,
+        "tuned": 0.993333,
+        "delta": 0.053333,
+        "ci_95": [0.02, 0.093333]
+      },
+      "uncapped_384_token_limit": {
+        "base": 0.966667,
+        "tuned": 0.993333,
+        "delta": 0.026667,
+        "ci_95": [-0.006667, 0.06],
+        "note": "Interval includes zero at 384 tokens."
+      }
+    },
+    "review_204_cases": {
+      "registered_128_token_cap": { "base_balanced_accuracy": 0.283, "multirole_balanced_accuracy": 0.992063 },
+      "uncapped_384_token_limit": { "base_balanced_accuracy": 0.499, "multirole_balanced_accuracy": 0.992063 }
+    }
+  },
+  "metrics": {
+    "routing_task_object_f1": {
+      "base": 0.45,
+      "rank_16_current_adapter": 0.978,
+      "rank_16_adopted_none_fix_adapter": 0.979245,
+      "rank_16_exact_match": 0.962264,
+      "rank_64_largest_adapter": 0.896226,
+      "rank_64_exact_match": 0.886792,
+      "n": 106,
+      "finding": "Adopted rank-16 variant reached 97.9% Task-Object F1 (first rank-16 adapter 97.8% vs 4x larger rank-64 adapter 89.6%)."
+    },
+    "review_flawed_report_false_accept_rate": {
+      "original_multirole_flawed_accepted": 2,
+      "adopted_none_fix_flawed_accepted": 1,
+      "before_nothing_fits_fix": 0.015873,
+      "after_nothing_fits_fix": 0.007937,
+      "flawed_reports_tested": 126,
+      "total_reviews_tested": 204,
+      "balanced_accuracy_after_fix": 0.996031,
+      "self_review_catch_rate": 1.0
+    },
+    "retrieval_task_object_selection": {
+      "base_hit_at_1": 0.017143,
+      "tuned_hit_at_1_before_nothing_fits_fix": 0.891429,
+      "tuned_hit_at_1_adopted_after_nothing_fits_fix": 0.885714,
+      "tuned_recall_at_5_before_nothing_fits_fix": 0.971429,
+      "tuned_recall_at_5_adopted_after_nothing_fits_fix": 0.891429,
+      "top_pick_precision_when_naming_object": 0.99359,
+      "queries_with_match": 175,
+      "abstention_accuracy_before_fix": 0.509804,
+      "abstention_accuracy_after_fix": 0.836601,
+      "queries_with_no_match_derived": 153
+    },
+    "tool_calling_exact_match": {
+      "base_at_256_token_cap": 0.94,
+      "tuned_at_256_token_cap": 0.993333,
+      "base_at_384_token_limit": 0.966667,
+      "tuned_at_384_token_limit": 0.993333,
+      "earlier_t4_4bit_nf4_base": 0.933,
+      "earlier_t4_4bit_nf4_tuned": 0.993,
+      "n": 150
+    },
+    "lora_as_memory_zero_shim_tokens": {
+      "base_closed_book_exact_match": 0.0,
+      "base_plus_bm25_shim_exact_match": 0.292,
+      "lora_weights_only_exact_match": 0.625,
+      "shim_tokens_saved_per_call": 222.3,
+      "median_latency_speedup": "2.28x (19.75 s to 8.67 s)",
+      "n": 120
+    },
+    "live_worker_policy_share_nov_2": {
+      "tuner_version": 28,
+      "make_step": "Muse Spark 1.3 77% · Muse Wonder 1.0 23%",
+      "check_step": "Muse Spark 1.3 66% · Muse Wonder 1.0 34%",
+      "outcomes_recorded": 15
+    }
+  }
+}

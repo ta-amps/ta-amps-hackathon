@@ -9,10 +9,14 @@
 <meta name="description" content="{{description}}">
 {{robots}}<link rel="canonical" href="{{canonical}}">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="{{site_name}}">
 <meta property="og:title" content="{{title}}">
 <meta property="og:description" content="{{description}}">
 <meta property="og:url" content="{{canonical}}">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:image" content="{{og_image}}">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preload" href="/fonts/IBMPlexSans-wdth-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/SpaceGrotesk-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/tokens.css">
@@ -20,15 +24,10 @@
 {{scripts}}</head>
 <body>
 <a class="skip-link" href="#main">{{skip_link}}</a>
-<aside class="agent-banner" aria-label="{{banner_label}}">
-  <div class="wrap agent-banner__row">
-    <span class="agent-banner__label">{{banner_label}}</span>
-    <span class="agent-banner__line">{{banner_before}} <a href="{{banner_href}}">{{banner_url}}</a> {{banner_after}}</span>
-  </div>
-</aside>
+{{banner}}
 <header class="site-header">
   <div class="wrap header-row">
-    <a class="brand" href="/" aria-label="{{home_label}}">{{mark}}<span class="brand__name">{{brand}}</span></a>
+    <a class="brand" href="/" aria-label="{{home_label}}"><img class="brand__lockup" src="/assets/teleion-lockup.svg" width="160" height="25" alt="{{brand}}"></a>
     <nav class="site-nav" aria-label="{{nav_label}}">
       <ul class="site-nav__list">
 {{nav_items}}
@@ -43,7 +42,7 @@
 <footer class="site-footer" aria-label="{{footer_label}}">
   <div class="wrap">
     <div class="site-footer__row">
-      <a class="brand brand--small" href="/" aria-label="{{home_label}}">{{mark}}<span class="brand__name">{{brand}}</span></a>
+      <a class="brand brand--small" href="/" aria-label="{{home_label}}">{{mark}}<b class="brand__name">{{brand}}</b></a>
       <ul class="site-footer__links">
 {{footer_items}}
       </ul>

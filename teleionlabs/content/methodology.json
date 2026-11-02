@@ -1,0 +1,162 @@
+{
+  "kind": "task_object",
+  "id": "teleion.instructions/page.methodology",
+  "version": 1,
+  "updated": "2026-11-02",
+  "route": "/benchmarks/methodology/",
+  "output": "benchmarks/methodology/index.html",
+  "title": "How we measured this · Benchmarks · Teleion Labs",
+  "description": "Technical methodology, training setup, holdout provenance, paired adapter comparisons, confidence intervals, response-budget sensitivity, and source records for Teleion Fabric benchmarks.",
+  "sources": {
+    "H100 multi-role and none-fix ablations": "/records/glimmer-30b-orchestrator-2026-11-02.json (bf16 base + rank-16 LoRA on one NVIDIA H100 80GB; 1,762 training rows; 2,000-resample paired bootstrap intervals)",
+    "2x T4 memory experiment": "/records/glimmer-30b-orchestrator-2026-11-02.json (separate 4-bit NF4 QLoRA run on 2x NVIDIA T4 over 120 held-out Tasks, 2026-10-31)",
+    "256-worker queue run": "/records/swarm-256-workers-2026-10.json (1,000 generated test workflows across 4 local Worker cells, 25,620 MCP calls)",
+    "Eranos featured run": "/records/eranos-featured-run-2026-10-31.json (recorded shift-schedule kit build and separate-key review on 2026-10-31)",
+    "Repository scan": "/records/repo-scan-2026-10-29.json (public scan of 739 event repositories on 2026-10-29)"
+  },
+  "blocks": [
+    {
+      "type": "page_head",
+      "eyebrow": "Benchmarks · Technical notes",
+      "title": "How we measured this",
+      "lead": "This page documents the training setups, holdout provenance, paired adapter variants, 95% bootstrap intervals, token-budget sensitivity, and live serving boundaries behind the figures on [Benchmarks](/benchmarks/)."
+    },
+    {
+      "type": "prose",
+      "id": "training",
+      "heading": "Two distinct Muse Glimmer 30B training setups",
+      "paragraphs": [
+        "Orchestrator adapter runs (November 2, 2026): trained on one NVIDIA H100 80GB using full bfloat16 (`bf16`) base weights of Meta’s open-weight Muse Glimmer 30B with a rank-16 LoRA adapter across 7 projections in all 52 text layers (95,846,400 trainable parameters, no 4-bit quantization), over one epoch of 1,762 rows covering four roles: retrieval, review, routing, and typed MCP tool calling. Base and adapter arms were scored in the same H100 session with greedy decoding and one shared code path.",
+        "Zero-shim memory experiment (October 31, 2026): a separate experiment on two NVIDIA T4 GPUs using 4-bit NF4 QLoRA, evaluated on 120 held-out Tasks (60 post-cutoff 2026 Task Object recalls and 60 nonprofit intake splits). On that test, adapter weights with zero context-shim tokens reached 62.5% exact match against 29.2% for the base model given a 222-token lexical shim (0.0% closed-book), cutting median answer latency 2.28x (from 19.75 s to 8.67 s)."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "provenance",
+      "heading": "Holdout provenance and derived abstention set",
+      "paragraphs": [
+        "Original registration (recorded 2026-11-02T00:33:21Z before any H100 multi-role training run): 194 retrieval cases (175 queries with a matching Task Object and 19 with no match), 204 review submissions (78 valid, 126 flawed), 106 request-splitting prompts, 150 typed MCP tool-call prompts, and 40 general sanity prompts. Training rows share no seed pack, sentence bank, or normalized user text with these holdouts, and no Meta API output appears in the training set.",
+        "Derived 153-case abstention evaluation: after the original multi-role run answered “none” on only 10 of the 19 no-match cases, we constructed a larger 153-case out-of-scope abstention set by swapping each matched retrieval query’s target Task Object for a non-matching sibling of the same kind. Because this 153-case set was derived after the initial registration timestamp, we report its provenance separately; a manual audit of 54 filtered rows found 0 mislabeled cases (95% upper bound 6.6%)."
+      ]
+    },
+    {
+      "type": "table",
+      "id": "variants",
+      "heading": "Paired comparison across Muse Glimmer 30B adapter variants",
+      "intro": "Every main-page orchestrator headline reports the adopted “nothing fits” rank-16 variant (`none-fix`), alongside the rank-16 vs rank-64 capacity ablation.",
+      "columns": [
+        "Evaluation metric",
+        "Original multi-role (rank 16)",
+        "Adopted “nothing fits” (rank 16)",
+        "Larger rank-64 ablation"
+      ],
+      "rows": [
+        [
+          "Retrieval hit@1 (175 queries with a match)",
+          "89.14%",
+          "88.57%",
+          "89.71%"
+        ],
+        [
+          "Retrieval recall@5 (175 queries with a match)",
+          "97.14%",
+          "89.14%",
+          "97.71%"
+        ],
+        [
+          "Correct abstention (153 derived no-match queries)",
+          "50.98%",
+          "83.66%",
+          "35.95%"
+        ],
+        [
+          "Routing Task-Object F1 (106 held-out requests)",
+          "97.80% (96.23% exact)",
+          "97.92% (96.23% exact)",
+          "89.62% (88.68% exact)"
+        ],
+        [
+          "Review balanced accuracy (204 held-out reviews)",
+          "99.21%",
+          "99.60%",
+          "100.00%"
+        ],
+        [
+          "Flawed reports accepted (126 flawed cases)",
+          "2 of 126 (1.59%)",
+          "1 of 126 (0.79%)",
+          "0 of 126 (0.00%)"
+        ],
+        [
+          "Tool-call exact match (150 cases, 256-token budget)",
+          "99.33%",
+          "99.33%",
+          "98.67%"
+        ]
+      ],
+      "notes": [
+        "Abstention vs recall@5 tradeoff (2,000 paired bootstrap resamples): raising “nothing fits” training rows from 10% to 29% of retrieval data lifted out-of-scope abstention by +32.68 points (95% CI [+25.49, +40.52]) and gave 99.36% precision when naming a Task Object (155 of 156 right), while abstaining on 19 of 175 matched queries and lowering recall@5 by −8.00 points (95% CI [−12.00, −4.00]). Search callers fall back to lexical top-5 results whenever the adapter abstains.",
+        "Flawed-report sample uncertainty: the shift from 2 wrong accepts (1.59%) to 1 wrong accept (0.79%) on 126 flawed reports has a paired 95% interval of [−3.62, +1.65] percentage points, which includes zero; it is a sample observation rather than statistical proof of halving the error rate. Adding three deterministic pre-checks (minimum claim count, required legal-summary disclaimer, and verbatim quote check) caught all 126 flawed reports with zero false rejections.",
+        "Rank-64 capacity regression: quadrupling adapter parameters from rank 16 to rank 64 reduced routing Task-Object F1 by −8.18 points (95% CI [−14.15, −3.46]) and reduced derived no-match abstention by −15.03 points (95% CI [−22.22, −8.50])."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "budgets-and-serving",
+      "heading": "Response-budget sensitivity and serving scope",
+      "paragraphs": [
+        "Fixed vs longer response budgets on tool calling and review: the registered scoring pipeline applies per-role token budgets before scoring (`256` tokens for tool calling, `192` for retrieval, `128` for review, `384` for routing, and `96` for sanity). Within the `256`-token tool-call budget, the tuned adapter reaches `99.3%` strict exact match against `94.0%` for base (`+5.3` points, 95% CI `[+2.0, +9.3]`). When scored over full `384`-token replies without the role cap, the base model’s reasoning trace less often crowds out its JSON call, raising base to `96.7%` against `99.3%` tuned (`+2.7` points, 95% CI `[−0.7, +6.0]`, interval includes zero). On review, removing the `128`-token cap lifts base balanced accuracy from `28.3%` to `49.9%` against `99.2%`–`99.6%` tuned.",
+        "Endpoint verification vs live Eranos worker fleet (as of November 2, 2026): the adopted “nothing fits” Muse Glimmer 30B adapter was deployed to its dedicated serverless H100 evaluation endpoint and verified at 17:25 UTC on November 2, 2026 across 7 check calls (`3.27 s` warm median latency; `55.2 s` cold start). Live Eranos dedicated workers do not route production nonprofit requests to that adapter endpoint today; they run Meta’s hosted Muse Spark 1.3 and Muse Wonder 1.0 under the hourly Thompson-sampling policy (`version 28`, `15` recorded outcomes as of November 2, 2026).",
+        "Scope and reproducibility note: summary JSON records below publish exact sample counts, arm metrics, and paired bootstrap intervals so anyone can audit the calculations; adapter weights remain private under the base model’s license terms, and a free practice session exercises the live queues and storage rather than re-running H100 model training."
+      ]
+    },
+    {
+      "type": "links",
+      "id": "records",
+      "heading": "Recorded JSON files",
+      "intro": "Machine-readable summaries backing the figures on Benchmarks and this page.",
+      "items": [
+        {
+          "label": "Muse Glimmer 30B evaluations and policy snapshot (/records/glimmer-30b-orchestrator-2026-11-02.json)",
+          "href": "/records/glimmer-30b-orchestrator-2026-11-02.json",
+          "text": "Adopted none-fix metrics, original multi-role and rank-64 ablations, 2x T4 memory run, token-budget comparisons, and policy version 28."
+        },
+        {
+          "label": "256-worker queue run (/records/swarm-256-workers-2026-10.json)",
+          "href": "/records/swarm-256-workers-2026-10.json",
+          "text": "1,000 generated test workflows across 4 local Worker cells: 5,000 Tasks, 25,620 MCP calls, 0 lease collisions, 0 self-approvals."
+        },
+        {
+          "label": "Featured Eranos request run (/records/eranos-featured-run-2026-10-31.json)",
+          "href": "/records/eranos-featured-run-2026-10-31.json",
+          "text": "Recorded 3 min 27 s kit build (25 model calls, 8 passing unit tests) and 1 min 23 s separate-key check (14 model calls)."
+        },
+        {
+          "label": "Public event repository scan (/records/repo-scan-2026-10-29.json)",
+          "href": "/records/repo-scan-2026-10-29.json",
+          "text": "705 of 739 public event repositories indexed into searchable Tasks and Task Objects."
+        },
+        {
+          "label": "Back to Benchmarks (/benchmarks)",
+          "href": "/benchmarks/",
+          "text": "Capability-grouped overview of all measured and pending Teleion Fabric benchmarks."
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "items": [
+        {
+          "label": "Back to Benchmarks",
+          "href": "/benchmarks/",
+          "style": "secondary"
+        },
+        {
+          "label": "Start a free practice session",
+          "href": "/start/",
+          "style": "primary"
+        }
+      ]
+    }
+  ]
+}

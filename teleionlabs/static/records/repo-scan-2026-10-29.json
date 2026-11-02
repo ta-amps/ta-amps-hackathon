@@ -1,0 +1,16 @@
+{
+  "kind": "benchmark_record",
+  "id": "teleion.benchmarks/repo-scan-2026-10-29",
+  "recorded_on": "2026-10-29",
+  "title": "Public repository scan into searchable Tasks and Task Objects",
+  "setup": "Public scan of 739 event repositories into structured Task and Task Object records",
+  "metrics": {
+    "repositories_scanned": 739,
+    "repositories_indexed_as_records": 705,
+    "coverage_ratio": "705 of 739"
+  },
+  "notes": [
+    "Each indexed repository was normalized into searchable Task Objects and reusable Task templates with source attribution.",
+    "34 repositories were skipped because they were empty, unreachable or lacked public metadata at scan time."
+  ]
+}
