@@ -1,182 +1,182 @@
 {
-  "kind": "task_object",
-  "id": "teleion.instructions/page.methodology",
-  "version": 1,
-  "updated": "2026-11-02",
-  "route": "/benchmarks/methodology/",
-  "output": "benchmarks/methodology/index.html",
-  "title": "How we measured this · Benchmarks · Teleion Labs",
-  "description": "Technical methodology, training setup, holdout provenance, paired adapter comparisons, confidence intervals, response-budget sensitivity, and source records for Teleion Fabric benchmarks.",
-  "sources": {
-    "H100 multi-role and none-fix ablations": "/records/glimmer-30b-orchestrator-2026-11-02.json (bf16 base + rank-16 LoRA on one NVIDIA H100 80GB; 1,762 training rows; 2,000-resample paired bootstrap intervals)",
-    "2x T4 memory experiment": "/records/glimmer-30b-orchestrator-2026-11-02.json (separate 4-bit NF4 QLoRA run on 2x NVIDIA T4 over 120 held-out Tasks, 2026-10-31)",
-    "256-worker queue run": "/records/swarm-256-workers-2026-10.json (1,000 generated test workflows across 4 local Worker cells, 25,620 MCP calls)",
-    "Eranos featured run": "/records/eranos-featured-run-2026-10-31.json (recorded shift-schedule kit build and separate-key review on 2026-10-31)",
-    "Repository scan": "/records/repo-scan-2026-10-29.json (public scan of 739 event repositories on 2026-10-29)"
+ "kind": "task_object",
+ "id": "teleion.instructions/page.methodology",
+ "version": 1,
+ "updated": "2026-11-02",
+ "route": "/benchmarks/methodology/",
+ "output": "benchmarks/methodology/index.html",
+ "title": "How we measured this · Benchmarks · Teleion Labs",
+ "description": "Technical methodology, training setup, holdout provenance, paired adapter comparisons, confidence intervals, response-budget sensitivity, and source records for Teleion Fabric benchmarks.",
+ "sources": {
+  "H100 multi-role and none-fix ablations": "/records/glimmer-30b-orchestrator-2026-11-02.json (bf16 base + rank-16 LoRA on one NVIDIA H100 80GB; 1,762 training rows; 2,000-resample paired bootstrap intervals)",
+  "2x T4 memory experiment": "/records/glimmer-30b-orchestrator-2026-11-02.json (separate 4-bit NF4 QLoRA run on 2x NVIDIA T4 over 120 held-out Tasks, 2026-10-31)",
+  "256-worker queue run": "/records/swarm-256-workers-2026-10.json (1,000 generated test workflows across 4 local Worker cells, 25,620 MCP calls)",
+  "Eranos featured run": "/records/eranos-featured-run-2026-10-31.json (recorded shift-schedule kit build and separate-key review on 2026-10-31)",
+  "Repository scan": "/records/repo-scan-2026-10-29.json (public scan of 739 event repositories on 2026-10-29)"
+ },
+ "blocks": [
+  {
+   "type": "page_head",
+   "eyebrow": "Benchmarks · Technical notes",
+   "title": "How we measured this",
+   "lead": "This page documents the training setups, holdout provenance, paired adapter variants, 95% bootstrap intervals, token-budget sensitivity, and live serving boundaries behind the figures on [Benchmarks](/benchmarks/)."
   },
-  "blocks": [
+  {
+   "type": "prose",
+   "id": "training",
+   "heading": "Two distinct Muse Glimmer 30B training setups",
+   "paragraphs": [
+    "Orchestrator adapter runs (November 2, 2026): trained on one NVIDIA H100 80GB using full bfloat16 (`bf16`) base weights of Meta’s open-weight Muse Glimmer 30B with a rank-16 LoRA adapter across 7 projections in all 52 text layers (95,846,400 trainable parameters, no 4-bit quantization), over one epoch of 1,762 rows covering four roles: retrieval, review, routing, and typed MCP tool calling. Base and adapter arms were scored in the same H100 session with greedy decoding and one shared code path.",
+    "Zero-shim memory experiment (October 31, 2026): a separate experiment on two NVIDIA T4 GPUs using 4-bit NF4 storage with float16 compute, evaluated on 120 held-out cases under a 352-token generation cap (60 post-cutoff 2026 Task Object recalls and 60 nonprofit intake splits). Across all 120 cases, adapter weights with zero context-shim tokens reached 62.5% exact match against 29.2% for the base model given a 222-token lexical shim (+33.3 percentage points, paired 95% CI [+22.5, +44.2]; 0.0% closed-book), with 2.28x lower amortized generation time per row in batch-of-8 evaluation (8.668 s vs 19.749 s; 76 of 120 base-plus-shim outputs hit the 352-token cap vs 0 tuned). Most of the combined gain came from intake splitting (34 of 60 vs 0 of 60; all 60 generated intake plans passed worker-separation and contributor-routing field checks), while recall alone was 41 of 60 vs 35 of 60 (68.3% vs 58.3%, paired 95% CI [−5.0, +25.0], spanning zero)."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "provenance",
+   "heading": "Holdout provenance and derived abstention set",
+   "paragraphs": [
+    "Original registration (recorded 2026-11-02T00:33:21Z before any H100 multi-role training run): 194 retrieval cases (175 queries with a matching Task Object and 19 with no match), 204 review submissions (78 valid, 126 flawed), 106 request-splitting prompts, 150 typed MCP tool-call prompts, and 40 general sanity prompts. Training rows share no seed pack, sentence bank, or normalized user text with these holdouts, and no Meta API output appears in the training set. Later ablations and the adoption decision reused these holdouts: they are training-held-out development evaluations, not a fresh post-selection confirmation.",
+    "Derived 153-case abstention evaluation: after the original multi-role run answered “none” on only 10 of the 19 no-match cases, we constructed a larger 153-case out-of-scope abstention set by swapping each matched retrieval query’s target Task Object for a non-matching sibling of the same kind. Because this 153-case set was derived after the initial registration timestamp, we report its provenance separately; a manual audit of 54 filtered rows found 0 mislabeled cases (95% upper bound 6.6%)."
+   ]
+  },
+  {
+   "type": "table",
+   "id": "variants",
+   "heading": "Paired comparison across Muse Glimmer 30B adapter variants",
+   "intro": "The main-page orchestrator results use the adopted “nothing fits” rank-16 variant (`none-fix`). This table preserves the original adapter and the rank-64 capacity comparison.",
+   "columns": [
+    "Evaluation metric",
+    "Original multi-role (rank 16)",
+    "Adopted “nothing fits” (rank 16)",
+    "Larger rank-64 ablation"
+   ],
+   "rows": [
+    [
+     "Retrieval hit@1 (175 queries with a match)",
+     "89.14%",
+     "88.57%",
+     "89.71%"
+    ],
+    [
+     "Retrieval recall@5 (175 queries with a match)",
+     "97.14%",
+     "89.14%",
+     "97.71%"
+    ],
+    [
+     "Correct abstention (153 derived no-match queries)",
+     "50.98%",
+     "83.66%",
+     "35.95%"
+    ],
+    [
+     "Routing Task-Object F1 (106 held-out requests)",
+     "97.80% (96.23% exact)",
+     "97.92% (96.23% exact)",
+     "89.62% (88.68% exact)"
+    ],
+    [
+     "Review balanced accuracy (204 held-out reviews)",
+     "99.21%",
+     "99.60%",
+     "100.00%"
+    ],
+    [
+     "Flawed reports accepted (126 flawed cases)",
+     "2 of 126 (1.59%)",
+     "1 of 126 (0.79%)",
+     "0 of 126 (0.00%)"
+    ],
+    [
+     "Tool-call exact match (150 cases, 256-token budget)",
+     "99.33%",
+     "99.33%",
+     "98.67%"
+    ]
+   ],
+   "notes": [
+    "Abstention vs recall@5 tradeoff (2,000 paired bootstrap resamples): raising “nothing fits” training rows from 10% to 29% of retrieval data lifted derived no-match abstention by +32.68 points (95% CI [+25.49, +40.52]), while abstaining on 19 of 175 answer-present queries and lowering recall@5 by −8.00 points (95% CI [−12.00, −4.00]). Among answer-present queries where it named a candidate, 155 of 156 top picks were correct. Across the original mixed 194-case set, 155 of 158 named picks were correct; the separate derived no-match set had 25 false matches in 153 cases. These populations do not estimate production precision. Lexical top-5 fallback after abstention is proposed; its combined accuracy, latency and cost have not been measured here.",
+    "Flawed-report sample uncertainty: the shift from 2 wrong accepts (1.59%) to 1 wrong accept (0.79%) on 126 flawed reports has a paired 95% interval of [−3.62, +1.65] percentage points, which includes zero. Three deterministic pre-checks (minimum claim count, required legal-summary disclaimer, and verbatim quote check) flag 59 of the 204 review fixtures, with no gold-accept case flagged. The checks plus either the original or adopted Glimmer verdict match all 204 fixture labels, including all 126 flawed cases. This is a saved-output composition on a specified report format, not general factual or source verification.",
+    "Rank-64 capacity regression: quadrupling adapter parameters from rank 16 to rank 64 reduced routing Task-Object F1 by −8.18 points (95% CI [−14.15, −3.46]) and reduced derived no-match abstention by −15.03 points (95% CI [−22.22, −8.50])."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "budgets-and-serving",
+   "heading": "Response-budget sensitivity and serving scope",
+   "paragraphs": [
+    "Fixed vs longer response budgets on tool calling and review: the registered scoring pipeline applies per-role token budgets before scoring (`256` tokens for tool calling, `192` for retrieval, `128` for review, `384` for routing, and `96` for sanity). Within the `256`-token tool-call budget, the tuned adapter reaches `99.3%` strict exact match against `94.0%` for base (`+5.3` points, 95% CI `[+2.0, +9.3]`). When scored over full `384`-token replies without the role cap, the base model’s reasoning trace less often crowds out its JSON call, raising base to `96.7%` against `99.3%` tuned (`+2.7` points, 95% CI `[−0.7, +6.0]`, interval includes zero). On review, removing the `128`-token cap lifts base balanced accuracy from `28.3%` to `49.9%` against `99.2%`–`99.6%` tuned.",
+    "Recorded endpoint verification (November 2, 2026): the adopted “nothing fits” Muse Glimmer 30B adapter was deployed to a dedicated serverless H100 evaluation endpoint. Seven calls were recorded as correct at 17:25 UTC: one cold call at 55.2 seconds and six warm calls across four roles, with a combined median of 3.27 seconds. This small mixed-role sample does not establish general request latency. These records do not establish routine Glimmer routing in the live Eranos fleet; its recorded operational policy uses hosted Muse Spark 1.3 and Muse Wonder 1.0 (version 28, 15 outcomes as of November 2).",
+    "Local queue workflow, concurrency, and fault-injection measurements (October 30, 2026): the local queue test suite separates two measurements across 4 local Worker/SQLite cells. First, a 16-pipeline workflow test ran 1,000 generated workflows (25,620 MCP calls at 54.441 ms median and 145.205 ms 95th-percentile call duration; a separate 10-run CLI wave had 9 runtime-verified completions). Second, a 5-tier concurrency test completed 992 Tasks in total (512 Tasks in the 256-slot tier at 678.99 ms median and 1,354.95 ms 95th-percentile call duration across 1,792 MCP calls) with 0 duplicate (cell, Task, fencing-token) lease tuples. Controlled fault-injection checks recorded 16 of 16 expired-lease cases where a replacement worker completed under fencing token 2 and both late heartbeats and late submissions from the stale worker received HTTP 409, plus 16 of 16 direct self-approval attempts and 16 of 16 role/queue permission checks refused with HTTP 403. The duplicate-tuple detector does not observe every possible ownership overlap or establish exactly-once external effects.",
+    "Scope and reproducibility: the JSON links below are summaries of sample counts, arm metrics and paired bootstrap intervals, not the row-level model outputs or a full replay package. Adapter weights remain private under the base model’s license terms. A free practice session exercises live queues and storage rather than re-running H100 model training."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "memory",
+   "heading": "Memory and structured answers",
+   "paragraphs": [
+    "The 62.5 percent versus 29.2 percent comparison combines 60 recall cases and 60 nonprofit request-splitting cases. It compares a tuned model without the retrieval shim with the baseline model using the shim, under the same 352-token response budget.",
+    "Recall alone was 41 of 60 versus 35 of 60. Most of the combined difference came from request splitting. The baseline with retrieval reached the generation cap in 76 of 120 cases; the tuned model did not. These results do not isolate memory from training, formatting or response-budget effects.",
+    "Review of 560 saved outputs reproduced the recorded per-row scores and 18 paired comparisons without new model calls. This is a recorded development experiment, not a customer-outcome or production-latency measurement."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "queue",
+   "heading": "Queue boundaries and recovery",
+   "paragraphs": [
+    "Recorded local workerd and SQLite tests refused 16 direct self-approval attempts with HTTP 403. A separate set of 16 role and queue capability refusals is not counted as another 16 self-approval attempts.",
+    "Sixteen deliberately expired-task cases across four local cells exercised recovery: replacement workers used newer fencing tokens, and old-worker heartbeats and late submissions were refused with HTTP 409. This checks the tested permission and stale-writer boundaries; it does not establish exactly-once external effects or production uptime."
+   ]
+  },
+  {
+   "type": "links",
+   "id": "records",
+   "heading": "Recorded JSON files",
+   "intro": "Machine-readable summaries backing the figures on Benchmarks and this page.",
+   "items": [
     {
-      "type": "page_head",
-      "eyebrow": "Benchmarks · Technical notes",
-      "title": "How we measured this",
-      "lead": "This page documents the training setups, holdout provenance, paired adapter variants, 95% bootstrap intervals, token-budget sensitivity, and live serving boundaries behind the figures on [Benchmarks](/benchmarks/)."
+     "label": "Muse Glimmer 30B evaluations and policy snapshot (/records/glimmer-30b-orchestrator-2026-11-02.json)",
+     "href": "/records/glimmer-30b-orchestrator-2026-11-02.json",
+     "text": "Adopted none-fix metrics, original multi-role and rank-64 ablations, 2x T4 memory run, token-budget comparisons, and policy version 28."
     },
     {
-      "type": "prose",
-      "id": "training",
-      "heading": "Two distinct Muse Glimmer 30B training setups",
-      "paragraphs": [
-        "Orchestrator adapter runs (November 2, 2026): trained on one NVIDIA H100 80GB using full bfloat16 (`bf16`) base weights of Meta’s open-weight Muse Glimmer 30B with a rank-16 LoRA adapter across 7 projections in all 52 text layers (95,846,400 trainable parameters, no 4-bit quantization), over one epoch of 1,762 rows covering four roles: retrieval, review, routing, and typed MCP tool calling. Base and adapter arms were scored in the same H100 session with greedy decoding and one shared code path.",
-        "Zero-shim memory experiment (October 31, 2026): a separate experiment on two NVIDIA T4 GPUs using 4-bit NF4 storage with float16 compute, evaluated on 120 held-out cases under a 352-token generation cap (60 post-cutoff 2026 Task Object recalls and 60 nonprofit intake splits). Across all 120 cases, adapter weights with zero context-shim tokens reached 62.5% exact match against 29.2% for the base model given a 222-token lexical shim (+33.3 percentage points, paired 95% CI [+22.5, +44.2]; 0.0% closed-book), with 2.28x lower amortized generation time per row in batch-of-8 evaluation (8.668 s vs 19.749 s; 76 of 120 base-plus-shim outputs hit the 352-token cap vs 0 tuned). Most of the combined gain came from intake splitting (34 of 60 vs 0 of 60; all 60 generated intake plans passed worker-separation and contributor-routing field checks), while recall alone was 41 of 60 vs 35 of 60 (68.3% vs 58.3%, paired 95% CI [−5.0, +25.0], spanning zero)."
-      ]
+     "label": "256-worker queue run (/records/swarm-256-workers-2026-10.json)",
+     "href": "/records/swarm-256-workers-2026-10.json",
+     "text": "1,000 generated test workflows across 4 local Worker cells: 5,000 Tasks, 25,620 MCP calls, 0 lease collisions, 0 self-approvals."
     },
     {
-      "type": "prose",
-      "id": "provenance",
-      "heading": "Holdout provenance and derived abstention set",
-      "paragraphs": [
-        "Original registration (recorded 2026-11-02T00:33:21Z before any H100 multi-role training run): 194 retrieval cases (175 queries with a matching Task Object and 19 with no match), 204 review submissions (78 valid, 126 flawed), 106 request-splitting prompts, 150 typed MCP tool-call prompts, and 40 general sanity prompts. Training rows share no seed pack, sentence bank, or normalized user text with these holdouts, and no Meta API output appears in the training set. Later ablations and the adoption decision reused these holdouts: they are training-held-out development evaluations, not a fresh post-selection confirmation.",
-        "Derived 153-case abstention evaluation: after the original multi-role run answered “none” on only 10 of the 19 no-match cases, we constructed a larger 153-case out-of-scope abstention set by swapping each matched retrieval query’s target Task Object for a non-matching sibling of the same kind. Because this 153-case set was derived after the initial registration timestamp, we report its provenance separately; a manual audit of 54 filtered rows found 0 mislabeled cases (95% upper bound 6.6%)."
-      ]
+     "label": "Featured Eranos request run (/records/eranos-featured-run-2026-10-31.json)",
+     "href": "/records/eranos-featured-run-2026-10-31.json",
+     "text": "Recorded 3 min 27 s kit build (25 model calls, 8 passing unit tests) and 1 min 23 s separate-key check (14 model calls)."
     },
     {
-      "type": "table",
-      "id": "variants",
-      "heading": "Paired comparison across Muse Glimmer 30B adapter variants",
-      "intro": "The main-page orchestrator results use the adopted “nothing fits” rank-16 variant (`none-fix`). This table preserves the original adapter and the rank-64 capacity comparison.",
-      "columns": [
-        "Evaluation metric",
-        "Original multi-role (rank 16)",
-        "Adopted “nothing fits” (rank 16)",
-        "Larger rank-64 ablation"
-      ],
-      "rows": [
-        [
-          "Retrieval hit@1 (175 queries with a match)",
-          "89.14%",
-          "88.57%",
-          "89.71%"
-        ],
-        [
-          "Retrieval recall@5 (175 queries with a match)",
-          "97.14%",
-          "89.14%",
-          "97.71%"
-        ],
-        [
-          "Correct abstention (153 derived no-match queries)",
-          "50.98%",
-          "83.66%",
-          "35.95%"
-        ],
-        [
-          "Routing Task-Object F1 (106 held-out requests)",
-          "97.80% (96.23% exact)",
-          "97.92% (96.23% exact)",
-          "89.62% (88.68% exact)"
-        ],
-        [
-          "Review balanced accuracy (204 held-out reviews)",
-          "99.21%",
-          "99.60%",
-          "100.00%"
-        ],
-        [
-          "Flawed reports accepted (126 flawed cases)",
-          "2 of 126 (1.59%)",
-          "1 of 126 (0.79%)",
-          "0 of 126 (0.00%)"
-        ],
-        [
-          "Tool-call exact match (150 cases, 256-token budget)",
-          "99.33%",
-          "99.33%",
-          "98.67%"
-        ]
-      ],
-      "notes": [
-        "Abstention vs recall@5 tradeoff (2,000 paired bootstrap resamples): raising “nothing fits” training rows from 10% to 29% of retrieval data lifted derived no-match abstention by +32.68 points (95% CI [+25.49, +40.52]), while abstaining on 19 of 175 answer-present queries and lowering recall@5 by −8.00 points (95% CI [−12.00, −4.00]). Among answer-present queries where it named a candidate, 155 of 156 top picks were correct. Across the original mixed 194-case set, 155 of 158 named picks were correct; the separate derived no-match set had 25 false matches in 153 cases. These populations do not estimate production precision. Lexical top-5 fallback after abstention is proposed; its combined accuracy, latency and cost have not been measured here.",
-        "Flawed-report sample uncertainty: the shift from 2 wrong accepts (1.59%) to 1 wrong accept (0.79%) on 126 flawed reports has a paired 95% interval of [−3.62, +1.65] percentage points, which includes zero. Three deterministic pre-checks (minimum claim count, required legal-summary disclaimer, and verbatim quote check) flag 59 of the 204 review fixtures, with no gold-accept case flagged. The checks plus either the original or adopted Glimmer verdict match all 204 fixture labels, including all 126 flawed cases. This is a saved-output composition on a specified report format, not general factual or source verification.",
-        "Rank-64 capacity regression: quadrupling adapter parameters from rank 16 to rank 64 reduced routing Task-Object F1 by −8.18 points (95% CI [−14.15, −3.46]) and reduced derived no-match abstention by −15.03 points (95% CI [−22.22, −8.50])."
-      ]
+     "label": "Public event repository scan (/records/repo-scan-2026-10-29.json)",
+     "href": "/records/repo-scan-2026-10-29.json",
+     "text": "705 of 739 public event repositories indexed into searchable Tasks and Task Objects."
     },
     {
-      "type": "prose",
-      "id": "budgets-and-serving",
-      "heading": "Response-budget sensitivity and serving scope",
-      "paragraphs": [
-        "Fixed vs longer response budgets on tool calling and review: the registered scoring pipeline applies per-role token budgets before scoring (`256` tokens for tool calling, `192` for retrieval, `128` for review, `384` for routing, and `96` for sanity). Within the `256`-token tool-call budget, the tuned adapter reaches `99.3%` strict exact match against `94.0%` for base (`+5.3` points, 95% CI `[+2.0, +9.3]`). When scored over full `384`-token replies without the role cap, the base model’s reasoning trace less often crowds out its JSON call, raising base to `96.7%` against `99.3%` tuned (`+2.7` points, 95% CI `[−0.7, +6.0]`, interval includes zero). On review, removing the `128`-token cap lifts base balanced accuracy from `28.3%` to `49.9%` against `99.2%`–`99.6%` tuned.",
-        "Recorded endpoint verification (November 2, 2026): the adopted “nothing fits” Muse Glimmer 30B adapter was deployed to a dedicated serverless H100 evaluation endpoint. Seven calls were recorded as correct at 17:25 UTC: one cold call at 55.2 seconds and six warm calls across four roles, with a combined median of 3.27 seconds. This small mixed-role sample does not establish general request latency. These records do not establish routine Glimmer routing in the live Eranos fleet; its recorded operational policy uses hosted Muse Spark 1.3 and Muse Wonder 1.0 (version 28, 15 outcomes as of November 2).",
-        "Local queue workflow, concurrency, and fault-injection measurements (October 30, 2026): the local queue test suite separates two measurements across 4 local Worker/SQLite cells. First, a 16-pipeline workflow test ran 1,000 generated workflows (25,620 MCP calls at 54.441 ms median and 145.205 ms 95th-percentile call duration; a separate 10-run CLI wave had 9 runtime-verified completions). Second, a 5-tier concurrency test completed 992 Tasks in total (512 Tasks in the 256-slot tier at 678.99 ms median and 1,354.95 ms 95th-percentile call duration across 1,792 MCP calls) with 0 duplicate (cell, Task, fencing-token) lease tuples. Controlled fault-injection checks recorded 16 of 16 expired-lease cases where a replacement worker completed under fencing token 2 and both late heartbeats and late submissions from the stale worker received HTTP 409, plus 16 of 16 direct self-approval attempts and 16 of 16 role/queue permission checks refused with HTTP 403. The duplicate-tuple detector does not observe every possible ownership overlap or establish exactly-once external effects.",
-        "Scope and reproducibility: the JSON links below are summaries of sample counts, arm metrics and paired bootstrap intervals, not the row-level model outputs or a full replay package. Adapter weights remain private under the base model’s license terms. A free practice session exercises live queues and storage rather than re-running H100 model training."
-      ]
-    },
-    {
-      "type": "prose",
-      "id": "memory",
-      "heading": "Memory and structured answers",
-      "paragraphs": [
-        "The 62.5 percent versus 29.2 percent comparison combines 60 recall cases and 60 nonprofit request-splitting cases. It compares a tuned model without the retrieval shim with the baseline model using the shim, under the same 352-token response budget.",
-        "Recall alone was 41 of 60 versus 35 of 60. Most of the combined difference came from request splitting. The baseline with retrieval reached the generation cap in 76 of 120 cases; the tuned model did not. These results do not isolate memory from training, formatting or response-budget effects.",
-        "Review of 560 saved outputs reproduced the recorded per-row scores and 18 paired comparisons without new model calls. This is a recorded development experiment, not a customer-outcome or production-latency measurement."
-      ]
-    },
-    {
-      "type": "prose",
-      "id": "queue",
-      "heading": "Queue boundaries and recovery",
-      "paragraphs": [
-        "Recorded local workerd and SQLite tests refused 16 direct self-approval attempts with HTTP 403. A separate set of 16 role and queue capability refusals is not counted as another 16 self-approval attempts.",
-        "Sixteen deliberately expired-task cases across four local cells exercised recovery: replacement workers used newer fencing tokens, and old-worker heartbeats and late submissions were refused with HTTP 409. This checks the tested permission and stale-writer boundaries; it does not establish exactly-once external effects or production uptime."
-      ]
-    },
-    {
-      "type": "links",
-      "id": "records",
-      "heading": "Recorded JSON files",
-      "intro": "Machine-readable summaries backing the figures on Benchmarks and this page.",
-      "items": [
-        {
-          "label": "Muse Glimmer 30B evaluations and policy snapshot (/records/glimmer-30b-orchestrator-2026-11-02.json)",
-          "href": "/records/glimmer-30b-orchestrator-2026-11-02.json",
-          "text": "Adopted none-fix metrics, original multi-role and rank-64 ablations, 2x T4 memory run, token-budget comparisons, and policy version 28."
-        },
-        {
-          "label": "256-worker queue run (/records/swarm-256-workers-2026-10.json)",
-          "href": "/records/swarm-256-workers-2026-10.json",
-          "text": "1,000 generated test workflows across 4 local Worker cells: 5,000 Tasks, 25,620 MCP calls, 0 lease collisions, 0 self-approvals."
-        },
-        {
-          "label": "Featured Eranos request run (/records/eranos-featured-run-2026-10-31.json)",
-          "href": "/records/eranos-featured-run-2026-10-31.json",
-          "text": "Recorded 3 min 27 s kit build (25 model calls, 8 passing unit tests) and 1 min 23 s separate-key check (14 model calls)."
-        },
-        {
-          "label": "Public event repository scan (/records/repo-scan-2026-10-29.json)",
-          "href": "/records/repo-scan-2026-10-29.json",
-          "text": "705 of 739 public event repositories indexed into searchable Tasks and Task Objects."
-        },
-        {
-          "label": "Back to Benchmarks (/benchmarks)",
-          "href": "/benchmarks/",
-          "text": "Capability-grouped overview of all measured and pending Teleion Fabric benchmarks."
-        }
-      ]
-    },
-    {
-      "type": "actions",
-      "items": [
-        {
-          "label": "Back to Benchmarks",
-          "href": "/benchmarks/",
-          "style": "secondary"
-        },
-        {
-          "label": "Start a free practice session",
-          "href": "/docs/",
-          "style": "primary"
-        }
-      ]
+     "label": "Back to Benchmarks (/benchmarks)",
+     "href": "/benchmarks/",
+     "text": "Capability-grouped overview of all measured and pending Teleion Fabric benchmarks."
     }
-  ]
+   ]
+  },
+  {
+   "type": "actions",
+   "items": [
+    {
+     "label": "Back to Benchmarks",
+     "href": "/benchmarks/",
+     "style": "secondary"
+    },
+    {
+     "label": "Start a free practice session",
+     "href": "/docs/",
+     "style": "primary"
+    }
+   ]
+  }
+ ]
 }

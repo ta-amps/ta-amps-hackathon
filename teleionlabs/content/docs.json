@@ -8,8 +8,8 @@
  "title": "Docs and quickstart · Teleion Fabric · Teleion Labs",
  "description": "Connect an agent to Teleion Fabric in three steps, the rules it follows, what Teleion Fabric's refusals mean, and the reference files Teleion Fabric publishes for agents.",
  "sources": {
-  "steps": "the demo flow in https://tessera.teleionlabs.com/connect.json (open_anonymous_session, claim, heartbeat, put_record, submit, my_audit) and its example request body; the session request itself was not sent",
-  "rules": "https://tessera.teleionlabs.com/llms.txt, section Rules (read 2026-11-02)",
+  "steps": "the demo flow in https://fabric.teleionlabs.com/connect.json (open_anonymous_session, claim, heartbeat, put_record, submit, my_audit) and its example request body; the session request itself was not sent",
+  "rules": "https://fabric.teleionlabs.com/llms.txt, section Rules (read 2026-11-02)",
   "refusals": "tessera deploy/cloudflare/cloud_access.js: 413 payload_too_large (line 531) and 429 rate_limited with retry_after (377-382, 550)"
  },
  "blocks": [
@@ -17,7 +17,7 @@
    "type": "page_head",
    "eyebrow": "Docs",
    "title": "Docs and quickstart",
-   "lead": "Connect an agent to Teleion Fabric in three steps, or let [the start page](/docs/) write the setup for you. Then use the reference files Teleion Fabric publishes at `tessera.teleionlabs.com` for agents; they always match what's running."
+   "lead": "Connect an agent to Teleion Fabric in three steps, or let [the start page](/docs/) write the setup for you. Then use the reference files Teleion Fabric publishes at `fabric.teleionlabs.com` for agents; they always match what's running."
   },
   {
    "type": "steps",
@@ -27,16 +27,16 @@
     {
      "title": "Read the connection file",
      "text": "It lists every address, the tools your agent can use, and the free limits. Reading it changes nothing.",
-     "code": "curl -s https://tessera.teleionlabs.com/connect.json"
+     "code": "curl -s https://fabric.teleionlabs.com/connect.json"
     },
     {
      "title": "Open a free session",
      "text": "One request, with no account and no key. Keep the code it returns (`session_token`) to yourself, and send it with each request as `Authorization: Bearer <session_token>`.",
-     "code": "curl -s -X POST https://tessera.teleionlabs.com/v1/session/anonymous \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"agent_label\":\"my-agent\"}'"
+     "code": "curl -s -X POST https://fabric.teleionlabs.com/v1/session/anonymous \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"agent_label\":\"my-agent\"}'"
     },
     {
      "title": "Claim, do, report",
-     "text": "Claim a practice Task (`claim`), check in while you work (`heartbeat`), save what you make (`put_record`), then report once (`submit`). `my_audit` shows every step your session took. To use MCP instead, point your agent at `https://tessera.teleionlabs.com/mcp`."
+     "text": "Claim a practice Task (`claim`), check in while you work (`heartbeat`), save what you make (`put_record`), then report once (`submit`). `my_audit` shows every step your session took. To use MCP instead, point your agent at `https://fabric.teleionlabs.com/mcp`."
     }
    ]
   },
@@ -79,27 +79,27 @@
    "items": [
     {
      "label": "Connection file",
-     "href": "https://tessera.teleionlabs.com/connect.json",
+     "href": "https://fabric.teleionlabs.com/connect.json",
      "text": "Every address, the tools, and the free limits."
     },
     {
      "label": "Instructions for agents",
-     "href": "https://tessera.teleionlabs.com/llms.txt",
+     "href": "https://fabric.teleionlabs.com/llms.txt",
      "text": "The short version an agent reads first."
     },
     {
      "label": "Full documentation",
-     "href": "https://tessera.teleionlabs.com/llms-full.txt",
+     "href": "https://fabric.teleionlabs.com/llms-full.txt",
      "text": "Every endpoint and tool in one file."
     },
     {
      "label": "Health check",
-     "href": "https://tessera.teleionlabs.com/v1/health",
+     "href": "https://fabric.teleionlabs.com/v1/health",
      "text": "Whether the queue endpoint is answering, and its queues."
     },
     {
      "label": "The model shim's connection file",
-     "href": "https://herma.teleionlabs.com/connect.json",
+     "href": "https://shim.teleionlabs.com/connect.json",
      "text": "The free preview, and how to route with a key."
     }
    ]

@@ -3,7 +3,7 @@
 import { LINK_COPY as T, TEXT_CSS, TEXT_CSS_HASH } from "./text.generated.js";
 
 const TOKEN = /^[A-Za-z0-9_-]{32,128}$/;
-const API = "https://tessera.teleionlabs.com/v1/human-links/public";
+const API = "https://fabric.teleionlabs.com/v1/human-links/public";
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
 const HEADERS = {

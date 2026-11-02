@@ -131,7 +131,7 @@
      ],
      "steps": [
       "read https://teleionlabs.com/llms.txt",
-      "read https://tessera.teleionlabs.com/connect.json",
+      "read https://fabric.teleionlabs.com/connect.json",
       "open a free session, with no account and no key",
       "claim a Task"
      ]

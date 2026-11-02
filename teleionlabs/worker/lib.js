@@ -25,9 +25,9 @@ const OVERVIEW_PREFIXES = new Set([
 ]);
 const PROBE_TIMEOUT_MS = 4000;
 // Upstream hosts the status check may read. Anything else in the sources file is ignored.
-const STATUS_HOSTS = new Set(["tessera.teleionlabs.com", "herma.teleionlabs.com", "eranosforgood.org"]);
+const STATUS_HOSTS = new Set(["fabric.teleionlabs.com", "shim.teleionlabs.com", "eranosforgood.org"]);
 // Service bindings, when configured, reach the other Workers directly instead of over the internet.
-const STATUS_BINDINGS = { tessera: "TESSERA", shim: "HERMA", eranos: "ERANOS" };
+const STATUS_BINDINGS = { fabric: "TESSERA", shim: "HERMA", eranos: "ERANOS" };
 
 export const SECURITY_HEADERS = {
   "Content-Security-Policy": [

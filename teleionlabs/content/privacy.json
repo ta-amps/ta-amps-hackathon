@@ -1,82 +1,82 @@
 {
-  "kind": "task_object",
-  "id": "teleion.instructions/page.privacy",
-  "version": 4,
-  "updated": "2026-11-02",
-  "route": "/privacy/",
-  "output": "privacy/index.html",
-  "title": "Privacy · Teleion Fabric · Teleion Labs",
-  "description": "What teleionlabs.com, Teleion Fabric and its model shim keep, and for how long, in plain words.",
-  "sources": {
-    "this site": "worker/lib.js (no cookies, CSP 'self', GET and HEAD only); tests/check_site.mjs (no browser storage, no cookies on any page); static/assets/start.js (no request, no storage)",
-    "logs": "wrangler.jsonc: observability, logs, invocation logs, traces and real-time Issues off for this Worker (F-PRIV-LOGS-001, carried from the reviewed v0.3 re-check N4); www.teleionlabs.com is served by www-canonical-redirect, whose script-settings read observability null on 2026-11-02 17:05 UTC; Cloudflare's security tools can record blocked or challenged requests for the zone owner",
-    "tessera": "connect.json anonymous section (session records removed after 24 hours; audit_retention_seconds 86400); cloud_access.js requestIdentity (HMAC-SHA-256 with a stored salt and the day in the input); tessera script-settings read 2026-11-02 17:10 UTC: logs on with invocation logs, traces on and persisted; Workers Logs keep 3 days on Workers Free and traces 7 days (developers.cloudflare.com/workers/observability/, read 2026-11-02); the log fields per the reviewer's live tail (REVIEW-3106fe6.md Addendum 3)",
-    "shim preview": "POST /api/preview answered persisted:false (2026-11-02); herma script-settings read 2026-11-02 17:10 UTC: invocation logs off, traces off; the shim's Worker code writes no log lines of its own (its console calls sit in a generated command-line script, not in the Worker)",
-    "eranos": "the lead's brief (Nov 2): requests on Eranos are public; https://eranosforgood.org/privacy answers 200",
-    "plain words": "the lead's brief (Nov 2): plain factual pages, no legal claims beyond these facts; the owner may replace them with lawyer-written text",
-    "contact": "hello@ and security@teleionlabs.com each have an enabled Email Routing rule (security@ read 2026-11-02 16:58 UTC)",
-    "map": "Tessera edge_activity.js (live 7424196): only claims in the shared namespace, never private Tasks; data center (2 or more workers) or continent; no IP address, city or user agent; show_on_map false keeps a worker in the totals only",
-    "logs_retention": "Cloudflare Workers Logs retention: Free 3 days, Paid 7 days, maximum 7 days; queue plan is not asserted here. https://developers.cloudflare.com/workers/observability/logs/workers-logs/; traces https://developers.cloudflare.com/workers/observability/traces/ (verified November 2, 2026)"
+ "kind": "task_object",
+ "id": "teleion.instructions/page.privacy",
+ "version": 4,
+ "updated": "2026-11-02",
+ "route": "/privacy/",
+ "output": "privacy/index.html",
+ "title": "Privacy · Teleion Fabric · Teleion Labs",
+ "description": "What teleionlabs.com, Teleion Fabric and its model shim keep, and for how long, in plain words.",
+ "sources": {
+  "this site": "worker/lib.js (no cookies, CSP 'self', GET and HEAD only); tests/check_site.mjs (no browser storage, no cookies on any page); static/assets/start.js (no request, no storage)",
+  "logs": "wrangler.jsonc: observability, logs, invocation logs, traces and real-time Issues off for this Worker (F-PRIV-LOGS-001, carried from the reviewed v0.3 re-check N4); www.teleionlabs.com is served by www-canonical-redirect, whose script-settings read observability null on 2026-11-02 17:05 UTC; Cloudflare's security tools can record blocked or challenged requests for the zone owner",
+  "tessera": "connect.json anonymous section (session records removed after 24 hours; audit_retention_seconds 86400); cloud_access.js requestIdentity (HMAC-SHA-256 with a stored salt and the day in the input); tessera script-settings read 2026-11-02 17:10 UTC: logs on with invocation logs, traces on and persisted; Workers Logs keep 3 days on Workers Free and traces 7 days (developers.cloudflare.com/workers/observability/, read 2026-11-02); the log fields per the reviewer's live tail (REVIEW-3106fe6.md Addendum 3)",
+  "shim preview": "POST /api/preview answered persisted:false (2026-11-02); herma script-settings read 2026-11-02 17:10 UTC: invocation logs off, traces off; the shim's Worker code writes no log lines of its own (its console calls sit in a generated command-line script, not in the Worker)",
+  "eranos": "the lead's brief (Nov 2): requests on Eranos are public; https://eranosforgood.org/privacy answers 200",
+  "plain words": "the lead's brief (Nov 2): plain factual pages, no legal claims beyond these facts; the owner may replace them with lawyer-written text",
+  "contact": "hello@ and security@teleionlabs.com each have an enabled Email Routing rule (security@ read 2026-11-02 16:58 UTC)",
+  "map": "Tessera edge_activity.js (live 7424196): only claims in the shared namespace, never private Tasks; data center (2 or more workers) or continent; no IP address, city or user agent; show_on_map false keeps a worker in the totals only",
+  "logs_retention": "Cloudflare Workers Logs retention: Free 3 days, Paid 7 days, maximum 7 days; queue plan is not asserted here. https://developers.cloudflare.com/workers/observability/logs/workers-logs/; traces https://developers.cloudflare.com/workers/observability/traces/ (verified November 2, 2026)"
+ },
+ "blocks": [
+  {
+   "type": "page_head",
+   "eyebrow": "Privacy",
+   "title": "Privacy",
+   "lead": "What teleionlabs.com, Teleion Fabric and its model shim keep, and for how long. Updated November 2, 2026."
   },
-  "blocks": [
-    {
-      "type": "page_head",
-      "eyebrow": "Privacy",
-      "title": "Privacy",
-      "lead": "What teleionlabs.com, Teleion Fabric and its model shim keep, and for how long. Updated November 2, 2026."
-    },
-    {
-      "type": "prose",
-      "id": "site",
-      "heading": "This site",
-      "paragraphs": [
-        "teleionlabs.com has no accounts, no cookies, no analytics scripts and no ads, and it stores nothing in your browser.",
-        "The live status on the home and status pages is read by our server, so your browser talks only to teleionlabs.com. The setup writer on the start page runs in your browser and sends nothing.",
-        "Worker request logging and tracing for teleionlabs.com are disabled. Cloudflare may process connection and request information to deliver and protect the site, and may record requests its security tools block or challenge."
-      ]
-    },
-    {
-      "type": "prose",
-      "id": "fabric",
-      "heading": "Teleion Fabric without an account",
-      "paragraphs": [
-        "A free session gets its own practice space. What it saves, and the record of what it did, are deleted after 24 hours.",
-        "The queue endpoint counts requests by network address to keep free use fair, and its audit record notes the name of your software. It keeps both as a keyed one-way value that changes every day, not the address or the name itself.",
-        "Cloudflare keeps the queue endpoint's request logs for up to 7 days and its request traces for 7 days. The logs hold your network address, your browser's name, the address you asked for, the time and an approximate location.",
-        "Claims on Tasks in the shared queue appear on the public activity map by Cloudflare data center or continent, never by network address, unless the worker joined with `show_on_map` set to false. Work in your own space never appears there."
-      ]
-    },
-    {
-      "type": "prose",
-      "id": "shim",
-      "heading": "Teleion Fabric's model shim",
-      "paragraphs": [
-        "The free preview calls no model and saves nothing. The shim's request logs are off."
-      ]
-    },
-    {
-      "type": "prose",
-      "id": "eranos",
-      "heading": "Eranos",
-      "paragraphs": [
-        "Requests on Eranos are public: anyone can read a request and its result. Eranos has its own [privacy page](https://eranosforgood.org/privacy)."
-      ]
-    },
-    {
-      "type": "prose",
-      "id": "private",
-      "heading": "Private information",
-      "paragraphs": [
-        "We don't accept private information at this stage. Please leave it out of Tasks, records, questions and requests."
-      ]
-    },
-    {
-      "type": "prose",
-      "id": "contact",
-      "heading": "Questions",
-      "paragraphs": [
-        "Write to hello@teleionlabs.com. For a security problem, write to security@teleionlabs.com."
-      ]
-    }
-  ]
+  {
+   "type": "prose",
+   "id": "site",
+   "heading": "This site",
+   "paragraphs": [
+    "teleionlabs.com has no accounts, no cookies, no analytics scripts and no ads, and it stores nothing in your browser.",
+    "The live status on the home and status pages is read by our server, so your browser talks only to teleionlabs.com. The setup writer on the start page runs in your browser and sends nothing.",
+    "Worker request logging and tracing for teleionlabs.com are disabled. Cloudflare may process connection and request information to deliver and protect the site, and may record requests its security tools block or challenge."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "fabric",
+   "heading": "Teleion Fabric without an account",
+   "paragraphs": [
+    "A free session gets its own practice space. What it saves, and the record of what it did, are deleted after 24 hours.",
+    "The queue endpoint counts requests by network address to keep free use fair, and its audit record notes the name of your software. It keeps both as a keyed one-way value that changes every day, not the address or the name itself.",
+    "Cloudflare keeps the queue endpoint's request logs for up to 7 days and its request traces for 7 days. The logs hold your network address, your browser's name, the address you asked for, the time and an approximate location.",
+    "Claims on Tasks in the shared queue appear on the public activity map by Cloudflare data center or continent, never by network address, unless the worker joined with `show_on_map` set to false. Work in your own space never appears there."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "shim",
+   "heading": "Teleion Fabric's model shim",
+   "paragraphs": [
+    "The free preview calls no model and saves nothing. The shim's request logs are off."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "eranos",
+   "heading": "Eranos",
+   "paragraphs": [
+    "Requests on Eranos are public: anyone can read a request and its result. Eranos has its own [privacy page](https://eranosforgood.org/privacy)."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "private",
+   "heading": "Private information",
+   "paragraphs": [
+    "We don't accept private information at this stage. Please leave it out of Tasks, records, questions and requests."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "contact",
+   "heading": "Questions",
+   "paragraphs": [
+    "Write to hello@teleionlabs.com. For a security problem, write to security@teleionlabs.com."
+   ]
+  }
+ ]
 }

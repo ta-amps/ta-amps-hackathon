@@ -57,7 +57,7 @@ test("the adapter uses only the fixed HERMA binding GET and forwards no client h
   const env = { HERMA: { fetch: async (req) => { seen = req; return Response.json({ ...fixture(), replay: { claims: [] } }); } } };
   const response = await networkResponse(request("?replay=1&kind=nonprofit", { headers: { cookie: "fixture", authorization: "fixture" } }), env, {}, okWords);
   assert.equal(response.status, 200);
-  assert.equal(seen.url, "https://herma.teleionlabs.com/q/network?kind=nonprofit&replay=1");
+  assert.equal(seen.url, "https://shim.teleionlabs.com/q/network?kind=nonprofit&replay=1");
   assert.equal(seen.method, "GET"); assert.equal(seen.headers.get("cookie"), null); assert.equal(seen.headers.get("authorization"), null);
   assert.equal(seen.redirect, "manual"); assert.equal(response.headers.get("Cache-Control"), "no-store");
 });

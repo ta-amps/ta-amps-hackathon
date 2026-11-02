@@ -9,8 +9,8 @@
  "description": "How to report a security problem, what this site does and doesn't do with your data, and how Teleion Fabric keeps free sessions and keys apart.",
  "sources": {
   "site": "worker/lib.js (CSP 'self' only, GET/HEAD only, no cookies) and tests/check_site.mjs (no browser storage, no cookies on any page)",
-  "free sessions": "https://tessera.teleionlabs.com/connect.json anonymous section (own practice space, sees only its own work, deleted after 24 hours, never approves or publishes)",
-  "keys": "https://tessera.teleionlabs.com/llms.txt, Rules ('keys are scoped to queues and expire')",
+  "free sessions": "https://fabric.teleionlabs.com/connect.json anonymous section (own practice space, sees only its own work, deleted after 24 hours, never approves or publishes)",
+  "keys": "https://fabric.teleionlabs.com/llms.txt, Rules ('keys are scoped to queues and expire')",
   "library code": "connect.json library.guarantees ('Submitted code is stored as text and never executed by Tessera.')",
   "contact": "security@teleionlabs.com: an enabled Email Routing rule that forwards (5a5b9ba3, added by Antigravity; read 2026-11-02 16:58 UTC)"
  },

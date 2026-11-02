@@ -1,47 +1,47 @@
 {
-  "kind": "task_object",
-  "id": "teleion.instructions/page.video",
-  "version": 1,
-  "updated": "2026-11-02",
-  "route": "/video/",
-  "output": "video/index.html",
-  "title": "Watch the preview · Teleion Labs",
-  "description": "A 52-second recorded preview of Teleion Fabric and Eranos, with captions and a transcript.",
-  "blocks": [
+ "kind": "task_object",
+ "id": "teleion.instructions/page.video",
+ "version": 1,
+ "updated": "2026-11-02",
+ "route": "/video/",
+ "output": "video/index.html",
+ "title": "Watch the preview · Teleion Labs",
+ "description": "A 52-second recorded preview of Teleion Fabric and Eranos, with captions and a transcript.",
+ "blocks": [
+  {
+   "type": "video_head",
+   "eyebrow": "52-second product preview",
+   "title": "See agents share the work.",
+   "lead": "A quick look at Teleion Fabric and Eranos, our public-good application for nonprofits.",
+   "actions": [
     {
-      "type": "video_head",
-      "eyebrow": "52-second product preview",
-      "title": "See agents share the work.",
-      "lead": "A quick look at Teleion Fabric and Eranos, our public-good application for nonprofits.",
-      "actions": [
-        {
-          "label": "Start free",
-          "href": "/docs/#quickstart",
-          "style": "primary"
-        },
-        {
-          "label": "Explore Eranos",
-          "href": "https://eranosforgood.org/"
-        }
-      ]
+     "label": "Start free",
+     "href": "/docs/#quickstart",
+     "style": "primary"
     },
     {
-      "type": "video",
-      "media": "/media/teleion-fabric-preview-20261102.mp4",
-      "captions": "/media/teleion-fabric-preview-20261102.vtt",
-      "poster": "/assets/video-preview.svg",
-      "label": "Teleion Fabric and Eranos recorded product preview",
-      "captions_label": "English",
-      "download": "Download the video (MP4, 6.6 MB)",
-      "captions_download": "English captions (VTT)",
-      "context": "Recorded preview. Screens show a work-in-progress interface. Benchmark scenes show local queue tests and offline model evaluations, not live service guarantees. The 256-worker result used local test workers; the task-splitting F1 result is the original Glimmer adapter on 106 held-out fixtures. Hourly worker-policy updates are separate from adapter training. The collision count reflects the local test detector; it is not proof of exactly-once work.",
-      "transcript_label": "Read the transcript",
-      "transcript": [
-        "AI is smart. The way we use it is frustratingly dumb: agents miss what is new, rewrite existing code, and stall on long queues.",
-        "Teleion Labs builds Teleion Fabric so agents share work, check results with a separate key, and reuse vetted kits, free with no account through December 31, 2026.",
-        "Measured on recorded runs: zero lease collisions across 256 workers, hourly self-tuning over Meta’s Muse Spark 1.3 and Muse Wonder 1.0, and 97.8 percent held-out Task-splitting F1 on our compact Muse Glimmer 30B adapter.",
-        "Eranos shows Teleion Fabric working for nonprofits on cited public-source requests. Start free at teleionlabs.com, or lend spare AI capacity at eranosforgood.org."
-      ]
+     "label": "Explore Eranos",
+     "href": "https://eranosforgood.org/"
     }
-  ]
+   ]
+  },
+  {
+   "type": "video",
+   "media": "/media/teleion-fabric-preview-20261102.mp4",
+   "captions": "/media/teleion-fabric-preview-20261102.vtt",
+   "poster": "/assets/video-preview.svg",
+   "label": "Teleion Fabric and Eranos recorded product preview",
+   "captions_label": "English",
+   "download": "Download the video (MP4, 6.6 MB)",
+   "captions_download": "English captions (VTT)",
+   "context": "Recorded preview. Screens show a work-in-progress interface. Benchmark scenes show local queue tests and offline model evaluations, not live service guarantees. The 256-worker result used local test workers; the task-splitting F1 result is the original Glimmer adapter on 106 held-out fixtures. Hourly worker-policy updates are separate from adapter training. The collision count reflects the local test detector; it is not proof of exactly-once work.",
+   "transcript_label": "Read the transcript",
+   "transcript": [
+    "AI is smart. The way we use it is frustratingly dumb: agents miss what is new, rewrite existing code, and stall on long queues.",
+    "Teleion Labs builds Teleion Fabric so agents share work, check results with a separate key, and reuse vetted kits, free with no account through December 31, 2026.",
+    "Measured on recorded runs: zero lease collisions across 256 workers, hourly self-tuning over Meta’s Muse Spark 1.3 and Muse Wonder 1.0, and 97.8 percent held-out Task-splitting F1 on our compact Muse Glimmer 30B adapter.",
+    "Eranos shows Teleion Fabric working for nonprofits on cited public-source requests. Start free at teleionlabs.com, or lend spare AI capacity at eranosforgood.org."
+   ]
+  }
+ ]
 }

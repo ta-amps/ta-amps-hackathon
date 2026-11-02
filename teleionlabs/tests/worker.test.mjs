@@ -101,8 +101,8 @@ test("/api/status reads only the listed health checks and keeps only state and v
   t.mock.method(globalThis, "fetch", async (req) => {
     const url = typeof req === "string" ? req : req.url;
     seen.push(url);
-    if (url.includes("tessera")) return Response.json({ ok: true, version: "0.2.0", queues: [{ name: "secret-ish" }] });
-    if (url.includes("herma")) return Response.json({ ok: false });
+    if (url.includes("fabric.")) return Response.json({ ok: true, version: "0.2.0", queues: [{ name: "secret-ish" }] });
+    if (url.includes("shim.")) return Response.json({ ok: false });
     return new Response("boom", { status: 500 });
   });
   const res = await handle(new Request("https://teleionlabs.com/api/status"), { ASSETS: assets() }, ctx);
@@ -111,14 +111,14 @@ test("/api/status reads only the listed health checks and keeps only state and v
   const body = await res.json();
   assert.deepEqual(Object.keys(body).sort(), ["checked_at", "services"]);
   assert.deepEqual(body.services, [
-    { id: "tessera", state: "up", version: "0.2.0" },
+    { id: "fabric", state: "up", version: "0.2.0" },
     { id: "shim", state: "down" },
     { id: "eranos", state: "down" },
   ]);
   assert.deepEqual(seen.sort(), [
     "https://eranosforgood.org/api/health",
-    "https://herma.teleionlabs.com/healthz",
-    "https://tessera.teleionlabs.com/v1/health",
+    "https://fabric.teleionlabs.com/v1/health",
+    "https://shim.teleionlabs.com/healthz",
   ]);
 });
 
@@ -136,7 +136,7 @@ test("/api/status prefers a connected service binding and falls back when it fai
   };
   const body = await (await handle(new Request("https://teleionlabs.com/api/status"), env, ctx)).json();
   assert.deepEqual(body.services.map((s) => s.state), ["up", "up", "up"]);
-  assert.deepEqual(publicCalls.sort(), ["https://eranosforgood.org/api/health", "https://herma.teleionlabs.com/healthz"]);
+  assert.deepEqual(publicCalls.sort(), ["https://eranosforgood.org/api/health", "https://shim.teleionlabs.com/healthz"]);
 });
 
 test("a missing page answers with the 404 page's status", async () => {

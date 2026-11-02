@@ -1,6 +1,6 @@
 // Read-only presentation adapter for Herma's existing public aggregate. No worker identities, credentials,
 // work authority or client-selected destination cross this boundary. Counts remain Herma's observations.
-const ORIGIN = "https://herma.teleionlabs.com/q/network";
+const ORIGIN = "https://shim.teleionlabs.com/q/network";
 const CACHE_ORIGIN = "https://teleionlabs.com/api/network";
 const KINDS = new Set(["nonprofit", "shared", "check", "own"]);
 const CONTINENTS = { AF: "Africa", AN: "Antarctica", AS: "Asia", EU: "Europe", NA: "North America", OC: "Oceania", SA: "South America" };

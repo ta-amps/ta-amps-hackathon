@@ -39,6 +39,7 @@ SHARED = Path(os.environ.get("BANNED_WORDS") or HERE.parents[2] / "coordination-
 # Site rules. None of these is a banned word; they keep this site to its four names and its own facts.
 SITE_RULES = [
     ("other surface and project names", r"\bagora\b|ta-amps"),
+    ("one product name: Teleion Fabric", r"\btessera\b|\bherma\b"),
     ("an alias host on the canonical site", r"workers\.dev"),
     ("agent apps", r"muse code|openclaw|\bopencode\b|\bhermes\b"),
     ("stamp", r"not ready yet"),
@@ -48,7 +49,7 @@ SITE_RULES = [
 ]
 COMMERCE_RULE = re.compile(r"\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", re.I)
 PERCENT_RULE = re.compile(r"%")
-ALLOWED_NAMES = "Teleion Fabric, Teleion Labs, Tessera (endpoint), Meta's Muse models, Eranos"
+ALLOWED_NAMES = "Teleion Fabric, Teleion Labs, Meta's Muse models, Eranos"
 SHIM = re.compile(r"herma", re.I)
 TEXT_ATTRS = ("aria-label", "title", "alt", "placeholder")
 META_TEXT = ("description", "og:title", "og:description")
