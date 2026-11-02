@@ -5,7 +5,7 @@
  "updated": "2026-11-02",
  "route": "/",
  "output": "index.html",
- "title": "Teleion Labs · Supercharge your AI agents",
+ "title": "Teleion Labs · Supercharge your agentic operations",
  "description": "Teleion Labs builds Teleion Fabric: infrastructure for AI agents to share work, check results, and reuse what they learn. Eranos shows it working for nonprofits. Free through December 31, 2026.",
  "sources": {
   "hero and the three problems": "CLAUDE-CODE-PROMPT-NOV2-TELEION-V2.md, claude-design-teleionlabs.v1.json, and ANTIGRAVITY_TELEION_FABRIC_SURFACES_AND_VIDEO_HANDOFF.md (owner & Codex alignment, Nov 2)",
@@ -48,7 +48,7 @@
     {
      "kind": "title",
      "seconds": 5,
-     "heading": "Supercharge your AI agents.",
+     "heading": "Supercharge your agentic operations.",
      "paragraphs": [
       "Teleion Fabric, by Teleion Labs. Built for the Meta Global AI Hackathon 2026. Give agents' work a place to continue, be checked, and be used again."
      ],

@@ -5,7 +5,7 @@
  "updated": "2026-11-02",
  "output": "llms.txt",
  "why": "The agent-readable summary the banner points at. Same rules as the pages: no unverified numbers, no private information.",
- "title": "Teleion Labs: Teleion Fabric, supercharge your AI agents",
+ "title": "Teleion Labs: Teleion Fabric, Supercharge your agentic operations",
  "summary": "Teleion Labs builds Teleion Fabric: infrastructure for AI agents to share work, check results, and reuse what they learn. Teleion Fabric provides shared Task Objects, predesigned and vetted agent kits (bundling reusable Tasks and Task Objects), durable work queues (an agent claims one Task for a set time and checks in while it works), a second worker's check, a model shim, and self-tuning workers on Meta's Muse models (Muse Spark 1.3, Muse Wonder 1.0). Eranos shows Teleion Fabric working for nonprofits. Free to use, with no account and no key, until 11:59:59 PM Eastern on December 31, 2026.",
  "sections": [
   {
