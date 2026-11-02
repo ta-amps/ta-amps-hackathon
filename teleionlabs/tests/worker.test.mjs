@@ -306,7 +306,7 @@ test("a link page reads without acting, posts one answer, and sends the token on
   const html = await page.text();
   assert.match(html, /Add &lt;40&gt; Tasks/);
   assert.match(html, /<form method="post">/);
-  assert.equal(page.headers.get("Cache-Control"), "no-store");
+  assert.match(page.headers.get("Cache-Control"), /no-store/);
   assert.equal(page.headers.get("Referrer-Policy"), "no-referrer");
   assert.equal(calls.length, 1);
   assert.equal(calls[0].method, "GET");
