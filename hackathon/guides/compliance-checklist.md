@@ -62,7 +62,7 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
       Adults only.
 - [ ] **Real personal data** brings in privacy law (GDPR, CCPA, PDPA, PDPO and others). If you must use it, do a
       privacy review first and keep it out of Contributor services.
-- [ ] **Label what a model made.** Mark generated documents and images as made-up examples in their text and pixels.
+- [ ] **Label what a model made.** Mark AI-generated documents and images clearly in their text and pixels.
 
 ## 5. If your project judges people, companies or content
 
@@ -78,5 +78,5 @@ The Official Rules are the event's waiver page, dated Oct 25, 2026. Section-by-s
 
 - [ ] Every repo passes a secret scan (`scripts/check_public.py`) and has no `.env` in history.
 - [ ] Licences of every dependency are kept; your own licence file is present.
-- [ ] The README says what is real, what is simulated and what is planned.
-- [ ] The demo video shows only made-up data and your own accounts.
+- [ ] The README states plainly what is live and what is simulated, with evidence.
+- [ ] The demo video shows only made-up test data and your own accounts.

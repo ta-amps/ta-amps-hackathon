@@ -7,7 +7,7 @@ No length is published (as of Oct 26); about three minutes plus a 60-second cut 
 
 - [ ] Script written: the hook in the first 20 seconds, then the strongest moment, then the proof, then the limits
 - [ ] Every number on screen comes from a committed results file
-- [ ] Anything made-up is labelled on screen
+- [ ] Any made-up example is explained plainly
 - [ ] Demo mode works with the network off (snapshot), at 1920x1080, with body text at 16 px or larger
 - [ ] Tools pinned for the recording: no auto-updates (for Muse Code, `MUSE_NO_AUTO_UPDATE=1`), notifications off
 - [ ] A fallback recording made a day early

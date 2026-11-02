@@ -42,7 +42,7 @@ A backend's service credential may see private records that a public visitor can
 
 ## Record attempts and limits
 
-For each experiment, save the configuration and source revision, made-up input, actual tool events, expected/observed output, failure reason, usage when measured, and evidence fingerprint. Keep failed attempts. Do not treat a passing HTTP probe as native-harness certification, a checksum as a correctness proof, request-size limits as a request-rate quota, or declared attribution metadata as independent provenance verification.
+For each experiment, save the configuration and source revision, made-up test input, actual tool events, expected/observed output, failure reason, usage when measured, and evidence fingerprint. Keep failed attempts. Do not treat a passing HTTP probe as native-harness certification, a checksum as a correctness proof, request-size limits as a request-rate quota, or declared attribution metadata as independent provenance verification.
 
 A short release note should state what failed before, what changed, which checks actually ran, what remains untested, and how to disable or roll back the change. Keep provider secrets in secure runtime bindings and avoid publishing raw transcripts containing credentials or private work.
 

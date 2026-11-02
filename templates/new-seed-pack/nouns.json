@@ -6,8 +6,8 @@
         "role": "pack",
         "category_id": "noun.skill_pack",
         "title": "A collection of nouns and verbs for drafting cited civic research briefs from official public records",
-        "plain_summary": "Starter template showing how reusable Task Objects and scoped Tasks fit together in one auditable folder.",
-        "practice_template": true
+        "plain_summary": "Starter template showing how reusable task objects and scoped tasks (things to do) fit together in one auditable folder.",
+        "synthetic_template": true
       }
     },
     {

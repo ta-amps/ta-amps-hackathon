@@ -81,7 +81,7 @@ Never break these. If a task seems to need it, stop and ask <owner>.
 5. Never launch an agent with its sandbox or permissions bypassed (`--yolo`, `--dangerously-skip-permissions`,
    `--disable-sandbox`). Muse Code runs with `--contributor-mode off` on anything sensitive.
 6. Never inflate results. Every number shown comes from a committed file and a script that reproduces it.
-7. <Data rules: for example made-up data only, visible PRACTICE CASE marks, no real people.>
+7. <Data rules: for example made-up test data only, no real people or personal data.>
 8. <Path rules: for example never read or write `private/`, never hand-edit generated data.>
 
 ## Workflow

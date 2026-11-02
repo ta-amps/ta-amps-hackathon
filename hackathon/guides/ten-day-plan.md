@@ -10,7 +10,7 @@ Aim to submit by midday Nov 4.
 | Gate | By | Passes when |
 |---|---|---|
 | G1 Skeleton | Oct 27 | One request goes end to end (interface, API, one model call) on your machine, and CI runs your checks |
-| G2 Core | Oct 30 | The main flow works on real-looking made-up data and every task's `done_when` check passes |
+| G2 Core | Oct 30 | The main flow works on realistic made-up test data and every task's `done_when` check passes |
 | G3 Frozen | Oct 31 | Evaluation data frozen and hashed; nothing after this changes it |
 | G4 Hosted | Nov 1 | The demo runs at a public address ([hosting.md](hosting.md)) and from an offline build |
 | G5 Numbers | Nov 2 | Every number in the write-up comes from a script you can rerun; deploys freeze in the evening |

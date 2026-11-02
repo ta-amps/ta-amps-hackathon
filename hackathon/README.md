@@ -98,7 +98,7 @@ a paid reviewer to every interaction.
 
 As of 2026-10-29, the public event pages publish no separate problem statements; see
 [event/05-problem-statements.md](event/05-problem-statements.md). The workshop schedule is on the participants-only
-[details page](https://cerebralvalley.ai/e/meta-ai-developer-hackathon/details) and is not summarized here yet.
+[details page](https://cerebralvalley.ai/e/meta-ai-developer-hackathon/details) and stays on that participants-only page.
 Corrections are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Licence

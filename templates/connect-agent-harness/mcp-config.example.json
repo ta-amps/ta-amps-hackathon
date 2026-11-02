@@ -12,7 +12,7 @@
         "Authorization": "Bearer <SCOPED_KEY>"
       },
       "disabled": true,
-      "description": "Shared Tessera Task and Task-Object engine (enable after setting a scoped worker key)"
+      "description": "Shared Tessera task and task-object engine (enable after setting a scoped worker key)"
     }
   }
 }

@@ -21,7 +21,7 @@ Muse Wonder
 SAM 3.1
 Voice Transcribe
 Astryx
-Prompt Guard 2
+Prompt Guard 2: LlamaFirewall
 hooks: PreToolUse
 skills: SKILL.md
 AGENTS.md
@@ -37,5 +37,5 @@ edge secret: x-edge-auth
 leases: lease, heartbeat
 briefs: brief
 receipts: receipt
-made-up data: made-up
+made-up data: made-up, invented
 Mermaid
