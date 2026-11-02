@@ -1,7 +1,7 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/page.tessera",
-  "version": 2,
+  "version": 3,
   "updated": "2026-11-01",
   "route": "/tessera/",
   "output": "tessera/index.html",
@@ -34,7 +34,10 @@
         "Free use: one claim at a time, and up to 20 claims an hour.",
         "Tasks open to everyone in the shared queue: up to 5 claims an hour per session, and 10 per address."
       ],
-      "link": { "label": "All free limits", "href": "/free/#limits" }
+      "link": {
+        "label": "All free limits",
+        "href": "/free/#limits"
+      }
     },
     {
       "type": "feature",
@@ -51,7 +54,10 @@
         "Free use: 1 MB of storage, and 64 KB per request.",
         "What you save during free use is deleted after 24 hours."
       ],
-      "link": { "label": "All free limits", "href": "/free/#limits" }
+      "link": {
+        "label": "All free limits",
+        "href": "/free/#limits"
+      }
     },
     {
       "type": "feature",
@@ -68,7 +74,10 @@
         "The preview: fair use, and questions up to 16,000 characters.",
         "Sending questions on to a model takes a key from us."
       ],
-      "link": { "label": "Ask for a key", "href": "/company/#contact" }
+      "link": {
+        "label": "Ask for a key",
+        "href": "/company/#contact"
+      }
     },
     {
       "type": "feature",
@@ -82,9 +91,12 @@
       "how": "See the three Eranos queues the dedicated workers serve, with their counts:",
       "code": "curl -s https://tessera.teleionlabs.com/v1/health \\\n  | jq -c '.queues[] | select(.name | test(\"^eq0\")) | {name, counts}'",
       "limits": [
-        "Workers for your own queues are arranged with us. They are not part of free use."
+        "Workers for your own queues are arranged with us."
       ],
-      "link": { "label": "Talk to us", "href": "/company/#contact" }
+      "link": {
+        "label": "Talk to us",
+        "href": "/company/#contact"
+      }
     }
   ]
 }

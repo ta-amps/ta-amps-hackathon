@@ -190,17 +190,6 @@ code { background: var(--sunken); border-radius: var(--radius-xs); padding: 1px 
 .site-footer__links a { display: inline-block; padding: 5px 0; font-size: var(--fs-small); }
 .site-footer__line { margin: 8px 0 0; font-size: var(--fs-small); color: var(--text-3); }
 
-/* Plans: one card per plan; the rows say what grows. */
-.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 16px; list-style: none; margin: 0; padding: 0; }
-.plan { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 20px 20px 18px; min-width: 0; }
-.plan h3 { margin: 0 0 6px; }
-.plan__for { color: var(--text-2); font-size: var(--fs-ui); line-height: var(--lh-ui); }
-.plan__rows { margin: 4px 0 16px; padding: 0; }
-.plan__row { padding: 10px 0; border-top: 1px solid var(--line); }
-.plan__row dt { font-size: var(--fs-small); font-weight: 600; color: var(--text-3); }
-.plan__row dd { margin: 2px 0 0; font-size: var(--fs-ui); line-height: var(--lh-ui); color: var(--text); }
-.plan__link { margin-top: auto; font-size: var(--fs-ui); font-weight: 500; }
-
 /* Reference links */
 .refs { list-style: none; margin: 0; padding: 0; max-width: 760px; border-top: 1px solid var(--line); }
 .refs li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }

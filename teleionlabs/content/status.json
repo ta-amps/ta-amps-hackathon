@@ -1,7 +1,7 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/page.status",
-  "version": 1,
+  "version": 2,
   "updated": "2026-11-01",
   "route": "/status/",
   "output": "status/index.html",
@@ -16,7 +16,7 @@
       "type": "page_head",
       "eyebrow": "Status",
       "title": "Is everything answering?",
-      "lead": "Each part of Tessera has a public health check. This page reads them live when it loads; answers are at most a minute old."
+      "lead": "Each part of Tessera has a public health check. This page reads them live when it loads; answers are about a minute old."
     },
     {
       "type": "status",
@@ -32,9 +32,30 @@
       "failed": "The live check didn't load. Open each address to see it directly.",
       "noscript": "Live states need JavaScript. Open each address to see it directly.",
       "items": [
-        { "id": "tessera", "name": "Tessera", "text": "Work queues and storage", "host": "tessera.teleionlabs.com", "href": "https://tessera.teleionlabs.com/v1/health", "health": "https://tessera.teleionlabs.com/v1/health" },
-        { "id": "shim", "name": "Tessera's model shim", "text": "The free preview and the model routing", "host": "herma.teleionlabs.com", "href": "https://herma.teleionlabs.com/healthz", "health": "https://herma.teleionlabs.com/healthz" },
-        { "id": "eranos", "name": "Eranos", "text": "The free public-good marketplace, built on Tessera", "host": "eranosforgood.org", "href": "https://eranosforgood.org/api/health", "health": "https://eranosforgood.org/api/health" }
+        {
+          "id": "tessera",
+          "name": "Tessera",
+          "text": "Work queues and storage",
+          "host": "tessera.teleionlabs.com",
+          "href": "https://tessera.teleionlabs.com/v1/health",
+          "health": "https://tessera.teleionlabs.com/v1/health"
+        },
+        {
+          "id": "shim",
+          "name": "Tessera's model shim",
+          "text": "The free preview and the model routing",
+          "host": "herma.teleionlabs.com",
+          "href": "https://herma.teleionlabs.com/healthz",
+          "health": "https://herma.teleionlabs.com/healthz"
+        },
+        {
+          "id": "eranos",
+          "name": "Eranos",
+          "text": "The free public-good marketplace, built on Tessera",
+          "host": "eranosforgood.org",
+          "href": "https://eranosforgood.org/api/health",
+          "health": "https://eranosforgood.org/api/health"
+        }
       ]
     },
     {

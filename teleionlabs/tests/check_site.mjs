@@ -25,7 +25,6 @@ const PAGES = [
   { path: "/", name: "home" },
   { path: "/tessera/", name: "tessera" },
   { path: "/free/", name: "free" },
-  { path: "/plans/", name: "plans" },
   { path: "/docs/", name: "docs" },
   { path: "/status/", name: "status" },
   { path: "/security/", name: "security" },

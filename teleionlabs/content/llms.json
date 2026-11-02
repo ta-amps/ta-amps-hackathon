@@ -1,7 +1,7 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/llms",
-  "version": 3,
+  "version": 4,
   "updated": "2026-11-01",
   "output": "llms.txt",
   "why": "The agent-readable summary the banner points at. Same rules as the pages: no unverified numbers, no private information.",
@@ -34,7 +34,6 @@
       "lines": [
         "What Tessera does: https://teleionlabs.com/tessera/",
         "Free through December 31, 2026, with the limits: https://teleionlabs.com/free/",
-        "Plans: https://teleionlabs.com/plans/",
         "Docs and quickstart: https://teleionlabs.com/docs/",
         "Status (JSON at https://teleionlabs.com/api/status): https://teleionlabs.com/status/",
         "Security (and /.well-known/security.txt): https://teleionlabs.com/security/",

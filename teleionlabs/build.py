@@ -30,7 +30,7 @@ SHARED_WORDS = Path(os.environ.get("BANNED_WORDS") or HERE.parents[2] / "coordin
 WORD_CATEGORIES = ("always", "visible_text", "agent_apps_outside_models_page")
 WORKER_WORDS = HERE / "worker" / "banned.generated.js"
 
-PAGES = ["home", "tessera", "free", "plans", "docs", "status", "security", "company", "errors"]
+PAGES = ["home", "tessera", "free", "docs", "status", "security", "company", "errors"]
 REQUIRED = ["site", "llms", *PAGES]
 
 
@@ -216,18 +216,6 @@ class Renderer:
                  f'<p class="contact__email"><a href="mailto:{esc(email)}">{esc(email)}</a></p>'
                  f'<p class="contact__note">{self.inline(req(b, "note", where))}</p></div>')
         return self._section(b, where, inner)
-
-    def b_plans(self, b, where):
-        dims = req(b, "dimensions", where)
-        cards = []
-        for it in req(b, "items", where):
-            values = req(it, "values", where)
-            rows = "".join(f'<div class="plan__row"><dt>{esc(req(d, "label", where))}</dt><dd>{self.inline(req(values, d["id"], where))}</dd></div>'
-                           for d in dims)
-            link = self.link(it["link"]["label"], it["link"]["href"], "plan__link") if it.get("link") else ""
-            cards.append(f'<li class="plan"><h3>{esc(req(it, "name", where))}</h3><p class="plan__for">{self.inline(req(it, "for", where))}</p>'
-                         f'<dl class="plan__rows">{rows}</dl>{link}</li>')
-        return self._section(b, where, f'<ul class="plans">{"".join(cards)}</ul>')
 
     def b_links(self, b, where):
         items = "".join(f'<li>{self.link(req(it, "label", where), req(it, "href", where), "ref__link")}'

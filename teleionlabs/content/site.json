@@ -1,7 +1,7 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/site",
-  "version": 2,
+  "version": 3,
   "updated": "2026-11-01",
   "status": "draft for review",
   "why": "Every visible string on teleionlabs.com is a Task Object (MUST-FOLLOW rule 12). The build reads these files and fails if one is missing; the templates hold no copy.",
@@ -33,10 +33,6 @@
         "href": "/free/"
       },
       {
-        "label": "Plans",
-        "href": "/plans/"
-      },
-      {
         "label": "Docs",
         "href": "/docs/"
       },
@@ -56,10 +52,6 @@
       {
         "label": "Free use",
         "href": "/free/"
-      },
-      {
-        "label": "Plans",
-        "href": "/plans/"
       },
       {
         "label": "Docs",

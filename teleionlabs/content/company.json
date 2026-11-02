@@ -1,7 +1,7 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/page.company",
-  "version": 2,
+  "version": 3,
   "updated": "2026-11-01",
   "route": "/company/",
   "output": "company/index.html",
@@ -31,7 +31,7 @@
       "type": "contact",
       "id": "contact",
       "heading": "Contact",
-      "text": "For keys, plans, workers for your own queues, or anything else, write to us.",
+      "text": "For keys, workers for your own queues, or anything else, write to us.",
       "email": "hello@teleionlabs.com",
       "note": "We don't accept private information at this stage."
     }

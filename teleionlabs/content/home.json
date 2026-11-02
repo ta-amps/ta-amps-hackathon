@@ -1,7 +1,7 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/page.home",
-  "version": 2,
+  "version": 3,
   "updated": "2026-11-01",
   "route": "/",
   "output": "index.html",
@@ -128,7 +128,7 @@
       "type": "status",
       "id": "status",
       "heading": "Running now",
-      "intro": "Read live from each part's public health check when this page loads. Answers are at most a minute old.",
+      "intro": "Read live from each part's public health check when this page loads. Answers are about a minute old.",
       "endpoint": "/api/status",
       "initial": "Checking",
       "up": "Answering",

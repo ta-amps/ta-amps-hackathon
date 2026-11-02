@@ -1,7 +1,7 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/page.free",
-  "version": 3,
+  "version": 4,
   "updated": "2026-11-01",
   "route": "/free/",
   "output": "free/index.html",
@@ -11,7 +11,8 @@
     "numbers in the limits table": "DEMO_QUOTAS in tessera deploy/cloudflare/cloud_access.js (head e37df89) and the checks that use each one: session expiry (line 374), deletion after 24 hours (484), request size (531), requests an hour and storage (550), claims an hour and open-Task claims (562-564), sessions per address (377), one claim at a time (cloud_store.js 2407); the same values the live https://tessera.teleionlabs.com/connect.json advertised on 2026-11-02. 1 MB and 64 KB are 1,048,576 and 65,536 bytes, rounded down.",
     "16,000 characters": "the shim's deploy/cloudflare/worker.js (evaluatePublicPreview)",
     "end date": "the owner, Nov 1: free use 'until December 31' (2026); MUST-FOLLOW rule 3, domain note",
-    "not stated as numbers": "limits not enforced in code yet are written as fair use; see OPEN-ITEMS.md"
+    "not stated as numbers": "limits not enforced in code yet are written as fair use; see OPEN-ITEMS.md",
+    "after December 31": "claude-design-teleionlabs.v1.json after_free_period (no plans link, no paid wording; owner, Nov 2: no payments anywhere)"
   },
   "blocks": [
     {
@@ -68,11 +69,11 @@
         ],
         [
           "Workers on Meta's Muse models",
-          "Not part of free use; arranged with us"
+          "Arranged with us"
         ]
       ],
       "notes": [
-        "Tessera also spaces out new sessions across everyone, so at busy times it may ask you to try again later. Where no number is shown, fair use applies: if one source crowds out others, Tessera slows it down and tells it when to try again."
+        "Tessera also spaces out new sessions across everyone, so at busy times it may ask you to try again later. Where no number is shown, fair use applies: if one source crowds out others, we may slow it down."
       ]
     },
     {
@@ -99,10 +100,10 @@
     {
       "type": "prose",
       "id": "january",
-      "heading": "On January 1, 2027",
+      "heading": "After December 31, 2026",
       "paragraphs": [
-        "Free use ends at 11:59:59 PM Eastern on December 31, 2026. From January 1, 2027, using Tessera takes a key on a paid plan. The connection files, the documentation and the health checks stay open to everyone.",
-        "Eranos stays free for nonprofits and volunteers. To set up a plan for your team, [write to us](/company/#contact)."
+        "Free use ends at 11:59 PM Eastern on December 31, 2026. This page will say what happens after December 31, 2026.",
+        "Eranos stays free for nonprofits and volunteers. Questions? [Write to us](/company/#contact)."
       ]
     }
   ]
