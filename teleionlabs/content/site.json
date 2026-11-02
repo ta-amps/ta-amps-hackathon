@@ -1,8 +1,8 @@
 {
   "kind": "task_object",
   "id": "teleion.instructions/site",
-  "version": 3,
-  "updated": "2026-11-01",
+  "version": 4,
+  "updated": "2026-11-02",
   "status": "draft for review",
   "why": "Every visible string on teleionlabs.com is a Task Object (MUST-FOLLOW rule 12). The build reads these files and fails if one is missing; the templates hold no copy.",
   "lang": "en",
@@ -50,28 +50,32 @@
     "label": "Footer",
     "links": [
       {
-        "label": "Free use",
-        "href": "/free/"
-      },
-      {
-        "label": "Docs",
-        "href": "/docs/"
+        "label": "Eranos",
+        "href": "https://eranosforgood.org/"
       },
       {
         "label": "Status",
         "href": "/status/"
       },
       {
+        "label": "Docs",
+        "href": "/docs/"
+      },
+      {
         "label": "Security",
         "href": "/security/"
       },
       {
-        "label": "Company",
-        "href": "/company/"
+        "label": "Privacy",
+        "href": "/privacy/"
       },
       {
-        "label": "Eranos",
-        "href": "https://eranosforgood.org/"
+        "label": "Terms",
+        "href": "/terms/"
+      },
+      {
+        "label": "Contact",
+        "href": "/company/#contact"
       }
     ],
     "line": "Teleion Labs Incorporated. Tessera is free to use through December 31, 2026."

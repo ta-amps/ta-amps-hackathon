@@ -30,7 +30,7 @@ SHARED_WORDS = Path(os.environ.get("BANNED_WORDS") or HERE.parents[2] / "coordin
 WORD_CATEGORIES = ("always", "visible_text", "agent_apps_outside_models_page")
 WORKER_WORDS = HERE / "worker" / "banned.generated.js"
 
-PAGES = ["home", "tessera", "free", "docs", "status", "security", "company", "errors"]
+PAGES = ["home", "tessera", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
 REQUIRED = ["site", "llms", *PAGES]
 
 

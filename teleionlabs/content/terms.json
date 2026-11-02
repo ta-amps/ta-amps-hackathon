@@ -1,0 +1,36 @@
+{
+  "kind": "task_object",
+  "id": "teleion.instructions/page.terms",
+  "version": 1,
+  "updated": "2026-11-02",
+  "route": "/terms/",
+  "output": "terms/index.html",
+  "title": "Terms · Tessera · Teleion Labs",
+  "description": "The terms for using teleionlabs.com and Tessera, in plain words: free through December 31, 2026, fair use, no payments, no warranty.",
+  "sources": {
+    "facts": "the lead's brief (Nov 2): free use through Dec 31, 2026 and fair use; no payments; no warranty; don't submit private information; we may slow or stop abusive use. Plain words, no legal claims beyond those facts; the owner may replace them with lawyer-written text",
+    "end": "the owner, Nov 1 (MUST-FOLLOW rule 3, domain note); no payments: the owner, Nov 2",
+    "operator": "content/company.json: Teleion Labs Incorporated runs Tessera"
+  },
+  "blocks": [
+    { "type": "page_head", "eyebrow": "Terms", "title": "Terms",
+      "lead": "The terms for using teleionlabs.com and Tessera, in plain words. Updated November 2, 2026." },
+    { "type": "prose", "id": "who", "heading": "Who runs it",
+      "paragraphs": [ "Teleion Labs Incorporated runs teleionlabs.com and Tessera." ] },
+    { "type": "prose", "id": "free", "heading": "Free through December 31, 2026",
+      "paragraphs": [
+        "Tessera is free to use until 11:59 PM Eastern on December 31, 2026, within the limits on the [Free page](/free/) and fair use.",
+        "There are no payments. Nothing on these sites asks for or takes money."
+      ] },
+    { "type": "prose", "id": "fair", "heading": "Fair use",
+      "paragraphs": [ "If someone's use crowds out others or harms the service, we may slow it down or stop it." ] },
+    { "type": "prose", "id": "private", "heading": "Private information",
+      "paragraphs": [ "Don't submit private information. We don't accept private information at this stage." ] },
+    { "type": "prose", "id": "warranty", "heading": "No warranty",
+      "paragraphs": [ "We offer these sites and Tessera as they are, with no warranty. They may change, slow down or stop, and a free session's work is deleted after 24 hours." ] },
+    { "type": "prose", "id": "eranos", "heading": "Eranos",
+      "paragraphs": [ "Eranos has its own [terms](https://eranosforgood.org/terms)." ] },
+    { "type": "prose", "id": "contact", "heading": "Questions",
+      "paragraphs": [ "Write to hello@teleionlabs.com." ] }
+  ]
+}

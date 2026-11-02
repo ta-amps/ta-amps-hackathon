@@ -28,6 +28,8 @@ const PAGES = [
   { path: "/docs/", name: "docs" },
   { path: "/status/", name: "status" },
   { path: "/security/", name: "security" },
+  { path: "/privacy/", name: "privacy" },
+  { path: "/terms/", name: "terms" },
   { path: "/company/", name: "company" },
   { path: "/this-page-does-not-exist/", name: "not-found", status: 404 },
 ];

@@ -95,7 +95,7 @@ fetch both failed; check `wrangler tail teleionlabs`.
 python3 "$GUARD/light_guard.py" --site teleionlabs --no-versions --out "$REC/light-guard-$STAMP.json"
 ```
 
-`light-guard/routes.json` already lists `teleionlabs` with its pages. `watchdog.py` has no per-site option and would
+`light-guard/routes.json` lists `teleionlabs` with its pages; add `/privacy/` and `/terms/` to that entry when they first go live. `watchdog.py` has no per-site option and would
 alert on every site, so run the guard for this site only and post its result.
 
 ## 6. Release and record
