@@ -2,7 +2,7 @@
 PYTHON ?= python3
 BASE ?= http://127.0.0.1:8799
 
-.PHONY: build test words links check light-check
+.PHONY: build test range-test words links check light-check
 
 build:
 	$(PYTHON) build.py
@@ -10,13 +10,17 @@ build:
 test: build
 	node --test tests/worker.test.mjs
 
+# Real workerd streaming/Content-Length checks using the existing workspace install.
+range-test:
+	node --test tests/media_range.test.mjs
+
 words: build
 	$(PYTHON) tests/check_words.py
 
 links: build
 	$(PYTHON) tests/check_links.py
 
-check: test words links
+check: test range-test words links
 
 # Light, layout and axe on every page under both colour schemes, against BASE (wrangler dev or a deploy).
 light-check: build

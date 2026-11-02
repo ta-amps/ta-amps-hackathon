@@ -6,6 +6,7 @@
 // No storage, no cookies, no forms, no credentials. Only GET and HEAD are served.
 
 import { BANNED_PATTERNS, PRIVATE_SHA256 } from "./banned.generated.js";
+import { maybeMediaRange } from "./media-range.js";
 
 export const APEX = "teleionlabs.com";
 const STATUS_TTL_SECONDS = 60;
@@ -189,7 +190,7 @@ export async function handle(request, env, ctx) {
     return method === "HEAD" ? new Response(null, out) : out;
   }
 
-  const asset = await env.ASSETS.fetch(request);
+  const asset = await maybeMediaRange(request, await env.ASSETS.fetch(request), ctx);
   const extra = aliasHeaders(url);
   if (asset.status === 200 && (url.pathname.startsWith("/fonts/") || !asset.headers.has("Cache-Control"))) {
     extra["Cache-Control"] = cacheControlFor(url.pathname);

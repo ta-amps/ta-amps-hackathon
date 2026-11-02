@@ -197,11 +197,11 @@ code { background: var(--sunken); border-radius: var(--radius-xs); padding: 1px 
 .ref__text { color: var(--text-2); font-size: var(--fs-ui); line-height: var(--lh-ui); }
 
 /* Native video preview; retain the light site palette and readable transcript. */
-.video-head { text-align: center; }
-.video-head .lead { margin-left: auto; margin-right: auto; }
-.video-head h1 { margin-left: auto; margin-right: auto; text-wrap: balance; }
+.video-head { text-align: center; padding: 24px 0 20px; }
+.video-head .lead { margin-left: auto; margin-right: auto; margin-bottom: 16px; }
+.video-head h1 { margin: 0 auto 12px; font-size: clamp(30px, 3.5vw, 40px); text-wrap: balance; }
 .video-head .actions { justify-content: center; }
-.video-body { max-width: 1040px; padding-bottom: 64px; }
+.video-body { max-width: 940px; padding-bottom: 64px; }
 .video-player { margin: 0; }
 .video-player video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
 .video-player figcaption { margin-top: 20px; max-width: 85ch; font-size: 15px; line-height: 1.65; color: var(--text-2); }
