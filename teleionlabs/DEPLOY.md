@@ -1,13 +1,15 @@
 # Deploying teleionlabs.com
 
-The apex moved to this Worker on 2026-11-02 at 03:19 UTC (`a557998`). From now on every deploy is a plain one:
+The apex moved to this Worker on 2026-11-02 at 03:19 UTC (`a557998`); the first plain deploy was `51135c3` at 05:28 UTC
+(version `df7420ac-f552-4c47-87e8-afb854f609e2`). Every deploy is a plain one:
 lock, gates, deploy, verify, guard, release. The first move's record and the emergency domain rollback are at the end.
 
 **The domains today:** `teleionlabs.com` is bound to `teleionlabs`; `www.teleionlabs.com` is bound to
 `www-canonical-redirect`, which answers 301 to the apex with path and query kept. This Worker owns the apex only.
 
-Run every block in one shell, in order. Any failure stops the shell (`set -e`); then release the lock with version
-`none` (step 6) and stop.
+Run every block in one shell, in order. Any failure stops the shell (`set -e`). If that happens before step 3, nothing was
+deployed: release with `python3 "$LOCK" release teleionlabs "$WHO" unchanged "$LIVE" --note "stopped before deploy"`, so
+the log keeps the commit that is really live, and stop.
 
 ## 0. Set up (prints no secret)
 
@@ -46,7 +48,8 @@ test "$(git rev-parse --short=7 HEAD)" = "$REVIEWED"               # ... at the 
 make check                                                         # build, Worker tests, word gate, link check
 PORT="$(python3 -c 'import socket; s = socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')"
 $W dev --local --port "$PORT" --ip 127.0.0.1 --show-interactive-dev-session=false >"$REC/dev-$STAMP.log" 2>&1 &
-DEV=$!; until curl -s -o /dev/null "http://127.0.0.1:$PORT/"; do sleep 1; done
+DEV=$!
+until curl -s -o /dev/null "http://127.0.0.1:$PORT/"; do kill -0 "$DEV" 2>/dev/null || { echo "dev server exited"; exit 1; }; sleep 1; done
 node tests/check_site.mjs --base "http://127.0.0.1:$PORT"          # light (both schemes), layout, axe
 kill "$DEV"
 ```
@@ -106,7 +109,7 @@ Then one line in `notes/COORDINATION-2026-10-31.md`: the version, the commit and
 ## Rollback of a bad deploy
 
 ```bash
-$W rollback <the previous version id from $REC/deployments-$STAMP.txt> --message "rollback to source $LIVE"
+$W rollback <the previous version id from $REC/deployments-$STAMP.txt> --message "rollback to source $LIVE" -y
 curl -s https://teleionlabs.com/ | grep -o '<title>[^<]*</title>'
 python3 "$LOCK" release teleionlabs "$WHO" rolled-back "$LIVE" --note "rolled back from $REVIEWED"
 ```
