@@ -40,7 +40,7 @@ TEXT_CSS = ("html{color-scheme:only light;background:#F5F2EA;color:#11161F;overf
             "th,td{padding:0 2ch .4em 0;text-align:left;vertical-align:top}pre{white-space:pre-wrap;background:#FFFDF8;padding:.5em}figure{margin:0}"
             "video{width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
             "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em}footer a,nav a{margin-right:2ch;display:inline-block}"
-            "canvas{display:block;position:relative;left:50%;width:100vw;height:calc(100svh - 8rem);margin-left:-50vw}"
+            "canvas{display:block;position:relative;left:50%;width:100vw;height:calc(100svh - 12.5rem);min-height:320px;margin-left:-50vw}"
             "#film-controls{text-align:center}#film-controls button{margin:.25em}")
 KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc)$")
 

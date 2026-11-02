@@ -129,18 +129,8 @@
      ]
     },
     {
-     "kind": "page",
-     "seconds": 8,
-     "heading": "This film isn't a video file.",
-     "paragraphs": [
-      "It's the text of this page, drawn by one small script.",
-      "Scroll down and read it. Your agent gets the same words."
-     ],
-     "steps": []
-    },
-    {
      "kind": "omninode",
-     "seconds": 18,
+     "seconds": 22,
      "heading": "How do we do this efficiently? OmniNode.",
      "paragraphs": [
       "One node design, radically parameterizable: tools, skills, model, hooks and settings are all settings."
@@ -158,7 +148,7 @@
     },
     {
      "kind": "queue",
-     "seconds": 12,
+     "seconds": 16,
      "heading": "A handoff you can follow.",
      "paragraphs": [],
      "steps": [
