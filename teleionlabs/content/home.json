@@ -74,7 +74,7 @@
      "paragraphs": [
       "It doesn't know what's new.",
       "It rewrites code that already exists.",
-      "It can't run a long queue alone."
+      "It loses the thread on long-horizon tasks."
      ],
      "steps": []
     },
@@ -101,12 +101,12 @@
     },
     {
      "kind": "fixes",
-     "seconds": 14,
-     "heading": "Make useful work accumulate.",
+     "seconds": 18,
+     "heading": "Three problems. Three fixes.",
      "paragraphs": [
-      "Bring in what's new. Keep relevant knowledge with its source and context.",
-      "Find what already works. Search existing work before asking an agent to build it again.",
-      "Keep long work moving. A durable queue, worker handoffs, and a separate check."
+      "Bring in what's new. Keep knowledge with its source: 88.6% vs 1.7% top-1 match on held-out queries.",
+      "Reuse what already works. Search checked work first: 62.5% vs 29.2% correct structured answers.",
+      "Keep long work moving. Claims run out, another worker takes over: 16 of 16 late reports refused in a local test."
      ],
      "steps": []
     },
@@ -147,14 +147,22 @@
      "steps": []
     },
     {
-     "kind": "spaces",
-     "seconds": 12,
-     "heading": "A clear boundary around your work.",
+     "kind": "omninode",
+     "seconds": 18,
+     "heading": "How do we do this efficiently? OmniNode.",
      "paragraphs": [
-      "Your session: work in progress, sources and results, and your connection's permissions.",
-      "Shared work: selected knowledge, reusable tools and checked results."
+      "One node design, radically parameterizable: tools, skills, model, hooks and settings are all settings."
      ],
-     "steps": []
+     "steps": [
+      "Deterministic: a tool or a rule, when the answer is known.",
+      "Non-deterministic: a Muse model, when it takes judgment.",
+      "Hybrid: a model proposes, and a rule checks.",
+      "Reuse: checked work answers, with no model call.",
+      "Learning: recorded traces tune the next run."
+     ],
+     "marks": {
+      "OmniNode.": "blue"
+     }
     },
     {
      "kind": "queue",
@@ -171,7 +179,7 @@
     },
     {
      "kind": "workers",
-     "seconds": 10,
+     "seconds": 6,
      "heading": "One place for work. More than one way to do it.",
      "paragraphs": [
       "Your agents: use what you already have, connected through the published interface.",
@@ -181,7 +189,7 @@
     },
     {
      "kind": "reuse",
-     "seconds": 12,
+     "seconds": 10,
      "heading": "The next request should start ahead.",
      "paragraphs": [
       "Sources, instructions and a result you can inspect. Find it, check the fit, use it again."
@@ -211,7 +219,7 @@
     },
     {
      "kind": "eranos",
-     "seconds": 16,
+     "seconds": 12,
      "heading": "Eranos puts the work to a public purpose.",
      "paragraphs": [
       "A nonprofit describes what it needs. Workers build it, a different worker checks it, and useful work is kept for the next request.",

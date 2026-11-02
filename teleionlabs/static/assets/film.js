@@ -137,7 +137,7 @@
       head(v);
       let y = v.H * 0.34;
       v.s.ps.forEach((p, i) => {
-        const st = 1.4 + i * 4;
+        const st = 1.2 + i * 5.4;
         if (v.t < st) return;
         const a = chars(p), dot = a.findIndex((ch) => ch.ch === ".") + 1;
         const lead = a.slice(0, dot).map((q) => q.ch).join(""), rest = a.slice(dot).map((q) => q.ch).join("").trim();
@@ -220,6 +220,28 @@
         text(cap(a.slice(d + 1)), { x: x + 28 * u, y: y + 18 * u, size: 22 * u, lh: 1.5, maxW: bw - 56 * u, color: SOFT });
         c.globalAlpha = 1;
       });
+    },
+    omninode(v) {
+      const { W, H, u } = v, cx = W / 2, cy = H * 0.5, n = v.s.steps.length, R = Math.min(W * 0.3, H * 0.27), start = 1.6, each = (v.s.secs - start - 1) / Math.max(1, n);
+      head(v, 0.13, 38);
+      const cur = Math.min(n - 1, Math.floor(Math.max(0, v.t - start) / each));
+      const label = (st) => chars(st).map((q) => q.ch).join("");
+      for (let i = 0; i < n; i++) {
+        const a = -Math.PI / 2 + (i / n) * Math.PI * 2, y = cy + Math.sin(a) * R;
+        const on = v.t >= start + i * each, hot = on && i === cur, name = label(v.s.steps[i]).split(":")[0];
+        const half = ((name.length * 0.62 * 20 + 28) * u) / 2 + 8, x = Math.max(half, Math.min(W - half, cx + Math.cos(a) * R * 1.55));
+        if (on) seg(cx, cy, x, y, (v.t - (start + i * each)) / 0.5, hot ? BLUE : RULE);
+        const w = (name.length * 0.62 * 20 + 28) * u, h2 = 44 * u;
+        c.globalAlpha = on ? 1 : 0.35;
+        box(x - w / 2, y - h2 / 2, w, h2, hot ? BLUE : RULE, hot ? BLUE : CARD);
+        text(name, { x, y: y + 7 * u, size: 20 * u, align: "center", maxW: w + 8, color: hot ? PAPER : INK });
+        c.globalAlpha = 1;
+      }
+      const nw = 150 * u, nh = 72 * u, pulse = 1 + 0.03 * Math.sin(F.now / 300);
+      box(cx - (nw * pulse) / 2, cy - (nh * pulse) / 2, nw * pulse, nh * pulse, INK, CARD);
+      text("OmniNode", { x: cx, y: cy + 8 * u, size: 22 * u, weight: 700, align: "center", maxW: nw });
+      if (v.t >= start) caption(v, v.s.steps, v.s.steps.map((_, i) => start + i * each), H * 0.86);
+      else text(v.s.ps[0], { x: W / 2, y: H * 0.86, size: 22 * u, align: "center", maxW: W * 0.8, alpha: fade(v, 0.3), color: SOFT });
     },
     queue(v) {
       const { W, H, u } = v, y = H * 0.46, sp = Math.min(W * 0.24, 300 * u), x0 = W / 2 - sp * 1.5;
