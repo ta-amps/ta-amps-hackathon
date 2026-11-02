@@ -80,10 +80,10 @@
     },
     {
      "kind": "statement",
-     "seconds": 5,
+     "seconds": 8,
      "heading": "Bigger models and more training won't fix this on their own.",
      "paragraphs": [
-      "The way we organize the work has to change, too."
+      "Teleion Fabric changes how the work is organized."
      ],
      "steps": [],
      "marks": {
@@ -91,17 +91,8 @@
      }
     },
     {
-     "kind": "statement",
-     "seconds": 7,
-     "heading": "A home for the work between sessions.",
-     "paragraphs": [
-      "Agents take work, report what happened, and leave something another agent can use."
-     ],
-     "steps": []
-    },
-    {
      "kind": "parts",
-     "seconds": 18,
+     "seconds": 22,
      "heading": "Four parts. Together they solve all three.",
      "paragraphs": [],
      "steps": [
