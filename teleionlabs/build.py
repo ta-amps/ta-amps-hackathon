@@ -37,8 +37,8 @@ TEXT_CSS = ("html{color-scheme:only light;background:#F5F2EA;color:#11161F;overf
             "font:16px/1.6 ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}"
             "body{max-width:72ch;margin:auto;padding:1rem;overflow-wrap:anywhere}a{color:#24519B}a:hover{color:#11161F}"
             "h1,h2,h3{font-size:1em;margin:2em 0 .4em}table{border-collapse:collapse;display:block;overflow-x:auto}"
-            "th,td{padding:0 2ch .4em 0;text-align:left;vertical-align:top}pre{overflow-x:auto;background:#FFFDF8;padding:.5em}"
-            "video{max-width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
+            "th,td{padding:0 2ch .4em 0;text-align:left;vertical-align:top}pre{white-space:pre-wrap;background:#FFFDF8;padding:.5em}figure{margin:0}"
+            "video{width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
             "input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em}footer a,nav a{margin-right:2ch;display:inline-block}"
             "canvas{display:block;position:relative;left:50%;width:100vw;height:calc(100svh - 8rem);margin-left:-50vw}"
             "#film-controls{text-align:center}#film-controls button{margin:.25em}")
