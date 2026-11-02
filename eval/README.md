@@ -23,15 +23,15 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 
 ![Muse Glimmer 30B LoRA-as-Memory Benchmark](glimmer-30b-lora-memory.svg)
 
-| Evaluation Regime (`test_holdout.jsonl`, `sha256: a5f59267...`) | Avg Shim Tokens | Overall Exact Match | Subtask A Recall (`n=60`) | Subtask B NGO Split (`n=60`) | JSON / Schema Valid | Median Latency (`p50`) |
+| Evaluation Regime (`test_holdout.jsonl`, `sha256: a5f59267...`) | Avg Shim Tokens | Overall Exact Match | Subtask A Recall (`n=60`) | Subtask B NGO Split (`n=60`) | JSON / Schema Valid | Median Amortized Sec / Row (`batch=8`) |
 | --- | --- | --- | --- | --- | --- | --- |
 | **Base Closed-Book** | `0.0` | `0.0%` | `0.0%` (`0.0%` F1) | `0.0%` (`0.0%` F1) | `59.2%` / `21.7%` | `18.07s` |
-| **Base + BM25 Top-2 Context Shim** | `222.3` | `29.2%` | `58.3%` (`70.8%` F1; `25.0%` 2-obj) | `0.0%` (`0.0%` F1) | `80.0%` / `60.0%` | `19.75s` |
-| **LoRA-as-Memory (Weights Only)** | **`0.0`** | **`62.5%`** | **`68.3%`** (`86.9%` F1; **`45.8%`** 2-obj) | **`56.7%`** (**`98.1%`** F1) | **`100.0%` / `100.0%`** | **`8.67s` (`2.28x` faster)** |
-| **Hybrid (`LoRA + 71-tok Pointer`)** | `71.1` | `55.0%` | `60.0%` (**`94.4%`** F1; **`50.0%`** 2-obj) | `50.0%` (`97.9%` F1) | **`100.0%` / `100.0%`** | `10.17s` |
+| **Base + BM25 Top-2 Context Shim** | `222.3` | `29.2%` | `58.3%` (`64.2%` F1; `25.0%` 2-obj) | `0.0%` (`0.0%` F1) | `36.7%` / `35.0%` | `19.75s` |
+| **LoRA-as-Memory (Weights Only)** | **`0.0`** | **`62.5%`** | **`68.3%`** (`86.9%` F1; **`45.8%`** 2-obj) | **`56.7%`** (**`98.1%`** F1) | **`100.0%` / `100.0%`** | **`8.67s` (`2.28x` lower)** |
+| **Hybrid (`LoRA + 71-tok Pointer`)** | `71.0` | `55.0%` | `68.3%` (**`94.4%`** F1; **`50.0%`** 2-obj) | `41.7%` (`90.7%` F1) | **`100.0%` / `100.0%`** | `9.22s` |
 
-- **Paired bootstrap significance:** LoRA-as-Memory (`0` shim tokens) beat Base + BM25 Top-2 Shim (`222.3` shim tokens) by **`+33.3` percentage points** (`95% CI [+22.5, +44.2]` pp) and Base Closed-Book by **`+62.5` percentage points** (`95% CI [+53.3, +70.8]` pp).
-- **Governance & reload parity:** `100.0%` `builder_principal != reviewer_principal` separation, `100.0%` contributor-tier refusal on private-data scenarios, `95.0%` plain-text sanity retention (`0.0%` JSON intrusion), and `8/8` byte-exact fresh-base reload regeneration (`max_abs = 0.0`).
+- **Paired bootstrap significance:** LoRA-as-Memory (`0` shim tokens, 4-bit NF4 storage with float16 compute on `2x T4`, `352`-token cap) beat Base + BM25 Top-2 Shim (`222.3` shim tokens; `48` improved vs `8` regressed rows) by **`+33.3` percentage points** (`95% CI [+22.5, +44.2]` pp; recall alone `41/60` vs `35/60`, `95% CI [-5.0, +25.0]` pp; intake splitting `34/60` vs `0/60`) and Base Closed-Book by **`+62.5` percentage points** (`95% CI [+53.3, +70.8]` pp).
+- **Generated-plan field checks & reload parity:** All `60/60` generated intake plans passed `builder_principal != reviewer_principal` separation and contributor-routing field checks, `95.0%` plain-text sanity retention (`0.0%` JSON intrusion), and `8/8` byte-exact fresh-base reload regeneration (`max_abs = 0.0`).
 
 ---
 

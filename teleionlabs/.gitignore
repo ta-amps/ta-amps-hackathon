@@ -2,3 +2,4 @@ dist/
 .wrangler/
 node_modules/
 worker/banned.generated.js
+worker/media.generated.js

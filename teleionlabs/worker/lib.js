@@ -7,6 +7,7 @@
 // No storage, no cookies, no forms, no credentials. Only GET and HEAD are served.
 
 import { BANNED_PATTERNS, PRIVATE_SHA256 } from "./banned.generated.js";
+import { maybeMediaRange } from "./media-range.js";
 
 export const APEX = "teleionlabs.com";
 const OVERVIEW_HOST = "agora.eranosforgood.org";
@@ -46,7 +47,10 @@ export const SECURITY_HEADERS = {
 };
 
 function withHeaders(response, extra = {}) {
-  const res = new Response(response.body, response);
+  const init = response.status === 206
+    ? { status: response.status, statusText: response.statusText, headers: response.headers, encodeBody: "manual" }
+    : response;
+  const res = new Response(response.body, init);
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.headers.set(k, v);
   for (const [k, v] of Object.entries(extra)) res.headers.set(k, v);
   return res;
@@ -212,7 +216,8 @@ export async function handle(request, env, ctx) {
     return method === "HEAD" ? new Response(null, out) : out;
   }
 
-  const asset = await env.ASSETS.fetch(request);
+  const rawAsset = await env.ASSETS.fetch(request);
+  const asset = await maybeMediaRange(request, rawAsset, ctx);
   const extra = {};
   const mediaOk = asset.status === 200 || asset.status === 206;
   if (mediaOk && (url.pathname.startsWith("/fonts/") || url.pathname.startsWith("/media/") || !asset.headers.has("Cache-Control"))) {

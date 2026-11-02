@@ -2,21 +2,36 @@
   "kind": "benchmark_record",
   "id": "teleion.benchmarks/swarm-256-workers-2026-10",
   "recorded_on": "2026-10-30",
-  "title": "256-worker queue lease, latency and rule-of-two separation run",
-  "setup": "1,000 generated test workflows across 4 local Worker cells (q01..q16 queues) and 256 scoped worker keys",
-  "metrics": {
-    "workers": 256,
-    "workflows": 1000,
-    "leased_tasks": 5000,
+  "title": "Local queue workflow, 256-slot concurrency, and fault-injection measurements",
+  "setup": "4 local Worker/SQLite cells (q01..q16 queues): separate 16-pipeline workflow test, 5-tier concurrency test up to 256 slots, and controlled fault-injection suite",
+  "workflow_run": {
+    "concurrent_pipelines": 16,
+    "generated_workflows": 1000,
+    "active_identities": 256,
     "mcp_jsonrpc_calls": 25620,
-    "median_call_latency_ms": 54.4,
-    "lease_collisions": 0,
-    "self_approvals": 0,
-    "contributor_tier_privacy_refusal_rate": 1.0
+    "median_call_duration_ms": 54.441,
+    "p95_call_duration_ms": 145.205,
+    "cli_wave_exited_zero": 10,
+    "cli_wave_runtime_verified": 9
+  },
+  "concurrency_run": {
+    "tiers_completed_tasks_total": 992,
+    "largest_tier_worker_slots": 256,
+    "largest_tier_completed_tasks": 512,
+    "largest_tier_mcp_calls": 1792,
+    "largest_tier_median_call_duration_ms": 678.99,
+    "largest_tier_p95_call_duration_ms": 1354.95,
+    "duplicate_cell_task_fencing_tuples": 0
+  },
+  "fault_injection": {
+    "expired_lease_recovery_cases": 16,
+    "stale_heartbeat_and_submit_http_409": 16,
+    "direct_self_approval_refusals_http_403": 16,
+    "role_and_queue_capability_refusals_http_403": 16
   },
   "notes": [
-    "No Task was held by two workers at once (0 lease collisions across 5,000 leased Tasks).",
-    "No worker checked its own work (0 self-approvals; drafter key != reviewer key enforced in code).",
+    "Separates the 16-pipeline local workflow run (54.441 ms median across 25,620 MCP calls) from the 5-tier concurrency run (512 Tasks in the 256-slot tier, 992 Tasks across all 5 tiers, 0 duplicate lease tuples).",
+    "Controlled local recovery checks verified 16 of 16 expired-lease reassignments (fencing token 2) with HTTP 409 on stale heartbeats and submissions, plus 16 direct self-approval and 16 capability HTTP 403 refusals.",
     "All test workflows used generated test payloads with zero private information."
   ]
 }

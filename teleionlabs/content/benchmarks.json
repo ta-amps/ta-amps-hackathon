@@ -62,40 +62,40 @@
         {
           "group": "reuse",
           "value": "62.5% vs 29.2%",
-          "label": "exact match on post-cutoff 2026 Task Objects with zero context-shim tokens (separate 2x T4 memory adapter vs 222-token text shim), answering 2.28x faster",
-          "setup": "120 held-out Tasks on 2x T4",
+          "label": "correct structured answers across 60 recall and 60 request-splitting tests with zero context-shim tokens (separate 2x T4 memory adapter vs 222-token text shim; 2.28x lower amortized batch generation time)",
+          "setup": "120 held-out cases · fixed response budget",
           "date": "Oct 31, 2026",
           "record_href": null
         },
         {
           "group": "reuse",
-          "value": null,
-          "label": "live requests the model shim answered directly or with work already done",
-          "setup": "Model shim logs, rolling 7 days",
-          "date": null,
-          "record_href": null
-        },
-        {
-          "group": "reuse",
-          "value": null,
-          "label": "model tokens saved by live reuse",
-          "setup": "Same Tasks with and without the model shim",
-          "date": null,
+          "value": "38 of 38",
+          "label": "reuse-review routing, separate-key fit checks, and changed-material rejection regression cases passed before reuse delivery",
+          "setup": "Offline reuse-check test suite",
+          "date": "Nov 2, 2026",
           "record_href": null
         },
         {
           "group": "queue",
-          "value": "0 lease collisions",
-          "label": "256 workers took 5,000 Tasks from shared queues; no Task was held by two workers at once",
-          "setup": "1,000 generated test workflows on 4 local cells",
+          "value": "512 Tasks · 0 collisions",
+          "label": "completed in a 256-slot local concurrency test, with 0 duplicate lease tuples across all 992 tested Tasks",
+          "setup": "5-tier local concurrency test",
+          "date": "Oct 30, 2026",
+          "record_href": null
+        },
+        {
+          "group": "queue",
+          "value": "16 of 16",
+          "label": "late heartbeats and late submissions refused after lease expiry while a replacement worker finished the Task",
+          "setup": "Controlled local recovery checks",
           "date": "Oct 30, 2026",
           "record_href": null
         },
         {
           "group": "queue",
           "value": "54.4 ms",
-          "label": "median time for one tool call in that 256-worker run, across 25,620 MCP calls",
-          "setup": "Same 256-worker run",
+          "label": "median tool-call duration in a 16-pipeline local workflow test across 25,620 MCP calls",
+          "setup": "1,000 generated workflows on 4 local cells",
           "date": "Oct 30, 2026",
           "record_href": null
         },
@@ -149,9 +149,9 @@
         },
         {
           "group": "checks",
-          "value": "0 self-approvals",
-          "label": "in the 256-worker run, no worker approved its own work",
-          "setup": "1,000 generated test workflows",
+          "value": "16 of 16",
+          "label": "direct self-approval attempts blocked (plus 16 role and queue permission refusals) in local fault-injection checks",
+          "setup": "Local permission checks",
           "date": "Oct 30, 2026",
           "record_href": null
         }

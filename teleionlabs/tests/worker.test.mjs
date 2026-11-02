@@ -258,3 +258,33 @@ test("/api/status: the Worker keeps a 60 s copy at the edge; browsers get no-sto
   assert.equal(second.headers.get("Cache-Control"), "no-store");
   assert.deepEqual(await second.json(), await first.json());
 });
+
+test("/media/*.mp4 supports HTTP 206 byte-range seeking, 416 unsatisfiable ranges, and HEAD Accept-Ranges", async () => {
+  for (const name of ["teleion-fabric-demo-v1.mp4", "teleion-fabric-60s-v1.mp4", "teleion-fabric-preview-20261102.mp4"]) {
+    const raw = await readFile(`${DIST}media/${name}`);
+    const head = await handle(new Request(`https://teleionlabs.com/media/${name}`, { method: "HEAD" }), { ASSETS: assets() }, ctx);
+    assert.equal(head.status, 200, name);
+    assert.equal(head.headers.get("Accept-Ranges"), "bytes", name);
+    assert.equal(head.headers.get("Content-Type"), "video/mp4", name);
+
+    const slice = await handle(
+      new Request(`https://teleionlabs.com/media/${name}`, { headers: { Range: "bytes=100-611" } }),
+      { ASSETS: assets() },
+      ctx,
+    );
+    assert.equal(slice.status, 206, name);
+    assert.equal(slice.headers.get("Accept-Ranges"), "bytes", name);
+    assert.equal(slice.headers.get("Content-Range"), `bytes 100-611/${raw.byteLength}`, name);
+    const bytes = new Uint8Array(await slice.arrayBuffer());
+    assert.equal(bytes.byteLength, 512, name);
+    assert.deepEqual(bytes, new Uint8Array(raw.subarray(100, 612)), name);
+
+    const bad = await handle(
+      new Request(`https://teleionlabs.com/media/${name}`, { headers: { Range: `bytes=${raw.byteLength + 10}-${raw.byteLength + 50}` } }),
+      { ASSETS: assets() },
+      ctx,
+    );
+    assert.equal(bad.status, 416, name);
+    assert.equal(bad.headers.get("Content-Range"), `bytes */${raw.byteLength}`, name);
+  }
+});
