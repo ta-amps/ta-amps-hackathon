@@ -69,7 +69,7 @@
     },
     {
      "kind": "three",
-     "seconds": 14,
+     "seconds": 12,
      "heading": "Three things keep getting in the way.",
      "paragraphs": [
       "It doesn't know what's new.",
@@ -125,7 +125,7 @@
     },
     {
      "kind": "file",
-     "seconds": 10,
+     "seconds": 8,
      "heading": "Keep the agent you already use.",
      "paragraphs": [
       "Connect over plain HTTP or MCP. It's a protocol, not another chat window."
@@ -167,7 +167,7 @@
     },
     {
      "kind": "queue",
-     "seconds": 14,
+     "seconds": 12,
      "heading": "A handoff you can follow.",
      "paragraphs": [],
      "steps": [
@@ -213,7 +213,7 @@
     },
     {
      "kind": "live",
-     "seconds": 16,
+     "seconds": 22,
      "heading": "This is running right now.",
      "paragraphs": [
       "Real workers, claiming real Tasks, on the shared queue. These numbers come from the live network when this film plays."
@@ -223,9 +223,9 @@
     {
      "kind": "eranos",
      "seconds": 12,
-     "heading": "Eranos puts the work to a public purpose.",
+     "heading": "Teleion Fabric can run almost anything. We're most proud to showcase our first public good example.",
      "paragraphs": [
-      "A nonprofit describes what it needs. Workers build it, a different worker checks it, and useful work is kept for the next request.",
+      "Eranos: a nonprofit describes what it needs. Workers build it, a different worker checks it, and useful work is kept for the next request.",
       "See it working at [eranosforgood.org](https://eranosforgood.org/)."
      ],
      "steps": []

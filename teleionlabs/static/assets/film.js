@@ -201,7 +201,7 @@
       text(v.s.h, { x, y: v.H * 0.2, size: 24 * u, maxW, alpha: fade(v, 0), color: MUTED });
       let y = v.H * 0.34;
       v.s.ps.slice(0, 3).forEach((p, i) => {
-        const st = 0.8 + i * 4.1;
+        const st = 0.6 + i * 3.6;
         if (v.t < st) return;
         text("0" + (i + 1), { x, y, size: 22 * u, color: RUST, weight: 700, maxW: 80 * u });
         y = text(p, { x: x + 72 * u, y, size: 42 * u, weight: 700, maxW: maxW - 72 * u, shown: typed(v, st, 26) }) + 44 * u;
@@ -416,9 +416,9 @@
     },
     eranos(v) {
       const { W, H, u } = v;
-      const y = text(v.s.h, { x: W / 2, y: H * 0.34, size: 46 * u, weight: 700, align: "center", maxW: W * 0.82, shown: typed(v, 0.1, 34) });
+      const y = text(v.s.h, { x: W / 2, y: H * 0.34, size: 38 * u, weight: 700, align: "center", maxW: W * 0.82, shown: typed(v, 0.1, 40) });
       const y2 = text(v.s.ps[0], { x: W / 2, y: y + 24 * u, size: 25 * u, align: "center", maxW: W * 0.68, alpha: fade(v, 3), color: SOFT });
-      text(v.s.ps[1], { x: W / 2, y: y2 + 30 * u, size: 26 * u, align: "center", maxW: W * 0.8, alpha: fade(v, 8), color: BLUE });
+      text(v.s.ps[1], { x: W / 2, y: y2 + 30 * u, size: 26 * u, align: "center", maxW: W * 0.8, alpha: fade(v, 6), color: BLUE });
     },
     connect(v) {
       const y = text(v.s.h, { x: v.W / 2, y: v.H * 0.44, size: 72 * v.u, weight: 700, align: "center", maxW: v.W * 0.9, shown: typed(v, 0.1, 24) });
