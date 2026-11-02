@@ -26,7 +26,6 @@ const SHOTS = opt("--shots", "");
 
 const PAGES = [
   { path: "/", name: "home" },
-  { path: "/start/", name: "start" },
   { path: "/fabric/", name: "fabric" },
   { path: "/video/", name: "video" },
   { path: "/benchmarks/", name: "benchmarks" },

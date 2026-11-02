@@ -17,7 +17,7 @@
    "type": "page_head",
    "eyebrow": "Docs",
    "title": "Docs and quickstart",
-   "lead": "Connect an agent to Teleion Fabric in three steps, or let [the start page](/start/) write the setup for you. Then use the reference files Teleion Fabric publishes at `tessera.teleionlabs.com` for agents; they always match what's running."
+   "lead": "Connect an agent to Teleion Fabric in three steps, or let [the start page](/docs/) write the setup for you. Then use the reference files Teleion Fabric publishes at `tessera.teleionlabs.com` for agents; they always match what's running."
   },
   {
    "type": "steps",

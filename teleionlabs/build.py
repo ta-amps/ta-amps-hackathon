@@ -10,12 +10,15 @@ Stdlib only.
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
 import html
 import json
 import os
 import re
 import shutil
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -28,9 +31,21 @@ SHARED_WORDS = Path(os.environ.get("BANNED_WORDS") or HERE.parents[2] / "coordin
 WORD_CATEGORIES = ("always", "visible_text", "agent_apps_outside_models_page")
 WORKER_WORDS = HERE / "worker" / "banned.generated.js"
 WORKER_MEDIA = HERE / "worker" / "media.generated.js"
+WORKER_TEXT = HERE / "worker" / "text.generated.js"
+# The whole design of a text page (owner, Nov 2: text pages and a canvas home, nothing more). Light only (rule 13).
+TEXT_CSS = ("html{color-scheme:only light;background:#F5F2EA;color:#11161F;overflow-x:clip;"
+            "font:16px/1.6 ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}"
+            "body{max-width:72ch;margin:auto;padding:1rem;overflow-wrap:anywhere}a{color:#24519B}a:hover{color:#11161F}"
+            "h1,h2,h3{font-size:1em;margin:2em 0 .4em}table{border-collapse:collapse;display:block;overflow-x:auto}"
+            "th,td{padding:0 2ch .4em 0;text-align:left;vertical-align:top}pre{overflow-x:auto;background:#FFFDF8;padding:.5em}"
+            "video{max-width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
+            "input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em}footer a,nav a{margin-right:2ch;display:inline-block}"
+            "canvas{display:block;position:relative;left:50%;width:100vw;height:calc(100svh - 8rem);margin-left:-50vw}"
+            "#film-controls{text-align:center}#film-controls button{margin:.25em}")
+KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc)$")
 
-PAGES = ["home", "start", "fabric", "video", "story", "network", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
-REQUIRED = ["site", "llms", *PAGES]
+PAGES = ["home", "fabric", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
+REQUIRED = ["site", "llms", "link", *PAGES]
 
 
 class BuildError(Exception):
@@ -55,6 +70,83 @@ def req(obj: dict, key: str, where: str):
 
 def esc(text: str) -> str:
     return html.escape(str(text), quote=True)
+
+
+def textify(markup: str) -> str:
+    """Strip the page to text: no classes, drawings, images or behaviour hooks."""
+    markup = re.sub(r"<svg\b.*?</svg>", "", markup, flags=re.S)
+    markup = re.sub(r"<noscript>.*?</noscript>", "", markup, flags=re.S)
+    markup = re.sub(r"<img\b[^>]*>", "", markup)
+    markup = re.sub(r"<button\b(?![^>]*data-film)[^>]*>.*?</button>", "", markup, flags=re.S)
+    markup = re.sub(r"""\s(?:class|style|tabindex)="[^"]*\"""", "", markup)
+    def data(m):
+        return m.group(0) if KEEP_ATTR.match(m.group(1)) else ""
+    return re.sub(r"""\s(data-[a-z-]+)(?:="[^"]*")?""", data, markup)
+
+
+class ToText(HTMLParser):
+    BLOCK = {"p", "div", "section", "article", "ul", "ol", "table", "pre", "figure", "figcaption", "details", "summary", "nav", "footer", "main", "tr"}
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.out, self.skip, self.href, self.pre, self.first_cell = [], 0, None, 0, True
+    def nl(self, n=2):
+        self.out.append("\n" * n)
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag in ("style", "script", "button", "canvas", "video", "head", "title") or "hidden" in a:
+            self.skip += 1 if tag not in ("input",) else 0
+            return
+        if self.skip:
+            return
+        if tag == "span" and a.get("data-svc"):
+            self.out.append(f"[[{a['data-svc']}]]")
+            self.skip_span = True
+            self.skip += 1
+            self.svc_open = True
+            return
+        if tag in ("h1", "h2", "h3"):
+            self.nl(3)
+        elif tag == "li":
+            self.nl(1); self.out.append("- ")
+        elif tag in ("td", "th"):
+            if not self.first_cell: self.out.append("  ")
+            self.first_cell = False
+        elif tag == "tr":
+            self.nl(1); self.first_cell = True
+        elif tag in self.BLOCK:
+            self.nl()
+        if tag == "pre": self.pre += 1
+        if tag == "a" and a.get("href") and not a["href"].startswith("#"):
+            self.href = a["href"]
+    def handle_endtag(self, tag):
+        if tag in ("style", "script", "button", "canvas", "video", "head", "title") or (tag == "span" and getattr(self, "svc_open", False)):
+            if self.skip: self.skip -= 1
+            self.svc_open = False
+            return
+        if self.skip:
+            return
+        if tag == "a" and self.href:
+            self.out.append(f" <{self.href}>")
+            self.href = None
+        if tag == "pre": self.pre -= 1
+        if tag in ("h1", "h2", "h3") or tag in self.BLOCK:
+            self.nl(1)
+    def handle_data(self, data):
+        if self.skip:
+            return
+        self.out.append(data if self.pre else re.sub(r"\s+", " ", data))
+
+
+def to_text(markup: str) -> str:
+    p = ToText()
+    p.feed(markup)
+    text = "".join(p.out)
+    text = "\n".join(line.strip() if not line.startswith(" ") else line.rstrip() for line in text.split("\n"))
+    return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
+
+
+def text_route(route: str) -> str:
+    return "index.txt" if route == "/" else route.strip("/") + ".txt"
 
 
 class Renderer:
@@ -120,6 +212,35 @@ class Renderer:
             raise BuildError(f"{where}: unknown block type '{kind}'")
         return fn(b, f"{where}/{b.get('id', kind)}")
 
+    def b_film(self, b, where):
+        c, live = req(b, "controls", where), req(b, "live", where)
+        def marked(text, marks):
+            out = self.inline(text)
+            for word, colour in (marks or {}).items():
+                out = out.replace(esc(word), f'<b data-c="{esc(colour)}">{esc(word)}</b>')
+            return out
+        secs = []
+        for s in req(b, "scenes", where):
+            m = s.get("marks")
+            ps = "".join(f"<p>{marked(p, m)}</p>" for p in s.get("paragraphs", []))
+            steps = "".join(f"<li>{marked(p, m)}</li>" for p in s.get("steps", []))
+            steps = f"<ul>{steps}</ul>" if steps else ""
+            secs.append(f'<section data-scene="{esc(s["kind"])}" data-seconds="{int(s["seconds"])}"><h2>{marked(req(s, "heading", where), m)}</h2>{ps}{steps}</section>')
+        buttons = "".join(f'<button type="button" data-film="{k}">{esc(c[k])}</button>' for k in ("back", "pause", "next"))
+        words = {**c, **{f"live_{k}": v for k, v in live.items()}}
+        blob = json.dumps(words, ensure_ascii=False).replace("<", "\\u003c")
+        return (f'<canvas id="film" role="img" aria-label="{esc(req(b, "label", where))}" hidden></canvas>'
+                f'<p id="film-controls" hidden>{buttons} <span id="film-pos"></span> <a href="#text">{esc(c["read"])}</a></p>'
+                f'<script id="film-words" type="application/json">{blob}</script>'
+                f'<article id="text"><h1>{esc(req(b, "heading", where))}</h1>{"".join(secs)}</article>')
+
+    def b_status(self, b, where):
+        items = "".join(
+            f'<li><b>{esc(req(it, "name", where))}</b> <span data-svc="{esc(it["id"])}">{esc(req(b, "initial", where))}</span><br>'
+            f'{self.inline(req(it, "text", where))}<br>{self.link(req(it, "host", where), req(it, "href", where))}</li>'
+            for it in req(b, "items", where))
+        return self._section(b, where, f"<ul>{items}</ul>")
+
     def _head(self, b: dict, where: str, cls: str) -> str:
         parts = [f'<section class="{cls}" aria-labelledby="page-title"><div class="wrap">']
         if b.get("eyebrow"):
@@ -166,21 +287,6 @@ class Renderer:
             items.append(f'<li class="card">{self.chip(it.get("chip"))}<h3>{esc(req(it, "title", where))}</h3>'
                          f'<p>{self.inline(req(it, "text", where))}</p>{link}</li>')
         return self._section(b, where, f'<ul class="cards">{"".join(items)}</ul>')
-
-    def b_status(self, b, where):
-        attrs = " ".join(f'data-{k}="{esc(req(b, k, where))}"' for k in ("up", "down", "unknown", "checked", "failed"))
-        items = []
-        for it in req(b, "items", where):
-            items.append(
-                f'<li class="status-item" data-service="{esc(req(it, "id", where))}" data-state="checking">'
-                f'<span class="status-item__name">{esc(req(it, "name", where))}</span>'
-                f'<span class="status-item__state" data-state-text>{esc(req(b, "initial", where))}</span>'
-                f'<span class="status-item__text">{self.inline(req(it, "text", where))}</span>'
-                f'{self.link(req(it, "host", where), req(it, "href", where), "status-item__host")}</li>')
-        inner = (f'<ul class="status-list" data-status-src="{esc(req(b, "endpoint", where))}" {attrs}>{"".join(items)}</ul>'
-                 f'<p class="status-note" data-checked-note aria-live="polite"></p>'
-                 f'<noscript><p class="status-note">{esc(req(b, "noscript", where))}</p></noscript>')
-        return self._section(b, where, inner)
 
     def b_feature(self, b, where):
         sid = esc(req(b, "id", where))
@@ -745,27 +851,17 @@ class Renderer:
         nav_items = []
         for it in req(nav, "items", "site/nav"):
             current = ' aria-current="page"' if it["href"] == route else ""
-            nav_items.append(f'        <li><a href="{esc(it["href"])}"{current}>{esc(it["label"])}</a></li>')
+            nav_items.append(f'<a href="{esc(it["href"])}"{current}>{esc(it["label"])}</a>')
         footer = req(site, "footer", "site")
-        footer_items = "\n".join(f"        <li>{self.link(it['label'], it['href'])}</li>" for it in req(footer, "links", "site/footer"))
-        scripts = '<script src="/assets/agent-banner.js" defer></script>\n'
+        footer_items = " ".join(f"{self.link(it['label'], it['href'])}" for it in req(footer, "links", "site/footer"))
+        scripts = ""
         kinds = {b.get("type") for b in page["blocks"]}
-        if "status" in kinds:
-            scripts += '<script src="/assets/status.js" defer></script>\n'
-        if "setup" in kinds:
-            scripts += '<script src="/assets/start.js" defer></script>\n'
-        if "story" in kinds:
-            scripts += '<link rel="stylesheet" href="/assets/story.css">\n<script src="/assets/story.js" defer></script>\n'
-        if "network" in kinds:
-            scripts += '<link rel="stylesheet" href="/assets/network.css">\n<script src="/assets/network.js" defer></script>\n'
-        if "benchmarks" in kinds:
-            scripts += '<script src="/assets/benchmarks.js" defer></script>\n'
-        if kinds & {"status", "setup", "benchmarks"}:
-            scripts += '<noscript><link rel="stylesheet" href="/assets/noscript.css"></noscript>\n'
+        if "film" in kinds:
+            scripts = '<script src="/assets/film.js" defer></script>\n'
 
         noindex = page.get("noindex", False)
         canonical = self.origin + ("/" if noindex else route)
-        banner = self.banner()
+        banner = esc(req(site, "banner_line", "site"))
         values = {
             "lang": req(site, "lang", "site"),
             "title": req(page, "title", where),
@@ -779,15 +875,13 @@ class Renderer:
             "home_label": req(site["brand"], "home_label", "site/brand"),
             "brand": req(site["brand"], "name", "site/brand"),
             "nav_label": req(nav, "label", "site/nav"),
-            "cta_href": req(nav["cta"], "href", "site/nav/cta"),
-            "cta_label": req(nav["cta"], "label", "site/nav/cta"),
             "footer_label": req(footer, "label", "site/footer"),
             "footer_line": req(footer, "line", "site/footer"),
         }
         raw = {
             "banner": banner,
             "mark": self.mark,
-            "nav_items": "\n".join(nav_items),
+            "nav_items": " ".join(nav_items),
             "footer_items": footer_items,
             "blocks": "\n".join(self.block(b, where) for b in req(page, "blocks", where)),
             "robots": values.pop("robots"),
@@ -802,6 +896,9 @@ class Renderer:
                 return esc(values[key])
             raise BuildError(f"template placeholder '{key}' has no value")
 
+        raw["blocks"] = textify(raw["blocks"])
+        values["text_css"] = TEXT_CSS
+        raw["text_css"] = TEXT_CSS
         return re.sub(r"\{\{(\w+)\}\}", fill, layout)
 
 
@@ -859,6 +956,15 @@ def write_worker_words(patterns: list[str], hashes: list[str]) -> None:
         f"export const PRIVATE_SHA256 = [\n  {hexes},\n];\n", encoding="utf-8")
 
 
+def write_worker_text(link: dict) -> None:
+    digest = base64.b64encode(hashlib.sha256(TEXT_CSS.encode()).digest()).decode()
+    WORKER_TEXT.write_text(
+        "// Generated by build.py. Gitignored: never commit it.\n"
+        f"export const TEXT_CSS = {json.dumps(TEXT_CSS)};\n"
+        f"export const TEXT_CSS_HASH = {json.dumps('sha256-' + digest)};\n"
+        f"export const LINK_COPY = {json.dumps(link, ensure_ascii=False)};\n", encoding="utf-8")
+
+
 def write_worker_media() -> None:
     media_dir = STATIC / "media"
     sizes = {}
@@ -880,15 +986,29 @@ def build(out: Path) -> list[str]:
     layout = (TEMPLATES / "layout.html").read_text(encoding="utf-8")
     if out.exists():
         shutil.rmtree(out)
-    shutil.copytree(STATIC, out)
+    keep = {"film.js", "network-geo.json", "favicon.svg", "favicon-32.png", "apple-touch-icon.png", "og-teleion-1200x630.png", "video-poster-teleion.svg", "video-preview.svg"}
+    def ignore(folder, names):
+        if Path(folder) == STATIC:
+            return [n for n in names if n == "fonts"]
+        if Path(folder) == STATIC / "assets":
+            return [n for n in names if n not in keep]
+        return []
+    shutil.copytree(STATIC, out, ignore=ignore)
+    write_worker_text(data["link"])
     written = []
     sitemap = []
     for name in PAGES:
         page = data[name]
         target = out / req(page, "output", page["id"])
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(r.page(page, layout), encoding="utf-8")
+        markup = r.page(page, layout)
+        target.write_text(markup, encoding="utf-8")
         written.append(str(target.relative_to(out)))
+        if name != "errors":
+            twin = out / text_route(page["route"])
+            twin.parent.mkdir(parents=True, exist_ok=True)
+            twin.write_text(to_text(markup), encoding="utf-8")
+            written.append(str(twin.relative_to(out)))
         if not page.get("noindex"):
             sitemap.append(r.origin + page["route"])
     (out / "llms.txt").write_text(render_llms(data["llms"]), encoding="utf-8")

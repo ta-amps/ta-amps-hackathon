@@ -4,16 +4,20 @@
 //   3. Every response carries the security headers: a CSP of 'self' only, HSTS without preload, nosniff.
 //   4. GET /api/status reads the public health checks listed in /status.sources.json (built from
 //      content/home.json), keeps only state and version, and caches the answer for 60 s.
-// No storage, no cookies, no forms, no credentials. Only GET and HEAD are served.
+// No storage, no cookies, no credentials. Only GET and HEAD are served, except the form on a link page (/l/<token>).
 
 import { BANNED_PATTERNS, PRIVATE_SHA256 } from "./banned.generated.js";
 import { maybeMediaRange } from "./media-range.js";
 import { networkResponse } from "./network.js";
+import { linkResponse } from "./link.js";
+import { TEXT_CSS_HASH } from "./text.generated.js";
 
 export const APEX = "teleionlabs.com";
 const OVERVIEW_HOST = "agora.eranosforgood.org";
 const STATUS_TTL_SECONDS = 60;
-const TEXT_FILES = new Set(["/llms.txt", "/robots.txt", "/.well-known/security.txt"]);
+const isTextFile = (path) => path.endsWith(".txt");
+// Retired pages: their job moved to the home film and the visitor's agent.
+const RETIRED = new Set(["/start", "/story", "/network"]);
 const OVERVIEW_PREFIXES = new Set([
   "judges", "how-it-works", "source", "library", "feeds", "scenarios",
   "models", "use-cases", "learning", "deploy", "studio", "accessibility",
@@ -29,7 +33,7 @@ export const SECURITY_HEADERS = {
   "Content-Security-Policy": [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self'",
+    `style-src '${TEXT_CSS_HASH}'`,
     "img-src 'self'",
     "font-src 'self'",
     "media-src 'self'",
@@ -212,6 +216,17 @@ export async function handle(request, env, ctx) {
     return withHeaders(new Response(null, { status: safe ? 301 : 308, headers: { Location: target.toString() } }));
   }
 
+  const link = url.pathname.match(/^\/l\/([^/]*)\/?$/);
+  if (link && (safe || method === "POST")) {
+    const res = await linkResponse(request, env, link[1]);
+    return method === "HEAD" ? new Response(null, res) : res;
+  }
+
+  const bare = url.pathname.replace(/\/$/, "");
+  if (RETIRED.has(bare)) {
+    return withHeaders(new Response(null, { status: safe ? 301 : 308, headers: { Location: `https://${APEX}/` } }));
+  }
+
   if (!safe) {
     return withHeaders(new Response(null, { status: 405, headers: { Allow: "GET, HEAD" } }));
   }
@@ -226,14 +241,19 @@ export async function handle(request, env, ctx) {
     return method === "HEAD" ? new Response(null, out) : out;
   }
 
-  const rawAsset = await env.ASSETS.fetch(request);
+  const wantsText = !url.pathname.includes(".") && /^text\/(plain|markdown)/.test(request.headers.get("Accept") || "");
+  const twin = wantsText ? (url.pathname === "/" ? "/index.txt" : `${url.pathname.replace(/\/$/, "")}.txt`) : null;
+  const assetRequest = twin ? new Request(new URL(twin, url), request) : request;
+  const servedPath = twin || url.pathname;
+  const rawAsset = await env.ASSETS.fetch(assetRequest);
   const asset = await maybeMediaRange(request, rawAsset, ctx);
   const extra = {};
   const mediaOk = asset.status === 200 || asset.status === 206;
   if (mediaOk && (url.pathname.startsWith("/fonts/") || url.pathname.startsWith("/media/") || !asset.headers.has("Cache-Control"))) {
     extra["Cache-Control"] = cacheControlFor(url.pathname);
   }
-  if (TEXT_FILES.has(url.pathname) && asset.status === 200) extra["Content-Type"] = "text/plain; charset=utf-8";
+  if (isTextFile(servedPath) && asset.status === 200) extra["Content-Type"] = "text/plain; charset=utf-8";
+  extra.Vary = "Accept";
   if (url.pathname.startsWith("/records/") && url.pathname.endsWith(".json") && asset.status === 200) {
     extra["Content-Type"] = "application/json; charset=utf-8";
   }
@@ -245,5 +265,28 @@ export async function handle(request, env, ctx) {
     const cc = extra["Cache-Control"] || asset.headers.get("Cache-Control") || "public, max-age=0, must-revalidate";
     extra["Cache-Control"] = /no-transform/.test(cc) ? cc : `${cc}, no-transform`;
   }
+  if ((servedPath === "/status.txt" || servedPath === "/status/") && asset.status === 200) {
+    return withHeaders(await withLiveStatus(asset, request, env, ctx, servedPath), { ...extra, "Cache-Control": "no-store" });
+  }
   return withHeaders(asset, extra);
+}
+
+// The status page is plain text, so the Worker writes the live answers into it.
+const STATE_WORDS = { up: "Answering", down: "Not answering" };
+async function withLiveStatus(asset, request, env, ctx, path) {
+  let services = [];
+  try {
+    services = (await (await statusResponse(request, env, ctx)).json()).services || [];
+  } catch {
+    services = [];
+  }
+  const state = (id) => STATE_WORDS[services.find((s) => s.id === id)?.state] || "No answer from the check";
+  let body = await asset.text();
+  body = path === "/status.txt"
+    ? body.replace(/\[\[([a-z]+)\]\]/g, (_, id) => state(id))
+    : body.replace(/(<span data-svc="([a-z]+)">)[^<]*/g, (_, open, id) => open + state(id));
+  const headers = new Headers(asset.headers);
+  headers.delete("Content-Length");
+  headers.delete("ETag");
+  return new Response(body, { status: 200, headers });
 }

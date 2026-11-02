@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="{{lang}}">
-<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="only light">
@@ -15,40 +14,16 @@
 <meta property="og:url" content="{{canonical}}">
 <meta property="og:image" content="{{og_image}}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preload" href="/fonts/IBMPlexSans-wdth-wght.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/SpaceGrotesk-wght.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/tokens.css">
-<link rel="stylesheet" href="/assets/site.css">
-{{scripts}}</head>
-<body>
-<a class="skip-link" href="#main">{{skip_link}}</a>
-{{banner}}
-<header class="site-header">
-  <div class="wrap header-row">
-    <a class="brand" href="/" aria-label="{{home_label}}"><img class="brand__lockup" src="/assets/teleion-lockup.svg" width="160" height="25" alt="{{brand}}"></a>
-    <nav class="site-nav" aria-label="{{nav_label}}">
-      <ul class="site-nav__list">
-{{nav_items}}
-      </ul>
-    </nav>
-    <a class="btn btn--primary btn--small header-cta" href="{{cta_href}}">{{cta_label}}</a>
-  </div>
-</header>
-<main id="main" tabindex="-1">
+<style>{{text_css}}</style>
+{{scripts}}<body>
+<p>{{banner}}</p>
+<nav aria-label="{{nav_label}}"><a href="/"><b>{{brand}}</b></a> {{nav_items}}</nav>
+<main id="main">
 {{blocks}}
 </main>
-<footer class="site-footer" aria-label="{{footer_label}}">
-  <div class="wrap">
-    <div class="site-footer__row">
-      <a class="brand brand--small" href="/" aria-label="{{home_label}}">{{mark}}<b class="brand__name">{{brand}}</b></a>
-      <ul class="site-footer__links">
-{{footer_items}}
-      </ul>
-    </div>
-    <p class="site-footer__line">{{footer_line}}</p>
-  </div>
+<footer aria-label="{{footer_label}}">
+<p>{{footer_items}}</p>
+<p>{{footer_line}}</p>
 </footer>
 </body>
 </html>

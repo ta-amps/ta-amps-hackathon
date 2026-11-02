@@ -96,32 +96,6 @@ test("the deployed config keeps what the Privacy page says: logs, traces and Iss
   assert.equal(config.dev?.upstream_protocol, "https", "local dev presents https URLs, so the redirect keeps it local");
 });
 
-test("the start page carries its setup data and the default setup, built from content/start.json", async () => {
-  const page = await (await handle(new Request("https://teleionlabs.com/start/"), { ASSETS: assets() }, ctx)).text();
-  const data = JSON.parse(page.match(/<script type="application\/json" id="setup-data">(.*?)<\/script>/s)[1]);
-  assert.equal(Object.keys(data.templates).length, 12, "2 goals x 2 ways to connect x 3 views");
-  const shown = page.match(/<code data-setup-output>(.*?)<\/code>/s)[1];
-  const expected = data.templates["work.http.agent"].replace(/\{agent\}/g, "my-agent").replace(/\{queue\}/g, "demo.echo").replace(/\{map\}/g, data.tokens.map_on);
-  const unescape = (s) => s.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-  assert.equal(unescape(shown), expected);
-  assert.match(page, /<script src="\/assets\/start\.js" defer><\/script>/);
-});
-
-test("every page carries the shared agent banner, its noun inline and a fallback line", async () => {
-  const banner = await readFile(fileURLToPath(new URL("../static/assets/agent-banner.js", import.meta.url)));
-  const digest = Buffer.from(await crypto.subtle.digest("SHA-256", banner)).toString("hex");
-  assert.equal(digest, "1a9e22452b4667d8601584c29ec3d3475c92c70d8954910336cb455eb1b21d9a", "byte-identical to the shared banner");
-  for (const path of ["/", "/start/", "/free/", "/404.html"]) {
-    const page = await (await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx)).text();
-    assert.equal((page.match(/<ta-agent-banner /g) || []).length, 1, path);
-    const noun = JSON.parse(page.match(/<ta-agent-banner[^>]*><script type="application\/json">(.*?)<\/script>/s)[1]);
-    assert.equal(noun.copy_text, "Read https://teleionlabs.com/llms.txt and follow it.", path);
-    assert.match(page, /<p class="agent-fallback">/, path);
-    assert.match(page, /<script src="\/assets\/agent-banner\.js" defer><\/script>/, path);
-    assert.ok(page.indexOf("<ta-agent-banner") < page.indexOf('<header class="site-header">'), `${path}: banner above the header`);
-  }
-});
-
 test("/api/status reads only the listed health checks and keeps only state and version", async (t) => {
   const seen = [];
   t.mock.method(globalThis, "fetch", async (req) => {
@@ -233,11 +207,11 @@ test("upstream strings pass the shared banned-words list before they leave the W
 });
 
 test("HTML pages carry no-transform, so the zone injects nothing the CSP would block", async () => {
-  for (const path of ["/", "/start/", "/free/", "/nope/"]) {
+  for (const path of ["/", "/free/", "/nope/"]) {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     assert.match(res.headers.get("Cache-Control"), /no-transform/, path);
   }
-  const css = await handle(new Request("https://teleionlabs.com/assets/site.css"), { ASSETS: assets() }, ctx);
+  const css = await handle(new Request("https://teleionlabs.com/assets/film.js"), { ASSETS: assets() }, ctx);
   assert.doesNotMatch(css.headers.get("Cache-Control") || "", /no-transform/);
 });
 
@@ -288,4 +262,60 @@ test("/media/*.mp4 supports HTTP 206 byte-range seeking, 416 unsatisfiable range
     assert.equal(bad.status, 416, name);
     assert.equal(bad.headers.get("Content-Range"), `bytes */${raw.byteLength}`, name);
   }
+});
+
+test("every page is plain text: first line is for agents, no stylesheet file, no font, and a .txt copy", async () => {
+  for (const [path, twin] of [["/", "/index.txt"], ["/free/", "/free.txt"], ["/docs/", "/docs.txt"]]) {
+    const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
+    const body = await res.text();
+    assert.match(body, /<body>\s*<p>For AI agents: read/);
+    assert.doesNotMatch(body, /rel="stylesheet"|\.woff2|class="/);
+    const text = await handle(new Request(`https://teleionlabs.com${twin}`), { ASSETS: assets() }, ctx);
+    assert.equal(text.status, 200);
+    assert.match(text.headers.get("Content-Type"), /text\/plain/);
+  }
+});
+
+test("the home film is exactly 180 seconds and its words are the page's text", async () => {
+  const res = await handle(new Request("https://teleionlabs.com/"), { ASSETS: assets() }, ctx);
+  const body = await res.text();
+  const secs = [...body.matchAll(/data-seconds="(\d+)"/g)].reduce((a, m) => a + Number(m[1]), 0);
+  assert.equal(secs, 180);
+  assert.match(body, /<canvas id="film"[^>]* hidden/);
+  assert.match(body, /Connect your agents\./);
+});
+
+test("retired pages redirect home", async () => {
+  for (const p of ["/start/", "/story/", "/network/", "/start"]) {
+    const res = await handle(new Request(`https://teleionlabs.com${p}`), { ASSETS: assets() }, ctx);
+    assert.equal(res.status, 301);
+    assert.equal(res.headers.get("Location"), "https://teleionlabs.com/");
+  }
+});
+
+test("a link page reads without acting, posts one answer, and sends the token only in a header", async () => {
+  const token = "a".repeat(43);
+  const calls = [];
+  const TESSERA = { fetch: async (req) => {
+    calls.push({ method: req.method, url: req.url, token: req.headers.get("X-Human-Link-Token"), body: req.method === "POST" ? await req.json() : null });
+    return new Response(JSON.stringify(req.method === "POST"
+      ? { state: "confirmed" }
+      : { state: "open", kind: "confirm", text: "Add <40> Tasks", agent_label: "build-bot", expires_at: new Date(Date.now() + 600000).toISOString() }));
+  } };
+  const page = await handle(new Request(`https://teleionlabs.com/l/${token}`), { ASSETS: assets(), TESSERA }, ctx);
+  const html = await page.text();
+  assert.match(html, /Add &lt;40&gt; Tasks/);
+  assert.match(html, /<form method="post">/);
+  assert.equal(page.headers.get("Cache-Control"), "no-store");
+  assert.equal(page.headers.get("Referrer-Policy"), "no-referrer");
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].method, "GET");
+  assert.ok(!calls[0].url.includes(token));
+  const post = await handle(new Request(`https://teleionlabs.com/l/${token}`, { method: "POST", body: new URLSearchParams({ answer: "confirm" }) }), { ASSETS: assets(), TESSERA }, ctx);
+  assert.match(await post.text(), /Confirmed/);
+  assert.deepEqual(calls[1].body, { answer: "confirm" });
+  assert.equal(calls[1].token, token);
+  const bad = await handle(new Request("https://teleionlabs.com/l/nope"), { ASSETS: assets(), TESSERA }, ctx);
+  assert.match(await bad.text(), /This link has ended/);
+  assert.equal(calls.length, 2);
 });
