@@ -9,7 +9,7 @@
  "description": "The Teleion Labs film as a walk through a 3D model of Teleion Fabric, with the same words as the home page and every part labeled.",
  "sources": {
   "scene text": "The film block of content/home.json, copied at build time, so both films say the same thing.",
-  "labels": "Practice queue numbers: cloud_access.js seedDemo (lease 300 s, heartbeat 30 s, miss_limit 3). Maker and checker keys: cloud_publication.js reviewProof. Muse Spark 1.3 and Wonder 1.0: worker.policy v28. Muse Glimmer 30B is drawn apart from the live workers because the records don't establish routine live routing. Feeds: the public feeds page (GitHub and arXiv, kept as Task Objects). OmniNode is drawn apart from the live workers for the same reason. Shim reads stored records: the shim's worker source."
+  "labels": "Practice queue numbers: cloud_access.js seedDemo (lease 300 s, heartbeat 30 s, miss_limit 3). Maker and checker keys: cloud_publication.js reviewProof. Muse Spark 1.3 and Wonder 1.0: worker.policy v28. Muse Glimmer 30B is drawn apart from the live workers because the records don't establish routine live routing. Feeds: the public feeds page (GitHub and arXiv, kept as Task Objects). OmniNode is drawn apart from the live workers for the same reason. Shim reads stored records: the shim's worker source. Auto-tuning: eranos-worker eranos/pipeline/tuning.py (hourly tune Task over Muse model and persona per step, every pick recorded)."
  },
  "blocks": [
   {
@@ -101,6 +101,10 @@
      ],
      "workers": [
       "An hourly policy picks the model for each Task"
+     ],
+     "tuning": [
+      "Auto-tuning",
+      "Each hour, recorded outcomes set the next picks of model and approach"
      ]
     },
     "settings": [

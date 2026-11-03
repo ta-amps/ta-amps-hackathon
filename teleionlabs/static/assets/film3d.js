@@ -18,7 +18,7 @@ const AT = {
   agent: V(-24, 0, -2), eranos: V(-33, 0, 4), gate: V(-15, 0, 5),
   queue: V(-3, 0, 5), spark: V(-7, 0, 1), wonder: V(-1.5, 0, 1), checker: V(5, 0, 1),
   store: V(14, 0, 2), feeds: V(23, 0, 6), shim: V(-10, 0, -10), model: V(2, 0, -10),
-  glimmer: V(18, 0, -13), records: V(13.5, 0, -9.5), omni: V(3, 0, 24),
+  glimmer: V(18, 0, -13), records: V(13.5, 0, -9.5), omni: V(3, 0, 24), tuning: V(9, 0, 12.5),
 };
 const OMNI_R = 6;
 const bayAt = (i) => { const a = -Math.PI / 2 - 0.2 + (i / 5) * Math.PI * 2; return V(AT.omni.x + Math.cos(a) * OMNI_R * 1.25, 0, AT.omni.z + Math.sin(a) * OMNI_R * 0.9); };
@@ -129,6 +129,9 @@ export function create({ target, scenes, words, api }) {
   path("check_store", [[6.4, 0.42, 2.6], [9, 0.42, 3], [11.6, 0.42, 2.9]]);
   path("feeds_store", [[21.8, 0.42, 5.7], [19.6, 0.42, 4.9], [17.6, 0.42, 3.8]]);
   path("records_glimmer", [[14.6, 0.42, -10], [16, 0.42, -11.6], [17.1, 0.5, -12.4]], { r: 0.08 });
+  // Auto-tuning: recorded outcomes come in, and the hourly policy goes back to the workers.
+  path("outcomes_tuner", [[13.4, 0.42, 6.2], [12.2, 0.42, 9], [10.6, 0.42, 11.4]]);
+  path("tuner_workers", [[7.6, 2.6, 11.6], [4, 4.6, 8], [0.4, 5.4, 4], [-1.5, 4.3, 1.2]], { col: RUST });
   for (let i = 0; i < 5; i++) {
     const b = bayAt(i), a = V(AT.omni.x, 0.5, AT.omni.z);
     path(`omni${i}`, [[a.x, 0.5, a.z], [lerp(a.x, b.x, 0.5), 0.5, lerp(a.z, b.z, 0.5)], [b.x, 0.5, b.z]], { r: 0.08 });
@@ -261,6 +264,16 @@ export function create({ target, scenes, words, api }) {
   add(new T.TorusGeometry(0.85, 0.12, 10, 32), M.rust, loopPos.x, 1.6, loopPos.z, { rx: 0.25 });
   const loopBead = add(new T.SphereGeometry(0.2, 12, 10), M.glowRust, 0, 0, 0, { cast: false });
 
+  // Auto-tuning: a dial that comes round once an hour.
+  slab(AT.tuning.x, AT.tuning.z, 5.6, 4.8);
+  add(new T.CylinderGeometry(1.5, 1.8, 0.5, 28), M.warm, AT.tuning.x, 0.55, AT.tuning.z);
+  const dial = new T.Group(); dial.position.set(AT.tuning.x, 2.7, AT.tuning.z); dial.rotation.x = -0.22; scene.add(dial);
+  add(new T.CylinderGeometry(1.9, 1.9, 0.3, 40), M.white, 0, 0, 0, { to: dial, rx: Math.PI / 2 });
+  add(new T.TorusGeometry(1.9, 0.09, 8, 48), M.blue, 0, 0, 0.13, { to: dial });
+  for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; add(new T.BoxGeometry(0.07, i % 3 ? 0.18 : 0.34, 0.02), M.glow, Math.sin(a) * 1.58, Math.cos(a) * 1.58, 0.16, { to: dial, rz: -a, cast: false }); }
+  const dialHand = add(new T.BoxGeometry(0.1, 1.35, 0.03), M.glowRust, 0, 0, 0.19, { to: dial, cast: false });
+  add(new T.SphereGeometry(0.15, 12, 10), M.glowRust, 0, 0, 0.19, { to: dial, cast: false });
+
   // The soft spot of light under whatever the caption is about.
   const spot = add(new T.RingGeometry(0.975, 1, 96), new T.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0.8, side: T.DoubleSide, depthWrite: false }), 0, 0.34, 0, { rx: -Math.PI / 2, cast: false, receive: false });
   const spotFill = add(new T.CircleGeometry(0.975, 64), new T.MeshBasicMaterial({ color: "#BFD0EC", transparent: true, opacity: 0.12, depthWrite: false }), 0, 0.33, 0, { rx: -Math.PI / 2, cast: false, receive: false });
@@ -284,15 +297,25 @@ export function create({ target, scenes, words, api }) {
     glimmer: { at: V(17.4, 4.6, -12.5), r: 4.6, d: 25, az: 168, el: 13, paths: ["records_glimmer"] },
     eranos: { at: V(-32.5, 2.3, 4.6), r: 4.6, d: 20, az: 12, el: 16, paths: ["eranos_gate"] },
     omni: { at: V(3, 2, 24), r: 8.8, e: 0.85, d: 30, az: -6, el: 30, paths: ["omni0", "omni1", "omni2", "omni3", "omni4"] },
+    tuning: { at: V(8, 2.2, 11), r: 3.8, d: 21, az: 10, el: 24, paths: ["outcomes_tuner", "tuner_workers"] },
     overview: { at: V(-5, 0, 7), r: 0, d: 74, az: -3, el: 46, paths: ["agent_gate", "eranos_gate", "store_shim", "shim_model", "check_store", "feeds_store"] },
   };
   for (let i = 0; i < 5; i++) { const p = bayAt(i); FOCUS[`bay${i}`] = { at: V(p.x, 1.4, p.z), r: 2.4, d: 19, az: (p.x - AT.omni.x) * 1.6, el: p.z < AT.omni.z ? 40 : 24, paths: [`omni${i}`] }; }
 
-  const omniStart = 3.6, omniEach = (22 - omniStart - 0.6) / 5, partsStart = 2, partsEach = (22 - partsStart - 0.6) / 4;
+  // Timing comes from the page: each scene's length and its steps, so editing the article moves the film with it.
+  const sceneNamed = (kind) => scenes.find((s) => s.kind === kind) || { secs: 1, steps: [] };
+  const paced = (s, start) => (s.secs - start - 0.6) / Math.max(1, s.steps.length);
+  const stepName = (st) => st.map((r) => r.t).join("").trim().split(":")[0];
+  const STATION_OF = [[/feed/i, "feeds"], [/task objects/i, "store"], [/shim/i, "shim"], [/durable tasks/i, "queue"], [/custom|glimmer/i, "glimmer"], [/tuning/i, "tuning"]];
+  const stationOf = (st) => (STATION_OF.find(([re]) => re.test(stepName(st))) || [null, "overview"])[1];
+  const partsScene = sceneNamed("parts"), omniScene = sceneNamed("omninode");
+  const omniStart = 3.6, omniEach = paced(omniScene, omniStart), partsStart = 2, partsEach = paced(partsScene, partsStart);
+  const partsStations = partsScene.steps.map(stationOf);
+  const partsAt = (station) => { const i = partsStations.indexOf(station); return i < 0 ? -1 : partsStart + i * partsEach; };
   const SHOTS = {
-    parts: [[0, "overview", null], [partsStart, "queue", "queue"], [partsStart + partsEach, "store", "store"], [partsStart + 2 * partsEach, "shim", "shim"], [partsStart + 3 * partsEach, "glimmer", "glimmer"]],
+    parts: [[0, "overview", null], ...partsStations.map((f, i) => [partsStart + i * partsEach, f, f === "overview" ? null : f])],
     file: [[0, "http", "http"], [2.2, "gate", "gate"], [5.8, "http", "http"]],
-    omninode: [[0, "omni", "omni"], ...[0, 1, 2, 3, 4].map((i) => [omniStart + i * omniEach, `bay${i}`, `bay${i}`])],
+    omninode: [[0, "omni", "omni"], ...omniScene.steps.slice(0, 5).map((_, i) => [omniStart + i * omniEach, `bay${i}`, `bay${i}`])],
     queue: [[0, "queue", "queue"], [1.4, "spark", "spark"], [6.6, "wonder", "wonder"], [9.2, "checker", "checker"], [12.2, "store", "store"]],
     workers: [[0, "wide_agents", "agent"], [2, "workers", "wonder"]],
     reuse: [[0, "feeds", "feeds"], [2.6, "store", "store"], [5, "reuse", "reuse"]],
@@ -363,7 +386,8 @@ export function create({ target, scenes, words, api }) {
   // Which moment of the Task's story to show: the queue scene plays it straight; Durable Tasks plays it fast; elsewhere it loops gently.
   function storyTime(s, st, t) {
     if (s && s.kind === "queue") return st;
-    if (s && s.kind === "parts" && st >= partsStart && st < partsStart + partsEach) return (st - partsStart) * (11.5 / partsEach);
+    const durable = partsAt("queue");
+    if (s && s.kind === "parts" && durable >= 0 && st >= durable && st < durable + partsEach) return (st - durable) * (11.5 / partsEach);
     return ((t * 0.8) % 16);
   }
 
@@ -390,7 +414,7 @@ export function create({ target, scenes, words, api }) {
     }
     // Beads.
     beadN = 0;
-    const flows = [["agent_gate", 0.28, 3], ["eranos_gate", 0.24, 3], ["agent_shim", 0.32, 3], ["store_shim", 0.16, 4], ["feeds_store", 0.3, 2], ["records_glimmer", 0.3, 2], ["check_store", 0.3, 2], ["omni0", 0.4, 1], ["omni1", 0.4, 1], ["omni2", 0.4, 1], ["omni3", 0.4, 1], ["omni4", 0.4, 1]];
+    const flows = [["agent_gate", 0.28, 3], ["eranos_gate", 0.24, 3], ["agent_shim", 0.32, 3], ["store_shim", 0.16, 4], ["feeds_store", 0.3, 2], ["records_glimmer", 0.3, 2], ["check_store", 0.3, 2], ["outcomes_tuner", 0.3, 2], ["tuner_workers", 0.2, 2], ["omni0", 0.4, 1], ["omni1", 0.4, 1], ["omni2", 0.4, 1], ["omni3", 0.4, 1], ["omni4", 0.4, 1]];
     for (const [id, speed, n] of flows) {
       const p = paths[id];
       if (p.a < 0.5 && !(hi === null)) { if (shot.d < 30) continue; }
@@ -433,7 +457,7 @@ export function create({ target, scenes, words, api }) {
 
     // Kept versions: towers grow; the newest slab drops in.
     let n = 0;
-    const grow = s && s.kind === "parts" && st >= partsStart + partsEach ? clamp((st - partsStart - partsEach) / 3.6) : 1;
+    const keptAt = partsAt("store"), grow = s && s.kind === "parts" && keptAt >= 0 && st >= keptAt ? clamp((st - keptAt) / 3.6) : 1;
     TOWERS.forEach(([dx, dz, count], i) => {
       const shown = Math.ceil(count * Math.max(0.4, grow));
       for (let k = 0; k < shown - 1; k++) { place(versionsOld, n++, AT.store.x + dx, 0.52 + k * 0.4, AT.store.z + dz); }
@@ -461,6 +485,7 @@ export function create({ target, scenes, words, api }) {
     key.rotation.y = t * 0.9;
     screenBars.forEach((b, i) => { const w = 0.5 + ((Math.sin(t * 0.7 + i * 1.7) + 1) / 2) * 2; b.scale.x = w; b.position.x = -1.5 + w / 2; });
     dish.rotation.y = Math.sin(t * 0.4) * 0.25;
+    dialHand.position.set(Math.sin(t * 0.5) * 0.62, Math.cos(t * 0.5) * 0.62, 0.19); dialHand.rotation.z = -t * 0.5;
     for (let i = 0; i < 5; i++) { const a = t * 0.5 + (i * Math.PI * 2) / 5; place(settings, i, AT.omni.x + Math.cos(a) * 2.9, 2.5 + Math.sin(t + i) * 0.2, AT.omni.z + Math.sin(a) * 2.9, 1, 1, 0, a); }
     settings.instanceMatrix.needsUpdate = true;
     { const a = t * 2.2; loopBead.position.set(loopPos.x + Math.cos(a) * 0.85, 1.6 + Math.sin(a) * 0.85 * Math.cos(0.25), loopPos.z + Math.sin(a) * 0.85 * Math.sin(0.25)); }
@@ -481,7 +506,7 @@ export function create({ target, scenes, words, api }) {
   const anchors = {
     agent: V(-24, 4.3, -2), http: V(-20, 0.9, 2.2), gate: V(-15, 7.1, 5), queue: V(-10.5, 2.2, 6.2), spark: V(-7, 4.5, 1), wonder: V(-1.5, 4.5, 1), checker: V(5, 4.5, 1),
     store: V(14, 5, 0), feeds: V(23, 4.6, 6), shim: V(-10, 5.9, -10), model: V(2, 4.6, -10), glimmer: V(18, 8.8, -13), records: V(13.5, 1.6, -9.5),
-    eranos: V(-33, 4.4, 4), omni: V(3, 4.6, 24), reuse: V(0, 1.1, -6),
+    eranos: V(-33, 4.4, 4), omni: V(3, 4.6, 24), reuse: V(0, 1.1, -6), tuning: V(9, 5, 12.5),
   };
   for (let i = 0; i < 5; i++) { const p = bayAt(i); anchors[`bay${i}`] = V(p.x, 2.8, p.z); }
   function project(v3, W, H) {
@@ -601,7 +626,7 @@ export function create({ target, scenes, words, api }) {
   function labelsFor(kind, s, st, shot, story) {
     const hi = shot.cur.hi, list = [];
     const overview = shot.cur.name === "overview" && shot.k > 0.6;
-    const nearOf = { agent: ["http"], http: ["agent", "gate", "eranos"], gate: ["queue", "agent"], queue: ["gate", "spark", "wonder"], spark: ["wonder"], wonder: ["spark", "checker"], checker: ["wonder", "store"], store: ["checker", "feeds"], feeds: ["store"], shim: ["model", "agent"], reuse: ["shim", "store", "model"], model: ["shim"], glimmer: ["records"], eranos: ["gate"], omni: [] };
+    const nearOf = { agent: ["http"], http: ["agent", "gate", "eranos"], gate: ["queue", "agent"], queue: ["gate", "spark", "wonder"], spark: ["wonder"], wonder: ["spark", "checker"], checker: ["wonder", "store"], store: ["checker", "feeds"], feeds: ["store"], shim: ["model", "agent"], reuse: ["shim", "store", "model"], model: ["shim"], glimmer: ["records"], eranos: ["gate"], omni: [], tuning: ["store", "wonder"] };
     let hero = null;
     if (hi) {
       if (hi.startsWith("bay")) { const i = Number(hi.slice(3)), txt = nameOf(s.steps[i]), d = txt.indexOf(":"); hero = { id: hi, at: anchors[hi], name: txt.slice(0, d), sub: txt.slice(d + 1).trim() }; hero.sub = hero.sub.charAt(0).toUpperCase() + hero.sub.slice(1); }
@@ -615,7 +640,7 @@ export function create({ target, scenes, words, api }) {
       list.push(hero);
     }
     if (overview) {
-      for (const id of ["gate", "queue", "store", "shim", "agent", "glimmer", "spark", "wonder", "checker", "eranos", "feeds", "model", "omni", "records"]) list.push(label(id));
+      for (const id of ["gate", "queue", "store", "shim", "agent", "glimmer", "spark", "wonder", "checker", "eranos", "feeds", "model", "omni", "tuning", "records"]) list.push(label(id));
     } else if (hi && nearOf[hi]) {
       for (const id of nearOf[hi]) list.push(label(id));
     } else if (hi && hi.startsWith("bay")) {
