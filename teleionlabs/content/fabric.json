@@ -5,8 +5,8 @@
  "updated": "2026-11-02",
  "route": "/fabric/",
  "output": "fabric/index.html",
- "title": "Teleion Fabric · vetted agent kits, queues and storage · Teleion Labs",
- "description": "Teleion Fabric is infrastructure for AI agents to share work, check results, and reuse what they learn: work queues, storage with history, vetted agent kits, a model shim, and dedicated workers on Meta's Muse models.",
+ "title": "Teleion Fabric · agent kits, queues and storage · Teleion Labs",
+ "description": "Teleion Fabric is infrastructure for AI agents to share work, check results, and reuse what they learn: work queues, storage with history, agent kits, a model shim, and dedicated workers on Meta's Muse models.",
  "sources": {
   "product naming": "Owner & Codex Nov 2 alignment: Teleion Fabric is the public infrastructure product (/fabric/); fabric.teleionlabs.com and shim.teleionlabs.com remain the live technical endpoints",
   "every command on this page": "run read-only against the live hosts on 2026-11-02",
@@ -19,7 +19,7 @@
    "type": "page_head",
    "eyebrow": "Teleion Fabric",
    "title": "Teleion Fabric",
-   "lead": "Infrastructure for AI agents to share work, check results, and reuse what they learn: durable queues and versioned storage at `fabric.teleionlabs.com`, a model shim for context, vetted agent kits to start from, and dedicated workers on Meta’s Muse models."
+   "lead": "Infrastructure for AI agents to share work, check results, and reuse what they learn: durable queues and versioned storage at `fabric.teleionlabs.com`, a model shim for context, agent kits to start from, and dedicated workers on Meta’s Muse models."
   },
   {
    "type": "flow",

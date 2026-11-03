@@ -9,7 +9,7 @@
  "description": "Plain results from recorded runs on Teleion Fabric: repository scanning, zero-shim memory reuse, 256-worker queue runs, Muse Glimmer 30B evaluations, and second-worker checks.",
  "sources": {
   "705 of 739 repository scan": "/records/repo-scan-2026-10-29.json (public scan of 739 event repositories on 2026-10-29)",
-  "Adopted Muse Glimmer 30B variant (88.6% retrieval hit@1, 83.7% abstention, 97.9% routing F1, 99.3% tool calling, 1 of 126 flawed reports accepted)": "/records/glimmer-30b-orchestrator-2026-11-02.json and /benchmarks/methodology/ (bf16 base + rank-16 LoRA on one NVIDIA H100 80GB; pre-registered splits frozen 2026-11-02T00:33:21Z plus derived 153-case abstention set)",
+  "Adopted Muse Glimmer 30B variant (83.7% abstention, 97.9% routing F1, 99.3% tool calling, 1 of 126 flawed reports accepted)": "/records/glimmer-30b-orchestrator-2026-11-02.json and /benchmarks/methodology/ (bf16 base + rank-16 LoRA on one NVIDIA H100 80GB; pre-registered splits frozen 2026-11-02T00:33:21Z plus derived 153-case abstention set)",
   "62.5% vs 29.2% LoRA-as-Memory": "/records/glimmer-30b-orchestrator-2026-11-02.json (separate 4-bit NF4 QLoRA memory experiment on 2x T4 over 120 held-out Tasks, 2026-10-31)",
   "256-worker run (0 lease collisions, 54.4 ms, 0 self-approvals)": "/records/swarm-256-workers-2026-10.json (1,000 generated test workflows across 4 local Worker cells, 25,620 MCP calls)",
   "3 min 27 s build and 1 min 23 s check": "/records/eranos-featured-run-2026-10-31.json (recorded Eranos shift-schedule kit build in 207.27 s / 25 model calls and separate-key check in 82.73 s / 14 model calls on 2026-10-31)",
@@ -71,16 +71,24 @@
     },
     {
      "group": "new",
-     "value": "88.6% vs 1.7%",
-     "label": "top-1 Task Object match on held-out queries with a match (adopted Muse Glimmer 30B variant vs base; 83.7% correct abstention when nothing fits, trading 8 points of recall@5)",
-     "setup": "175 matched queries + 153 derived no-match cases on H100",
+     "value": "89.1% vs 67.4%",
+     "label": "top-1 Task Object match on 175 held-out queries, tuned Muse Glimmer 30B adapter vs base, at the same token limit, counting the base model's numbered answers. With a longer limit the base reaches 88.0%, so tuning mainly fixes output format and token use, not matching skill",
+     "setup": "175 matched queries, same session",
+     "date": "Nov 2, 2026",
+     "record_href": null
+    },
+    {
+     "group": "model",
+     "value": "99.3% vs 92.0%",
+     "label": "work reviews judged correctly by the adopted tuned Muse Glimmer 30B variant vs Muse Spark 1.3 on the same rows, at the settings the Eranos workers use (+7.2 points, 95% interval +2.1 to +13.2). Routing: 97.9% vs 95.9% (+2.0, interval +0.1 to +4.4)",
+     "setup": "Same held-out rows for both models",
      "date": "Nov 2, 2026",
      "record_href": null
     },
     {
      "group": "reuse",
      "value": "62.5% vs 29.2%",
-     "label": "correct structured answers across 60 recall and 60 request-splitting tests with zero context-shim tokens (separate 2x T4 memory adapter vs 222-token text shim; 2.28x lower amortized batch generation time)",
+     "label": "correct structured answers across 60 recall and 60 request-splitting tests with zero context-shim tokens (separate 2x T4 memory adapter vs 222-token text shim; 2.28x lower amortized batch generation time). 76 of the 120 baseline replies hit the fixed token budget, and recall alone was not significant (41 vs 35 of 60), so most of the gain is on request splitting and within the budget",
      "setup": "120 held-out cases · fixed response budget",
      "date": "Oct 31, 2026",
      "record_href": null
