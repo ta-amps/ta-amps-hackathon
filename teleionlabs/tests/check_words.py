@@ -234,7 +234,7 @@ def main() -> int:
         raw_html = p.read_text(encoding="utf-8")
         parser.feed(raw_html)
         rel = str(p.relative_to(DIST))
-        allow_pct = rel.startswith("benchmarks/") or rel in ("index.html", "experience/index.html")
+        allow_pct = rel.startswith("benchmarks/") or rel in ("index.html", "experience/index.html") or rel == "judges/index.html"
         allow_handoff = rel == "story/index.html"
         gate(rel, "\n".join(parser.text + parser.attrs + parser.generated), allow_percent=allow_pct, allow_handoff=allow_handoff)
         # Also verify raw HTML carries zero T7 banned strings (including hrefs and metadata).
@@ -269,7 +269,7 @@ def main() -> int:
             for m in re.finditer(r"ta-amps|tel[e]on|\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", vtext, re.I):
                 hits.append(f"captions {vtt.name}: T7 hit: {mask(vtext, m)}")
     for fname, s in content_strings_by_file(include_notes=True):
-        gate(f"content/{fname}", s, full=s in vis_set, allow_percent=(fname in ("benchmarks.json", "methodology.json", "home.json")), allow_handoff=fname == "story.json")
+        gate(f"content/{fname}", s, full=s in vis_set, allow_percent=(fname in ("benchmarks.json", "methodology.json", "home.json", "judges.json")), allow_handoff=fname == "story.json")
     sources = [p for p in source_files() if p.suffix not in BINARY and p.is_file()]
     for p in sources:
         gate(f"source {p.relative_to(HERE)}", p.read_text(encoding="utf-8", errors="replace"), full=False)

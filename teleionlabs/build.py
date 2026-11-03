@@ -45,7 +45,7 @@ TEXT_CSS = ("html{color-scheme:only light;background:#F5F2EA;color:#11161F;overf
             "@media(max-width:600px){canvas{height:calc(100svh - 17rem)}}")
 KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc)$")
 
-PAGES = ["home", "experience", "fabric", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
+PAGES = ["home", "judges", "experience", "fabric", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
 REQUIRED = ["site", "llms", "link", *PAGES]
 
 
