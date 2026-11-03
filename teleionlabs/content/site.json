@@ -98,6 +98,10 @@
   "label": "Footer",
   "links": [
    {
+    "label": "For judges",
+    "href": "/judges/"
+   },
+   {
     "label": "Eranos",
     "href": "https://eranosforgood.org/"
    },

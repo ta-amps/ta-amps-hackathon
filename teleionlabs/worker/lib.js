@@ -19,7 +19,7 @@ const isTextFile = (path) => path.endsWith(".txt");
 // Retired pages: their job moved to the home film and the visitor's agent.
 const RETIRED = new Set(["/start", "/story", "/network"]);
 const OVERVIEW_PREFIXES = new Set([
-  "judges", "how-it-works", "source", "library", "feeds", "scenarios",
+  "how-it-works", "source", "library", "feeds", "scenarios",
   "models", "use-cases", "learning", "deploy", "studio", "accessibility",
   "decks", "storyboards", "evidence", "contribute", "hub-3d", "downloads",
 ]);

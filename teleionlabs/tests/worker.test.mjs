@@ -157,7 +157,7 @@ test("/products and /tessera redirect 301 to /fabric/, /video and /film redirect
     assert.equal(res.status, 301, from);
     assert.equal(res.headers.get("Location"), to, from);
   }
-  for (const path of ["/models/", "/judges/"]) {
+  for (const path of ["/models/"]) {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     assert.equal(res.status, 301, path);
     assert.equal(res.headers.get("Location"), `https://agora.eranosforgood.org${path}`, path);
