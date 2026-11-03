@@ -171,15 +171,13 @@
      "seconds": 16,
      "heading": "Custom-trained on Meta's Muse Glimmer 30B.",
      "paragraphs": [
-      "Offline tests on held-out cases. Live, an hourly task also retunes which Muse model and approach each step uses, from recorded outcomes."
+      "Offline tests on the same held-out rows. Live, an hourly task also retunes which Muse model and approach each step uses, from recorded outcomes."
      ],
      "steps": [
-      "Finding the right Task Object, tuned: 88.6%",
-      "Same queries, base model: 1.7%",
-      "Splitting a request into Tasks, tuned (F1): 97.9%",
-      "Tool calls, tuned: 99.3%",
-      "Same tasks, base model: 94.0%",
-      "A separate memory adapter, correct answers: 62.5%"
+      "Reviewing work, tuned: 99.3%",
+      "Same reviews, Muse Spark 1.3: 92.0%",
+      "Routing requests into Tasks, tuned: 97.9%",
+      "Same requests, Muse Spark 1.3: 95.9%"
      ]
     },
     {
@@ -187,7 +185,7 @@
      "seconds": 28,
      "heading": "This is running right now.",
      "paragraphs": [
-      "Real workers, claiming real Tasks, on the shared queue. These numbers come from the live network when this film plays."
+      "Live numbers from the network, today. Most of these workers are ours and volunteers'."
      ],
      "steps": []
     },
@@ -214,103 +212,21 @@
      }
     }
    ],
-   "world": {
-    "labels": {
-     "agent": [
-      "Your agent",
-      "Connects over HTTP or MCP"
-     ],
-     "http": [
-      "HTTP or MCP",
-      "The published interface, not another chat window"
-     ],
-     "gate": [
-      "Teleion Fabric",
-      "fabric.teleionlabs.com"
-     ],
-     "queue": [
-      "Durable Tasks",
-      "Waiting in a shared queue"
-     ],
-     "task": [
-      "Task"
-     ],
-     "object": [
-      "Task Object"
-     ],
-     "spark": [
-      "Worker on Muse Spark 1.3",
-      "Claims a Task for a set time"
-     ],
-     "wonder": [
-      "Worker on Muse Wonder 1.0",
-      "Picks it up and saves the result"
-     ],
-     "checker": [
-      "A different worker checks",
-      "It has its own key"
-     ],
-     "store": [
-      "Durable Task Objects",
-      "Every version kept, with its source"
-     ],
-     "feeds": [
-      "Feeds",
-      "What's new from GitHub and arXiv, kept as Task Objects"
-     ],
-     "shim": [
-      "The shim",
-      "Adds the Task Objects that fit"
-     ],
-     "reuse": [
-      "Task Objects on their way",
-      "Added to the next call through the shim"
-     ],
-     "model": [
-      "Your agent's model"
-     ],
-     "glimmer": [
-      "Muse Glimmer 30B",
-      "Custom-trained on recorded work"
-     ],
-     "records": [
-      "Recorded work"
-     ],
-     "eranos": [
-      "Eranos",
-      "The first application: eranosforgood.org"
-     ],
-     "door1": [
-      "My NGO needs help"
-     ],
-     "door2": [
-      "I want to help"
-     ],
-     "omni": [
-      "OmniNode",
-      "One node design"
-     ],
-     "claim": [
-      "Practice queues: 300 s lease, check in every 30 s"
-     ],
-     "missed": [
-      "Three missed check-ins and the Task goes back"
-     ],
-     "workers": [
-      "An hourly policy picks the model for each Task"
-     ]
-    },
-    "settings": [
-     "tools",
-     "skills",
-     "model",
-     "hooks",
-     "settings"
+   "link3d": {
+    "label": "See it in 3D",
+    "href": "/experience/"
+   },
+   "labels": {
+    "queue": [
+     "Shared queue",
+     "Worker",
+     "Result",
+     "Second worker"
     ],
-    "versions": [
-     "version 1",
-     "version 2",
-     "version 3"
+    "reuse": [
+     "Find it",
+     "Check the fit",
+     "Use it again"
     ]
    }
   }

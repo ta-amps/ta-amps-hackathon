@@ -41,10 +41,11 @@ TEXT_CSS = ("html{color-scheme:only light;background:#F5F2EA;color:#11161F;overf
             "video{width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
             "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em}footer a,nav a{margin-right:2ch;display:inline-block}"
             "canvas{display:block;position:relative;left:50%;width:100vw;height:calc(100svh - 12.5rem);min-height:320px;margin-left:-50vw}"
-            "#film-controls{text-align:center}#film-controls button{margin:.25em}")
+            "#film-controls{text-align:center}#film-controls button{margin:.25em}"
+            "@media(max-width:600px){canvas{height:calc(100svh - 17rem)}}")
 KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc)$")
 
-PAGES = ["home", "fabric", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
+PAGES = ["home", "experience", "fabric", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
 REQUIRED = ["site", "llms", "link", *PAGES]
 
 
@@ -232,10 +233,14 @@ class Renderer:
             steps = f"<ul>{steps}</ul>" if steps else ""
             secs.append(f'<section data-scene="{esc(s["kind"])}" data-seconds="{int(s["seconds"])}"><h2>{marked(req(s, "heading", where), m)}</h2>{ps}{steps}</section>')
         buttons = "".join(f'<button type="button" data-film="{k}">{esc(c[k])}</button>' for k in ("back", "pause", "next"))
-        words = {**c, **{f"live_{k}": v for k, v in live.items()}, "world": req(b, "world", where)}
+        words = {**c, **{f"live_{k}": v for k, v in live.items()}, "labels": req(b, "labels", where)}
+        if b.get("world"):
+            words["world"] = b["world"]
+        link3d = b.get("link3d")
+        extra = f' <a href="{esc(link3d["href"])}">{esc(link3d["label"])}</a>' if link3d else ""
         blob = json.dumps(words, ensure_ascii=False).replace("<", "\\u003c")
         return (f'<canvas id="film" role="img" aria-label="{esc(req(b, "label", where))}" hidden></canvas>'
-                f'<p id="film-controls" hidden>{buttons} <span id="film-pos"></span> <a href="#text">{esc(c["read"])}</a></p>'
+                f'<p id="film-controls" hidden>{buttons} <span id="film-pos"></span> <a href="#text">{esc(c["read"])}</a>{extra}</p>'
                 f'<script id="film-words" type="application/json">{blob}</script>'
                 f'<article id="text"><h1>{esc(req(b, "heading", where))}</h1>{"".join(secs)}</article>')
 
@@ -986,6 +991,9 @@ def build(out: Path) -> list[str]:
     write_worker_words(*shared_words())
     write_worker_media()
     data = {name: load(name) for name in REQUIRED}
+    # The 3D page tells the same film: it takes the home page's scenes and adds its own labels.
+    home_film = next(b for b in data["home"]["blocks"] if b.get("type") == "film")
+    data["experience"]["blocks"] = [{**{k: v for k, v in home_film.items() if k != "link3d"}, **b} if b.get("same_as") == "home" else b for b in data["experience"]["blocks"]]
     site = data["site"]
     r = Renderer(site)
     layout = (TEMPLATES / "layout.html").read_text(encoding="utf-8")

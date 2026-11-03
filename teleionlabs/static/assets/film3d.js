@@ -5,7 +5,7 @@
 // the records don't establish that live workers route through Glimmer or that they run as OmniNodes.
 import * as T from "./three-0.187.0.min.js";
 
-const PAPER = "#F5F2EA", CARD = "#FFFDF8", INK = "#11161F", BLUE = "#24519B", RUST = "#A23E1C", SOFT = "#2F343A", MUTED = "#565A5F";
+const PAPER = "#F5F2EA", CARD = "#FFFDF8", INK = "#11161F", BLUE = "#24519B", RUST = "#A23E1C", SOFT = "#2F343A";
 const WORLD_KINDS = new Set(["parts", "file", "omninode", "queue", "workers", "reuse", "eranos"]);
 const clamp = (x) => Math.max(0, Math.min(1, x));
 const smooth = (x) => { x = clamp(x); return x * x * x * (x * (x * 6 - 15) + 10); };
@@ -79,8 +79,8 @@ export function create({ target, scenes, words, api }) {
     pane: new T.MeshStandardMaterial({ color: "#9DB6DF", roughness: 0.1, transparent: true, opacity: 0.28, side: T.DoubleSide, depthWrite: false }),
   };
 
-  const sky = new T.HemisphereLight("#FFFFFF", "#E2DCCF", 1.25);
-  const sun = new T.DirectionalLight("#FFF4E2", 1.55);
+  const sky = new T.HemisphereLight("#FFFFFF", "#D8D1C1", 1.0);
+  const sun = new T.DirectionalLight("#FFF4E2", 1.5);
   const sunDir = V(-0.42, 1, 0.5).normalize();
   sun.castShadow = true;
   sun.shadow.mapSize.set(small ? 1024 : 2048, small ? 1024 : 2048);
@@ -99,13 +99,13 @@ export function create({ target, scenes, words, api }) {
   const slab = (x, z, w, d, h = 0.3) => add(rbox(w, h, d, 0.12), M.white, x, h / 2, z);
 
   // The ground stays exactly the page's paper; it only catches shadows, and a fine grid fades into the haze.
-  const floor = new T.Mesh(new T.PlaneGeometry(500, 500), new T.ShadowMaterial({ color: "#3B3224", opacity: 0.2 }));
+  const floor = new T.Mesh(new T.PlaneGeometry(500, 500), new T.ShadowMaterial({ color: "#3B3224", opacity: 0.28 }));
   floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
   (() => {
     const pts = [], R = 80;
     for (let i = -R; i <= R; i += 4) pts.push(i, 0.01, -R, i, 0.01, R, -R, 0.01, i, R, 0.01, i);
     const g = new T.BufferGeometry(); g.setAttribute("position", new T.Float32BufferAttribute(pts, 3));
-    scene.add(new T.LineSegments(g, new T.LineBasicMaterial({ color: "#DDD6C6" })));
+    scene.add(new T.LineSegments(g, new T.LineBasicMaterial({ color: "#E6E0D2" })));
   })();
 
   // ---- Paths: glowing routes, each with a bright core and a soft halo. Beads with trails run along them.
@@ -182,7 +182,7 @@ export function create({ target, scenes, words, api }) {
     const y0 = 0.5;
     add(podGeo, M.white, pos.x, y0, pos.z);
     add(new T.CylinderGeometry(1.33, 1.33, 0.32, 28), band, pos.x, y0 + 0.92, pos.z);
-    add(rbox(1.3, 0.42, 0.34, 0.14), M.soft, pos.x, y0 + 2.2, pos.z + 0.84, { rx: -0.25, cast: false });
+    add(rbox(1.24, 0.44, 0.3, 0.12), M.soft, pos.x, y0 + 2.08, pos.z + 1.02, { rx: -0.22, cast: false });
     const lamp = add(new T.SphereGeometry(0.2, 12, 10), M.glow, pos.x, y0 + 3.3, pos.z, { cast: false });
     const arcs = [0, 1, 2].map((i) => {
       const mat = new T.MeshBasicMaterial({ color: BLUE });
@@ -206,15 +206,16 @@ export function create({ target, scenes, words, api }) {
   const towerTotal = TOWERS.reduce((a, b) => a + b[2], 0) + TOWERS.length;
   const versionGeo = rbox(2, 0.34, 2, 0.1, 2);
   const versionsOld = inst(versionGeo, M.white, towerTotal), versionsTop = inst(versionGeo, M.blue, TOWERS.length);
-  add(rbox(0.1, 0.1, 0.1, 0.02), M.white, 0, -5, 0, { cast: false });
 
   // Feeds: a dish listening for what's new.
   slab(AT.feeds.x, AT.feeds.z, 5, 5);
   add(new T.CylinderGeometry(0.16, 0.26, 3, 12), M.white, AT.feeds.x, 1.8, AT.feeds.z);
   const dishPts = []; for (let i = 0; i <= 10; i++) { const r = i / 10; dishPts.push(new T.Vector2(r * 1.9, r * r * 0.9)); }
   const dish = add(new T.LatheGeometry(dishPts, 24), glazeDouble(), AT.feeds.x, 3.2, AT.feeds.z, { rx: 0.72, rz: 0.3 });
-  add(new T.SphereGeometry(0.17, 10, 8), M.glow, 0, 0.95, 0, { to: dish, cast: false });
-  function glazeDouble() { return glaze("#FBF8F0", { side: T.DoubleSide }); }
+  add(new T.SphereGeometry(0.2, 10, 8), M.glow, 0, 1.5, 0, { to: dish, cast: false });
+  add(new T.CylinderGeometry(0.05, 0.05, 1.5, 6), M.soft, 0, 0.75, 0, { to: dish, cast: false });
+  add(new T.TorusGeometry(1.9, 0.07, 8, 40), M.white, 0, 0.9, 0, { to: dish, rx: Math.PI / 2 });
+  function glazeDouble() { return glaze("#C9D7EE", { side: T.DoubleSide }); }
 
   // The shim: a frame standing across the model path. It touches every call, and only adds context.
   slab(AT.shim.x, AT.shim.z, 5, 6.6);
@@ -261,31 +262,31 @@ export function create({ target, scenes, words, api }) {
   const loopBead = add(new T.SphereGeometry(0.2, 12, 10), M.glowRust, 0, 0, 0, { cast: false });
 
   // The soft spot of light under whatever the caption is about.
-  const spot = add(new T.RingGeometry(0.93, 1, 72), new T.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0.8, side: T.DoubleSide, depthWrite: false }), 0, 0.34, 0, { rx: -Math.PI / 2, cast: false, receive: false });
-  const spotFill = add(new T.CircleGeometry(0.93, 64), new T.MeshBasicMaterial({ color: "#9DB6DF", transparent: true, opacity: 0.2, depthWrite: false }), 0, 0.33, 0, { rx: -Math.PI / 2, cast: false, receive: false });
+  const spot = add(new T.RingGeometry(0.975, 1, 96), new T.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0.8, side: T.DoubleSide, depthWrite: false }), 0, 0.34, 0, { rx: -Math.PI / 2, cast: false, receive: false });
+  const spotFill = add(new T.CircleGeometry(0.975, 64), new T.MeshBasicMaterial({ color: "#BFD0EC", transparent: true, opacity: 0.12, depthWrite: false }), 0, 0.33, 0, { rx: -Math.PI / 2, cast: false, receive: false });
 
   // ---- What the camera does. Each shot looks at a station from a set angle; between shots the camera flies.
   const FOCUS = {
-    agent: { at: V(-24, 1.8, -2), r: 4, d: 15, az: -14, el: 18, paths: ["agent_gate", "agent_shim"] },
-    http: { at: V(-20, 1.6, 2), r: 6.5, d: 21, az: -10, el: 28, paths: ["agent_gate"] },
-    gate: { at: V(-15, 2.8, 5), r: 5, d: 19, az: 14, el: 15, paths: ["agent_gate", "eranos_gate"] },
-    queue: { at: V(-3, 1.3, 5), r: 10, d: 21, az: -14, el: 22, paths: [] },
-    spark: { at: V(-7, 2, 3), r: 3.4, d: 13, az: -20, el: 15, paths: [] },
-    wonder: { at: V(-1.5, 2, 3), r: 3.4, d: 13, az: 18, el: 15, paths: ["wonder_check"] },
-    checker: { at: V(5, 2.1, 2), r: 3.6, d: 13, az: 20, el: 15, paths: ["wonder_check", "check_store"] },
-    workers: { at: V(-1, 2, 2.5), r: 8.5, d: 19, az: 4, el: 18, paths: ["wonder_check"] },
-    wide_agents: { at: V(-13, 1.6, 2), r: 3.2, d: 32, az: 2, el: 26, paths: ["agent_gate"] },
-    store: { at: V(14, 2.2, 2), r: 6.2, d: 17, az: 16, el: 21, paths: ["check_store", "feeds_store", "store_shim"] },
-    feeds: { at: V(21.5, 2.6, 5.5), r: 3.4, d: 15, az: 12, el: 15, paths: ["feeds_store"] },
-    shim: { at: V(-9, 2.6, -10), r: 4.4, d: 16, az: -32, el: 15, paths: ["agent_shim", "shim_model", "store_shim"] },
-    reuse: { at: V(0, 1.2, -6), r: 4, d: 26, az: 8, el: 26, paths: ["store_shim", "shim_model", "agent_shim"] },
-    model: { at: V(2, 2.4, -10), r: 3.6, d: 14, az: 12, el: 14, paths: ["shim_model"] },
-    glimmer: { at: V(17.2, 3.8, -12), r: 4.6, d: 19, az: -14, el: 10, paths: ["records_glimmer"] },
-    eranos: { at: V(-32.5, 2, 4.6), r: 4.6, d: 15, az: 18, el: 15, paths: ["eranos_gate"] },
-    omni: { at: V(3, 1.8, 24), r: 8.8, d: 24, az: -8, el: 27, paths: ["omni0", "omni1", "omni2", "omni3", "omni4"] },
-    overview: { at: V(-5, 0, 6), r: 0, d: 68, az: -4, el: 35, paths: ["agent_gate", "eranos_gate", "store_shim", "shim_model", "check_store", "feeds_store"] },
+    agent: { at: V(-24, 2, -2), r: 4, d: 21, az: -8, el: 20, paths: ["agent_gate", "agent_shim"] },
+    http: { at: V(-20, 2, 1.5), r: 6.5, d: 27, az: -6, el: 28, paths: ["agent_gate"] },
+    gate: { at: V(-14, 3.2, 5), r: 5, d: 25, az: 10, el: 20, paths: ["agent_gate", "eranos_gate"] },
+    queue: { at: V(-3, 1.8, 4), r: 11, e: 0.5, d: 31, az: -4, el: 25, paths: [] },
+    spark: { at: V(-7, 2.6, 3), r: 3.4, d: 18, az: -6, el: 18, paths: [] },
+    wonder: { at: V(-1.5, 2.6, 3), r: 3.4, d: 18, az: 8, el: 18, paths: ["wonder_check"] },
+    checker: { at: V(5, 2.6, 2), r: 3.6, d: 18, az: 10, el: 18, paths: ["wonder_check", "check_store"] },
+    workers: { at: V(-1, 2.4, 2.5), r: 8.5, e: 0.5, d: 25, az: 4, el: 20, paths: ["wonder_check"] },
+    wide_agents: { at: V(-13, 1.6, 2), r: 3.2, d: 38, az: 2, el: 28, paths: ["agent_gate"] },
+    store: { at: V(14, 2.6, 1.5), r: 6.2, d: 23, az: 10, el: 27, paths: ["check_store", "feeds_store", "store_shim"] },
+    feeds: { at: V(21.5, 3, 5.5), r: 3.4, d: 20, az: 8, el: 18, paths: ["feeds_store"] },
+    shim: { at: V(-9, 3, -10), r: 4.4, d: 23, az: -12, el: 28, paths: ["agent_shim", "shim_model", "store_shim"] },
+    reuse: { at: V(1, 1.4, -6.5), r: 4, d: 36, az: 4, el: 52, paths: ["store_shim", "shim_model", "agent_shim"] },
+    model: { at: V(2, 2.6, -10), r: 3.6, d: 20, az: 8, el: 24, paths: ["shim_model"] },
+    glimmer: { at: V(17.4, 4.6, -12.5), r: 4.6, d: 25, az: 168, el: 13, paths: ["records_glimmer"] },
+    eranos: { at: V(-32.5, 2.3, 4.6), r: 4.6, d: 20, az: 12, el: 16, paths: ["eranos_gate"] },
+    omni: { at: V(3, 2, 24), r: 8.8, e: 0.85, d: 30, az: -6, el: 30, paths: ["omni0", "omni1", "omni2", "omni3", "omni4"] },
+    overview: { at: V(-5, 0, 7), r: 0, d: 74, az: -3, el: 46, paths: ["agent_gate", "eranos_gate", "store_shim", "shim_model", "check_store", "feeds_store"] },
   };
-  for (let i = 0; i < 5; i++) { const p = bayAt(i); FOCUS[`bay${i}`] = { at: V(p.x, 1.4, p.z), r: 2.4, d: 13, az: (p.x - AT.omni.x) * 2.4, el: 22, paths: [`omni${i}`] }; }
+  for (let i = 0; i < 5; i++) { const p = bayAt(i); FOCUS[`bay${i}`] = { at: V(p.x, 1.4, p.z), r: 2.4, d: 19, az: (p.x - AT.omni.x) * 1.6, el: p.z < AT.omni.z ? 40 : 24, paths: [`omni${i}`] }; }
 
   const omniStart = 3.6, omniEach = (22 - omniStart - 0.6) / 5, partsStart = 2, partsEach = (22 - partsStart - 0.6) / 4;
   const SHOTS = {
@@ -411,7 +412,7 @@ export function create({ target, scenes, words, api }) {
       w.ripple.scale.setScalar(on ? 0.4 + c * 2 : 0.4);
     };
     setArc(Wa, story.claimA ? 3 - story.missed : story.stoppedA ? 0 : 3, story.bad ? RUST : BLUE);
-    setArc(Wb, story.claimB ? 3 : 3, BLUE);
+    setArc(Wb, 3, BLUE);
     setArc(Wc, 3, RUST);
     beat(Wa, story.claimA && !story.bad); beat(Wb, story.claimB); beat(Wc, story.checking, 1.6);
     Wa.lamp.material = story.bad || story.stoppedA ? M.off : M.glow;
@@ -469,7 +470,7 @@ export function create({ target, scenes, words, api }) {
     // The spot under the current subject.
     const f0 = shot.prev.f, f1 = shot.cur.f, sk = smooth(shot.k * 1.4), hasSpot = shot.cur.hi !== null;
     const px = lerp(f0.at.x, f1.at.x, sk), pz = lerp(f0.at.z, f1.at.z, sk), pr = Math.max(0.1, lerp(f0.r, f1.r, sk));
-    for (const m of [spot, spotFill]) { m.position.x = px; m.position.z = pz; m.scale.setScalar(pr); m.visible = hasSpot && pr > 0.2; }
+    for (const m of [spot, spotFill]) { m.position.x = px; m.position.z = pz; m.scale.set(pr, pr * lerp(f0.e || 1, f1.e || 1, sk), 1); m.visible = hasSpot && pr > 0.2; }
     spot.material.opacity = 0.55 + Math.sin(t * 2.6) * 0.25;
     return story;
   }
@@ -515,7 +516,7 @@ export function create({ target, scenes, words, api }) {
       const lhN = nameSize * 1.22, lhS = subSize * 1.32;
       const bw = w + pad * 2, bh = nameLines.length * lhN + subLines.length * lhS + pad * (kind === "hero" ? 1.5 : 1.1);
       const lift = kind === "hero" ? 34 : kind === "tag" ? 10 : 18;
-      const cands = big ? [[0, -lift], [0, -lift - 40], [bw * 0.55, -lift], [-bw * 0.55, -lift], [0, -lift - 90], [bw * 0.6, -lift - 60], [-bw * 0.6, -lift - 60], [0, lift + bh * 0.4]] : [[0, -lift], [bw * 0.6, -lift + 4], [-bw * 0.6, -lift + 4], [0, -lift - 26]];
+      const cands = big ? [[0, -lift], [0, -lift - 40], [bw * 0.55, -lift], [-bw * 0.55, -lift], [0, -lift - 90], [bw * 0.6, -lift - 60], [-bw * 0.6, -lift - 60], [0, lift + bh * 0.4]] : [[0, -lift], [bw * 0.6, -lift + 4], [-bw * 0.6, -lift + 4], [0, -lift - 26], [0, bh + lift]];
       let box = null;
       for (const [dx, dy] of cands) {
         const b = { x: Math.max(8, Math.min(W - 8 - bw, p[0] + dx - bw / 2)), y: p[1] + dy - bh, w: bw, h: bh };

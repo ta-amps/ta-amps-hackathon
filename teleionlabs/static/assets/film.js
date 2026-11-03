@@ -94,10 +94,10 @@
   const cap = (a) => { const t = a.map((q) => q.ch).join("").trim(); return t.charAt(0).toUpperCase() + t.slice(1); };
   const typed = (v, s, cps) => Math.floor(Math.max(0, v.t - s) * (cps || 34));
   const fade = (v, s, l) => clamp((v.t - s) / (l || 0.5));
-  const head = (v, y, size) => text(v.s.h, { x: v.W / 2, y: v.H * (y || 0.16), size: (size || 40) * v.u, weight: 700, align: "center", maxW: v.W * 0.88, shown: typed(v, 0, 42) });
+  const head = (v, y, size) => text(v.s.h, { x: v.W / 2, y: v.H * (y || 0.16), size: Math.max(19, (size || 40) * v.u), weight: 700, align: "center", maxW: v.W * 0.88, shown: typed(v, 0, 42) });
   function caption(v, list, times, y) {
     let cur = 0; times.forEach((t, i) => { if (v.t >= t) cur = i; });
-    if (list[cur]) text(list[cur], { x: v.W / 2, y, size: 24 * v.u, align: "center", maxW: v.W * 0.84, alpha: fade(v, times[cur], 0.3), color: SOFT });
+    if (list[cur]) text(list[cur], { x: v.W / 2, y, size: Math.max(15, 24 * v.u), align: "center", maxW: v.W * 0.84, alpha: fade(v, times[cur], 0.3), color: SOFT });
   }
   function box(x, y, w, h, stroke, fill) {
     c.fillStyle = fill || CARD; c.strokeStyle = stroke || INK; c.lineWidth = Math.max(1, 2 * (w > 0 ? 1 : 1));
@@ -108,85 +108,41 @@
     c.lineTo(x1 + (x2 - x1) * k, y1 + (y2 - y1) * k); c.stroke();
   }
 
-  // 2.5D: a light isometric world of tiles, drawn from three shades of one colour.
-  const iso = (v, ox, oy, s) => ({
-    p: (x, y, z = 0) => [ox + (x - y) * s, oy + (x + y) * s * 0.5 - z * s],
-    s,
-  });
-  function poly(pts, fill, stroke) {
-    c.beginPath(); pts.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.closePath();
-    if (fill) { c.fillStyle = fill; c.fill(); }
-    if (stroke) { c.strokeStyle = stroke; c.lineWidth = 1; c.stroke(); }
+  // Thin lines only: a few labeled nodes, and one dot moving between them. A column on a phone, a row otherwise.
+  const line = (x1, y1, x2, y2, col) => { c.strokeStyle = col || RULE; c.lineWidth = 1; c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); };
+  const nameOf = (st) => chars(st).map((q) => q.ch).join("").split(":")[0];
+  const route = (pts, p) => { const i = Math.max(0, Math.min(pts.length - 2, Math.floor(p))), k = clamp(p - i); return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * k, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * k]; };
+  const dot = (x, y, col, u) => { c.fillStyle = col || BLUE; c.beginPath(); c.arc(x, y, Math.max(5, 8 * u), 0, Math.PI * 2); c.fill(); };
+  function node(v, x, y, name, state, side) {
+    const r = Math.max(4, 6 * v.u), hot = state === "hot";
+    c.fillStyle = hot ? BLUE : PAPER; c.strokeStyle = hot ? BLUE : INK; c.lineWidth = 1;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill(); c.stroke();
+    const size = Math.max(14, 20 * v.u);
+    if (side) text(name, { x: x + r + 14, y: y + size * 0.34, size, weight: hot ? 700 : 400, maxW: v.W - x - r - 22, color: hot ? BLUE : INK });
+    else text(name, { x, y: y + r + size * 1.7, size, weight: hot ? 700 : 400, align: "center", maxW: Math.max(120, v.sp - 16), lh: 1.25, color: hot ? BLUE : INK });
   }
-  function cube(w, x, y, z, sx, sy, h, top, left, right, edge) {
-    const P = w.p;
-    poly([P(x, y + sy, z), P(x + sx, y + sy, z), P(x + sx, y + sy, z + h), P(x, y + sy, z + h)], left, edge);
-    poly([P(x + sx, y, z), P(x + sx, y + sy, z), P(x + sx, y + sy, z + h), P(x + sx, y, z + h)], right, edge);
-    poly([P(x, y, z + h), P(x + sx, y, z + h), P(x + sx, y + sy, z + h), P(x, y + sy, z + h)], top, edge);
+  function chain(v, names, cur, p, shown, bad) {
+    const { W, H } = v, n = names.length, narrow = W < 700;
+    v.sp = narrow ? 0 : (W * 0.64) / Math.max(1, n - 1);
+    const pts = names.map((_, i) => (narrow ? [W * 0.16, H * 0.3 + (i * H * 0.36) / Math.max(1, n - 1)] : [W / 2 + (i - (n - 1) / 2) * v.sp, H * 0.44]));
+    line(pts[0][0], pts[0][1], pts[n - 1][0], pts[n - 1][1]);
+    names.forEach((name, i) => { if (i < shown) node(v, pts[i][0], pts[i][1], name, i === cur ? "hot" : "", narrow); });
+    const [x, y] = route(pts, p);
+    dot(x, y, bad ? RUST : BLUE, v.u);
   }
-  const BLUES = ["#3A69B8", "#24519B", "#1A3D78"], INKS = ["#3B424C", "#22272F", "#11161F"], PAPERS = ["#FFFDF8", "#E9E3D5", "#D8D1C1"], RUSTS = ["#C4562F", "#A23E1C", "#7E2F14"];
-  const block = (w, x, y, z, sx, sy, h, pal) => cube(w, x, y, z, sx, sy, h, pal[0], pal[1], pal[2], null);
-  function floor(v, w, n, a) {
-    c.globalAlpha *= a;
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-      const wave = Math.sin(F.now / 900 + (i + j) * 0.5) * 0.015;
-      cube(w, i + 0.04, j + 0.04, 0, 0.92, 0.92, 0.06 + wave, "#FFFDF8", "#E2DCCF", "#D8D1C1", null);
-    }
-    c.globalAlpha = 1;
-  }
+  const moved = (keys, t) => {
+    for (let i = 0; i < keys.length - 1; i++) if (t >= keys[i][0] && t < keys[i + 1][0]) return keys[i][1] + (keys[i + 1][1] - keys[i][1]) * ease((t - keys[i][0]) / (keys[i + 1][0] - keys[i][0]));
+    return keys[keys.length - 1][1];
+  };
 
   const draw = {
     parts(v) {
-      const { W, H, u } = v, n = v.s.steps.length, start = 1.2, each = (v.s.secs - start - 0.8) / n;
-      head(v, 0.11, 36);
-      const narrow = W < 700, s = (narrow ? 30 : 46) * u * (narrow ? 1.6 : 1), drift = Math.sin(F.now / 2600) * 10 * u;
-      const w = iso(v, W / 2 + drift, H * 0.34, s), G = 8;
-      floor(v, w, G, fade(v, 0, 0.8));
-      const on = (i) => v.t >= start + i * each, rise = (i) => ease((v.t - start - i * each) / 0.8), z0 = 0.08;
-      // Durable Tasks: a Task travels the row; the first worker stops; the next one takes over.
-      if (on(0)) {
-        const k = ease((v.t - start) / 0.6);
-        c.globalAlpha = k;
-        for (let i = 0; i < G; i++) cube(w, i + 0.12, 3.12, z0, 0.76, 0.76, 0.04, "#DCE5F3", "#C5D3EA", "#B4C5E2", null);
-        const lap = ((v.t - start) % 4) / 4, x = lap * (G - 1);
-        const fail = lap > 0.38 && lap < 0.5;
-        block(w, x + 0.25, 3.25, z0 + 0.05, 0.5, 0.5, 0.5, fail ? RUSTS : BLUES);
-        c.globalAlpha = 1;
-      }
-      // Durable Task Objects: stacks that grow, one block per kept version.
-      if (on(1)) {
-        const heights = [3, 5, 2, 4], k = rise(1);
-        heights.forEach((m, i) => {
-          const shown = Math.ceil(m * k * Math.min(1, (v.t - start - each + 1) / 2));
-          for (let z = 0; z < shown; z++) block(w, 1 + i * 1.6, 5.3, z0 + z * 0.34, 0.8, 0.8, 0.3, z === shown - 1 ? BLUES : PAPERS);
-        });
-      }
-      // The shim: a thin layer that lifts between the agent and its model.
-      if (on(2)) {
-        const k = rise(2), z = 2.3 * k;
-        c.globalAlpha = 0.55 * k;
-        poly([w.p(0.6, 0.4, z), w.p(4.4, 0.4, z), w.p(4.4, 2.6, z), w.p(0.6, 2.6, z)], "#DCE5F3", BLUE);
-        c.globalAlpha = 1;
-        block(w, 1.2, 1, z0, 0.9, 0.9, 1.1, INKS);
-        const pulse = (F.now / 900) % 1;
-        const [ax, ay] = w.p(1.65, 1.45, z0 + 1.1), [bx, by] = w.p(3.3, 1.45, 3.1 * k);
-        seg(ax, ay, bx, by, 1, BLUE);
-        c.fillStyle = BLUE; c.beginPath(); c.arc(ax + (bx - ax) * pulse, ay + (by - ay) * pulse, 4 * u, 0, Math.PI * 2); c.fill();
-      }
-      // The custom-trained model: the piece that turns slowly above the layer.
-      if (on(3)) {
-        const k = rise(3), bob = Math.sin(F.now / 700) * 0.06;
-        block(w, 2.9, 1, 2.9 + bob, 0.9 * k, 0.9 * k, 0.9 * k, BLUES);
-      }
-      const cur = Math.min(n - 1, Math.floor(Math.max(0, v.t - start) / each));
-      const tag = (i, gx, gy, gz) => {
-        if (!on(i)) return;
-        const [x, y] = w.p(gx, gy, gz), name = chars(v.s.steps[i]).map((q) => q.ch).join("").split(":")[0];
-        text(name, { x: Math.max(8, Math.min(W - 8 - name.length * 8.6 * u, x)), y, size: 15 * u, weight: i === cur ? 700 : 400, maxW: W, color: i === cur ? BLUE : SOFT, alpha: rise(i) });
-      };
-      tag(0, 8.3, 3.2, 0.2); tag(1, -1.4, 7.4, 0); tag(2, 4.7, 0.2, 2.3); tag(3, 3.9, 0.6, 3.5);
-      if (v.t >= start) caption(v, v.s.steps, v.s.steps.map((_, i) => start + i * each), H * 0.88);
-      return cur;
+      const n = v.s.steps.length, start = 1.6, each = (v.s.secs - start - 0.8) / n, cur = Math.min(n - 1, Math.floor(Math.max(0, v.t - start) / each));
+      head(v, 0.14, 36);
+      if (v.t < start) return;
+      const keys = v.s.steps.map((_, i) => [start + i * each, i]);
+      chain(v, v.s.steps.map(nameOf), cur, moved(keys.flatMap(([t, i]) => [[t, i], [t + each - 1.1, i]]), v.t), cur + 1);
+      caption(v, v.s.steps, v.s.steps.map((_, i) => start + i * each), v.H * 0.8);
     },
     title(v) {
       const y = text(v.s.h, { x: v.W / 2, y: v.H * 0.44, size: 60 * v.u, weight: 700, align: "center", maxW: v.W * 0.86, shown: typed(v, 0.2, 26) });
@@ -223,34 +179,6 @@
         text(lead, { x, y, size: 32 * u, weight: 700, maxW: v.W * 0.76, shown: typed(v, st, 30), color: BLUE });
         y = text(rest, { x, y: y + 40 * u, size: 22 * u, maxW: v.W * 0.76, alpha: fade(v, st + 1), color: SOFT }) + 34 * u;
       });
-    },
-    link(v) {
-      const { W, H, u } = v, y = H * 0.44, ax = W * 0.17, lx = W * 0.5, yx = W * 0.83, bw = 170 * u, bh = 76 * u, pw = 300 * u, ph = 64 * u;
-      head(v, 0.15, 36);
-      seg(ax + bw / 2, y, lx - pw / 2, y, (v.t - 1.2) / 1);
-      seg(lx + pw / 2, y, yx - bw / 2, y, (v.t - 3) / 1.2);
-      const used = v.t > 7;
-      const node = (x, label) => { box(x - bw / 2, y - bh / 2, bw, bh); text(label, { x, y: y + 8 * u, size: 22 * u, align: "center", maxW: bw }); };
-      node(ax, words.live_agent); node(yx, words.live_you);
-      if (v.t > 2.2) {
-        c.globalAlpha *= ease((v.t - 2.2) / 0.5);
-        box(lx - pw / 2, y - ph / 2, pw, ph, used ? RULE : BLUE, used ? PAPER : CARD);
-        text("teleionlabs.com/l/…", { x: lx, y: y - 4 * u, size: 19 * u, align: "center", maxW: pw, color: used ? MUTED : BLUE });
-        const left = Math.max(0, 600 - (Math.min(v.t, 7) - 2.2) * 38), mm = Math.floor(left / 60), ss = Math.floor(left % 60);
-        text(`${mm < 10 ? "0" : ""}${mm}:${ss < 10 ? "0" : ""}${ss}`, { x: lx, y: y + 20 * u, size: 15 * u, align: "center", maxW: pw, color: MUTED });
-        c.globalAlpha = 1;
-      }
-      if (v.t > 5) {
-        const bx = yx - 70 * u, by = y + bh / 2 + 18 * u;
-        c.fillStyle = used ? BLUE : INK; c.fillRect(bx, by, 140 * u, 48 * u);
-        text(used ? words.live_done : words.live_ok, { x: yx, y: by + 31 * u, size: 19 * u, align: "center", maxW: 140 * u, color: PAPER });
-      }
-      if (v.t > 8) {
-        const ry = y + bh / 2 + 110 * u, k = ease((v.t - 8) / 1.6);
-        c.strokeStyle = BLUE; c.lineWidth = 2; c.beginPath(); c.moveTo(yx, y + bh / 2 + 66 * u); c.lineTo(yx, ry); c.lineTo(yx + (ax - yx) * k, ry);
-        if (k >= 1) c.lineTo(ax, y + bh / 2); c.stroke();
-      }
-      caption(v, v.s.steps, [0, 2.2, 4.6, 8], H * 0.84);
     },
     file(v) {
       const { W, H, u } = v;
@@ -301,42 +229,33 @@
       });
     },
     omninode(v) {
-      const { W, H, u } = v, cx = W / 2, cy = H * 0.5, n = v.s.steps.length, R = Math.min(W * 0.3, H * 0.27), start = 1.6, each = (v.s.secs - start - 1) / Math.max(1, n);
-      head(v, 0.13, 38);
+      const { W, H, u } = v, n = v.s.steps.length, start = 3.4, each = (v.s.secs - start - 0.8) / n, narrow = W < 700;
+      head(v, 0.13, 36);
       const cur = Math.min(n - 1, Math.floor(Math.max(0, v.t - start) / each));
-      const label = (st) => chars(st).map((q) => q.ch).join("");
-      for (let i = 0; i < n; i++) {
-        const a = -Math.PI / 2 + (i / n) * Math.PI * 2, y = cy + Math.sin(a) * R;
-        const on = v.t >= start + i * each, hot = on && i === cur, name = label(v.s.steps[i]).split(":")[0];
-        const half = ((name.length * 0.62 * 20 + 28) * u) / 2 + 8, x = Math.max(half, Math.min(W - half, cx + Math.cos(a) * R * 1.55));
-        if (on) seg(cx, cy, x, y, (v.t - (start + i * each)) / 0.5, hot ? BLUE : RULE);
-        const w = (name.length * 0.62 * 20 + 28) * u, h2 = 44 * u;
-        c.globalAlpha = on ? 1 : 0.35;
-        box(x - w / 2, y - h2 / 2, w, h2, hot ? BLUE : RULE, hot ? BLUE : CARD);
-        text(name, { x, y: y + 7 * u, size: 20 * u, align: "center", maxW: w + 8, color: hot ? PAPER : INK });
-        c.globalAlpha = 1;
-      }
-      const nw = 150 * u, nh = 72 * u, pulse = 1 + 0.03 * Math.sin(F.now / 300);
-      box(cx - (nw * pulse) / 2, cy - (nh * pulse) / 2, nw * pulse, nh * pulse, INK, CARD);
-      text("OmniNode", { x: cx, y: cy + 8 * u, size: 22 * u, weight: 700, align: "center", maxW: nw });
-      if (v.t >= start) caption(v, v.s.steps, v.s.steps.map((_, i) => start + i * each), H * 0.86);
-      else text(v.s.ps[0], { x: W / 2, y: H * 0.86, size: 22 * u, align: "center", maxW: W * 0.8, alpha: fade(v, 0.3), color: SOFT });
+      const hub = narrow ? [W * 0.1, H * 0.46] : [W / 2, H * 0.3];
+      v.sp = narrow ? 0 : Math.min((W * 0.86) / n, 300 * u);
+      const pts = v.s.steps.map((_, i) => (narrow ? [W * 0.3, H * 0.28 + (i * H * 0.36) / (n - 1)] : [W / 2 + (i - (n - 1) / 2) * v.sp, H * 0.56]));
+      pts.forEach((p, i) => { if (v.t >= start + i * each) line(hub[0], hub[1], p[0], p[1], i === cur ? BLUE : RULE); });
+      const size = Math.max(16, 24 * u);
+      c.fillStyle = PAPER; c.strokeStyle = INK; c.lineWidth = 1;
+      c.beginPath(); c.arc(hub[0], hub[1], Math.max(5, 8 * u), 0, Math.PI * 2); c.fill(); c.stroke();
+      if (narrow) text("OmniNode", { x: hub[0] - Math.max(5, 8 * u), y: hub[1] - size, size, weight: 700, maxW: W * 0.4 });
+      else text("OmniNode", { x: hub[0], y: hub[1] - size, size, weight: 700, align: "center", maxW: W * 0.5 });
+      if (v.t < start) { text(v.s.ps[0], { x: W / 2, y: H * 0.8, size: Math.max(15, 24 * u), align: "center", maxW: W * 0.84, alpha: fade(v, 0.3), color: SOFT }); return; }
+      v.s.steps.forEach((st, i) => { if (v.t >= start + i * each) node(v, pts[i][0], pts[i][1], nameOf(st), i === cur ? "hot" : "", narrow); });
+      const k = ease(((v.t - start) % each) / Math.min(1.2, each));
+      dot(hub[0] + (pts[cur][0] - hub[0]) * k, hub[1] + (pts[cur][1] - hub[1]) * k, BLUE, u);
+      caption(v, v.s.steps, v.s.steps.map((_, i) => start + i * each), H * 0.8);
     },
     queue(v) {
-      const { W, H } = v, narrow = W < 700, u = v.u, s = (narrow ? 26 : 44) * u * (narrow ? 1.5 : 1);
-      head(v);
-      const w = iso(v, W / 2 + Math.sin(F.now / 2600) * 10 * u, H * 0.3, s), G = 8;
-      floor(v, w, G, fade(v, 0, 0.8));
-      const row = 3.5, stops = [0.5, 2.8, 5, 7];
-      const keys = [[0, 0], [1.4, 0], [2.8, 1], [4.2, 1.45], [5, 1.45], [6, 0], [6.6, 0], [7.6, 1], [9.2, 2], [10.6, 3], [99, 3]];
-      let p = 3;
-      for (let i = 0; i < keys.length - 1; i++) if (v.t >= keys[i][0] && v.t < keys[i + 1][0]) { p = keys[i][1] + (keys[i + 1][1] - keys[i][1]) * ease((v.t - keys[i][0]) / (keys[i + 1][0] - keys[i][0])); break; }
-      const lit = v.t > 10.6, bad = v.t >= 4.2 && v.t < 6;
-      for (let i = 0; i < G; i++) cube(w, i + 0.12, row - 0.38, 0.08, 0.76, 0.76, 0.03, "#DCE5F3", "#C5D3EA", "#B4C5E2", null);
-      stops.forEach((x, i) => block(w, x - 0.2, row - 1.3, 0.08, 0.5, 0.5, i === 3 ? 1 : 0.7, i === 3 && lit ? BLUES : INKS));
-      const at = p <= 1 ? stops[0] + (stops[1] - stops[0]) * p : p <= 2 ? stops[1] + (stops[2] - stops[1]) * (p - 1) : stops[2] + (stops[3] - stops[2]) * (p - 2);
-      block(w, at - 0.2, row - 0.2, 0.12, 0.42, 0.42, 0.42, bad ? RUSTS : lit ? BLUES : INKS);
-      caption(v, v.s.steps, [0, 1.4, 4.2, 6.6, 9.2], H * 0.86);
+      // Same story as the captions: claimed, stopped, back in the queue, picked up again, saved, checked.
+      const r = v.s.secs / 15, at = (x) => x * r, t = v.t;
+      head(v, 0.14, 36);
+      const times = [0, 1.6, 4.6, 7.2, 10].map(at);
+      const p = moved([[at(0), 0], [at(1.6), 0], [at(3), 1], [at(5.8), 1], [at(7.2), 0], [at(7.8), 0], [at(9), 1], [at(10), 2], [at(11.6), 3], [99, 3]], t);
+      const bad = t >= at(4.6) && t < at(7.2);
+      chain(v, words.labels.queue, Math.min(3, Math.round(p)), p, 4, bad);
+      caption(v, v.s.steps, times, v.H * 0.8);
     },
     workers(v) {
       const { W, H, u } = v, n = 2, bw = W * 0.38, gap = 32 * u, top = H * 0.32;
@@ -351,29 +270,24 @@
       return n;
     },
     reuse(v) {
-      const { W, H } = v, narrow = W < 700, u = v.u, s = (narrow ? 26 : 44) * u * (narrow ? 1.5 : 1);
-      head(v);
-      const w = iso(v, W / 2, H * 0.3, s), G = 8;
-      floor(v, w, G, fade(v, 0, 0.8));
-      [[1, 0], [3.5, 0.55], [6, 0.85]].forEach(([x, saved], i) => {
-        const st = 0.8 + i * 1.6, k = ease((v.t - st) / 1), H0 = 3;
-        const reused = H0 * saved * k, fresh = H0 * (1 - saved) * ease((v.t - st - 0.8) / 1);
-        if (reused > 0.02) block(w, x, 3, 0.08, 1, 1, reused, BLUES);
-        if (fresh > 0.02) block(w, x, 3, 0.08 + reused, 1, 1, fresh, INKS);
-      });
-      text(v.s.ps[0], { x: W / 2, y: H * 0.86, size: 24 * u, align: "center", maxW: W * 0.78, alpha: fade(v, 5), color: SOFT });
+      head(v, 0.14, 36);
+      const names = words.labels.reuse, p = moved([[1, 0], [3.2, 1], [5.4, 2], [99, 2]], v.t);
+      chain(v, names, Math.round(p), p, names.length);
+      text(v.s.ps[0], { x: v.W / 2, y: v.H * 0.8, size: Math.max(15, 24 * v.u), align: "center", maxW: v.W * 0.84, alpha: fade(v, 2), color: SOFT });
     },
     bars(v) {
-      const { W, H, u } = v, x = W * 0.16, w = W * 0.68;
+      const { W, H, u } = v, narrow = W < 700, x = W * (narrow ? 0.08 : 0.16), w = W * (narrow ? 0.84 : 0.68), size = Math.max(13, 22 * u), big = Math.max(18, 30 * u);
       head(v);
+      let y = H * 0.27;
       v.s.steps.forEach((s, i) => {
-        const a = chars(s).map((q) => q.ch).join(""), d = a.lastIndexOf(":"), pct = parseFloat(a.slice(d + 1)), y = H * 0.25 + i * 66 * u, k = ease((v.t - 0.8 - i * 0.9) / 1.4);
-        text(a.slice(0, d), { x, y, size: 22 * u, maxW: w * 0.7 });
-        text(`${(pct * k).toFixed(1)}%`, { x: x + w - 110 * u, y, size: 26 * u, weight: 700, maxW: 140 * u, color: i ? MUTED : BLUE });
-        c.fillStyle = LINE; c.fillRect(x, y + 10 * u, w, 16 * u);
-        c.fillStyle = i ? MUTED : BLUE; c.fillRect(x, y + 10 * u, w * (pct / 100) * k, 16 * u);
+        const a = chars(s).map((q) => q.ch).join(""), d = a.lastIndexOf(":"), pct = parseFloat(a.slice(d + 1)), k = ease((v.t - 1 - i * 1.2) / 1.6), col = i % 2 ? MUTED : BLUE;
+        const end = text(a.slice(0, d), { x, y, size, maxW: w - big * 4, lh: 1.25 }), row = end - size * 1.25;
+        text(`${(pct * k).toFixed(1)}%`, { x: x + w - big * 3.6, y: row, size: big, weight: 700, maxW: big * 4, color: col });
+        c.fillStyle = LINE; c.fillRect(x, row + 12, w, Math.max(6, 14 * u));
+        c.fillStyle = col; c.fillRect(x, row + 12, w * (pct / 100) * k, Math.max(6, 14 * u));
+        y = row + Math.max(58, 84 * u);
       });
-      text(v.s.ps[0], { x: W / 2, y: H * 0.84, size: 22 * u, align: "center", maxW: W * 0.74, alpha: fade(v, 5), color: SOFT });
+      text(v.s.ps[0], { x: W / 2, y: H * 0.8, size: Math.max(14, 22 * u), align: "center", maxW: W * (narrow ? 0.9 : 0.74), alpha: fade(v, 5), color: SOFT });
     },
     live(v) {
       const { W, H, u } = v, n = live.net;
@@ -412,7 +326,7 @@
         const y = text(r.title, { x: W * 0.06, y: my + mh + 44 * u, size: 22 * u, maxW: W * 0.88, shown: typed(v, 3 + i * 3.2, 70) });
         text(meta, { x: W * 0.06, y: y + 2 * u, size: 18 * u, maxW: W * 0.88, color: MUTED });
       }
-      text(v.s.ps[0], { x: W / 2, y: H * 0.93, size: 17 * u, align: "center", maxW: W * 0.86, color: MUTED, alpha: fade(v, 1) });
+      text(v.s.ps[0], { x: W / 2, y: H * 0.93, size: Math.max(13, 17 * u), align: "center", maxW: W * 0.86, color: MUTED, alpha: fade(v, 1) });
     },
     eranos(v) {
       const { W, H, u } = v;
@@ -426,11 +340,11 @@
     },
   };
 
-  // The 3D world, loaded after first paint. Until it arrives, or if it can't run, the 2D drawings above stay.
+  // The 3D world, only on the page that asks for it (/experience/), after first paint. Until it arrives, or if it can't run, the line drawings stay.
   let world = null, onScreen = true;
   if ("IntersectionObserver" in window) new IntersectionObserver((e) => { onScreen = e[e.length - 1].isIntersecting; }).observe(cv);
   const loadWorld = () => {
-    if (reduced) return;
+    if (!words.world || reduced || !document.createElement("canvas").getContext("webgl2")) return;
     import("/assets/film3d.js").then((m) => {
       scenes.forEach((s, i) => { s.prevWorld = i > 0 && m.isWorld(scenes[i - 1].kind); });
       world = m.create({ target: cv, scenes, words, api: { text, chars, wrap, typed, FONT } });
@@ -438,7 +352,7 @@
     }).catch(() => { world = null; });
   };
   requestAnimationFrame(() => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(loadWorld, { timeout: 1500 }) : loadWorld()), 0));
-  cv.addEventListener("film-seek", (e) => { F.t = Math.max(0, Math.min(total, e.detail)); F.playing = false; F.idx = -1; label(); });
+  cv.addEventListener("film-seek", (e) => { F.t = Math.max(0, Math.min(total, e.detail)); F.playing = false; F.held = true; F.idx = -1; label(); });
 
   function frame(now) {
     F.now = now;
@@ -458,11 +372,12 @@
       if (cv.width !== pw || cv.height !== ph) { cv.width = pw; cv.height = ph; }
       c.setTransform(dpr, 0, 0, dpr, 0, 0);
       c.globalAlpha = 1; c.fillStyle = PAPER; c.fillRect(0, 0, W, H);
-      const s = scenes[idx], rest = reduced && !F.playing, t = rest ? s.secs + 60 : F.t - s.start;
+      // Paused or jumped to while paused: the scene at rest, never a half-typed line or a bar on its way up.
+      const s = scenes[idx], rest = !F.playing && !F.held, t = rest ? s.secs + 60 : F.t - s.start;
       const v = { W, H, u: Math.max(0.42, Math.min(W / 1280, H / 720)), t, s };
       if (world && world.has(s.kind)) {
-        const nextScene = scenes[idx + 1];
-        world.draw(c, v, F.t, !!nextScene && world.has(nextScene.kind));
+        const nextScene = scenes[idx + 1], st = rest ? Math.max(F.t - s.start, Math.min(3, s.secs - 0.6)) : t;
+        world.draw(c, { ...v, t: st }, s.start + st, !!nextScene && world.has(nextScene.kind));
       } else {
         c.globalAlpha = rest || idx === scenes.length - 1 ? 1 : clamp((s.secs - t) / 0.3);
         draw[s.kind](v);
@@ -478,7 +393,7 @@
   const go = (d) => { const i = Math.max(0, Math.min(scenes.length - 1, F.idx + d)); F.t = scenes[i].start; F.idx = -1; };
   btnBack.addEventListener("click", () => go(-1));
   btnNext.addEventListener("click", () => go(1));
-  btnToggle.addEventListener("click", () => { if (F.t >= total) F.t = 0; F.playing = !F.playing; label(); });
+  btnToggle.addEventListener("click", () => { if (F.t >= total) F.t = 0; F.playing = !F.playing; F.held = false; label(); });
   label();
   requestAnimationFrame(frame);
 })();

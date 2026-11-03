@@ -1,0 +1,121 @@
+{
+ "kind": "task_object",
+ "id": "teleion.instructions/page.experience",
+ "version": 1,
+ "updated": "2026-11-02",
+ "route": "/experience/",
+ "output": "experience/index.html",
+ "title": "Teleion Fabric in 3D · Teleion Labs",
+ "description": "The Teleion Labs film as a walk through a 3D model of Teleion Fabric, with the same words as the home page and every part labeled.",
+ "sources": {
+  "scene text": "The film block of content/home.json, copied at build time, so both films say the same thing.",
+  "labels": "Practice queue numbers: cloud_access.js seedDemo (lease 300 s, heartbeat 30 s, miss_limit 3). Maker and checker keys: cloud_publication.js reviewProof. Muse Spark 1.3 and Wonder 1.0: worker.policy v28. Muse Glimmer 30B is drawn apart from the live workers because the records don't establish routine live routing. Feeds: the public feeds page (GitHub and arXiv, kept as Task Objects). OmniNode is drawn apart from the live workers for the same reason. Shim reads stored records: the shim's worker source."
+ },
+ "blocks": [
+  {
+   "type": "film",
+   "id": "film",
+   "same_as": "home",
+   "label": "A three-minute film in 3D, drawn from the text further down this page.",
+   "world": {
+    "labels": {
+     "agent": [
+      "Your agent",
+      "Connects over HTTP or MCP"
+     ],
+     "http": [
+      "HTTP or MCP",
+      "The published interface, not another chat window"
+     ],
+     "gate": [
+      "Teleion Fabric",
+      "fabric.teleionlabs.com"
+     ],
+     "queue": [
+      "Durable Tasks",
+      "Waiting in a shared queue"
+     ],
+     "task": [
+      "Task"
+     ],
+     "object": [
+      "Task Object"
+     ],
+     "spark": [
+      "Worker on Muse Spark 1.3",
+      "Claims a Task for a set time"
+     ],
+     "wonder": [
+      "Worker on Muse Wonder 1.0",
+      "Picks it up and saves the result"
+     ],
+     "checker": [
+      "A different worker checks",
+      "It has its own key"
+     ],
+     "store": [
+      "Durable Task Objects",
+      "Every version kept, with its source"
+     ],
+     "feeds": [
+      "Feeds",
+      "What's new from GitHub and arXiv, kept as Task Objects"
+     ],
+     "shim": [
+      "The shim",
+      "Adds the Task Objects that fit"
+     ],
+     "reuse": [
+      "Task Objects on their way",
+      "Added to the next call through the shim"
+     ],
+     "model": [
+      "Your agent's model"
+     ],
+     "glimmer": [
+      "Muse Glimmer 30B",
+      "Custom-trained on recorded work"
+     ],
+     "records": [
+      "Recorded work"
+     ],
+     "eranos": [
+      "Eranos",
+      "The first application: eranosforgood.org"
+     ],
+     "door1": [
+      "My NGO needs help"
+     ],
+     "door2": [
+      "I want to help"
+     ],
+     "omni": [
+      "OmniNode",
+      "One node design"
+     ],
+     "claim": [
+      "Practice queues: 300 s lease, check in every 30 s"
+     ],
+     "missed": [
+      "Three missed check-ins and the Task goes back"
+     ],
+     "workers": [
+      "An hourly policy picks the model for each Task"
+     ]
+    },
+    "settings": [
+     "tools",
+     "skills",
+     "model",
+     "hooks",
+     "settings"
+    ],
+    "versions": [
+     "version 1",
+     "version 2",
+     "version 3"
+    ]
+   }
+  }
+ ]
+}

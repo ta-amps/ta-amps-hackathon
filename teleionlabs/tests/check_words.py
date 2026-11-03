@@ -234,7 +234,7 @@ def main() -> int:
         raw_html = p.read_text(encoding="utf-8")
         parser.feed(raw_html)
         rel = str(p.relative_to(DIST))
-        allow_pct = rel.startswith("benchmarks/") or rel == "index.html"
+        allow_pct = rel.startswith("benchmarks/") or rel in ("index.html", "experience/index.html")
         allow_handoff = rel == "story/index.html"
         gate(rel, "\n".join(parser.text + parser.attrs + parser.generated), allow_percent=allow_pct, allow_handoff=allow_handoff)
         # Also verify raw HTML carries zero T7 banned strings (including hrefs and metadata).

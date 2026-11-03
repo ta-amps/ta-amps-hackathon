@@ -6,6 +6,7 @@
 //   text    no stylesheet file, no font file, no images in the page
 //   console no console errors, page errors or CSP violations
 //   film    on the home page: the canvas shows and draws, its scenes add up to 180 s, and controls work
+//   scripts film code runs on / and /experience/ only, from this site; Three.js and the 3D world on /experience/ only
 // Then axe per page and width: no serious or critical issue. Exit 1 on any failure.
 import { createRequire } from "node:module";
 import { readFile } from "node:fs/promises";
@@ -17,7 +18,8 @@ const { chromium } = require(PLAYWRIGHT);
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : dflt; };
 const BASE = opt("--base", "http://127.0.0.1:8799").replace(/\/$/, "");
-const PAGES = ["/", "/fabric/", "/video/", "/benchmarks/", "/benchmarks/methodology/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"];
+const PAGES = ["/", "/experience/", "/fabric/", "/video/", "/benchmarks/", "/benchmarks/methodology/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"];
+const FILMS = ["/", "/experience/"];
 const VIEWPORTS = [{ width: 1280, height: 720 }, { width: 390, height: 844 }];
 const PAPER = "rgb(245, 242, 234)";
 const failures = [];
@@ -57,7 +59,13 @@ for (const viewport of VIEWPORTS) for (const colorScheme of ["light", "dark"]) {
     if (!r.first.startsWith("For AI agents:")) fail(where, "first line isn't for agents");
     if (r.sheets || r.fonts || r.imgs) fail(where, `not text only: ${JSON.stringify([r.sheets, r.fonts, r.imgs])}`);
     if (r.footerRows !== 2) fail(where, `footer has ${r.footerRows} lines`);
-    if (path === "/") {
+    const scripts = await page.evaluate(() => [...document.scripts].map((s) => s.src).filter(Boolean).concat(performance.getEntriesByType("resource").filter((e) => /\.m?js(\?|$)/.test(e.name)).map((e) => e.name)));
+    for (const src of scripts) {
+      if (new URL(src).origin !== new URL(BASE).origin) fail(where, `script from another site ${src}`);
+      if (path !== "/experience/" && /film3d|three/.test(src)) fail(where, `3D code outside /experience/ ${src}`);
+      if (!FILMS.includes(path) && /film/.test(src)) fail(where, `film code on a text page ${src}`);
+    }
+    if (FILMS.includes(path)) {
       const film = await page.evaluate(() => {
         const cv = document.getElementById("film");
         const px = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
@@ -65,6 +73,8 @@ for (const viewport of VIEWPORTS) for (const colorScheme of ["light", "dark"]) {
         return { hidden: cv.hidden, ink, secs: [...document.querySelectorAll("[data-seconds]")].reduce((a, s) => a + Number(s.dataset.seconds), 0) };
       });
       if (film.hidden) fail(where, "film hidden");
+      const ctl = await page.evaluate(() => { const b = document.getElementById("film-controls").getBoundingClientRect(); return { bottom: b.bottom, vh: innerHeight }; });
+      if (ctl.bottom > ctl.vh) fail(where, `controls end at ${Math.round(ctl.bottom)}, below the fold at ${ctl.vh}`);
       if (film.secs !== 180) fail(where, `film is ${film.secs} s`);
       const before = await page.textContent("#film-pos");
       await page.click('[data-film="next"]');
@@ -73,6 +83,12 @@ for (const viewport of VIEWPORTS) for (const colorScheme of ["light", "dark"]) {
       await page.waitForTimeout(1500);
       const ink = await page.evaluate(() => { const cv = document.getElementById("film"); const px = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 0; i < px.length; i += 400) if (px[i] < 120) n++; return n; });
       if (!ink) fail(where, "film draws nothing");
+      // Paused, then jumped: the scene shows at rest, so its heading is fully drawn at once.
+      await page.click('[data-film="pause"]');
+      await page.click('[data-film="next"]');
+      await page.waitForTimeout(150);
+      const rested = await page.evaluate(() => { const cv = document.getElementById("film"); const px = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 0; i < px.length; i += 400) if (px[i] < 120) n++; return n; });
+      if (!rested) fail(where, "a scene jumped to while paused is blank");
     }
     await page.close();
   }
