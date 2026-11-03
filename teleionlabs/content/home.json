@@ -92,14 +92,16 @@
     },
     {
      "kind": "parts",
-     "seconds": 22,
-     "heading": "Four parts. Together they solve all three.",
+     "seconds": 30,
+     "heading": "One loop. Each part feeds the next.",
      "paragraphs": [],
      "steps": [
-      "Durable Tasks: work survives a crash. A claim runs out, and another worker picks it up.",
-      "Durable Task Objects: what agents make is kept, with its source and every version, so the next agent starts ahead.",
-      "The shim: sits between any agent and its model, and adds the Task Objects that fit.",
-      "Custom-trained Meta models: Muse Glimmer 30B, tuned on recorded work to route, match and check."
+      "Feeds: what's new comes in, with its source.",
+      "Durable Task Objects: everything found or made is kept, searchable, with every version.",
+      "The shim: before a model call, it searches them, then gives cheap direction from reusable work, or can answer directly.",
+      "Durable Tasks: bigger work survives a crash. If a worker stops, another picks it up.",
+      "Custom Meta models: Muse Glimmer 30B, tuned to make the cheap decisions: route, match, check.",
+      "Auto-tuning: each hour, recorded outcomes move work toward what succeeds. The next job starts ahead."
      ]
     },
     {
@@ -118,7 +120,7 @@
     },
     {
      "kind": "omninode",
-     "seconds": 22,
+     "seconds": 20,
      "heading": "How do we do this efficiently? OmniNode.",
      "paragraphs": [
       "One node design, radically parameterizable: tools, skills, model, hooks and settings are all settings."
@@ -182,7 +184,7 @@
     },
     {
      "kind": "live",
-     "seconds": 28,
+     "seconds": 22,
      "heading": "This is running right now.",
      "paragraphs": [
       "Live numbers from the network, today. Most of these workers are ours and volunteers'."
