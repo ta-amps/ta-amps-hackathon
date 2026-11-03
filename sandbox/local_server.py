@@ -30,6 +30,10 @@ class SelfVerificationRefusedError(PermissionError):
     """Raised when the same worker attempts to verify its own drafted task."""
 
 
+# Default model label recorded on claims and verifications. A label only: the sandbox never calls a model.
+DEFAULT_MODEL = "muse-spark-1.3"
+
+
 def check_model_tier(model: str) -> None:
     if "contributor" in str(model or "").lower():
         raise ContributorTierRefusedError(
@@ -121,7 +125,7 @@ class SandboxEngine:
             )
         return {"task_id": task_id, "kind": kind, "title": title, "status": "queued"}
 
-    def claim_task(self, task_id: str, worker_id: str, model: str = "llama3.2:3b") -> dict:
+    def claim_task(self, task_id: str, worker_id: str, model: str = DEFAULT_MODEL) -> dict:
         check_model_tier(model)
         lease = f"lease-{uuid.uuid4().hex[:12]}"
         with self._lock, self._conn:
@@ -147,7 +151,7 @@ class SandboxEngine:
             )
         return {"task_id": task_id, "status": "awaiting_verification", "output_key": output_key}
 
-    def verify_task(self, task_id: str, verifier_worker: str, model: str = "llama3.2:3b") -> dict:
+    def verify_task(self, task_id: str, verifier_worker: str, model: str = DEFAULT_MODEL) -> dict:
         check_model_tier(model)
         with self._lock, self._conn:
             row = self._conn.execute("SELECT * FROM tasks WHERE task_id = ?", (task_id,)).fetchone()
@@ -189,13 +193,13 @@ class SandboxEngine:
         if action == "create_task":
             return self.create_task(params["kind"], params["title"])
         if action == "claim_task":
-            return self.claim_task(params["task_id"], params["worker_id"], params.get("model", "llama3.2:3b"))
+            return self.claim_task(params["task_id"], params["worker_id"], params.get("model", DEFAULT_MODEL))
         if action == "submit_draft":
             return self.submit_draft(
                 params["task_id"], params["lease_token"], params["worker_id"], params["output_key"]
             )
         if action == "verify_task":
-            return self.verify_task(params["task_id"], params["verifier_worker"], params.get("model", "llama3.2:3b"))
+            return self.verify_task(params["task_id"], params["verifier_worker"], params.get("model", DEFAULT_MODEL))
         raise ValueError(f"unsupported sandbox action: {action}")
 
 

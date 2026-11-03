@@ -1,0 +1,39 @@
+// teleionlabs.com: the Teleion Labs site (Tessera). Deploy only through DEPLOY.md.
+// It takes the apex only. www.teleionlabs.com stays on the www-canonical-redirect Worker, which answers 301 to the apex
+// with path and query kept; this Worker's own www code is unit-tested and stays as a fallback.
+{
+  "name": "teleionlabs",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-04-01",
+  // Rule 15: the gates run inside the build. The build reads the shared banned-words list (rule 16) and rewrites dist/
+  // and the gitignored worker/banned.generated.js, so neither can ship stale; the word gate then checks the result.
+  "build": { "command": "python3 build.py && python3 tests/check_words.py" },
+  "workers_dev": true,
+  "preview_urls": true,
+  "routes": [
+    { "pattern": "teleionlabs.com", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  // The live status strip reads the other Workers' health checks through these bindings.
+  "services": [
+    { "binding": "TESSERA", "service": "tessera" },
+    { "binding": "HERMA", "service": "herma" },
+    { "binding": "ERANOS", "service": "eranos" }
+  ],
+  // No invocation logs, traces or real-time Issues are kept for this Worker (finding F-PRIV-LOGS-001), so Cloudflare
+  // stores no per-visit record for it; the Privacy page says so. `wrangler tail` still shows live events while it runs.
+  "observability": {
+    "enabled": false,
+    "logs": { "enabled": false, "invocation_logs": false, "persist": false },
+    "traces": { "enabled": false, "persist": false },
+    "issues": { "enabled": false }
+  },
+  // The Worker redirects plain HTTP to HTTPS; local dev must present https URLs so it stays local.
+  "dev": { "upstream_protocol": "https" }
+}

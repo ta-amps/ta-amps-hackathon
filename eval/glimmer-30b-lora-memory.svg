@@ -141,5 +141,5 @@
 <text x="1108" y="553" text-anchor="end" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#0f172a">disable_adapter=0.0, 8/8 byte-exact</text>
 <text x="766" y="579" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#475569">Pre-Registered Rule Verdict:</text>
 <text x="1108" y="579" text-anchor="end" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#0f172a">LoRA vs Base: promote_candidate | Hybrid vs Shim: promote_candidate</text>
-<text x="36" y="634" font-family="Inter, sans-serif" font-size="11" fill="#64748b">Scope note: 100%-owned deterministic synthetic benchmark on Kaggle free 2xT4 ($0.00 spend, private artifacts). Adapter is an experimental evaluation receipt, not an admitted or deployed service.</text>
+<text x="36" y="634" font-family="Inter, sans-serif" font-size="11" fill="#64748b">Scope note: 100%-owned deterministic made-up benchmark on Kaggle free 2xT4 ($0.00 spend, private artifacts). Adapter is an experimental evaluation receipt, not an admitted or deployed service.</text>
 </svg>

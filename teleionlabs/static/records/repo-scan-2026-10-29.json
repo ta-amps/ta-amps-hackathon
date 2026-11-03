@@ -1,0 +1,16 @@
+{
+  "kind": "benchmark_record",
+  "id": "teleion.benchmarks/repo-scan-2026-10-29",
+  "recorded_on": "2026-10-29",
+  "title": "Public repository scan into a static structured inventory",
+  "setup": "Fixed parsers and regular expressions over repository trees and small text blobs; repository content was not executed and no model was called",
+  "metrics": {
+    "repositories_scanned": 739,
+    "repositories_scanned_successfully": 705,
+    "coverage_ratio": "705 of 739"
+  },
+  "notes": [
+    "705 public event repositories were scanned successfully, with files mapped to noun categories and runnable entry points mapped to verb categories. This is an inventory result, not proof that 705 bundles were admitted to a live library or tested for reuse.",
+    "34 scans failed: 24 empty repositories, 5 not found or private, and 5 timeouts."
+  ]
+}

@@ -357,7 +357,7 @@ def evaluate_portable_persona(raw: str) -> dict[str, Any]:
 def _run_self_test() -> int:
     clean_doc = (
         "---\nname: ngo-kit-reviewer\n"
-        "description: Use when verifying submitted NGO seed-pack JSON manifests and synthetic CSV fixtures; read-only and never mutates live queues.\n"
+        "description: Use when verifying submitted NGO seed-pack JSON manifests and made-up CSV fixtures; read-only and never mutates live queues.\n"
         "model: inherit\ntools: [read_file, search_nouns, practice_verify_kit]\npermissions: read-only\n---\n\n"
         "Verify that builder_key_id differs from reviewer_key_id and every sensitive step stays human_only.\n"
     )

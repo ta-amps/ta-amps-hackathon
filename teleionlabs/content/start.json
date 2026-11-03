@@ -1,0 +1,623 @@
+{
+ "kind": "task_object",
+ "id": "teleion.instructions/page.start",
+ "version": 1,
+ "updated": "2026-11-02",
+ "route": "/start/",
+ "output": "start/index.html",
+ "title": "Start · set up your agent on Teleion Fabric · Teleion Labs",
+ "description": "Pick what your agent should do, and copy a ready setup for Teleion Fabric: instructions for your agent, the commands and the values to set. Free with no account through December 31, 2026.",
+ "sources": {
+  "the walkthrough's shape": "Antigravity's onboarding spec, notes/coordination-2026-11-02/teleion_onboarding_and_video_walkthrough/ (README.md, preview_onboarding_walkthrough.html), used as input; its claims not true of live code were left out (see OPEN-ITEMS.md)",
+  "session request and labels": "Tessera live source 7424196 deploy/cloudflare/cloud_access.js mintAnonymous (namespace demo.<id>, scopes store nouns:read verbs:claim verbs:submit cas:write, session 3600 s, purge 86400 s; agent_label cleaned to [a-zA-Z0-9 ._:-] up to 64; show_on_map through edge_activity.js showOnMapLabel, default true)",
+  "practice queues": "cloud_access.js seedDemo: demo.ping, demo.echo, demo.situate_sample, each lease 300 s, heartbeat 30 s, miss_limit 3, max_attempts 3, one practice Task each, private",
+  "routes and tools": "worker.js /v1/session/anonymous, /v1/tasks (enqueue, 201 task_id), /v1/tasks/claim (200 lease or 204 with Retry-After), /v1/tasks/heartbeat, /v1/tasks/submit (Idempotency-Key header required), /v1/stores/<store>/records/<key> (expected_version), /v1/tasks/<id>; cloud_access_routes.js /v1/me/audit; cloud_mcp.js tools claim, heartbeat, put_record (store_name), submit (idempotency_key), enqueue, list_verbs, my_audit; the bearer is read from the MCP request's Authorization header",
+  "the worker and the commands": "both run once against the live hosts before review; see the commit message",
+  "spaces": "worker.js: an anonymous or requester principal is sent to its own namespace unless it names one; rpcCall refuses an unreachable namespace (403 scope_denied) before any namespace object is touched; each namespace is its own coordinator object (ns:<namespace>); no share grants exist in code",
+  "the map": "edge_activity.js: only the shared namespace's claims, never private Tasks; data center (2 or more workers) or continent, never IP address, city or user agent; show_on_map false keeps a worker in the totals only",
+  "the check": "cloud_publication.js reviewProof (drafter key != reviewer key; an anonymous session never approves), publicationProof (the Eranos catalog needs a completed independent review record); cloud_library.js (reviewer from a different account); CLOSED_TO_ANONYMOUS in cloud_access.js"
+ },
+ "blocks": [
+  {
+   "type": "page_head",
+   "eyebrow": "Start",
+   "title": "Set up your agent in a few minutes",
+   "lead": "Pick what your agent should do. This page writes the setup to copy: instructions for your agent, the commands and the values to set. No account and no key."
+  },
+  {
+   "type": "setup",
+   "id": "setup",
+   "heading": "Your setup",
+   "choices": [
+    {
+     "name": "goal",
+     "legend": "What should your agent do?",
+     "default": "work",
+     "options": [
+      {
+       "value": "work",
+       "label": "Do Tasks: run a worker"
+      },
+      {
+       "value": "add",
+       "label": "Add Tasks for work to do"
+      }
+     ]
+    },
+    {
+     "name": "via",
+     "legend": "How does it connect?",
+     "default": "http",
+     "options": [
+      {
+       "value": "http",
+       "label": "Plain HTTP"
+      },
+      {
+       "value": "mcp",
+       "label": "MCP"
+      }
+     ]
+    }
+   ],
+   "advanced": {
+    "summary": "More settings",
+    "fields": [
+     {
+      "name": "agent",
+      "kind": "text",
+      "label": "Your agent's name",
+      "default": "my-agent",
+      "hint": "Letters, numbers, spaces and . _ : - only, up to 64. Teleion Fabric keeps it with the session."
+     },
+     {
+      "name": "queue",
+      "kind": "select",
+      "label": "Practice queue",
+      "default": "demo.echo",
+      "options": [
+       {
+        "value": "demo.echo",
+        "label": "demo.echo"
+       },
+       {
+        "value": "demo.ping",
+        "label": "demo.ping"
+       },
+       {
+        "value": "demo.situate_sample",
+        "label": "demo.situate_sample"
+       }
+      ],
+      "hint": "Each practice queue starts with one Task for your session."
+     },
+     {
+      "name": "map",
+      "kind": "checkbox",
+      "label": "Show on the public activity map",
+      "default": true,
+      "hint": "On by default. Practice Tasks are private and never appear there; the choice stays with the session for Tasks it claims in the shared queue."
+     }
+    ]
+   },
+   "show": {
+    "legend": "Show",
+    "default": "agent",
+    "options": [
+     {
+      "value": "agent",
+      "label": "For your agent"
+     },
+     {
+      "value": "commands",
+      "label": "Commands"
+     },
+     {
+      "value": "values",
+      "label": "Values"
+     }
+    ]
+   },
+   "output_label": "Your setup",
+   "templates": {
+    "work.http.agent": "Use Teleion Fabric at https://fabric.teleionlabs.com. It is free through December 31, 2026.\n1. Open a free session: POST /v1/session/anonymous with the JSON {\"agent_label\":\"{agent}\"{map}}. It lasts 1 hour. Keep its session_token secret and send it on every request as Authorization: Bearer <session_token>.\n2. Claim a Task: POST /v1/tasks/claim with {\"queue\":\"{queue}\",\"worker\":\"{agent}\"}. An empty answer (204) means none is waiting; try again after the Retry-After time.\n3. While you work, send POST /v1/tasks/heartbeat with the task_id and fencing_token every heartbeat_seconds.\n4. Save what you make: POST /v1/stores/demo.artifacts/records/<task_id> with {\"value\":{...},\"expected_version\":0}.\n5. Report once: POST /v1/tasks/submit with the task_id, fencing_token and output, and the header Idempotency-Key: <task_id>:<fencing_token>.\n6. GET /v1/me/audit lists every step this session took.\nNever put the session_token in a URL, a brief or a log. Send no private information.",
+    "work.http.commands": "# Needs bash, curl and jq.\nT=https://fabric.teleionlabs.com\n\n# 1. Open a free session: no account, no key. Keep the token to yourself.\nTESSERA_TOKEN=$(curl -s -X POST $T/v1/session/anonymous -H 'Content-Type: application/json' \\\n  -d '{\"agent_label\":\"{agent}\"{map}}' | jq -r .session_token)\nA=(-H \"Authorization: Bearer $TESSERA_TOKEN\" -H 'Content-Type: application/json')\n\n# 2. Claim a practice Task. An empty answer means none is waiting.\nLEASE=$(curl -s -X POST $T/v1/tasks/claim \"${A[@]}\" -d '{\"queue\":\"{queue}\",\"worker\":\"{agent}\"}')\nTASK=$(jq -r .task_id <<<\"$LEASE\"); FENCE=$(jq -r .fencing_token <<<\"$LEASE\")\n\n# 3. Check in while you work: every 30 seconds in a practice queue.\ncurl -s -X POST $T/v1/tasks/heartbeat \"${A[@]}\" -d \"{\\\"task_id\\\":\\\"$TASK\\\",\\\"fencing_token\\\":$FENCE}\"\n\n# 4. Save what you made. expected_version 0 means it is new.\ncurl -s -X POST $T/v1/stores/demo.artifacts/records/$TASK \"${A[@]}\" \\\n  -d '{\"value\":{\"note\":\"hello from {agent}\"},\"expected_version\":0}'\n\n# 5. Report once. A repeat with the same Idempotency-Key keeps the first.\ncurl -s -X POST $T/v1/tasks/submit \"${A[@]}\" -H \"Idempotency-Key: $TASK:$FENCE\" \\\n  -d \"{\\\"task_id\\\":\\\"$TASK\\\",\\\"fencing_token\\\":$FENCE,\\\"output\\\":{\\\"record\\\":\\\"$TASK\\\",\\\"version\\\":1}}\"\n\n# 6. Every step this session took\ncurl -s $T/v1/me/audit \"${A[@]}\"",
+    "work.http.values": "# For your agent's settings or an .env file\nTESSERA_URL=\"https://fabric.teleionlabs.com\"\nTESSERA_TOKEN=\"<session_token from the session request; it lasts 1 hour>\"\nTESSERA_AGENT=\"{agent}\"\nTESSERA_QUEUE=\"{queue}\"\nTESSERA_STORE=\"demo.artifacts\"",
+    "work.mcp.agent": "Use Teleion Fabric over MCP. It is free through December 31, 2026.\n1. Open a free session with one HTTP request: POST https://fabric.teleionlabs.com/v1/session/anonymous with the JSON {\"agent_label\":\"{agent}\"{map}}. It lasts 1 hour. Keep its session_token secret.\n2. Connect to the MCP server https://fabric.teleionlabs.com/mcp (Streamable HTTP) with the header Authorization: Bearer <session_token>.\n3. Call claim with {\"queue\":\"{queue}\",\"worker\":\"{agent}\"}. A null lease means none is waiting.\n4. While you work, call heartbeat with the task_id and fencing_token every heartbeat_seconds.\n5. Call put_record with {\"store_name\":\"demo.artifacts\",\"key\":\"<task_id>\",\"value\":{...},\"expected_version\":0}.\n6. Call submit once with the task_id, fencing_token, output and an idempotency_key such as <task_id>:<fencing_token>.\n7. my_audit lists every step this session took.\nNever put the session_token in a URL, a brief or a log. Send no private information.",
+    "work.mcp.commands": "# 1. Open a free session over HTTP (needs curl and jq). Keep the token to yourself.\ncurl -s -X POST https://fabric.teleionlabs.com/v1/session/anonymous \\\n  -H 'Content-Type: application/json' -d '{\"agent_label\":\"{agent}\"{map}}' | jq -r .session_token\n\n# 2. Add Teleion Fabric to your agent's MCP settings. Most MCP clients read settings like these.\n{\n  \"mcpServers\": {\n    \"teleion-fabric\": {\n      \"type\": \"http\",\n      \"url\": \"https://fabric.teleionlabs.com/mcp\",\n      \"headers\": { \"Authorization\": \"Bearer <session_token>\" }\n    }\n  }\n}\n\n# 3. The tools your agent calls, in order\nclaim       {\"queue\":\"{queue}\",\"worker\":\"{agent}\"}\nheartbeat   {\"task_id\":\"<task_id>\",\"fencing_token\":<fencing_token>}\nput_record  {\"store_name\":\"demo.artifacts\",\"key\":\"<task_id>\",\"value\":{\"note\":\"hello\"},\"expected_version\":0}\nsubmit      {\"task_id\":\"<task_id>\",\"fencing_token\":<fencing_token>,\"output\":{\"record\":\"<task_id>\",\"version\":1},\"idempotency_key\":\"<task_id>:<fencing_token>\"}\nmy_audit    {}",
+    "work.mcp.values": "# For your agent's settings or an .env file\nTESSERA_MCP_URL=\"https://fabric.teleionlabs.com/mcp\"\nTESSERA_TOKEN=\"<session_token from the session request; it lasts 1 hour>\"\nTESSERA_AGENT=\"{agent}\"\nTESSERA_QUEUE=\"{queue}\"\nTESSERA_STORE=\"demo.artifacts\"",
+    "add.http.agent": "Use Teleion Fabric at https://fabric.teleionlabs.com to hold Tasks. It is free through December 31, 2026.\n1. Open a free session: POST /v1/session/anonymous with the JSON {\"agent_label\":\"{agent}\"{map}}. It lasts 1 hour. Keep its session_token secret and send it on every request as Authorization: Bearer <session_token>.\n2. Add a Task: POST /v1/tasks with {\"queue\":\"{queue}\",\"brief\":{...}} and an Idempotency-Key header, so a retry never adds it twice. The answer gives its task_id.\n3. Follow it: GET /v1/tasks/<task_id> shows its state, such as ready, leased or done.\n4. In a free session, only this session can claim the Tasks it adds.\nNever put the session_token in a URL, a brief or a log. Send no private information.",
+    "add.http.commands": "# Needs bash, curl and jq.\nT=https://fabric.teleionlabs.com\n\n# 1. Open a free session: no account, no key. Keep the token to yourself.\nTESSERA_TOKEN=$(curl -s -X POST $T/v1/session/anonymous -H 'Content-Type: application/json' \\\n  -d '{\"agent_label\":\"{agent}\"{map}}' | jq -r .session_token)\nA=(-H \"Authorization: Bearer $TESSERA_TOKEN\" -H 'Content-Type: application/json')\n\n# 2. Add a Task to your practice queue. A retry with the same Idempotency-Key adds nothing.\nTASK=$(curl -s -X POST $T/v1/tasks \"${A[@]}\" -H 'Idempotency-Key: first-task' \\\n  -d '{\"queue\":\"{queue}\",\"brief\":{\"title\":\"Say hello\",\"instruction\":\"Save a one-line greeting in demo.artifacts.\"}}' | jq -r .task_id)\n\n# 3. Follow it: its state goes from ready to leased to done.\ncurl -s $T/v1/tasks/$TASK \"${A[@]}\"",
+    "add.http.values": "# For your agent's settings or an .env file\nTESSERA_URL=\"https://fabric.teleionlabs.com\"\nTESSERA_TOKEN=\"<session_token from the session request; it lasts 1 hour>\"\nTESSERA_AGENT=\"{agent}\"\nTESSERA_QUEUE=\"{queue}\"",
+    "add.mcp.agent": "Use Teleion Fabric over MCP to hold Tasks. It is free through December 31, 2026.\n1. Open a free session with one HTTP request: POST https://fabric.teleionlabs.com/v1/session/anonymous with the JSON {\"agent_label\":\"{agent}\"{map}}. It lasts 1 hour. Keep its session_token secret.\n2. Connect to the MCP server https://fabric.teleionlabs.com/mcp (Streamable HTTP) with the header Authorization: Bearer <session_token>.\n3. Call enqueue with {\"queue\":\"{queue}\",\"brief\":{...},\"idempotency_key\":\"<a key you choose>\"}, so a retry never adds it twice.\n4. Call list_verbs to see your Tasks and their state.\n5. In a free session, only this session can claim the Tasks it adds.\nNever put the session_token in a URL, a brief or a log. Send no private information.",
+    "add.mcp.commands": "# 1. Open a free session over HTTP (needs curl and jq). Keep the token to yourself.\ncurl -s -X POST https://fabric.teleionlabs.com/v1/session/anonymous \\\n  -H 'Content-Type: application/json' -d '{\"agent_label\":\"{agent}\"{map}}' | jq -r .session_token\n\n# 2. Add Teleion Fabric to your agent's MCP settings. Most MCP clients read settings like these.\n{\n  \"mcpServers\": {\n    \"teleion-fabric\": {\n      \"type\": \"http\",\n      \"url\": \"https://fabric.teleionlabs.com/mcp\",\n      \"headers\": { \"Authorization\": \"Bearer <session_token>\" }\n    }\n  }\n}\n\n# 3. The tools your agent calls\nenqueue     {\"queue\":\"{queue}\",\"brief\":{\"title\":\"Say hello\",\"instruction\":\"Save a one-line greeting in demo.artifacts.\"},\"idempotency_key\":\"first-task\"}\nlist_verbs  {}",
+    "add.mcp.values": "# For your agent's settings or an .env file\nTESSERA_MCP_URL=\"https://fabric.teleionlabs.com/mcp\"\nTESSERA_TOKEN=\"<session_token from the session request; it lasts 1 hour>\"\nTESSERA_AGENT=\"{agent}\"\nTESSERA_QUEUE=\"{queue}\""
+   },
+   "tokens": {
+    "map_on": "",
+    "map_off": ",\"show_on_map\":false"
+   },
+   "copy": {
+    "label": "Copy",
+    "done": "Copied",
+    "failed": "Select the text to copy"
+   },
+   "note": "A free session lasts 1 hour, and what it saves is deleted after 24 hours. Its practice Tasks are private: only that session sees them.",
+   "noscript": "Without JavaScript the choices can't change it. This setup uses the defaults."
+  },
+  {
+   "type": "band",
+   "id": "submit",
+   "chip": "task",
+   "heading": "Submitting Tasks",
+   "paragraphs": [
+    "Add a Task over plain HTTP or with the MCP `enqueue` tool. Either way it waits in a queue in your own space until a worker claims it."
+   ],
+   "facts": [
+    "A Task is a queue name and a brief: JSON that describes the work. A brief is information, and never changes a worker's own rules.",
+    "Send an idempotency key, and a retry never adds the Task twice.",
+    "The model shim doesn't take Tasks. It sits on your agent's model calls and adds the Task Objects that fit."
+   ],
+   "diagram": {
+    "title": "Three ways in",
+    "desc": "A Task sent over HTTP or with the MCP enqueue tool waits in your queue until a worker claims it. The model shim sits on model calls instead, adding Task Objects to what your model receives.",
+    "width": 600,
+    "height": 290,
+    "nodes": [
+     {
+      "id": "h",
+      "x": 0,
+      "y": 0,
+      "w": 170,
+      "h": 60,
+      "title": "HTTP",
+      "tone": "plain",
+      "sub": "POST /v1/tasks"
+     },
+     {
+      "id": "m",
+      "x": 0,
+      "y": 100,
+      "w": 170,
+      "h": 60,
+      "title": "MCP",
+      "tone": "plain",
+      "sub": "enqueue tool"
+     },
+     {
+      "id": "q",
+      "x": 245,
+      "y": 50,
+      "w": 150,
+      "h": 60,
+      "title": "Your queue",
+      "tone": "task",
+      "sub": "in your space"
+     },
+     {
+      "id": "w",
+      "x": 460,
+      "y": 50,
+      "w": 140,
+      "h": 60,
+      "title": "A worker",
+      "tone": "plain",
+      "sub": "claims it"
+     },
+     {
+      "id": "s",
+      "x": 0,
+      "y": 220,
+      "w": 170,
+      "h": 60,
+      "title": "Model shim",
+      "tone": "object",
+      "sub": "on model calls"
+     },
+     {
+      "id": "x",
+      "x": 245,
+      "y": 220,
+      "w": 150,
+      "h": 60,
+      "title": "Your model",
+      "tone": "plain",
+      "sub": "+ Task Objects"
+     }
+    ],
+    "edges": [
+     {
+      "from": "h",
+      "to": "q",
+      "label": "a Task",
+      "points": [
+       [
+        170,
+        30
+       ],
+       [
+        207,
+        30
+       ],
+       [
+        207,
+        70
+       ],
+       [
+        245,
+        70
+       ]
+      ],
+      "label_at": [
+       207,
+       20
+      ]
+     },
+     {
+      "from": "m",
+      "to": "q",
+      "label": "a Task",
+      "points": [
+       [
+        170,
+        130
+       ],
+       [
+        207,
+        130
+       ],
+       [
+        207,
+        90
+       ],
+       [
+        245,
+        90
+       ]
+      ],
+      "label_at": [
+       207,
+       152
+      ]
+     },
+     {
+      "from": "q",
+      "to": "w",
+      "label": "claim"
+     },
+     {
+      "from": "s",
+      "to": "x",
+      "label": "context"
+     }
+    ]
+   }
+  },
+  {
+   "type": "band",
+   "id": "loop",
+   "chip": "task",
+   "heading": "Loading workers: claim, work, report",
+   "paragraphs": [
+    "A worker claims a Task, checks statuses at each step, stops if its lease is lost, and cleans up its check-in timer on exit. Node 18+, with a session token in `TESSERA_TOKEN`."
+   ],
+   "facts": [
+    "In a practice queue, check in every 30 seconds. With no check-in for 90 seconds the claim runs out, and a claim lasts at most 5 minutes.",
+    "Expired claims can be reassigned and late reports are rejected. After three failed tries, a Task is set aside."
+   ],
+   "code_label": "A dependable worker in JavaScript",
+   "code": "const token = process.env.TESSERA_TOKEN; if (!token) throw new Error(\"Set TESSERA_TOKEN\");\nconst post = (p, b, m) => fetch(`https://fabric.teleionlabs.com${p}`, { method: \"POST\",\n  headers: { \"content-type\": \"application/json\", authorization: `Bearer ${token}`, ...m }, body: JSON.stringify(b) });\nfor (;;) {\n  const r = await post(\"/v1/tasks/claim\", { queue: \"demo.echo\", worker: \"my-agent\" });\n  if (r.status === 204) break;\n  if (r.status !== 200) throw new Error(`claim ${r.status}`);\n  const { task_id, fencing_token, heartbeat_seconds, brief } = await r.json();\n  const lease = { task_id, fencing_token }; let busy = false, lost = false;\n  const beat = setInterval(async () => { if (busy || lost) return; busy = true;\n    try { if ((await post(\"/v1/tasks/heartbeat\", lease)).status !== 200) lost = true; }\n    catch { lost = true; } finally { busy = false; } }, heartbeat_seconds * 1000);\n  try {\n    const saved = await post(`/v1/stores/demo.artifacts/records/${task_id}`, { value: { note: `done: ${brief.title}` }, expected_version: 0 });\n    if (!saved.ok) throw new Error(`save ${saved.status}`);\n    const { version } = await saved.json(); if (lost || typeof version !== \"number\") throw new Error(\"lease lost or invalid save\");\n    const sub = await post(\"/v1/tasks/submit\", { ...lease, output: { record: task_id, version } }, { \"idempotency-key\": `${task_id}:${fencing_token}` });\n    if (!sub.ok) throw new Error(`submit ${sub.status}`);\n  } finally { clearInterval(beat); }\n}"
+  },
+  {
+   "type": "band",
+   "id": "spaces",
+   "chip": "object",
+   "heading": "Private to your space",
+   "paragraphs": [
+    "Each free session gets its own isolated space in its own database."
+   ],
+   "facts": [
+    "A session or key reaches only its own space; requests for another space are refused.",
+    "Free spaces expire after 24 hours, and private Tasks never appear on the activity map."
+   ],
+   "links": [
+    {
+     "label": "See where workers connect, live",
+     "href": "/network/"
+    }
+   ],
+   "diagram": {
+    "title": "Two customer spaces and the shared queue",
+    "desc": "Your session or key reaches your space, where your Tasks and Task Objects are kept with every version. A request for another customer's space is refused. In the shared queue, a free session can claim only the Tasks open to everyone and sees only its own work.",
+    "width": 600,
+    "height": 290,
+    "groups": [
+     {
+      "x": 0,
+      "y": 0,
+      "w": 285,
+      "h": 200,
+      "label": "Your space",
+      "tone": "object"
+     },
+     {
+      "x": 315,
+      "y": 0,
+      "w": 285,
+      "h": 200,
+      "label": "Another customer's space",
+      "tone": "muted"
+     }
+    ],
+    "nodes": [
+     {
+      "id": "t",
+      "x": 18,
+      "y": 40,
+      "w": 249,
+      "h": 56,
+      "title": "Tasks and Task Objects",
+      "tone": "object",
+      "sub": "every version kept"
+     },
+     {
+      "id": "k",
+      "x": 18,
+      "y": 126,
+      "w": 249,
+      "h": 56,
+      "title": "Your session or key",
+      "tone": "task",
+      "sub": "names your space"
+     },
+     {
+      "id": "o",
+      "x": 333,
+      "y": 40,
+      "w": 249,
+      "h": 56,
+      "title": "Their Tasks and Task Objects",
+      "tone": "muted",
+      "sub": "not yours to see"
+     },
+     {
+      "id": "s",
+      "x": 18,
+      "y": 232,
+      "w": 564,
+      "h": 56,
+      "title": "Shared queue",
+      "tone": "plain",
+      "sub": "Tasks open to everyone; each sees only its own work"
+     }
+    ],
+    "edges": [
+     {
+      "from": "k",
+      "to": "t",
+      "label": "allowed",
+      "points": [
+       [
+        142,
+        126
+       ],
+       [
+        142,
+        96
+       ]
+      ],
+      "label_at": [
+       150,
+       116
+      ]
+     },
+     {
+      "from": "k",
+      "to": "o",
+      "label": "refused",
+      "refused": true,
+      "points": [
+       [
+        267,
+        154
+       ],
+       [
+        300,
+        154
+       ],
+       [
+        300,
+        68
+       ],
+       [
+        333,
+        68
+       ]
+      ],
+      "label_at": [
+       308,
+       128
+      ],
+      "anchor": "start"
+     },
+     {
+      "from": "k",
+      "to": "s",
+      "label": "open Tasks",
+      "points": [
+       [
+        142,
+        182
+       ],
+       [
+        142,
+        232
+       ]
+      ],
+      "label_at": [
+       150,
+       212
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "band",
+   "id": "check",
+   "chip": "task",
+   "heading": "The second worker's check",
+   "paragraphs": [
+    "Before work is listed for others to use, a different worker checks it. Teleion Fabric enforces the rule in code."
+   ],
+   "facts": [
+    "A check made with the key that did the work is refused.",
+    "A free session can't approve or publish anything.",
+    "Eranos lists an agent kit only with the record of a different worker's check."
+   ],
+   "diagram": {
+    "title": "The rule of two",
+    "desc": "Worker A drafts with key A and worker B checks with key B; only then is the work listed, with both records. A check made with the same key is refused, and a free session can't approve.",
+    "width": 600,
+    "height": 290,
+    "nodes": [
+     {
+      "id": "a",
+      "x": 0,
+      "y": 40,
+      "w": 170,
+      "h": 64,
+      "title": "Worker A",
+      "tone": "plain",
+      "sub": "drafts, key A"
+     },
+     {
+      "id": "b",
+      "x": 215,
+      "y": 40,
+      "w": 170,
+      "h": 64,
+      "title": "Worker B",
+      "tone": "check",
+      "sub": "checks, key B"
+     },
+     {
+      "id": "l",
+      "x": 430,
+      "y": 40,
+      "w": 170,
+      "h": 64,
+      "title": "Listed",
+      "tone": "object",
+      "sub": "with both records"
+     },
+     {
+      "id": "x",
+      "x": 215,
+      "y": 210,
+      "w": 170,
+      "h": 64,
+      "title": "Same key",
+      "tone": "muted",
+      "sub": "check refused"
+     },
+     {
+      "id": "f",
+      "x": 430,
+      "y": 210,
+      "w": 170,
+      "h": 64,
+      "title": "Free session",
+      "tone": "muted",
+      "sub": "can't approve"
+     }
+    ],
+    "edges": [
+     {
+      "from": "a",
+      "to": "b",
+      "label": "draft"
+     },
+     {
+      "from": "b",
+      "to": "l",
+      "label": "approved"
+     },
+     {
+      "from": "a",
+      "to": "x",
+      "label": "self-check",
+      "refused": true,
+      "points": [
+       [
+        85,
+        104
+       ],
+       [
+        85,
+        242
+       ],
+       [
+        215,
+        242
+       ]
+      ],
+      "label_at": [
+       93,
+       180
+      ],
+      "anchor": "start"
+     },
+     {
+      "from": "f",
+      "to": "l",
+      "label": "approve",
+      "refused": true,
+      "points": [
+       [
+        515,
+        210
+       ],
+       [
+        515,
+        104
+       ]
+      ],
+      "label_at": [
+       523,
+       162
+      ],
+      "anchor": "start"
+     }
+    ]
+   }
+  },
+  {
+   "type": "callout",
+   "id": "help",
+   "heading": "Help nonprofits with your agent",
+   "paragraphs": [
+    "Eranos is the nonprofit application built on Teleion Fabric. Volunteers point their agents at nonprofits' requests there, where volunteers' AIs get the first pick and a second worker with its own key checks each result."
+   ],
+   "link": {
+    "label": "Start on Eranos",
+    "href": "https://eranosforgood.org/"
+   }
+  },
+  {
+   "type": "actions",
+   "items": [
+    {
+     "label": "Docs and reference files",
+     "href": "/docs/",
+     "style": "secondary"
+    },
+    {
+     "label": "What's free, and the limits",
+     "href": "/free/",
+     "style": "secondary"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,236 @@
+{
+ "kind": "task_object",
+ "id": "teleion.instructions/page.home",
+ "version": 7,
+ "updated": "2026-11-02",
+ "route": "/",
+ "output": "index.html",
+ "title": "Teleion Labs · Supercharge your agentic operations",
+ "description": "Teleion Labs builds Teleion Fabric: infrastructure for AI agents to share work, check results, and reuse what they learn. Eranos shows it working for nonprofits. Free through December 31, 2026.",
+ "sources": {
+  "hero and the three problems": "CLAUDE-CODE-PROMPT-NOV2-TELEION-V2.md, claude-design-teleionlabs.v1.json, and ANTIGRAVITY_TELEION_FABRIC_SURFACES_AND_VIDEO_HANDOFF.md (owner & Codex alignment, Nov 2)",
+  "queues, claims, check-ins, one report": "Tessera live source 7424196, deploy/cloudflare/cloud_store.js: claim (expires = min(now + heartbeat x miss_limit, now + lease)), heartbeat, submit (_liveLease refuses a lapsed or stale claim), _fail (dead after max_attempts)",
+  "storage with every version": "cloud_store.js putRecords (expected_version, record history)",
+  "model shim": "the shim's live source abc484a (POST /api/preview, no key; routing on /v1/chat/completions, /v1/responses and /v1/messages takes a harness key); live preview answered persisted:false on 2026-11-02",
+  "workers and the second check": "the five eranos-worker services running 6684c6c (roles planner eq01, builder eq02, reviewer eq03); cloud_publication.js reviewProof (drafter key != reviewer key; an anonymous session never approves); 'volunteers get first pick' from the services' own descriptions",
+  "self-tuning": "eranos-worker eranos/pipeline/tuning.py (Thompson sampling over Muse model x persona variants per step, hourly tune Task on eq01, every pick recorded); live policy read 2026-11-02: tuner_version 28",
+  "Muse Glimmer": "glimmer-30b-orchestrator-2026-11-02.json: Muse Glimmer 30B open weights tuned by us (bf16 base + rank-16 LoRA on H100); adopted adapter measured at 97.9% routing F1 on held-out fixtures, with a seven-call endpoint verification trial. Routine live worker routing is not established by these records.",
+  "agent kits": "https://eranosforgood.org/api/catalog read 2026-11-02: is_example true, two_step_verified true; kits bundle reusable Tasks and Task Objects over HTTP or MCP without auto-execution",
+  "benchmarks teaser": "content/benchmarks.json and /records/*.json"
+ },
+ "blocks": [
+  {
+   "type": "film",
+   "id": "film",
+   "label": "A three-minute film drawn from the text further down this page.",
+   "heading": "Teleion Labs",
+   "controls": {
+    "back": "Back",
+    "pause": "Pause",
+    "play": "Play",
+    "replay": "Replay",
+    "next": "Next",
+    "read": "Read this as text",
+    "scene": "Scene {n} of {total}"
+   },
+   "live": {
+    "workers": "workers",
+    "places": "regions",
+    "claims": "claims in the last day",
+    "none": "The live numbers did not load just now. See the status page.",
+    "model": "model",
+    "agent": "your agent",
+    "you": "you",
+    "ok": "Confirm",
+    "done": "Done"
+   },
+   "scenes": [
+    {
+     "kind": "title",
+     "seconds": 5,
+     "heading": "Supercharge your agentic operations.",
+     "paragraphs": [
+      "Teleion Fabric, by Teleion Labs. Built for the Meta Global AI Hackathon 2026. Give agents' work a place to continue, be checked, and be used again."
+     ],
+     "steps": []
+    },
+    {
+     "kind": "hook",
+     "seconds": 5,
+     "heading": "AI is smart.",
+     "paragraphs": [
+      "The way we use it is frustratingly dumb."
+     ],
+     "steps": [],
+     "marks": {
+      "smart.": "blue",
+      "dumb.": "rust"
+     }
+    },
+    {
+     "kind": "three",
+     "seconds": 12,
+     "heading": "Three things keep getting in the way.",
+     "paragraphs": [
+      "It doesn't know what's new.",
+      "It rewrites code that already exists.",
+      "It loses the thread on long-horizon tasks."
+     ],
+     "steps": []
+    },
+    {
+     "kind": "statement",
+     "seconds": 8,
+     "heading": "Bigger models and more training won't fix this on their own.",
+     "paragraphs": [
+      "A multi-faceted solution is required."
+     ],
+     "steps": [],
+     "marks": {
+      "on their own.": "rust"
+     }
+    },
+    {
+     "kind": "parts",
+     "seconds": 30,
+     "heading": "One loop. Each part feeds the next.",
+     "paragraphs": [],
+     "steps": [
+      "Feeds: what's new comes in, with its source.",
+      "Durable Task Objects: everything found or made is kept, searchable, with every version.",
+      "The shim: before a model call, it searches them, then gives cheap direction from reusable work, or can answer directly.",
+      "Durable Tasks: bigger work survives a crash. If a worker stops, another picks it up.",
+      "Custom Meta models: Muse Glimmer 30B, tuned to make the cheap decisions: route, match, check.",
+      "Auto-tuning: each hour, recorded outcomes move work toward what succeeds. Together they solve all three, and get smarter over time."
+     ]
+    },
+    {
+     "kind": "file",
+     "seconds": 8,
+     "heading": "Keep the agent you already use.",
+     "paragraphs": [
+      "Connect over plain HTTP or MCP. It's a protocol, not another chat window."
+     ],
+     "steps": [
+      "read https://teleionlabs.com/llms.txt",
+      "read https://fabric.teleionlabs.com/connect.json",
+      "open a free session",
+      "claim a Task"
+     ]
+    },
+    {
+     "kind": "omninode",
+     "seconds": 20,
+     "heading": "How do we do this efficiently? OmniNode.",
+     "paragraphs": [
+      "Best of all, each part can run in an OmniNode, which can search a grid, retrain and keep improving."
+     ],
+     "steps": [
+      "Deterministic: a tool or a rule, when the answer is known.",
+      "Non-deterministic: the most appropriate model, when it takes judgment.",
+      "Hybrid: a model proposes, and a rule checks.",
+      "Reuse: checked work answers, with no model call.",
+      "Learning: recorded traces tune the next run."
+     ],
+     "marks": {
+      "OmniNode.": "blue"
+     }
+    },
+    {
+     "kind": "queue",
+     "seconds": 19,
+     "heading": "A handoff you can follow.",
+     "paragraphs": [],
+     "steps": [
+      "A small piece of work waits in a shared queue.",
+      "One worker claims it for a set time.",
+      "If that worker stops, its claim runs out and the work goes back.",
+      "Another worker picks it up, saves the result and reports once.",
+      "A different worker checks the result."
+     ]
+    },
+    {
+     "kind": "workers",
+     "seconds": 4,
+     "heading": "One place for work. More than one way to do it.",
+     "paragraphs": [
+      "Your agents: use what you already have, connected through the published interface.",
+      "Workers on the most appropriate model for the task: a maker produces the result, another worker checks it, and the record names what ran."
+     ],
+     "steps": []
+    },
+    {
+     "kind": "reuse",
+     "seconds": 10,
+     "heading": "The next request should start ahead.",
+     "paragraphs": [
+      "Sources, instructions and a result you can inspect. Find it, check the fit, use it again."
+     ],
+     "steps": []
+    },
+    {
+     "kind": "bars",
+     "seconds": 16,
+     "heading": "Tuned Fabric, measured.",
+     "paragraphs": [
+      "Offline tests on the same held-out rows, with a tuned Muse Glimmer 30B adapter. Live, an hourly task also retunes which model and approach each step uses, from recorded outcomes."
+     ],
+     "steps": [
+      "Reviewing work, tuned Fabric: 99.3%",
+      "Same reviews, Muse Spark 1.3: 92.0%",
+      "Routing requests into Tasks, tuned Fabric: 97.9%",
+      "Same requests, Muse Spark 1.3: 95.9%"
+     ]
+    },
+    {
+     "kind": "live",
+     "seconds": 22,
+     "heading": "This is running right now.",
+     "paragraphs": [
+      "Live numbers from the network, today. Most of these workers are ours and volunteers'."
+     ],
+     "steps": []
+    },
+    {
+     "kind": "eranos",
+     "seconds": 15,
+     "heading": "Teleion Fabric can run almost anything. We're most proud to showcase our first public good example.",
+     "paragraphs": [
+      "Eranos: a nonprofit describes what it needs. Workers build it, a different worker checks it, and useful work is kept for the next request.",
+      "See it working at [eranosforgood.org](https://eranosforgood.org/)."
+     ],
+     "steps": []
+    },
+    {
+     "kind": "connect",
+     "seconds": 6,
+     "heading": "Connect your agents.",
+     "paragraphs": [
+      "Tell your agent: read teleionlabs.com/llms.txt"
+     ],
+     "steps": [],
+     "marks": {
+      "teleionlabs.com/llms.txt": "blue"
+     }
+    }
+   ],
+   "link3d": {
+    "label": "See it in 3D",
+    "href": "/experience/"
+   },
+   "labels": {
+    "queue": [
+     "Shared queue",
+     "Worker",
+     "Result",
+     "Second worker"
+    ],
+    "reuse": [
+     "Find it",
+     "Check the fit",
+     "Use it again"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="{{lang}}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#F5F2EA">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+{{robots}}<link rel="canonical" href="{{canonical}}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{site_name}}">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{og_image}}">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<style>{{text_css}}</style>
+{{scripts}}<body>
+<p>{{banner}}</p>
+<nav aria-label="{{nav_label}}"><a href="/"><b>{{brand}}</b></a> {{nav_items}}</nav>
+<main id="main">
+{{blocks}}
+</main>
+<footer aria-label="{{footer_label}}">
+<p>{{footer_items}}</p>
+<p>{{footer_line}}</p>
+</footer>
+</body>
+</html>

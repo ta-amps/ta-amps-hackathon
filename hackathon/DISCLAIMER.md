@@ -19,7 +19,7 @@ Rules and the official pages yourself. They govern, and these notes don't.
    Where these notes and a source disagree, the source wins.
 6. **Not affiliated.** This kit is independent. It is not affiliated with, sponsored by or endorsed by Meta Platforms, Inc.,
    Cerebral Valley Enterprises, Inc., or any partner named here.
-7. **Trademarks.** Meta, Muse, Llama, Cerebral Valley and other names are trademarks of their owners, used here only
+7. **Trademarks.** Meta, Muse, Cerebral Valley and other names are trademarks of their owners, used here only
    to identify their products and the event.
 8. **Verify before you act.** Check dates, amounts, eligibility and deadlines at the source before relying on them,
    especially anything involving money, eligibility or your submission.

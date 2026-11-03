@@ -1,0 +1,34 @@
+{
+ "kind": "task_object",
+ "id": "teleion.instructions/page.not-found",
+ "version": 3,
+ "updated": "2026-11-02",
+ "route": "/404",
+ "output": "404.html",
+ "noindex": true,
+ "title": "Page not found · Teleion Labs",
+ "description": "This page isn't on teleionlabs.com.",
+ "blocks": [
+  {
+   "type": "page_head",
+   "eyebrow": "404",
+   "title": "This page isn't here",
+   "lead": "The address may have changed. Start from the home page, or explore Teleion Fabric."
+  },
+  {
+   "type": "actions",
+   "items": [
+    {
+     "label": "Home",
+     "href": "/",
+     "style": "primary"
+    },
+    {
+     "label": "Explore Teleion Fabric",
+     "href": "/fabric/",
+     "style": "secondary"
+    }
+   ]
+  }
+ ]
+}

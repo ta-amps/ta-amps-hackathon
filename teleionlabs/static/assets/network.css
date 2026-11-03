@@ -1,0 +1,206 @@
+/* The network map (/network/) and the Right now / Live capacity strips. Light only (MUST-FOLLOW rule 13): Paper & Ink
+   tokens from Teleion’s assets/tokens.css, paper and surface backgrounds, ink for text and the pressed choice, rust for Tasks and
+   data centers. Only tokens.css names are used, except the land's dot colour and the dashed pill border the network
+   contract names (#D6CEBD, #8A8476). No inline styles in the markup: network.js sets each place's position and size
+   through the style object, which a style-src 'self' policy allows. */
+
+:root { color-scheme: only light; --nw-land: #D6CEBD; --nw-dash: #8A8476; }
+
+.nw-page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+.nw-page-more { gap: 3.5rem; padding-block: 3.5rem 4rem; }
+.nw { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+/* The head: the heading and its line, with the totals beside them, so the map starts in the first screen. */
+.nw-head { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 0.5rem 2rem; align-items: end; padding: 1.5rem 24px 0.5rem !important; }
+.nw-head h1 { max-width: none; font-size: clamp(1.875rem, 1.45rem + 1.3vw, 2.5rem); line-height: 1.08; }
+.nw-head .lead { max-width: 54ch; margin-top: 0.5rem; font-size: 1.0625rem; line-height: 1.45; }
+.nw-head .pg-kicker { margin-bottom: 0.25rem; }
+@media (max-width: 60rem) { .nw-head { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 719.98px) { .nw-head { padding-inline: 16px !important; } }
+
+/* Totals */
+.nw-headline { display: grid; gap: 0.15rem; }
+.nw-big { margin: 0; color: var(--text); font: 700 clamp(1.5rem, 1.2rem + 1vw, 2.125rem)/1.15 var(--font-display); letter-spacing: -0.02em; }
+.nw-sub { margin: 0; color: var(--text-2); font-size: var(--fs-ui); }
+
+/* Controls */
+.nw-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; min-width: 0; }
+.nw-actions, .nw-group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; min-width: 0; max-width: 100%; }
+.nw-group[hidden], .nw-action[hidden] { display: none; }
+.nw-group-label { margin-inline-end: 0.25rem; color: var(--text-3); font-size: 0.875rem; }
+.nw-action, .nw-choice {
+  min-height: 44px; padding: 0 1rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface);
+  color: var(--text); font: inherit; font-size: 0.9375rem; cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast);
+}
+.nw-choice { min-height: 36px; font-size: 0.875rem; }
+.nw-action:hover, .nw-choice:hover { border-color: var(--text-2); }
+.nw-action[aria-pressed="true"], .nw-choice[aria-pressed="true"] { background: var(--action); border-color: var(--action); color: var(--action-text); }
+.nw-action:focus-visible, .nw-choice:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.nw-band { margin: 0; padding: 0.7rem 1rem; border-radius: 12px; background: var(--object-wash); color: var(--object-text); font-size: 0.9375rem; }
+.nw-band[hidden] { display: none; }
+.nw-status { margin: 0; color: var(--caution); font-size: 0.9375rem; }
+.nw-status:empty { display: none; }
+.nw-status a { color: var(--link); }
+
+/* Map and feed */
+.nw-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem); gap: 1.25rem; align-items: stretch; }
+@media (max-width: 60rem) { .nw-body { grid-template-columns: minmax(0, 1fr); } }
+.nw-view[hidden], .nw-tables[hidden] { display: none; }
+.nw-map, .nw-feed { margin: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--e1); }
+.nw-map { padding: 1rem 1rem 0.9rem; }
+.nw-stage { position: relative; aspect-ratio: 1000 / 435; }
+.nw-world { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.nw-land { fill: none; stroke: var(--nw-land); stroke-width: 3.4; stroke-linecap: round; }
+.nw-layer, .nw-pulses { position: absolute; inset: 0; }
+.nw-pulses { pointer-events: none; }
+
+/* A data center: a button on the page (a target at least 44 px), a plain dot in the strip. */
+.nw-dc {
+  position: absolute; display: grid; place-items: center; width: max(44px, var(--d, 12px)); height: max(44px, var(--d, 12px));
+  margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; transform: translate(-50%, -50%); cursor: pointer;
+}
+span.nw-dc { width: var(--d, 10px); height: var(--d, 10px); cursor: default; }
+.nw-dot { display: block; width: var(--d, 12px); height: var(--d, 12px); border: 2px solid var(--surface); border-radius: 50%; background: var(--task); box-shadow: 0 0 0 4px rgb(184 84 31 / 0.16); }
+.nw-dc:focus-visible { outline: 3px solid var(--focus); outline-offset: -4px; border-radius: 50%; }
+.nw-dc.is-hollow .nw-dot { background: var(--surface); border: 2px solid var(--task); box-shadow: none; }
+.nw-label {
+  position: absolute; left: calc(50% + var(--d, 12px) / 2 + 6px); top: 50%; padding: 2px 5px; border-radius: 4px; transform: translateY(-50%);
+  background: rgb(255 253 248 / 0.88); color: var(--task-text); font: 600 0.75rem/1.1 var(--font-text); white-space: nowrap; pointer-events: none;
+}
+.nw-label[hidden] { display: none; }
+.nw-dc.is-left .nw-label { left: auto; right: calc(50% + var(--d, 12px) / 2 + 6px); }
+
+/* Counted by continent: a dashed pill with its name and count, never a dot. */
+.nw-pill {
+  position: absolute; padding: 3px 10px; border: 1.5px dashed var(--nw-dash); border-radius: 999px; background: var(--surface);
+  color: var(--text); font: 600 0.8125rem/1.25 var(--font-text); white-space: nowrap; transform: translate(-50%, -50%); pointer-events: none;
+}
+.nw-pill.is-hollow { color: var(--text-3); }
+.nw-feed[hidden] { display: none; }
+.nw-strip .nw-pill { display: none; } /* the strip's headline already counts the continents */
+
+/* The newest claim: a pill beside its data center, and a ring twice (2.4 s each, so never longer than five seconds). */
+.nw-callout {
+  position: absolute; padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); box-shadow: var(--e1);
+  color: var(--text); font: 600 0.75rem/1.25 var(--font-text); white-space: nowrap; transform: translate(-50%, calc(-100% - 18px));
+}
+.nw-callout.is-below { transform: translate(-50%, 18px); }
+.nw-ring { position: absolute; width: 14px; height: 14px; border-radius: 50%; transform: translate(-50%, -50%); animation: nw-ring 2.4s ease-out 2 both; }
+@keyframes nw-ring {
+  from { box-shadow: 0 0 0 0 rgb(184 84 31 / 0.5); }
+  to { box-shadow: 0 0 0 30px rgb(184 84 31 / 0); }
+}
+
+/* One data center's numbers: a popover that does not hide the rest of the map. */
+.nw-card {
+  position: absolute; z-index: 3; width: min(17rem, 70%); padding: 0.85rem 2.4rem 0.85rem 1rem; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--surface); box-shadow: var(--e2);
+}
+.nw-card[hidden] { display: none; }
+.nw-card p { margin: 0.2rem 0 0; font-size: 0.875rem; color: var(--text-2); }
+.nw-card-title { margin: 0; font: 700 1.0625rem/1.25 var(--font-display); }
+.nw-card-title:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+.nw-card-continent { color: var(--text-3) !important; }
+.nw-card-note { color: var(--text-3) !important; font-size: 0.8125rem !important; }
+.nw-card-close { position: absolute; top: 0.3rem; right: 0.3rem; width: 36px; height: 36px; border: 0; border-radius: 8px; background: none; color: var(--text-2); font-size: 1rem; cursor: pointer; }
+.nw-card-close:hover { background: var(--sunken); }
+.nw-card-close:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; }
+
+.nw-line { margin: 0.7rem 0 0; color: var(--text-2); font-size: 0.9375rem; text-align: center; }
+.nw-line[hidden] { display: none; }
+/* Review B1 (Nov 2): only the map is dimmed when the data cannot load; the legend keeps its contrast. */
+.nw[data-failed] .nw-stage { opacity: 0.75; }
+
+.nw-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; margin: 0.75rem 0 0; color: var(--text-3); font-size: 0.8125rem; }
+.nw-legend-item { display: flex; align-items: center; gap: 0.5rem; }
+.nw-key { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 50%; }
+.nw-key-dot { background: var(--task); box-shadow: 0 0 0 3px rgb(184 84 31 / 0.16); }
+.nw-key-continent { width: 28px; height: 16px; border: 1.5px dashed var(--nw-dash); border-radius: 999px; background: var(--surface); }
+
+/* The feed of claims: newest first. Beside the map it is as tall as the map and scrolls. It is a list, not a live region. */
+.nw-feed-in { padding: 1rem 1.1rem; }
+.nw-feed-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.6rem; }
+.nw-feed h2 { margin: 0; font-size: 1.25rem; }
+.nw-state { padding: 2px 10px; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; background: var(--waiting-wash); color: var(--waiting); }
+.nw-state[data-state="live"] { background: var(--real-wash); color: var(--real); }
+.nw-state[data-state="paused"] { background: var(--attention-wash); color: var(--attention); }
+.nw-state[data-state="replay"] { background: var(--object-wash); color: var(--object-text); }
+.nw-feed-scroll:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+@media (min-width: 60.0625rem) {
+  .nw-feed { position: relative; min-height: 22rem; }
+  .nw-feed-in { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  .nw-feed-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+}
+.nw-feed-list { display: grid; margin: 0; padding: 0; list-style: none; }
+.nw-item { display: grid; grid-template-columns: 12px minmax(0, 1fr); gap: 0.7rem; padding: 0.65rem 0; border-top: 1px solid var(--line); }
+.nw-item:first-child { padding-top: 0.2rem; border-top: 0; }
+.nw-item.is-new { animation: nw-in var(--dur-base) var(--ease-enter) both; }
+@keyframes nw-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.nw-tile { width: 12px; height: 12px; margin-top: 0.4rem; border-radius: 3px; background: var(--task); }
+.nw-item-body p { margin: 0; }
+.nw-item-what { color: var(--text); font-size: 0.9375rem; line-height: 1.35; }
+.nw-item-what b { font-weight: 600; }
+.nw-item-title { margin-top: 0.2rem !important; color: var(--text-2); font-size: 0.875rem; line-height: 1.35; }
+.nw-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.35rem !important; }
+.nw-chip { padding: 1px 8px; border-radius: 999px; background: var(--sunken); color: var(--text-2); font-size: 0.75rem; }
+.nw-feed-empty { margin: 0; color: var(--text-3); font-size: 0.9375rem; }
+.nw-feed-empty[hidden] { display: none; }
+
+/* The same facts as two tables. */
+.nw-tables { display: grid; gap: 1.25rem; }
+.nw-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+.nw-table { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: 0.9375rem; }
+.nw-table caption { padding: 1rem 1rem 0.5rem; color: var(--text); font: 700 1.25rem/1.2 var(--font-display); text-align: left; }
+.nw-table th, .nw-table td { padding: 0.6rem 1rem; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.nw-table thead th { color: var(--text-3); font-size: 0.8125rem; font-weight: 600; }
+.nw-table tbody th { font-weight: 600; }
+.nw-table-empty { color: var(--text-3); }
+.nw-shown { max-width: 78ch; margin: 0; color: var(--text-2); font-size: 0.875rem; }
+.nw-noscript { margin: 0; color: var(--text-2); }
+
+/* How the map works. */
+.nw-about h2 { font-size: var(--fs-h2); }
+.nw-about h3 { margin: 0; font-size: 1.125rem; }
+.nw-about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1.5rem 2.5rem; margin-top: 1.25rem; }
+.nw-about ul { display: grid; gap: 0.45rem; margin: 0.6rem 0 0; padding-inline-start: 1.2rem; color: var(--text-2); }
+.nw-optout { max-width: 72ch; margin: 1.25rem 0 0; padding: 0.75rem 1rem; border-radius: 12px; background: var(--sunken); color: var(--text); }
+.nw-source, .nw-credits { max-width: 72ch; margin: 1rem 0 0; color: var(--text-3); font-size: 0.875rem; }
+.nw-credits { margin-top: 0.4rem; }
+
+/* Phones: one column; the feed shows the latest few. */
+@media (max-width: 40rem) {
+  .nw-map { padding: 0.75rem; }
+  .nw-pill { padding: 1px 7px; font-size: 0.6875rem; }
+  .nw-item:nth-child(n + 7) { display: none; }
+  .nw-actions, .nw-group { flex-wrap: nowrap; overflow-x: auto; padding-block: 2px; scrollbar-width: thin; }
+  .nw-group-label, .nw-choice, .nw-action { flex: none; }
+  .nw-label { display: none; }
+  .nw-callout { display: none; }
+}
+
+/* The strip for a home page: the map without labels, one headline, the last claim, a link. */
+.nw-strip {
+  display: grid; grid-template-columns: minmax(12rem, 24rem) minmax(0, 1fr); gap: 0.75rem 1.75rem; align-items: center;
+  padding: 0.9rem 1.1rem; border: 1px solid var(--line); border-radius: 16px; background: var(--surface);
+}
+.nw-strip .nw-dot { border-width: 1.5px; box-shadow: 0 0 0 3px rgb(184 84 31 / 0.16); }
+.nw-strip .nw-ring { width: 10px; height: 10px; }
+.nw-strip-text p { margin: 0; }
+.nw-strip-eyebrow { color: var(--task-text); font-size: 0.8125rem; font-weight: 600; }
+.nw-strip-headline { margin-top: 0.15rem !important; color: var(--text); font: 700 1.1875rem/1.3 var(--font-display); letter-spacing: -0.01em; }
+.nw-strip-sub { margin-top: 0.3rem !important; color: var(--text-2); font-size: 0.9375rem; line-height: 1.4; }
+.nw-strip-last { margin-top: 0.4rem !important; color: var(--text-3); font-size: 0.875rem; line-height: 1.4; }
+.nw-strip-cta { display: inline-block; margin-top: 0.55rem; color: var(--link); font-weight: 600; }
+@media (max-width: 40rem) { .nw-strip { grid-template-columns: minmax(0, 1fr); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-ring, .nw-item.is-new { display: none; animation: none; }
+  .nw-item.is-new { display: grid; }
+  .nw-action, .nw-choice { transition: none; }
+}
+
+/* Source age and failed reads are visible alongside any retained observations. */
+.nw-freshness { margin: 0; color: var(--text-2); font-size: .875rem; }
+.nw-state[data-state="stale"], .nw-state[data-state="unknown"] { background: var(--attention-wash); color: var(--attention); }
+.nw-card { max-height: 26rem; overflow-y: auto; }
+.nw-item-body, .nw-shown, .nw-source { overflow-wrap: anywhere; }

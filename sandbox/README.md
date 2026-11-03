@@ -15,7 +15,7 @@ docker compose up --build --abort-on-container-exit
 What `docker-compose.yml` launches:
 1. **`tessera-local`** (`python3 -m sandbox.local_server --host 0.0.0.0 --port 8787`): Local SQLite-backed loopback simulator serving `/health` and `/mcp`.
 2. **`seed-pack-verifier`** (`python3 -m sandbox.verify_pack templates/new-seed-pack`): Offline validator checking [`templates/new-seed-pack/`](../templates/new-seed-pack/README.md) schemas, Task Object roles, effect ceilings, and SHA-256 digests.
-3. **`sample-worker-smoke`** (`python3 -m sandbox.worker_smoke --endpoint http://tessera-local:8787`): Connects to `tessera-local`, stores Task Objects, proves `muse-spark-contributor` is refused (`403 ContributorTierRefusedError`), drafts a brief as `worker-drafter` on `llama3.2:3b`, proves self-verification is refused (`403 SelfVerificationRefusedError`), and verifies the output as `worker-reviewer` with a 64-hex SHA-256 receipt.
+3. **`sample-worker-smoke`** (`python3 -m sandbox.worker_smoke --endpoint http://tessera-local:8787`): Connects to `tessera-local`, stores Task Objects, proves `muse-spark-contributor` is refused (`403 ContributorTierRefusedError`), drafts a brief as `worker-drafter` under the Standard-tier model label `muse-spark-1.3` (a label only; the simulator never calls a model), proves self-verification is refused (`403 SelfVerificationRefusedError`), and verifies the output as `worker-reviewer` with a 64-hex SHA-256 receipt.
 
 ## 2. Run Directly with Python (no Docker needed)
 
