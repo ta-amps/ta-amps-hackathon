@@ -76,6 +76,7 @@ def esc(text: str) -> str:
 def textify(markup: str) -> str:
     """Strip the page to text: no classes, drawings, images or behaviour hooks."""
     markup = re.sub(r"<svg\b.*?</svg>", "", markup, flags=re.S)
+    markup = re.sub(r"</a>\s*(<a\b)", r"</a> &nbsp; \1", markup)  # links stay apart with no stylesheet
     markup = re.sub(r"<noscript>.*?</noscript>", "", markup, flags=re.S)
     markup = re.sub(r"<img\b[^>]*>", "", markup)
     markup = re.sub(r"<button\b(?![^>]*data-film)[^>]*>.*?</button>", "", markup, flags=re.S)

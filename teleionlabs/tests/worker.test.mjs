@@ -332,3 +332,10 @@ test("a blank answer keeps the link open and says so", async () => {
   assert.match(html, /Line one\nLine two/);
   assert.match(res.headers.get("Cache-Control"), /no-transform/);
 });
+
+test("links never touch once styling is gone", async () => {
+  for (const path of ["/", "/video/", "/free/", "/docs/", "/fabric/", "/company/", "/benchmarks/"]) {
+    const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
+    assert.doesNotMatch(await res.text(), /<\/a><a\b/, path);
+  }
+});
