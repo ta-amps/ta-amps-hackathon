@@ -21,7 +21,6 @@ Muse Wonder
 SAM 3.1
 Voice Transcribe
 Astryx
-Prompt Guard 2: LlamaFirewall
 hooks: PreToolUse
 skills: SKILL.md
 AGENTS.md
