@@ -187,8 +187,12 @@
  ],
  "picks": [
   [
+   "cube-main-1",
+   "The main film, now on the home page and /video/: the cube fabric with real agent runs, then real clicks on Eranos. Captions are off at first; turn the sound on."
+  ],
+  [
    "cut-e-v8",
-   "The main film, now on the home page: the cube fabric, then real clicks on the live site."
+   "The earlier main film: cube fabric, then real clicks on the live site. Words burned in."
   ],
   [
    "cube-term-center",
@@ -228,6 +232,7 @@
   ]
  ],
  "site_videos": [
+  "cube-main-1",
   "cut-e-v8",
   "cube-term-center",
   "cube-term-both",

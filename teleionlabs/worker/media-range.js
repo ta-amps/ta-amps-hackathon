@@ -3,7 +3,7 @@
 import { MEDIA_BYTES } from "./media.generated.js";
 // ASSETS may omit Content-Length inside the Worker and add it only at the HTTP
 // boundary. This exact asset's size is checked against the file by the tests.
-export const VIDEO_BYTES = MEDIA_BYTES["/media/main-film-20261103.mp4"];
+export const VIDEO_BYTES = MEDIA_BYTES["/media/main-film-20261104a.mp4"];
 const MAX_BYTES = 25 * 1024 * 1024;
 const WRITE_CHUNK = 64 * 1024;
 

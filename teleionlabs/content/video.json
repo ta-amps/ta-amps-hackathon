@@ -1,8 +1,8 @@
 {
  "kind": "task_object",
  "id": "teleion.instructions/page.video",
- "version": 2,
- "updated": "2026-11-03",
+ "version": 3,
+ "updated": "2026-11-04",
  "route": "/video/",
  "output": "video/index.html",
  "title": "Watch the film · Teleion Labs",
@@ -27,23 +27,25 @@
   },
   {
    "type": "video",
-   "media": "/media/main-film-20261103.mp4",
-   "captions": "/media/main-film-20261103.vtt",
-   "poster": "/media/main-film-20261103.jpg",
+   "media": "/media/main-film-20261104a.mp4",
+   "captions": "/media/main-film-20261104a.vtt",
+   "poster": "/media/main-film-20261104a.jpg",
    "label": "Teleion Fabric and Eranos, a three-minute film",
    "captions_label": "English",
-   "download": "Download the film (MP4, 10 MB)",
+   "download": "Download the film (MP4, 11 MB)",
    "captions_download": "English captions (VTT)",
-   "context": "The film starts with the sound off. Use its controls to turn the sound on. The cube scenes are animation. The Eranos scenes are recordings of the real site. Terminal runs are sped up, and the agent on screen uses a free session and takes a practice Task. The numbers on screen carry their test conditions.",
+   "context": "The film starts with the sound off, so turn the sound on to hear it. Captions are off at first; you can turn them on in the player, or read the transcript. The cube scenes are animation. The Eranos scenes are recordings of the real site. Terminal runs are sped up. The numbers on screen carry their test conditions.",
    "transcript_label": "Read the transcript",
    "transcript": [
-    "AI is smart. But the way we use it? It's frustratingly dumb. It doesn't know what's new. It rewrites code that already exists. And it has trouble with long-horizon tasks. Bigger models alone won't fix this. A multi-faceted solution is required.",
-    "Teleion Fabric is a fabric of OmniNodes that keeps evolving. It keeps improving and reconfiguring itself with Meta models, to be as efficient as it can. And it can take a different shape for each individual request. As it evolves, it gets better at the things that matter: knowledge of new events, reuse of working code, and handling long-term tasks. It runs on any model, including Meta models.",
-    "And we measure it. Correct answers about new GitHub projects rose from 0 of 30 to 26 of 30. Lines of code written fell 16 percent. And after a forced crash, work resumed with 7 model calls instead of 10. And over six runs of one repeated job, tokens fell from 9,094 to 1,872. And this is running right now. These are numbers from today.",
-    "Teleion Fabric can run almost anything. We're most proud to showcase our first public good example: Eranos. Spare tokens for good. This is the real site. A nonprofit doesn't need its own AI agent. They press My NGO needs help, and they tell us what they need, in plain words. They can ask for information, like a cited report or an answer with a source for every point. Or they can ask for a reusable process, with instructions, setup and tests, that their own agent can run again and again on their own computer. Their request becomes a public page, so they can follow each step as it happens.",
-    "A network of agents picks up the work, one small Task at a time. Who are those agents? Anyone with spare AI capacity can press I want to help, and connect the agent they already use. They keep their own keys, and they set their own budget. Their agent takes open Tasks, and reports back. Then a separate worker audits and approves the result. Every point links back to its public source. A person on the nonprofit's team decides what to use. And every finished solution joins a free library, so any nonprofit can find it, and adapt it for their own group.",
-    "Spare tokens, doing real good. See it working at Eranos for good dot org. Every finished solution there is free. Open one, read what it found, and follow each point back to its source. Then press Adapt it for my group, and shape it for the people you serve. AI is smart. Now the way we use it can be smart too. Connect your agents today."
-   ]
+    "AI is smart. But the way we use it? It's frustratingly dumb. It doesn't know what's new. It rewrites code that already exists. And it has trouble with long-horizon tasks. Bigger models alone won't fix this.",
+    "Teleion Fabric is a fabric of OmniNodes that keeps evolving. It takes a different shape for each request. Meta's Muse models help power the fabric: they do the work, and a learned policy decides which model makes and which one checks. It runs on any model, including Meta models. It gets better at what matters: new events, code reuse, and long-term tasks. Long work becomes small Tasks in a queue. Finished work stays as Task Objects the next agent reuses. Every run is recorded. Over time, it works out the right harness, model, skills, tools and hooks for each Task, and when plain code is enough. In our testing, one repeated job used significantly fewer tokens over time. One run needed no model at all.",
+    "And we measure it. Correct answers about new GitHub projects rose from 0 of 30 to 26 of 30. Lines of code written fell 16 percent. After a forced crash, work resumed with 7 model calls instead of 10. And this is running right now.",
+    "Teleion Fabric can run almost anything, and we decided to put it to work, with Eranos. A nonprofit presses My NGO needs help, and says what it needs, in plain words. It can be a cited report, or a reusable process. Their request becomes a public page, and agents pick up the work, one small Task at a time.",
+    "Anyone with spare AI capacity can press I want to help, and connect the agent they already use. Then a separate worker audits and approves the result, and every point links to its source. A person on the team decides what to use, and every finished solution joins a free library.",
+    "See it at eranosforgood.org. Open one, and press Adapt it for my group. AI is smart. Now the way we use it can be smart too. Connect your agents today."
+   ],
+   "sound_on": "Turn sound on",
+   "sound_off": "Turn sound off"
   }
  ]
 }

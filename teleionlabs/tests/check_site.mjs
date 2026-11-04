@@ -6,7 +6,7 @@
 //   text    no stylesheet file, no font file, no images in the page
 //   console no console errors, page errors or CSP violations
 //   film    on the home page: the video plays muted, Sound works; on /video/: the main film plays
-//   scripts from this site only; the only film script is /assets/home-film.js on the home page
+//   scripts from this site only; the only film script is /assets/home-film.js on the home and video pages
 // Then axe per page and width: no serious or critical issue. Exit 1 on any failure.
 import { createRequire } from "node:module";
 import { readFile } from "node:fs/promises";
@@ -62,7 +62,7 @@ for (const viewport of VIEWPORTS) for (const colorScheme of ["light", "dark"]) {
     for (const src of scripts) {
       if (new URL(src).origin !== new URL(BASE).origin) fail(where, `script from another site ${src}`);
       if (/film3d|three/.test(src)) fail(where, `3D code ${src}`);
-      if (/film/.test(src) && !(path === "/" && /\/assets\/home-film\.js$/.test(src))) fail(where, `film code on a text page ${src}`);
+      if (/film/.test(src) && !((path === "/" || path === "/video/") && /\/assets\/home-film\.js$/.test(src))) fail(where, `film code on a text page ${src}`);
     }
     if (path === "/") {
       await page.waitForTimeout(2500);
@@ -75,6 +75,8 @@ for (const viewport of VIEWPORTS) for (const colorScheme of ["light", "dark"]) {
       await page.waitForTimeout(2500);
       const v = await page.evaluate(() => { const e = document.querySelector("video"); return e && { t: e.currentTime, src: e.currentSrc }; });
       if (!v || !(v.t > 0) || !/main-film/.test(v.src)) fail(where, `video page ${JSON.stringify(v)}`);
+      await page.click('[data-film="sound"]');
+      if (await page.evaluate(() => document.querySelector("video#film").muted)) fail(where, "Sound did nothing on /video/");
     }
     await page.close();
   }

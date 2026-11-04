@@ -42,7 +42,7 @@ TEXT_CSS = ("body>p:first-child{white-space:nowrap;font-size:min(1em,3.2vw);text
             "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em;text-align:center}footer a{margin:0 1ch;display:inline-block}"
             "nav{display:flex;flex-wrap:wrap;justify-content:center;gap:.25em 2ch;margin:0 calc(50% - 50vw);padding:0 1rem}"
             "#film-wrap{margin:1rem calc(50% - 50vw) 0}#film-wrap video{display:block;width:min(100%,max(28rem,calc((100svh - 12rem)*16/9)));height:auto;margin:auto;-webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}"
-            "#film-row{text-align:center;margin:.75rem 0}#film-row button{margin-right:2ch;background:#FFFDF8;color:#11161F;border:2px solid #11161F;border-radius:4px;font-weight:700;cursor:pointer}")
+            "#film-row{text-align:center;margin:.75rem 0}#film-row button{margin-right:2ch;background:#11161F;color:#F5F2EA;border:2px solid #11161F;border-radius:4px;font-weight:700;cursor:pointer}#film-row button:hover{background:#24519B;border-color:#24519B}")
 KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc|src|on|off)$")
 
 PAGES = ["home", "fabric", "omninode", "shim", "intelligence", "feeds", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
@@ -512,13 +512,14 @@ class Renderer:
         captions = esc(req(b, "captions", where))
         transcript = "".join(f'<p>{self.inline(p)}</p>' for p in req(b, "transcript", where))
         return (
-            '<div class="wrap video-body"><figure class="video-player">'
-            f'<video controls autoplay muted playsinline preload="metadata" width="1280" height="720" poster="{esc(req(b, "poster", where))}" '
+            '<div class="wrap video-body"><figure id="film-wrap">'
+            f'<video id="film" controls autoplay muted playsinline preload="metadata" width="1280" height="720" poster="{esc(req(b, "poster", where))}" '
             f'aria-label="{esc(req(b, "label", where))}" aria-describedby="video-context">'
             f'<source src="{media}" type="video/mp4">'
             f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(b, "captions_label", where))}">'
-            f'<a href="{media}">{esc(req(b, "download", where))}</a></video>'
-            f'<figcaption id="video-context">{self.inline(req(b, "context", where))}</figcaption></figure>'
+            f'<a href="{media}">{esc(req(b, "download", where))}</a></video></figure>'
+            f'<p id="film-row"><button type="button" data-film="sound" data-on="{esc(req(b, "sound_on", where))}" data-off="{esc(req(b, "sound_off", where))}" hidden>{esc(b["sound_on"])}</button></p>'
+            f'<p id="video-context">{self.inline(req(b, "context", where))}</p>'
             f'<p class="video-download"><a href="{media}" download>{esc(b["download"])}</a> · '
             f'<a href="{captions}">{esc(req(b, "captions_download", where))}</a></p>'
             f'<details class="video-transcript"><summary>{esc(req(b, "transcript_label", where))}</summary>{transcript}</details></div>'
@@ -875,7 +876,7 @@ class Renderer:
         footer_items = " ".join(f"{self.link(it['label'], it['href'])}" for it in req(footer, "links", "site/footer"))
         scripts = ""
         kinds = {b.get("type") for b in page["blocks"]}
-        if "film" in kinds:
+        if "film" in kinds or "video" in kinds:
             scripts = '<script src="/assets/home-film.js" defer></script>\n'
 
         noindex = page.get("noindex", False)
