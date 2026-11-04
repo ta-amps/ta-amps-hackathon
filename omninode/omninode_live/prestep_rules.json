@@ -1,0 +1,50 @@
+{
+  "enabled": true,
+  "shortlist": {
+    "keep_at_most": 3,
+    "keep_share_of_top": 0.35,
+    "min_confidence": 0.6,
+    "min_top_score": 0.8,
+    "min_universe": 3,
+    "ngram_weight": 0.5,
+    "identifier_weight": 1.0
+  },
+  "learning": {
+    "traces_read": 5000,
+    "pin_after_misses": 2,
+    "rule_off_after_rejects": 3,
+    "rule_off_reject_share": 0.34,
+    "learned_terms_per_resource": 30
+  },
+  "categories": {
+    "skill_pack": "agent skills skill pack skills-sh agent-skills prompts commands plugin mcp",
+    "deterministic_tool": "static analysis static-analysis linter lint formatter code-formatter parser compiler checker cli deterministic rules ast",
+    "agent_framework": "agent framework orchestration harness multi-agent workflow runtime autonomous sdk",
+    "model_tooling": "model llm inference training fine-tuning evaluation embedding gpu dataset"
+  },
+  "pinned_categories": ["other"],
+  "skills": {
+    "label_code_tool": "If the repository is a linter, formatter, parser or compiler, say deterministic unless its description says it calls a model.",
+    "label_thin_description": "This group has a short description. Keep the summary to what the text says, and say lower confidence."
+  },
+  "step_back_text": "Earlier calls in this work did not produce usable labels. Step back: read the required format again, label only from the given text, and return exactly one JSON object.",
+  "rules": [
+    {"id": "repo_name_needs_release_lookup", "do": "force_tool", "tool": "github_latest_release", "max_per_run": 5,
+     "when": {"no_prior_failure": true, "has_repo_name": true, "field_missing": "latest_release", "trace_outcome": "unchanged_since_last_push"}},
+    {"id": "skill_topics_label_by_code", "do": "force_function", "function": "label_from_topics", "max_per_run": 8,
+     "category": "skill_pack", "determinism": "model_assisted", "phrase": "skills for coding agents", "confidence_milli": 700,
+     "when": {"no_prior_label": true, "any_topic": ["agent-skills", "skills-sh"], "name_or_description_has_any": ["skills", "agent skill"],
+              "text_has_none": ["framework", "platform", "harness", "marketplace", "runtime", "server", "sdk", "install", "manage", "turn ", "generat", "browser", " app ", "alternative", "orchestrat"]}},
+    {"id": "code_tool_topics_label_by_code", "do": "force_function", "function": "label_from_topics", "max_per_run": 8,
+     "category": "deterministic_tool", "determinism": "deterministic", "phrase": "a tool for working with code", "confidence_milli": 700,
+     "when": {"no_prior_label": true, "any_topic": ["static-analysis", "code-formatter", "linter"],
+              "text_has_none": ["llm", "gpt", "agent", "copilot", "model", "skill", "ai-powered", "semantic", "security", "vulnerab", "awesome", "curated", "list of", "ai "]}},
+    {"id": "code_tool_hint", "do": "load_skill", "skill": "label_code_tool",
+     "when": {"any_topic": ["static-analysis", "code-formatter", "linter", "parser", "compiler"]}},
+    {"id": "thin_description_hint", "do": "load_skill", "skill": "label_thin_description",
+     "when": {"description_chars_below": 40}},
+    {"id": "same_call_twice", "do": "step_back", "when": {"item_failed_before": 1}},
+    {"id": "no_progress", "do": "step_back", "when": {"no_progress_turns": 2}},
+    {"id": "tokens_growing", "do": "step_back", "when": {"tokens_growing_turns": 3}}
+  ]
+}

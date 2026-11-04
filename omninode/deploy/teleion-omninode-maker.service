@@ -1,0 +1,22 @@
+[Unit]
+Description=Teleion Fabric OmniNode feed maintenance: maker run (its own Fabric key)
+Documentation=file:///opt/teleion/omninode/omninode_live/run_maker.py
+After=network-online.target 
+Wants=network-online.target 
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/.config/eranos-worker/planner.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONPATH=/opt/teleion/omninode:/opt/teleion/omninode/.deps:/opt/teleion/notes:/opt/teleion/eranos
+Environment=OMNINODE_CHECKER_KEY_ID=set-at-deploy
+WorkingDirectory=/opt/teleion/omninode
+ExecStart=/opt/teleion/eranos/.venv/bin/python -m omninode_live.run_maker
+Nice=10
+IOSchedulingClass=idle
+CPUQuota=50%
+MemoryMax=512M
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+TimeoutStartSec=1500

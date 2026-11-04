@@ -1,0 +1,11 @@
+[Unit]
+Description=Teleion Fabric OmniNode feed maintenance, every 4 hours
+
+[Timer]
+OnCalendar=*-*-* 00/4:17:00
+RandomizedDelaySec=300
+Persistent=false
+Unit=teleion-omninode-tuner.service
+
+[Install]
+WantedBy=timers.target
