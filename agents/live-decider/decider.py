@@ -119,6 +119,14 @@ def routes_stay_on(rows: list[dict[str, Any]], window: int = WINDOW, floor: floa
     return len(seen) < window or sum(seen) / len(seen) >= floor
 
 
+def registry_rolled_back(path: Path = Path.home() / ".local/state/eranos-worker/warm-canary-registry.json") -> bool:
+    """The warm agent's canary registry holds the rollback decision on audited results; a person restores it."""
+    try:
+        return json.loads(path.read_text())["candidates"]["muse_glimmer_30b_orchestrator_v1"]["status"] == "rolled_back"
+    except (OSError, ValueError, KeyError):
+        return False
+
+
 def spent(path: Path = SPEND) -> float:
     """Each row's usd, with a reservation counted until its settle row replaces it. Same ledger and lock as the live half."""
     from warm_agent.decider import _total
@@ -213,8 +221,8 @@ def run_gpu(max_tasks: int, controls: int) -> int:
 
     run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     history = read_jsonl(DECISIONS)
-    if not routes_stay_on(history):
-        write_routes(False, {}, f"audit pass below {FLOOR:.0%} over the last {WINDOW}")
+    if not routes_stay_on(history) or registry_rolled_back():
+        write_routes(False, {}, f"audit pass below {FLOOR:.0%} over the last {WINDOW}, or the canary registry rolled back")
         print(json.dumps({"run": run_id, "skipped": "rolled_back"}))
         return 0
     billed = billed_usd()
@@ -464,7 +472,7 @@ def tally() -> dict[str, Any]:
             "latest": [{k: r.get(k) for k in ("task_id", "outcome", "object_id", "audit_pass", "seconds")} for r in rows[-30:]],
         },
         "live_route_list": {
-            "where": "The always-on warm agent, each real build Task it claims, per decision on which model the maker runs. Least expensive first: a plain code rule when it can decide, then the fine-tuned batch answer, a Meta open model through partner credits, Muse Spark through the Meta API.",
+            "where": "The always-on warm agent, each real build Task it claims, per decision on which model the maker runs. Least expensive first: a plain code rule when it can decide, then the fine-tuned batch answer, Muse Spark Open on Baseten through partner credits, Muse Spark through the Meta API.",
             "decisions": len(events),
             "decided_by_plain_code_no_model": sum(n for route, n in decided_by_route.items() if route in NO_MODEL_ROUTES),
             "decided_by_a_meta_model": sum(n for route, n in decided_by_route.items() if route not in NO_MODEL_ROUTES),
@@ -506,7 +514,7 @@ def publish() -> int:
         body["search_reorder"].pop("latest", None)
     f, m = body["fine_tuned_decider"], body["live_route_list"]
     summary = (f"Live record of Teleion Fabric's Meta-based deciding. Fine-tuned Muse Glimmer 30B answered on {f['model_answered']} real Tasks in "
-               f"{f['batches']} batches; {f['audit_passed']} of {f['audited']} answers passed a Muse Spark audit; {f['fine_tuned_picks_given_to_a_live_maker']} of its picks reached a live worker so far; the Meta open model, not fine-tuned, had {sum(n for r, n in m['task_object_hint_reached_a_maker_by_route'].items() if r != GLIMMER_ROUTE)}. Choosing the maker's model on {m['decisions']} real Tasks: plain code with no model on {m['decided_by_plain_code_no_model']}, a Meta model on {m['decided_by_a_meta_model']}.")
+               f"{f['batches']} batches; {f['audit_passed']} of {f['audited']} answers passed a Muse Spark audit; {f['fine_tuned_picks_given_to_a_live_maker']} of its picks reached a live worker so far; the Muse Spark Open on Baseten, not fine-tuned, had {sum(n for r, n in m['task_object_hint_reached_a_maker_by_route'].items() if r != GLIMMER_ROUTE)}. Choosing the maker's model on {m['decisions']} real Tasks: plain code with no model on {m['decided_by_plain_code_no_model']}, a Meta model on {m['decided_by_a_meta_model']}.")
     shim = Shim("fabric-decider", Path.home() / ".config/ta-amps/fabric-decider-identity.json")
     res = shim.publish({record_key: {"summary": summary, "category": "live_record", "search_hints": ["decider", "fine-tuned", "muse glimmer", "muse spark", "routing"], "payload": body}},
                        summary, f"fabric-decider-{int(time.time() // 900)}")

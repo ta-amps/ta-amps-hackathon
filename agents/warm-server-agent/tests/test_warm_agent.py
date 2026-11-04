@@ -377,6 +377,30 @@ def test_warm_server_agent_end_to_end_cycle_and_loopback(tmp_path: Path) -> None
                     ],
                 },
             )
+        if path == "/q/objects":
+            return httpx.Response(200, json={"objects": [{"object_key": "warm_artifact_e2e", "eval_count": 0}]})
+        if path == "/q/object/warm_artifact_e2e":
+            return httpx.Response(
+                200,
+                json={
+                    "object_key": "warm_artifact_e2e",
+                    "worker_uuid": "uuid_teleion-warm-maker",
+                    "producer_agent": "teleion-warm-maker",
+                    "source_task_id": "task_build_01",
+                    "payload": {
+                        "summary": "Grounded",
+                        "producer_lineage": {
+                            "model_id": "muse-spark-1.3",
+                            "training_data_digest": "manifest-ext-77",
+                            "training_example_ids": ["ext-row-1", "ext-row-2"],
+                        },
+                    },
+                },
+            )
+        if path == "/q/task/task_build_01":
+            return httpx.Response(200, json={"task": {"title": "Summarize", "prompt": "Summarize the resources"}})
+        if path == "/q/enqueue":
+            return httpx.Response(200, json={"ok": True, "enqueued_followup_verbs": [{"task_id": "task_verify_01"}]})
         if path == "/q/claim":
             step_mode = request.url.params.get("step_mode")
             if step_mode == "atomic_build_step":
@@ -393,29 +417,8 @@ def test_warm_server_agent_end_to_end_cycle_and_loopback(tmp_path: Path) -> None
                         },
                     },
                 )
-            if step_mode == "atomic_verification_step":
-                return httpx.Response(
-                    200,
-                    json={
-                        "ok": True,
-                        "task": {
-                            "task_id": "task_verify_ext_02",
-                            "step_mode": "atomic_verification_step",
-                            "verb_kind": "verb_peer_review_artifact",
-                            "producer_worker_uuid": "uuid_external_volunteer_77",
-                            "producer_agent_id": "external-volunteer-77",
-                            "producer_lineage": {
-                                "worker_uuid": "uuid_external_volunteer_77",
-                                "agent_id": "external-volunteer-77",
-                                "model_id": "muse-spark-1.3",
-                                "training_data_digest": "manifest-ext-77",
-                                "training_example_ids": ["ext-row-1", "ext-row-2"],
-                            },
-                            "target_object_key": "obj_ext_77",
-                            "lease_epoch": 3,
-                        },
-                    },
-                )
+            if request.url.params.get("task_id") == "task_verify_01":
+                return httpx.Response(200, json={"ok": True, "task": {"task_id": "task_verify_01", "lease_epoch": 3}})
         if path == "/q/submit" and request.method == "POST":
             body_json = json.loads(request.content.decode("utf-8"))
             submitted_payloads.append(body_json)
@@ -425,7 +428,8 @@ def test_warm_server_agent_end_to_end_cycle_and_loopback(tmp_path: Path) -> None
                 if isinstance(raw_objs, list)
                 else []
             )
-            return httpx.Response(200, json={"ok": True, "stored_task_objects": stored_objs})
+            applied = [{"target_id": e["target_id"]} for e in body_json.get("evaluations") or []]
+            return httpx.Response(200, json={"ok": True, "stored_task_objects": stored_objs, "applied_evaluations": applied})
         return httpx.Response(404, json={"ok": False})
 
     meta_client = WarmMetaModelClient(
@@ -619,44 +623,140 @@ def test_truthful_maker_lineage_and_rejected_or_malformed_outcomes(tmp_path: Pat
     assert prod_lin["model_id"] == "muse-spark-1.3"
     assert prod_lin["fine_tune_adapter_id"] is None
 
-    # 2. Checker missing target_object_key refuses before model invocation
-    claim_task.update({"task_id": "task_v_notarget", "step_mode": "atomic_verification_step", "producer_worker_uuid": "u_ext"})
-    assert agent.execute_checker_step() is False
-    assert agent.metrics["checker_verifications"] == 0
 
-    # 3. Checker without provenance attestation refuses before model invocation
-    claim_task["target_object_key"] = "obj_target_1"
-    sub_count_before = len(submitted_bodies)
-    assert agent.execute_checker_step() is False
-    assert len(submitted_bodies) == sub_count_before
 
-    # 4. Checker with overlapping producer training_example_ids refuses even when digests differ
-    agent.checker_identity.update(
-        {
-            "training_data_digest": "checker-manifest-v1",
-            "training_example_ids": ["shared-row-7", "checker-only-8"],
-        }
+def _checker_rig(tmp_path: Path, meta_content: str, *, maker_model: str = "muse-spark-1.3", claim_other_task: bool = False):
+    grid = load_warm_agent_grid()
+    key_file = tmp_path / "meta.env"
+    key_file.write_text("META_API_KEY=mock_meta_key\n", encoding="utf-8")
+    ledger = SharedSpendLedger(
+        tmp_path / "meta-spend.json", daily_cap_usd=5.0, total_cap_usd=25.0, round_digits=6, file_mode=0o600, dir_mode=0o700
     )
-    claim_task["producer_lineage"] = {
-        "worker_uuid": "u_ext",
-        "agent_id": "ext-agent",
-        "model_id": "muse-spark-1.3",
-        "training_data_digest": "producer-manifest-v1",
-        "training_example_ids": ["maker-only-1", "shared-row-7"],
-    }
-    assert agent.execute_checker_step() is False
-    assert len(submitted_bodies) == sub_count_before
+    calls: dict[str, list[Any]] = {"meta": [], "claim": [], "enqueue": [], "submit": [], "release": []}
 
-    # 5. Disjoint attested provenance reaches model, where malformed checker JSON fails tuner trace and submits 0 evaluations
-    claim_task["producer_lineage"]["training_example_ids"] = ["maker-only-1", "maker-only-2"]
+    def _meta(request: httpx.Request) -> httpx.Response:
+        calls["meta"].append(json.loads(request.content.decode("utf-8")))
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": meta_content}}], "usage": {"prompt_tokens": 10, "completion_tokens": 10}},
+        )
+
+    def _herma(request: httpx.Request) -> httpx.Response:
+        path = request.url.path
+        if path == "/q/onboard" or path.endswith("/onboard"):
+            return httpx.Response(200, json={"ok": True, "worker_uuid": f"u_{len(path)}", "worker_token": "tok"})
+        if path == "/q/objects":
+            return httpx.Response(
+                200,
+                json={
+                    "objects": [
+                        {"object_key": "warm_artifact_seen", "eval_count": 1},
+                        {"object_key": "other_object", "eval_count": 0},
+                        {"object_key": "warm_artifact_t1", "eval_count": 0},
+                    ]
+                },
+            )
+        if path == "/q/object/warm_artifact_t1":
+            return httpx.Response(
+                200,
+                json={
+                    "object_key": "warm_artifact_t1",
+                    "worker_uuid": "u_maker_elsewhere",
+                    "producer_agent": "teleion-warm-maker",
+                    "source_task_id": "src1",
+                    "payload": {"summary": "did it", "producer_lineage": {"model_id": maker_model}},
+                },
+            )
+        if path == "/q/task/src1":
+            return httpx.Response(200, json={"task": {"title": "Do it", "prompt": "Do the thing"}})
+        if path == "/q/enqueue":
+            calls["enqueue"].append(json.loads(request.content.decode("utf-8")))
+            return httpx.Response(200, json={"ok": True, "enqueued_followup_verbs": [{"task_id": "chk1"}]})
+        if path == "/q/claim":
+            calls["claim"].append(dict(request.url.params))
+            task_id = "other_task" if claim_other_task else "chk1"
+            return httpx.Response(200, json={"task": {"task_id": task_id, "lease_epoch": 3}})
+        if path == "/q/release":
+            calls["release"].append(json.loads(request.content.decode("utf-8")))
+            return httpx.Response(200, json={"ok": True})
+        if path == "/q/submit":
+            body = json.loads(request.content.decode("utf-8"))
+            calls["submit"].append(body)
+            return httpx.Response(
+                200, json={"ok": True, "applied_evaluations": [{"target_id": body["evaluations"][0]["target_id"]}]}
+            )
+        return httpx.Response(200, json={"ok": True, "worker_uuid": "u_x", "worker_token": "tok"})
+
+    agent = WarmServerAgent(
+        grid,
+        meta_client=WarmMetaModelClient(grid, key_file=key_file, ledger=ledger, transport=httpx.MockTransport(_meta)),
+        herma_transport=httpx.MockTransport(_herma),
+        tessera_transport=httpx.MockTransport(lambda _: httpx.Response(200, json={"ok": True, "queues": {}})),
+        state_dir_override=tmp_path / "state",
+        credentials_dir_override=tmp_path / "creds",
+        loopback_port_override=0,
+    )
+    agent.maker_identity = {"agent_id": "teleion-warm-maker", "worker_uuid": "u_maker", "worker_token": "m"}
+    agent.checker_identity = {"agent_id": "teleion-warm-checker", "worker_uuid": "u_checker", "worker_token": "c"}
+    return agent, calls
+
+
+def test_checker_checks_the_named_target_and_refused_verdict_is_stored(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, json.dumps({"verdict": "NEEDS_REVISION", "quality_milli": 120, "summary": "not done"}))
+    assert agent.execute_checker_step() is True
+    assert calls["claim"][0]["task_id"] == "chk1"
+    assert calls["enqueue"][0]["worker_uuid"] == "u_maker"  # the maker asks; the maker can't claim it
+    assert "owner_worker_uuid" not in calls["enqueue"][0]["verbs"][0]  # the shim bars an owner from a verification Task
+    evaluation = calls["submit"][0]["evaluations"][0]
+    assert evaluation["target_id"] == "warm_artifact_t1"
+    assert evaluation["verdict"] == "REFUTED"  # the shim stores this; NEEDS_REVISION would read UNREVIEWED
+    assert calls["submit"][0]["worker_uuid"] == "u_checker"
+    prompt = json.dumps(calls["meta"][0])
+    assert "Do the thing" in prompt and "did it" in prompt
+    assert calls["release"] == []
+    # Nothing new to check: no claim and no model call.
     assert agent.execute_checker_step() is False
-    assert len(submitted_bodies) == sub_count_before
-    traces = [
-        json.loads(line)
-        for line in (tmp_path / "state" / "warm-training-traces.jsonl").read_text(encoding="utf-8").splitlines()
-    ]
-    assert all(t["passed"] is False for t in traces)
-    assert all(t["training_admitted"] is False for t in traces)
+    assert len(calls["claim"]) == 1 and len(calls["meta"]) == 1
+
+
+def test_checker_refuses_same_model_before_any_claim_or_model_call(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, "{}", maker_model="muse-wonder-1.0")
+    assert agent.execute_checker_step() is False
+    assert calls["enqueue"] == [] and calls["claim"] == [] and calls["meta"] == []
+
+
+def test_checker_with_training_history_needs_attested_maker(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, "{}")
+    agent.checker_identity["training_data_digest"] = "checker-manifest-v1"
+    assert agent.execute_checker_step() is False  # the maker has no attested rows, so nothing proves they don't overlap
+    assert calls["claim"] == [] and calls["meta"] == []
+
+
+def test_checker_releases_on_malformed_output_and_never_admits_it(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, "not json")
+    assert agent.execute_checker_step() is False
+    assert calls["submit"] == []
+    assert [r["task_id"] for r in calls["release"]] == ["chk1"]
+    # A retry after a restart reuses the same check Task.
+    agent._checker_tried.clear()
+    assert agent.execute_checker_step() is False
+    assert len(calls["enqueue"]) == 1 and len(calls["claim"]) == 2
+    traces = [json.loads(x) for x in (tmp_path / "state" / "warm-training-traces.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert traces and all(t["training_admitted"] is False for t in traces)
+
+
+def test_checker_gives_back_a_task_it_did_not_ask_for(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, "{}", claim_other_task=True)
+    assert agent.execute_checker_step() is False
+    assert [r["task_id"] for r in calls["release"]] == ["other_task"]
+    assert calls["meta"] == []
+
+
+def test_checker_daily_limit_stops_before_any_network_work(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, "{}")
+    agent.ops["checker_max_checks_per_day"] = 0
+    assert agent.execute_checker_step() is False
+    assert calls["claim"] == [] and calls["enqueue"] == []
 
 
 def test_strict_milli_score_contract_and_checker_correctness_separation(tmp_path: Path) -> None:
@@ -919,3 +1019,62 @@ def test_maker_submit_array_contract_and_unpersisted_200_rejection(tmp_path: Pat
 
 
 
+
+
+def test_no_key_audit_picks_only_no_key_work_and_names_a_known_maker_model() -> None:
+    from warm_agent.audit_no_key import is_no_key_work, maker_model_for
+
+    base = {"worker_uuid": "w_agent_x", "eval_count": 0, "category": "ngo_public_good", "source_task_id": "t1"}
+    assert is_no_key_work(base)
+    assert not is_no_key_work({**base, "worker_uuid": "w_teleionwarmm_1"})
+    assert not is_no_key_work({**base, "eval_count": 1})
+    assert not is_no_key_work({**base, "category": "worker_memory"})
+    assert not is_no_key_work({**base, "source_task_id": "self_seed"})
+    assert maker_model_for({"producer_agent": "scale-test-03"}) == "muse-spark-1.3-contributor"
+    assert maker_model_for({"producer_agent": "someone"}) == ""
+
+
+def test_unknown_maker_model_still_holds_when_nothing_names_one(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, "{}", maker_model="")
+    assert agent.execute_checker_step() is False  # the warm path always knows its maker; an empty one is refused
+    assert calls["claim"] == [] and calls["meta"] == []
+
+
+def test_real_audits_move_the_registry_once_and_a_rollback_switches_routes_off(tmp_path: Path) -> None:
+    agent, _calls = _checker_rig(tmp_path, "{}")
+    state = tmp_path / "state"
+    state.mkdir(exist_ok=True)
+    decisions = state / "decisions.jsonl"
+    routes = state / "routes.json"
+    routes.write_text(json.dumps({"active": True, "routes": {"t": {}}}), encoding="utf-8")
+    decisions.write_text(
+        "\n".join(json.dumps({"audit_pass": x}) for x in [True, None, True, True, True]) + "\n", encoding="utf-8"
+    )
+    cand = agent.canary_registry.candidates["muse_glimmer_30b_orchestrator_v1"]
+    agent.canary_registry.evaluate_held_out_promotion("muse_glimmer_30b_orchestrator_v1")
+    before = cand.rollout_share
+    assert agent.ingest_decider_audits() == 0  # the first run starts from now
+    (state / "warm-decider-audit-cursor.json").write_text(json.dumps({"rows_read": 0}), encoding="utf-8")
+    assert agent.ingest_decider_audits() == 4  # the audit that couldn't run isn't counted
+    assert cand.rollout_share > before  # stepped up on four passes
+    assert agent.ingest_decider_audits() == 0  # never counted twice
+    assert json.loads(routes.read_text(encoding="utf-8"))["active"] is True
+    with decisions.open("a", encoding="utf-8") as handle:
+        handle.write("\n".join(json.dumps({"audit_pass": False}) for _ in range(4)) + "\n")
+    agent.ingest_decider_audits()
+    assert cand.status == "rolled_back" and cand.rollout_share == 0.0
+    assert json.loads(routes.read_text(encoding="utf-8"))["active"] is False
+
+
+def test_a_no_key_maker_with_no_stated_model_is_recorded_as_exactly_that(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, json.dumps({"verdict": "CONFIRMED", "quality_milli": 800, "summary": "fine"}), maker_model="muse-spark-1.3")
+    target = {
+        "object_key": "warm_artifact_t1",
+        "worker_uuid": "u_elsewhere",
+        "producer_agent": "bot",
+        "source_task_id": "src1",
+        "payload": {"producer_lineage": {"model_id": "made-up-claim"}},
+    }
+    assert agent.check_target(target, model_not_stated=True) is True
+    assert calls["submit"][0]["evaluations"][0]["rationale"].startswith("The maker's model isn't known")
+    assert not (tmp_path / "state" / "warm-training-traces.jsonl").exists()  # never training data

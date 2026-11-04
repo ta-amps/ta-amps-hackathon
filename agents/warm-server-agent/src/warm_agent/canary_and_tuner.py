@@ -36,6 +36,8 @@ class LineageDescriptor:
     training_data_digest: str | None = None
     ancestor_adapter_ids: tuple[str, ...] = ()
     training_example_ids: tuple[str, ...] | frozenset[str] | None = None
+    model_not_stated: bool = False  # A no-key maker doesn't tell us its model: a different worker, and we can't say a different model.
+    attests_no_training: bool = False  # True only for a plain model this code runs with no adapter and no training rows
 
 
 def verify_checker_independence(
@@ -72,7 +74,20 @@ def verify_checker_independence(
         if set(maker.training_example_ids) & set(checker.training_example_ids):
             return False, "overlapping_training_examples"
 
-    if require_provenance_attestation:
+    # A checker on a plain model, with no fine-tune and no training data, has nothing to share with any maker. The maker's
+    # own history doesn't matter then, but it must be a different model, so the same mind doesn't grade itself.
+    checker_holds_nothing = (
+        checker.attests_no_training
+        and not checker_adapters
+        and not checker.training_data_digest
+        and not checker.training_example_ids
+    )
+    if require_provenance_attestation and checker_holds_nothing:
+        if maker.model_id == checker.model_id or not (maker.model_id or maker.model_not_stated):
+            return False, "same_or_unknown_model"
+        if maker.model_not_stated:
+            return True, "different_worker_model_not_stated"
+    elif require_provenance_attestation:
         if maker.training_example_ids is None or checker.training_example_ids is None:
             return False, "provenance_not_established"
         if not maker.training_data_digest or not checker.training_data_digest:

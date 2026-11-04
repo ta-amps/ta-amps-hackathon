@@ -466,7 +466,18 @@ def test_a_route_records_the_model_named_in_the_reply_not_only_our_config() -> N
     assert out["model_id"] == "our-config-name" and out["reply_model"] == "what-really-answered"
 
 
-@pytest.mark.parametrize("crafted", ["a" * 50000, "a-" * 25000, "a" * 50000 + "://x:" + "y" * 50000, "x://" + "a:" * 25000])
+@pytest.mark.parametrize(
+    "crafted",
+    [
+        "a" * 200000,
+        "a-" * 100000,
+        ("a" * 31 + "://a:") * 5500,
+        "eyj-" * 50000,
+        "x://a" * 40000,
+        "x://" + "a:" * 100000,
+        "a" * 100000 + "://x:" + "y" * 100000,
+    ],
+)
 def test_a_long_crafted_text_is_read_quickly(crafted):
     import time as _time
 
@@ -474,7 +485,7 @@ def test_a_long_crafted_text_is_read_quickly(crafted):
 
     started = _time.monotonic()
     looks_secret(crafted)
-    assert _time.monotonic() - started < 1.0
+    assert _time.monotonic() - started < 3.0
 
 
 def test_a_normal_credential_url_is_still_caught_after_the_bound():
@@ -482,3 +493,42 @@ def test_a_normal_credential_url_is_still_caught_after_the_bound():
 
     assert looks_secret("postgres://user:" + _PART + "@db.example.org/x")
     assert looks_secret("see " + "a" * 200 + " then https://user:" + _PART + "@db.example.org/x")
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        '{"token": "' + _PART + '"}',
+        '{"access_token": "' + _PART + '"}',
+        "passwd=" + _PART,
+        "pwd=" + _PART,
+        "DB_PASS=" + _PART,
+        "Cookie: sid=" + _PART,
+        "Authorization: Basic dXNlcjpwYXNz",
+        "bearer:" + _PART,
+        "redis://:" + _PART + "@h/0",
+        "https://" + _PART + "@github.com/o/r",
+        "https:\\/\\/user:" + _PART + "@db/x",
+        "sk_live_" + _PART * 2,
+        "gsk_" + _PART * 4,
+        "whsec_" + _PART,
+        "glpat-" + _PART,
+        "npm_" + _PART * 2,
+        "ya29." + _PART,
+        "xapp-" + _PART,
+        "deploy_" + "a" * 40,
+    ],
+)
+def test_shapes_a_review_found_passing(text):
+    from warm_agent.decider import looks_secret
+
+    assert looks_secret(text)
+
+
+def test_a_credential_in_a_digest_field_name_isnt_excused():
+    from warm_agent.decider import looks_secret
+
+    hex64 = "a" * 64
+    assert looks_secret('"ghp_' + _PART + '_sha256": "' + hex64 + '"')
+    assert looks_secret('"sha256_of_akiaabcd1234efgh": "' + hex64 + '"')
+    assert not looks_secret('"sha256": "' + hex64 + '"')
