@@ -1,18 +1,18 @@
 {
  "kind": "task_object",
  "id": "teleion.instructions/page.video",
- "version": 1,
- "updated": "2026-11-02",
+ "version": 2,
+ "updated": "2026-11-03",
  "route": "/video/",
  "output": "video/index.html",
- "title": "Watch the preview · Teleion Labs",
- "description": "A 52-second recorded preview of Teleion Fabric and Eranos, with captions and a transcript.",
+ "title": "Watch the film · Teleion Labs",
+ "description": "A three-minute film about Teleion Fabric and Eranos, with voice, captions and a transcript.",
  "blocks": [
   {
    "type": "video_head",
-   "eyebrow": "52-second product preview",
+   "eyebrow": "Three-minute film",
    "title": "See agents share the work.",
-   "lead": "A quick look at Teleion Fabric and Eranos, our public-good application for nonprofits.",
+   "lead": "The same film as our home page: Teleion Fabric, then real clicks on Eranos, our public-good application for nonprofits.",
    "actions": [
     {
      "label": "Start free",
@@ -27,20 +27,22 @@
   },
   {
    "type": "video",
-   "media": "/media/teleion-fabric-preview-20261102.mp4",
-   "captions": "/media/teleion-fabric-preview-20261102.vtt",
-   "poster": "/assets/video-preview.svg",
-   "label": "Teleion Fabric and Eranos recorded product preview",
+   "media": "/media/main-film-20261103.mp4",
+   "captions": "/media/main-film-20261103.vtt",
+   "poster": "/media/main-film-20261103.jpg",
+   "label": "Teleion Fabric and Eranos, a three-minute film",
    "captions_label": "English",
-   "download": "Download the video (MP4, 6.6 MB)",
+   "download": "Download the film (MP4, 10 MB)",
    "captions_download": "English captions (VTT)",
-   "context": "Recorded preview. Screens show a work-in-progress interface. Benchmark scenes show local queue tests and offline model evaluations, not live service guarantees. The 256-worker result used local test workers; the task-splitting F1 result is the original Glimmer adapter on 106 held-out fixtures. Hourly worker-policy updates are separate from adapter training. The collision count reflects the local test detector; it is not a guarantee of exactly-once work.",
+   "context": "The film starts with the sound off. Use its controls to turn the sound on. The cube scenes are animation. The Eranos scenes are recordings of the real site. Terminal runs are sped up, and the agent on screen uses a free session and takes a practice Task. The numbers on screen carry their test conditions.",
    "transcript_label": "Read the transcript",
    "transcript": [
-    "AI is smart. The way we use it is frustratingly dumb: agents miss what is new, rewrite existing code, and stall on long queues.",
-    "Teleion Labs builds Teleion Fabric so agents share work, check results with a separate key, and reuse vetted kits, free with no account through December 31, 2026.",
-    "Measured on recorded runs: zero lease collisions across 256 workers, hourly self-tuning over Meta’s Muse Spark 1.3 and Muse Wonder 1.0, and 97.8 percent held-out Task-splitting F1 on our compact Muse Glimmer 30B adapter.",
-    "Eranos shows Teleion Fabric working for nonprofits on cited public-source requests. Start free at teleionlabs.com, or lend spare AI capacity at eranosforgood.org."
+    "AI is smart. But the way we use it? It's frustratingly dumb. It doesn't know what's new. It rewrites code that already exists. And it has trouble with long-horizon tasks. Bigger models alone won't fix this. A multi-faceted solution is required.",
+    "Teleion Fabric is a fabric of OmniNodes that keeps evolving. It keeps improving and reconfiguring itself with Meta models, to be as efficient as it can. And it can take a different shape for each individual request. As it evolves, it gets better at the things that matter: knowledge of new events, reuse of working code, and handling long-term tasks. It runs on any model, including Meta models.",
+    "And we measure it. Correct answers about new GitHub projects rose from 0 of 30 to 26 of 30. Lines of code written fell 16 percent. And after a forced crash, work resumed with 7 model calls instead of 10. And over six runs of one repeated job, tokens fell from 9,094 to 1,872. And this is running right now. These are numbers from today.",
+    "Teleion Fabric can run almost anything. We're most proud to showcase our first public good example: Eranos. Spare tokens for good. This is the real site. A nonprofit doesn't need its own AI agent. They press My NGO needs help, and they tell us what they need, in plain words. They can ask for information, like a cited report or an answer with a source for every point. Or they can ask for a reusable process, with instructions, setup and tests, that their own agent can run again and again on their own computer. Their request becomes a public page, so they can follow each step as it happens.",
+    "A network of agents picks up the work, one small Task at a time. Who are those agents? Anyone with spare AI capacity can press I want to help, and connect the agent they already use. They keep their own keys, and they set their own budget. Their agent takes open Tasks, and reports back. Then a separate worker audits and approves the result. Every point links back to its public source. A person on the nonprofit's team decides what to use. And every finished solution joins a free library, so any nonprofit can find it, and adapt it for their own group.",
+    "Spare tokens, doing real good. See it working at Eranos for good dot org. Every finished solution there is free. Open one, read what it found, and follow each point back to its source. Then press Adapt it for my group, and shape it for the people you serve. AI is smart. Now the way we use it can be smart too. Connect your agents today."
    ]
   }
  ]

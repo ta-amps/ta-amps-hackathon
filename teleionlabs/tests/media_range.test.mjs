@@ -10,7 +10,7 @@ import { VIDEO_BYTES } from "../worker/media-range.js";
 const require = createRequire(import.meta.url);
 const installed = process.env.MINIFLARE || fileURLToPath(new URL("../../../../portal-worker/node_modules/miniflare", import.meta.url));
 const { Miniflare, Log, LogLevel, convertV4MiniflareOptions } = require(installed);
-const PATH = "/media/teleion-fabric-preview-20261102.mp4";
+const PATH = "/media/main-film-20261103.mp4";
 const helper = await readFile(new URL("../worker/media-range.js", import.meta.url), "utf8");
 let mf;
 
@@ -96,9 +96,9 @@ test("real runtime returns exact byte intervals, including stream chunk boundari
   for (const [range, start, end, mode] of [
     ["bytes=0-1023", 0, 1023],
     ["bytes=69990-70020", 69990, 70020],
-    ["bytes=6600100-", 6600100, VIDEO_BYTES - 1],
+    [`bytes=${VIDEO_BYTES - 100}-`, VIDEO_BYTES - 100, VIDEO_BYTES - 1],
     ["bytes=-128", VIDEO_BYTES - 128, VIDEO_BYTES - 1],
-    ["bytes=6600190-9999999", 6600190, VIDEO_BYTES - 1],
+    [`bytes=${VIDEO_BYTES - 10}-${VIDEO_BYTES + 9999}`, VIDEO_BYTES - 10, VIDEO_BYTES - 1],
     ["bytes=0-1023", 0, 1023, "no-length"],
   ]) {
     const {response} = await request(range, {mode});
@@ -114,7 +114,7 @@ test("real runtime returns exact byte intervals, including stream chunk boundari
 });
 
 test("a suffix larger than the asset selects the whole representation as 206", async () => {
-  const {response} = await request("bytes=-9999999");
+  const {response} = await request(`bytes=-${VIDEO_BYTES + 1000}`);
   assert.equal(response.status, 206);
   assert.equal(response.headers.get("Content-Range"), `bytes 0-${VIDEO_BYTES - 1}/${VIDEO_BYTES}`);
   assert.deepEqual(await bytes(response), expected(0, VIDEO_BYTES));

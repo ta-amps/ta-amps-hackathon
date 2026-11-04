@@ -58,7 +58,7 @@ DATA_ATTRS_SKIP = {
     "data-checked-note", "data-bench-filter", "data-bench-group", "data-benchmarks",
     "data-act", "data-mode", "data-source", "data-state-chip",
     "data-scene", "data-start", "data-end", "data-go",
-    "data-duration", "data-story-scene", "data-story-go", "data-seconds", "data-c", "data-film", "data-svc",
+    "data-duration", "data-story-scene", "data-story-go", "data-seconds", "data-c", "data-film", "data-svc", "data-on", "data-off",
 }
 AGENT_FILES = ("llms.txt", "robots.txt", "sitemap.xml", "status.sources.json", ".well-known/security.txt")
 BINARY = {".woff2", ".woff", ".png", ".jpg", ".ico", ".mp4", ".webm"}
@@ -235,7 +235,7 @@ def main() -> int:
         raw_html = p.read_text(encoding="utf-8")
         parser.feed(raw_html)
         rel = str(p.relative_to(DIST))
-        allow_pct = rel.startswith(("benchmarks/", "video-gallery/")) or rel in ("index.html", "experience/index.html") or rel == "judges/index.html"
+        allow_pct = rel.startswith(("benchmarks/", "video-gallery/")) or rel in ("index.html",) or rel == "judges/index.html"
         allow_handoff = rel == "story/index.html"
         gate(rel, "\n".join(parser.text + parser.attrs + parser.generated), allow_percent=allow_pct, allow_handoff=allow_handoff)
         # Also verify raw HTML carries zero T7 banned strings (including hrefs and metadata).

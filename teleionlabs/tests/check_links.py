@@ -126,6 +126,18 @@ def main() -> int:
             continue
         code_urls.setdefault(u, set()).add("llms.txt")
 
+    # The review gallery draws its cards from items.json, so every file it names must be in the build too.
+    items = DIST / "video-gallery/items.json"
+    if items.is_file():
+        for href in sorted(set(re.findall(r'"(/(?:media|video-gallery)/[^"]+)"', items.read_text(encoding="utf-8")))):
+            internal += 1
+            if target_file(href).is_file():
+                continue
+            if MEDIA_BASE and href.endswith(MEDIA_SUFFIXES):
+                external.setdefault(MEDIA_BASE + href, set()).add("video-gallery/items.json")
+                continue
+            bad.append(f"video-gallery/items.json: {href} -> missing")
+
     # This site's own absolute URLs resolve against the build: the live host may still serve the old site.
     for url in [u for u in code_urls if urlsplit(u).hostname == OWN_HOST]:
         where = code_urls.pop(url)

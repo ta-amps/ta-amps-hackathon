@@ -170,7 +170,7 @@ test("/benchmarks/, /video/, /media/*.vtt, /records/*.json, /favicon.ico and og:
   const vid = await handle(new Request("https://teleionlabs.com/video/"), { ASSETS: assets() }, ctx);
   assert.equal(vid.status, 200);
   assert.match(vid.headers.get("Content-Security-Policy"), /media-src 'self'/);
-  const vtt = await handle(new Request("https://teleionlabs.com/media/teleion-fabric-preview-20261102.vtt"), { ASSETS: assets() }, ctx);
+  const vtt = await handle(new Request("https://teleionlabs.com/media/main-film-20261103.vtt"), { ASSETS: assets() }, ctx);
   assert.equal(vtt.status, 200);
   assert.equal(vtt.headers.get("Content-Type"), "text/vtt; charset=utf-8");
   assert.match(vtt.headers.get("Cache-Control"), /immutable/);
@@ -211,7 +211,7 @@ test("HTML pages carry no-transform, so the zone injects nothing the CSP would b
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     assert.match(res.headers.get("Cache-Control"), /no-transform/, path);
   }
-  const css = await handle(new Request("https://teleionlabs.com/assets/film.js"), { ASSETS: assets() }, ctx);
+  const css = await handle(new Request("https://teleionlabs.com/assets/home-film.js"), { ASSETS: assets() }, ctx);
   assert.doesNotMatch(css.headers.get("Cache-Control") || "", /no-transform/);
 });
 
@@ -235,7 +235,7 @@ test("/api/status: the Worker keeps a 60 s copy at the edge; browsers get no-sto
 });
 
 test("/media/*.mp4 supports HTTP 206 byte-range seeking, 416 unsatisfiable ranges, and HEAD Accept-Ranges", async () => {
-  for (const name of ["teleion-fabric-preview-20261102.mp4"]) {
+  for (const name of ["main-film-20261103.mp4"]) {
     const raw = await readFile(`${DIST}media/${name}`);
     const head = await handle(new Request(`https://teleionlabs.com/media/${name}`, { method: "HEAD", headers: {Range: "bytes=1-2"} }), { ASSETS: assets() }, ctx);
     assert.equal(head.status, 200, name);
@@ -277,17 +277,39 @@ test("every page is plain text: first line is for agents, no stylesheet file, no
   }
 });
 
-test("the home film is exactly 180 seconds and its words are the page's text", async () => {
+test("the home page plays the rendered film as a video, keeps its words as text, and loads no canvas film", async () => {
   const res = await handle(new Request("https://teleionlabs.com/"), { ASSETS: assets() }, ctx);
   const body = await res.text();
-  const secs = [...body.matchAll(/data-seconds="(\d+)"/g)].reduce((a, m) => a + Number(m[1]), 0);
-  assert.equal(secs, 180);
-  assert.match(body, /<canvas id="film"[^>]* hidden/);
+  assert.match(body, /<video id="film" controls autoplay muted playsinline preload="metadata"[^>]* poster="\/media\/main-film-20261103\.jpg"/);
+  assert.match(body, /<source src="\/media\/main-film-20261103\.mp4" type="video\/mp4">/);
+  assert.match(body, /<track kind="captions" src="\/media\/main-film-20261103\.vtt"(?![^>]*default)[^>]*>/);
+  assert.match(body, /<script src="\/assets\/home-film\.js" defer>/);
+  assert.doesNotMatch(body, /<canvas|\/assets\/film(3d)?\.js|film-words|data-seconds/);
+  assert.doesNotMatch(body, /See it in 3D/i);
   assert.match(body, /Connect your agents today\./);
 });
 
+test("/video/ plays the main film with its captions off by default, and the old preview is gone", async () => {
+  const body = await (await handle(new Request("https://teleionlabs.com/video/"), { ASSETS: assets() }, ctx)).text();
+  assert.match(body, /<video controls autoplay muted playsinline[^>]* poster="\/media\/main-film-20261103\.jpg"/);
+  assert.match(body, /<source src="\/media\/main-film-20261103\.mp4"/);
+  assert.match(body, /<track kind="captions" src="\/media\/main-film-20261103\.vtt"(?![^>]*default)[^>]*>/);
+  assert.doesNotMatch(body, /fabric-preview/);
+  const txt = await handle(new Request("https://teleionlabs.com/video.txt"), { ASSETS: assets() }, ctx);
+  assert.equal(txt.status, 200);
+  assert.match(await txt.text(), /Connect your agents today\./);
+});
+
+test("the sitemap and the build drop the retired 3D page and its film code", async () => {
+  const map = await (await handle(new Request("https://teleionlabs.com/sitemap.xml"), { ASSETS: assets() }, ctx)).text();
+  assert.doesNotMatch(map, /experience/);
+  for (const p of ["/assets/film.js", "/assets/film3d.js", "/assets/three-0.187.0.min.js"]) {
+    assert.equal((await handle(new Request(`https://teleionlabs.com${p}`), { ASSETS: assets() }, ctx)).status, 404, p);
+  }
+});
+
 test("retired pages redirect home", async () => {
-  for (const p of ["/start/", "/story/", "/network/", "/start"]) {
+  for (const p of ["/start/", "/story/", "/network/", "/start", "/experience/", "/experience", "/experience.txt"]) {
     const res = await handle(new Request(`https://teleionlabs.com${p}`), { ASSETS: assets() }, ctx);
     assert.equal(res.status, 301);
     assert.equal(res.headers.get("Location"), "https://teleionlabs.com/");

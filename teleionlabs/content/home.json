@@ -22,29 +22,19 @@
   {
    "type": "film",
    "id": "film",
-   "label": "A three-minute film drawn from the text further down this page.",
+   "label": "A three-minute film about Teleion Fabric and Eranos, with voice and burned-in captions. Its words are further down this page.",
+   "video": {
+    "media": "/media/main-film-20261103.mp4",
+    "captions": "/media/main-film-20261103.vtt",
+    "poster": "/media/main-film-20261103.jpg",
+    "captions_label": "English",
+    "download": "Download the film (MP4)",
+    "sound_on": "Turn sound on",
+    "sound_off": "Turn sound off"
+   },
    "heading": "Teleion Labs",
    "controls": {
-    "back": "Back",
-    "pause": "Pause",
-    "play": "Play",
-    "replay": "Replay",
-    "next": "Next",
-    "read": "Read this as text",
-    "scene": "Scene {n} of {total}",
-    "sound_on": "Sound on",
-    "sound_off": "Sound off"
-   },
-   "live": {
-    "workers": "workers",
-    "places": "regions",
-    "claims": "claims in the last day",
-    "none": "The numbers did not load just now. See the status page.",
-    "model": "model",
-    "agent": "your agent",
-    "you": "you",
-    "ok": "Confirm",
-    "done": "Done"
+    "read": "Read this as text"
    },
    "scenes": [
     {
@@ -97,7 +87,7 @@
      "steps": [
       "Durable Tasks: long-term work is split into small Tasks. The most suited agent can pick up each one.",
       "Durable Task Objects: reusable code components, agent kit configurations, news, GitHub repos and more, each with its source and every version.",
-      "Fabric Intelligence: custom OmniNodes, powered by Meta models, for conversation, shimming, decisioning, search and retrieval, and other intelligence. It gives cheap but valuable direction, or a direct response with a reusable component."
+      "Fabric Intelligence: custom OmniNodes that run on any model, including Meta models, for conversation, shimming, decisioning, search and retrieval, and other intelligence. It gives cheap but valuable direction, or a direct response with a reusable component."
      ]
     },
     {
@@ -175,77 +165,7 @@
       "teleionlabs.com/llms.txt": "blue"
      }
     }
-   ],
-   "labels": {
-    "queue": [
-     "Shared queue",
-     "Worker",
-     "Result",
-     "Second worker"
-    ],
-    "reuse": [
-     "Find it",
-     "Check the fit",
-     "Use it again"
-    ],
-    "map": {
-     "agent": "Any agent",
-     "shim": "Fabric Intelligence",
-     "model": "Meta models",
-     "store": "Durable Task Objects",
-     "feeds": "Feeds",
-     "queue": "Durable Tasks",
-     "workers": "Workers",
-     "tuned": "Custom OmniNodes"
-    },
-    "eranos": {
-     "ngo": "My NGO needs help",
-     "help": "I want to help",
-     "net": "A network of agents",
-     "audit": "Audit and approve",
-     "info": "Information",
-     "reuse": "Reusable processes",
-     "own": "Their own systems"
-    },
-    "marks": {
-     "three": [
-      2.48,
-      4.01,
-      6.61
-     ],
-     "parts": [
-      3.14,
-      10.94,
-      22.3
-     ],
-     "split": [
-      3.16,
-      7.09,
-      9.31,
-      13.59,
-      16.1
-     ],
-     "omninode": [
-      7.18,
-      10.35,
-      13.53,
-      17.22
-     ],
-     "four": [
-      1.7,
-      3.28,
-      7.12,
-      9.05
-     ],
-     "eranos": [
-      8.07,
-      10.65,
-      16.84,
-      22.66
-     ]
-    }
-   },
-   "audio": "/media/film-voice-20261103c.mp3"
+   ]
   }
  ]
 }

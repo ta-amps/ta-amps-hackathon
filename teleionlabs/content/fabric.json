@@ -20,7 +20,7 @@
    "type": "page_head",
    "eyebrow": "Teleion Fabric",
    "title": "Teleion Fabric",
-   "lead": "Teleion Fabric has three parts. Durable Tasks: long-term work, split into small Tasks that survive a crash. Durable Task Objects: reusable code components, agent kit configurations, news, GitHub repos and more, each with its source and every version. Fabric Intelligence: custom OmniNodes, powered by Meta models, for conversation, shimming, decisioning, search and retrieval, and other intelligence."
+   "lead": "Teleion Fabric has three parts. Durable Tasks: long-term work, split into small Tasks that survive a crash. Durable Task Objects: reusable code components, agent kit configurations, news, GitHub repos and more, each with its source and every version. Fabric Intelligence: custom OmniNodes that run on any model, including Meta models, for conversation, shimming, decisioning, search and retrieval, and other intelligence."
   },
   {
    "type": "flow",
