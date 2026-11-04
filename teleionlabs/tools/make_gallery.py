@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Build the owner's review gallery at /video-gallery/. Run after one build (it borrows the built page's frame), then build again."""
-import html, json, re, shutil, subprocess, sys
+import html, json, os, re, shutil, subprocess, sys
 from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
-NOTES = Path.home() / "meta_hacakthon/notes"
+NOTES = Path(os.environ["TELEION_NOTES"])  # the local working notes; not part of this repository
 W = NOTES / "work-2026-11-02"
 def _home(v):
+    if isinstance(v, str) and v.startswith("notes:"): return str(NOTES / v[6:])
     if isinstance(v, str) and v.startswith("~/"): return str(Path.home() / v[2:])
     if isinstance(v, list): return [_home(x) for x in v]
     if isinstance(v, dict): return {k: _home(x) for k, x in v.items()}

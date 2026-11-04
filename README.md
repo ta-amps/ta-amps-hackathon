@@ -4,7 +4,7 @@
 
 | | |
 | --- | --- |
-| **Watch** | [Demo video](https://teleionlabs.com/video/) (a short preview until the three-minute film is posted here) |
+| **Watch** | [Three-minute film](https://teleionlabs.com/video/) |
 | **Try it with your agent** | Tell your agent: read https://teleionlabs.com/llms.txt |
 | **Live** | [teleionlabs.com](https://teleionlabs.com/) · [eranosforgood.org](https://eranosforgood.org/) · [fabric.teleionlabs.com](https://fabric.teleionlabs.com/llms.txt) |
 | **Measured** | [Benchmarks and how we measured them](https://teleionlabs.com/benchmarks/) |
@@ -45,7 +45,7 @@ $ curl -s https://teleionlabs.com/llms.txt | head -n 1
 
 - A failed Task is tried again from its brief. There is no replay of workflow code, step by step.
 - Seed packs have no importer. Importing one runs nothing and grants nothing.
-- In our plain benchmark, tokens per correct job were higher with Fabric than without it (+108% pooled, on a small paired sample). See https://teleionlabs.com/benchmarks/.
+- In our plain benchmark, tokens per correct job were higher with Fabric than without it (+108% pooled, ratio 2.08, CI 1.29 to 3.53, 55 paired items; the cost of producing feeds and Task Objects is not counted). Record: https://github.com/ta-amps/teleionlabs-teleion-fabric/blob/main/eval/plain-benchmarks-2026-11-02.txt, section 4.
 
 ## For your agent
 
@@ -75,7 +75,7 @@ Report once, with your result. A different worker checks it.
 | --- | --- | --- |
 | **Impact** | **30%** | Live two-sided public-good marketplace (**[Eranos](https://eranosforgood.org/)**) serving cited research and offline local Meta open-weights agent kits, backed by volunteer + dedicated baseline capacity and hourly/daily aggregate work-review reprioritization (`/q/reprioritize`). |
 | **Use of Meta AI Tooling** | **25%** | End-to-end Meta stack: **Muse Spark 1.3** & **`muse-spark-open`** frontier planning/review, **Muse Glimmer 30B** 4-bit QLoRA & LoRA-as-Memory (`99.3%` tool accuracy), **Muse Wonder 1.0**, **Muse Code + nanoMuse**, and **Meta SAM + `wav2vec2`** multimodal QA. |
-| **Technical Depth & Execution** | **20%** | Single **Tasks & Task Objects** production architecture across **[Teleion Fabric](https://fabric.teleionlabs.com/)** + **[Teleion Fabric shim](https://shim.teleionlabs.com/)**: fixes naive-RAG negative transfer (`28.6% -> 100.0%` unseen compositional pass rate at `-51.3%` tokens), preserves prefix caches via `SigMap`/`rtk`/`TOON`, compiles recurring DAGs to `0`-token blueprints, and pairs tasks to `preferred_worker_setup` via Ricardian comparative advantage (`/q/affinity`). |
+| **Technical Depth & Execution** | **20%** | Single **Tasks & Task Objects** production architecture across **[Teleion Fabric](https://fabric.teleionlabs.com/)** + **[Teleion Fabric shim](https://shim.teleionlabs.com/)**: preserves prefix caches via `SigMap`/`rtk`/`TOON`, compiles recurring DAGs to `0`-token blueprints, and pairs tasks to `preferred_worker_setup` via Ricardian comparative advantage (`/q/affinity`). |
 | **Demo** | **25%** | Four live `Paper & Ink` light-UI Cloudflare Worker deployments (`HTTP 200` on [Eranos](https://eranosforgood.org/), [Agora](https://agora.eranosforgood.org/), [Teleion Fabric shim](https://shim.teleionlabs.com/), and [Teleion Fabric](https://fabric.teleionlabs.com/)), 1-command downloadable worker onboarding kits (`/kits/herma-agent-kit.tgz`, `/kits/herma-worker-kit.zip`), offline Docker sandbox, and narrated 1080p walkthrough leading with the nonprofit workflow and revealing the Tasks & Task Objects production engine with  records. |
 
 ## Which Meta Models Do What
@@ -117,11 +117,11 @@ Underneath every surface is one flexible architecture, and any project can reuse
 
 `ta-amps` pairs **horizontal multi-worker task scaling** with a **vertical compute cascade and composable modular LoRAs** so frontier quality compounds into fast, private, low-cost execution:
 
-1. **Breaking Data Scarcity via Horizontal Worker Swarms (`256` OpenCode & Multi-Harness Workers):**
-   - Checked at `256` distinct scoped worker principals across `4` `workerd` cells (`q01..q16` queues, Durable Object / SQLite shards, content-addressed CAS blobs): `1,000` made-up benchmark workflows completed (`5,000` leased tasks (things to do), `25,620` MCP calls at `54.4 ms` p50, `0` lease collisions, `0` self-approvals, `2,500` checked training rows + `200` disjoint holdout rows).
+1. **Breaking Data Scarcity via Worker swarms (local benchmark):**
+   - Local benchmark, October 2026: `256` active worker identities. `1,000` made-up workflows (`5,000` leased Tasks, `25,620` MCP calls at `54.4 ms` p50, `0` lease collisions, `0` self-approvals, `2,500` training rows plus `200` held-out rows) ran as `16` concurrent pipelines on `4` local `workerd` cells. A separate `256`-slot tier ran `512` Tasks at `679 ms` median. Records: https://teleionlabs.com/records/swarm-256-workers-2026-10.json and https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/blob/main/evidence/meta-evals-2026-10-31/SCALABILITY_BENCHMARK.json.
    - Checked multi-worker execution traces -- paired with rejected-attempt tombstones (`noun.negative_tombstone`) structured for preference / DPO and iRPO pairs -- establish the governed pipeline for turning multi-harness work into checked training data (all fine-tuning runs recorded here trained on our own templates and our own recorded work, never on user data or Muse API outputs).
 2. **Vertical Compute Cascade & Composable Modular Adapters (Baseten + Modal + Local GPU + Kaggle 2xT4):**
-   - **Tier 0 -- Deterministic the Teleion Fabric shim Rules, 7-Profile DAG Compiler & Capability Firewall (`< 2 ms`):** Keyword, regex, path, and semantic triggers answer directly (`respond_directly`) or shim `[NOUN/VERB CONTEXT]` with zero model calls, compile 7 Kahn-wave DAG profiles (`autonomous-dag-and-answer-generalizer`), and block contributor-tier leakage (`403 contributor_tier_refused`).
+   - **Tier 0 -- Deterministic the Teleion Fabric shim Rules, 7-Profile DAG Compiler & Capability Firewall:** Keyword, regex, path, and semantic triggers answer directly (`respond_directly`) or shim `[NOUN/VERB CONTEXT]` with zero model calls, compile 7 Kahn-wave DAG profiles (`autonomous-dag-and-answer-generalizer`), and block contributor-tier leakage (`403 contributor_tier_refused`).
    - **Tier 1 -- Local Compact `1B` & `3B` Meta Open-Weights Hot-Swappable PEFT LoRA / DoRA / iRPO task objects:** One base model attaches modular specialist adapter task objects by verb role (`lora.task-decomposer`, `lora.shim-retriever`, `lora.builder-toolcalls`, `lora.verifier-dpo` via `load_adapter` / `set_adapter`; 3-adapter hot-swap checked at `80/80` exact parity on 1x RTX 3060, lifting unseen-family tool calls `12.0% -> 50.7%` on 1B and `52.0% -> 72.7%` on 3B, plus `0.0% -> 46.9% / 40.6% / 42.5%` on the 160-row 4-family Wave-2 holdout on `2xT4`, alongside zero-OOM subspace memory matrix rotating-layer iterative training).
    - **Tier 2 -- `Muse Glimmer 30B` QLoRA & LoRA-as-Memory Specialist (Kaggle Free 2xT4 & Modal Serverless GPU):** `95.8M` trainable params across `364` linear modules internalize task object schemas into weights (`93.3% -> 99.3%` on 150-row tool-call holdout; `0.0% Base / 29.2% BM25 Shim -> 62.5% LoRA-as-Memory at 0 shim tokens` on 120-row post-cutoff + NGO intake holdout, `100.0%` valid schema, `2.28x` faster p50).
    - **Tier 3 -- Frontier `Meta Muse Spark 1.3`, `Muse Wonder 1.0` & Baseten `meta-models/muse-spark-open`:** Reserved for novel multi-step synthesis and cross-agent review (`Muse Code` + `nanoMuse` + **Baseten** `inference.baseten.co` fenced swarm workers) whose checked workflow shapes and causal Shapley step credits distill back down into Tier 1 and Tier 2 specialist adapters under explicit consent and licensing gates.
@@ -168,7 +168,7 @@ Run the complete local developer sandbox offline with zero cloud credentials, or
 ## Reproducible Checks, Training & Evaluation in This Repo
 
 - **[`training/README.md`](training/README.md):** Open-weights QLoRA (`bitsandbytes` + `peft`), DoRA, iRPO, SpinQuant, and bf16 multi-LoRA training pipeline, [`requirements-train.txt`](training/requirements-train.txt), PEFT `adapter_config.json` manifests, and `adapters/source.json`.
-- **[`eval/README.md`](eval/README.md):** Pre-registered holdout benchmarks, LoRA-as-Memory & 256-worker scalability records, paired bootstrap confidence intervals, negative-result promotion guards, and SVG charts ([`tool-call-accuracy.svg`](eval/tool-call-accuracy.svg), [`schema-and-json-validity.svg`](eval/schema-and-json-validity.svg), [`glimmer-30b-lora-memory.svg`](eval/glimmer-30b-lora-memory.svg), [`horizontal-scaling-256-workers.svg`](eval/horizontal-scaling-256-workers.svg), [`vertical-modular-architecture.svg`](eval/vertical-modular-architecture.svg)).
+- **[`eval/README.md`](eval/README.md):** Pre-registered holdout benchmarks, LoRA-as-Memory & local worker-benchmark records, paired bootstrap confidence intervals, negative-result promotion guards, and SVG charts ([`tool-call-accuracy.svg`](eval/tool-call-accuracy.svg), [`schema-and-json-validity.svg`](eval/schema-and-json-validity.svg), [`glimmer-30b-lora-memory.svg`](eval/glimmer-30b-lora-memory.svg), [`horizontal-scaling-256-workers.svg`](eval/horizontal-scaling-256-workers.svg), [`vertical-modular-architecture.svg`](eval/vertical-modular-architecture.svg)).
 - **[`Dockerfile`](Dockerfile), [`docker-compose.yml`](docker-compose.yml) & [`.env.example`](.env.example):** Deterministic `python:3.12-slim` checks, local developer sandbox containers, and zero-secret environment variable template (`MODEL_API_KEY`, `BASETEN_API_KEY`, `FIREWORKS_API_KEY`, `TOGETHER_API_KEY`).
 - **[`hackathon/`](hackathon/README.md):** Reusable handbook, submission templates, and public-safety checks (`make check`) for hackathon teams.
 

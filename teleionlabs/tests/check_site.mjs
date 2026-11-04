@@ -10,12 +10,10 @@
 // Then axe per page and width: no serious or critical issue. Exit 1 on any failure.
 import { createRequire } from "node:module";
 import { readFile } from "node:fs/promises";
-import { homedir } from "node:os";
-import { join } from "node:path";
 
 const require = createRequire(import.meta.url);
-const PLAYWRIGHT = process.env.PLAYWRIGHT || join(homedir(), "meta_hacakthon/notes/claude-work-2026-10-31/herma/herma-src/node_modules/playwright");
-const AXE = process.env.AXE || join(homedir(), "meta_hacakthon/eranos/web/node_modules/.pnpm/axe-core@4.14.0/node_modules/axe-core/axe.min.js");
+const PLAYWRIGHT = process.env.PLAYWRIGHT;
+const AXE = process.env.AXE;
 const { chromium } = require(PLAYWRIGHT);
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : dflt; };

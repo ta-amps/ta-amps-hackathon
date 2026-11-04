@@ -2,7 +2,7 @@
 # Rebuild the gallery from its sources and the inbox, stop on any failed check, deploy under the lock, verify and log.
 set -euo pipefail
 export NODE_OPTIONS=--network-family-autoselection-attempt-timeout=3000
-cd "$(dirname "$0")/.."; N=$HOME/meta_hacakthon/notes; L=$N/coordination-2026-10-31/deploy-locks/deploy_lock.py; W=$N/portal-worker/node_modules/.bin/wrangler; T=$(mktemp -d)
+cd "$(dirname "$0")/.."; N=${TELEION_NOTES:?set TELEION_NOTES to the local working notes}; L=$N/coordination-2026-10-31/deploy-locks/deploy_lock.py; W=$N/portal-worker/node_modules/.bin/wrangler; T=$(mktemp -d)
 python3 build.py >/dev/null; python3 tools/make_gallery.py | tail -3 | cut -c1-140; python3 build.py >/dev/null
 python3 tests/check_words.py >"$T/w" 2>&1 || { tail -4 "$T/w" | cut -c1-220; echo STOP words; exit 1; }
 make test >"$T/t" 2>&1 || { grep -E '^not ok' "$T/t" | cut -c1-110; echo STOP tests; exit 1; }

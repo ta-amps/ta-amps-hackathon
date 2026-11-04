@@ -43,7 +43,7 @@ openssl rand -hex 32 | npx wrangler secret put TESSERA_ADMIN_TOKEN
 npx wrangler deploy
 ```
 
-### Step 2: Deploy the Teleion Fabric shim (D1 Provision Search & `< 2ms` Context Shim)
+### Step 2: Deploy the Teleion Fabric shim (D1 Provision Search & Context Shim)
 ```bash
 git clone https://github.com/ta-amps/herma-infrastructure-shim-for-intelligent-agents.git
 cd herma-infrastructure-shim-for-intelligent-agents

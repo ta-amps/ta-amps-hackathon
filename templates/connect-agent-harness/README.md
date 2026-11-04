@@ -3,7 +3,7 @@
 Any coding harness (**Muse Code**, **OpenCode**, **Pi**, **Harness Square**, **Claude Code**, or **Codex**) connects to `ta-amps` through two thin protocols:
 
 1. **MCP JSON-RPC (`/mcp`)** for claiming leased **tasks (things to do) (`verbs`)**, storing/searching **task objects (`nouns`)**, and submitting independently checked outputs (`verifier != builder`).
-2. **OpenAI-compatible Context Shim (`/v1/chat/completions`)** via **The Teleion Fabric shim**, which injects scoped `[NOUN/VERB CONTEXT]`, answers deterministic matches in `< 2 ms`, and blocks contributor-tier leakage (`HTTP 403 contributor_tier_refused`).
+2. **OpenAI-compatible Context Shim (`/v1/chat/completions`)** via **The Teleion Fabric shim**, which injects scoped `[NOUN/VERB CONTEXT]`, answers deterministic matches in ``, and blocks contributor-tier leakage (`HTTP 403 contributor_tier_refused`).
 
 > **Design rule ("hierarchy routes, it never authorizes"):** Routing profiles help pick the right task object, tool subset, and model tier, while actual read/write permissions live strictly in scoped capability grants and output contracts.
 

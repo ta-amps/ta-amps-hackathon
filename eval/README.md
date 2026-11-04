@@ -38,11 +38,11 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 
 ---
 
-## 3. Horizontal 256-Worker Swarm & Vertical Compute Cascade
+## 3. Worker Swarm (Local Benchmark) & Vertical Compute Cascade
 
-![Horizontal Scaling Across 256 Scoped OpenCode & Multi-Harness Workers](horizontal-scaling-256-workers.svg)
+![Worker benchmark across 256 worker identities, run locally](horizontal-scaling-256-workers.svg)
 
-- **Measured 256-Worker OpenCode / MCP Swarm (`SCALABILITY_BENCHMARK.json`):** `256` distinct scoped worker principals across `4` `workerd` cells (`q01..q16` queues) executed `1,000` synthetic workflows (`5,000` leased tasks (things to do), `25,620` MCP JSON-RPC calls at `54.4 ms` p50 latency, `0` lease collisions, `0` self-approvals, `100%` contributor-tier refusal on private fixtures), emitting `2,500` checked synthetic training rows and `200` disjoint holdout rows (`0` overlap).
+- Local benchmark, October 2026: `256` active worker identities. `1,000` made-up workflows (`5,000` leased Tasks, `25,620` MCP calls at `54.4 ms` p50, `0` lease collisions, `0` self-approvals, `2,500` training rows plus `200` held-out rows) ran as `16` concurrent pipelines on `4` local `workerd` cells. A separate `256`-slot tier ran `512` Tasks at `679 ms` median. Records: https://teleionlabs.com/records/swarm-256-workers-2026-10.json and https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/blob/main/evidence/meta-evals-2026-10-31/SCALABILITY_BENCHMARK.json.
 
 ![Vertical 4-Tier Compute Cascade and Modular Specialist LoRAs](vertical-modular-architecture.svg)
 

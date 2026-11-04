@@ -1,6 +1,6 @@
 {
  "ffmpeg": "~/.local/share/aidr-tools/ffmpeg-7.0.2-amd64-static/ffmpeg",
- "film3d_dist": "~/meta_hacakthon/notes/work-2026-11-02/claude-teleion-deploy/teleionlabs/dist",
+ "film3d_dist": "notes:work-2026-11-02/claude-teleion-deploy/teleionlabs/dist",
  "title": "Video gallery",
  "intro": "Every film and cut for review. These are candidates and rough work, not final films. A mix-and-match player and more films arrive here as they finish.",
  "live_heading": "Films that play in your browser",
@@ -36,7 +36,7 @@
   {
    "id": "iso-v2-rough",
    "group": "cuts",
-   "file": "~/meta_hacakthon/notes/work-2026-11-03/gallery-extra/iso-rough.mp4",
+   "file": "notes:work-2026-11-03/gallery-extra/iso-rough.mp4",
    "title": "Isometric film, first full cut",
    "note": "3:00 with the new voice and soft music. Your pick so far; a polished version is on the way. This render still shows the hackathon line, now removed from new films.",
    "type": "Full cut",
@@ -105,7 +105,7 @@
   {
    "id": "world-a-min",
    "group": "older",
-   "file": "~/meta_hacakthon/notes/claude-design-2026-11-02/review/v17/teleion-film-A-minimal-v17.mp4",
+   "file": "notes:claude-design-2026-11-02/review/v17/teleion-film-A-minimal-v17.mp4",
    "title": "Claude Design cut A, Minimal",
    "note": "Older flat look, now dropped. For comparison only.",
    "type": "Full cut",

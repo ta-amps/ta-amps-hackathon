@@ -11,7 +11,7 @@ with 301 (GET, HEAD) or 308 to the same path on `https://teleionlabs.com`, and `
 and real-time Issues off; the Privacy page says both.
 
 **Heavy jobs** (the build, `make check`, the browser check) run through
-`~/meta_hacakthon/notes/coordination-2026-10-31/heavy/heavy_run.sh`, one at a time across sessions (the lead, Nov 2).
+`$TELEION_NOTES/coordination-2026-10-31/heavy/heavy_run.sh`, one at a time across sessions (the lead, Nov 2).
 
 Run every block in one shell, in order. Any failure stops the shell (`set -e`). If that happens before step 3, nothing was
 deployed: release with `python3 "$LOCK" release teleionlabs "$WHO" unchanged "$LIVE" --note "stopped before deploy"`, so
@@ -21,18 +21,18 @@ the log keeps the commit that is really live, and stop.
 
 ```bash
 set -euo pipefail
-cd ~/meta_hacakthon/notes/claude-work-2026-11-01/teleionlabs-site/teleionlabs
+cd $TELEION_NOTES/claude-work-2026-11-01/teleionlabs-site/teleionlabs
 REVIEWED=<the 7-character commit the reviewer approved>
 WHO=claude
-W=~/meta_hacakthon/notes/portal-worker/node_modules/.bin/wrangler       # wrangler 4.154.0
-LOCK=~/meta_hacakthon/notes/coordination-2026-10-31/deploy-locks/deploy_lock.py
-GUARD=~/meta_hacakthon/notes/claude-work-2026-11-01/light-guard
-HEAVY=~/meta_hacakthon/notes/coordination-2026-10-31/heavy/heavy_run.sh
-REC=~/meta_hacakthon/notes/claude-work-2026-11-01/teleionlabs-deploy && mkdir -p "$REC"
+W=$TELEION_NOTES/portal-worker/node_modules/.bin/wrangler       # wrangler 4.154.0
+LOCK=$TELEION_NOTES/coordination-2026-10-31/deploy-locks/deploy_lock.py
+GUARD=$TELEION_NOTES/claude-work-2026-11-01/light-guard
+HEAVY=$TELEION_NOTES/coordination-2026-10-31/heavy/heavy_run.sh
+REC=$TELEION_NOTES/claude-work-2026-11-01/teleionlabs-deploy && mkdir -p "$REC"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 $W whoami >/dev/null 2>&1      # refreshes the OAuth token if it has expired
 CF_TOKEN="$(python3 -c 'import os,tomllib;print(tomllib.load(open(os.path.expanduser("~/.config/.wrangler/config/default.toml"),"rb"))["oauth_token"])')"
-ACCOUNT_ID="$(jq -r .account_id ~/meta_hacakthon/notes/work-2026-11-01/cloudflare-startup-and-email-kit/live_domains_and_email_receipt.json)"
+ACCOUNT_ID="$(jq -r .account_id $TELEION_NOTES/work-2026-11-01/cloudflare-startup-and-email-kit/live_domains_and_email_receipt.json)"
 CF="https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/domains"
 # The token goes to curl on stdin, never in argv, a file or the screen.
 api() { printf 'Authorization: Bearer %s\n' "$CF_TOKEN" | curl -sS -H @- "$@"; }
