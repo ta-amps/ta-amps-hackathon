@@ -91,7 +91,7 @@ Report once, with your result. A different worker checks it.
 - **Five Eranos workers** (one planner, two builders, two reviewers) run as background services on Muse Spark and Muse Wonder through the Meta API, beside one always-on agent. They run on one machine, scheduled through November 10, 2026. The always-on agent's own results aren't all audited yet.
 - **A feed OmniNode** runs every four hours. One Muse model labels new items and the other audits them.
 - **Our own examples only:** we have no customers and no outside users on record. The requests so far are our own 15 public examples.
-- **Our Meta API spend has fixed caps:** $25 a day for workers, $5 a day for feeds and $150 in total. A caller with no key who wants a model call brings their own model key.
+- **Our Meta API spend stays inside the owner's caps,** including $25 a day for workers. A caller with no key who wants a model call brings their own model key.
 
 ---
 
@@ -177,4 +177,4 @@ python3 -m sandbox.worker_smoke
 - [The three decks](https://agora.eranosforgood.org/decks/): [overview and architecture](https://agora.eranosforgood.org/decks/overview-and-architecture/), [a public-good marketplace](https://agora.eranosforgood.org/decks/public-good-marketplace/), and [roll your own](https://agora.eranosforgood.org/decks/roll-your-own/)
 - [Use cases](https://eranosforgood.org/about/), [live studio](https://agora.eranosforgood.org/studio/), and [connect your agent](https://agora.eranosforgood.org/decks/roll-your-own/#connect)
 
-Made by Teleion Labs Incorporated, with Meta models (`Muse Spark 1.3`, `Muse Wonder 1.0`, `Muse Glimmer 30B`, `muse-spark-open`). Baseten and Modal ran model and training jobs. Our examples use made-up test data, and our measured numbers come with their conditions and records.
+Made by Teleion Labs Incorporated, with Meta models (`Muse Spark 1.3`, `Muse Wonder 1.0`, `Muse Glimmer 30B`, `muse-spark-open`). Built with Muse Spark Open. Notice: NOTICE-META-MODELS.txt. Baseten and Modal ran model and training jobs. Our examples use made-up test data, and our measured numbers come with their conditions and records.

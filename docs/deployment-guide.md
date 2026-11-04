@@ -99,18 +99,19 @@ Full manifests, SHA-256 source, and promotion gates live in [`../training/README
 
 2. **Train & Serve Role-Switched Modular LoRAs on Meta's open-weight 1B and 3B models (`PEFT` + `vLLM`)**:
    ```bash
+   # Set META_OPEN_BASE_MODEL to a base from NOTICE-META-MODELS.txt.
    # Dry-run receipt on CPU (zero GPU required), then train on local CUDA or Kaggle GPU:
    python3 templates/finetune-meta-lora/train_lora_template.py \
      --dataset templates/finetune-meta-lora/sample_practice_tasks.json \
      --dry-run-manifest /tmp/lora-dry-run-receipt.json
 
    python3 templates/finetune-meta-lora/train_lora_template.py \
-     --base-model meta-llama/Llama-3.2-3B-Instruct \
+     --base-model "$META_OPEN_BASE_MODEL" \
      --dataset templates/finetune-meta-lora/sample_practice_tasks.json \
      --output-dir ./adapters/lora.builder-toolcalls
 
    # Serve one shared base model in VRAM with hot-swapped specialist LoRA task objects per verb kind:
-   vllm serve meta-llama/Llama-3.2-3B-Instruct \
+   vllm serve "$META_OPEN_BASE_MODEL" \
      --enable-lora \
      --max-lora-rank 16 \
      --lora-modules \

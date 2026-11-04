@@ -17,9 +17,10 @@ python3 templates/finetune-meta-lora/train_lora_template.py \
 ## 2. Train Role-Switched Modular PEFT LoRA on Meta's open-weight 1B and 3B models
 
 ```bash
+# Set META_OPEN_BASE_MODEL to a base from NOTICE-META-MODELS.txt.
 pip install -r training/requirements-train.txt
 python3 templates/finetune-meta-lora/train_lora_template.py \
-  --base-model meta-llama/Llama-3.2-3B-Instruct \
+  --base-model "$META_OPEN_BASE_MODEL" \
   --dataset templates/finetune-meta-lora/sample_practice_tasks.json \
   --output-dir /tmp/meta-open-3b-specialist-lora
 ```
@@ -40,4 +41,4 @@ On Kaggle `2x Tesla T4` (`"machine_shape": "NvidiaTeslaT4"`), `device_map="auto"
 
 ## 4. Meta `api.meta.ai` Contributor-Tier & Privacy Boundary
 
-> **Governance & licensing boundary:** Train open-weights LoRA/QLoRA adapters strictly on owned deterministic made-up MIT templates or explicitly consented Standard-mode traces under license-compatible terms -- never on private NGO records, unconsented user data, or contributor-tier outputs. When running made-up E2E benchmarks on `api.meta.ai` competition credits, use `--model muse-spark-1.3-contributor` behind a hard budget cap (`< $2.00`) and enforce `ContributorTierRefusedError` / `HTTP 403 contributor_tier_refused` whenever non-public task objects are in scope. Llama 3.2 weights and derivatives remain governed by the Llama 3.2 Community License (*Built with Llama*).
+> **Governance & licensing boundary:** Train open-weights LoRA/QLoRA adapters strictly on owned deterministic made-up MIT templates or explicitly consented Standard-mode traces under license-compatible terms -- never on private NGO records, unconsented user data, or contributor-tier outputs. When running made-up E2E benchmarks on `api.meta.ai` competition credits, use `--model muse-spark-1.3-contributor` behind a hard budget cap (`< $2.00`) and enforce `ContributorTierRefusedError` / `HTTP 403 contributor_tier_refused` whenever non-public task objects are in scope. See NOTICE-META-MODELS.txt.
