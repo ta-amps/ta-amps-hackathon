@@ -117,7 +117,7 @@ Corrections are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Licence
 
 MIT for everything in this folder ([LICENSE](LICENSE)). Official documents we link to belong to their owners.
-"Meta", "Muse", "Llama" and other names are trademarks of their owners; this kit is not affiliated with or
+"Meta", "Muse" and other names are trademarks of their owners; this kit is not affiliated with or
 endorsed by Meta or Cerebral Valley.
 
 ========================================================================
@@ -206,7 +206,7 @@ Rules and the official pages yourself. They govern, and these notes don't.
    Where these notes and a source disagree, the source wins.
 6. **Not affiliated.** This kit is independent. It is not affiliated with, sponsored by or endorsed by Meta Platforms, Inc.,
    Cerebral Valley Enterprises, Inc., or any partner named here.
-7. **Trademarks.** Meta, Muse, Llama, Cerebral Valley and other names are trademarks of their owners, used here only
+7. **Trademarks.** Meta, Muse, Cerebral Valley and other names are trademarks of their owners, used here only
    to identify their products and the event.
 8. **Verify before you act.** Check dates, amounts, eligibility and deadlines at the source before relying on them,
    especially anything involving money, eligibility or your submission.
@@ -1880,7 +1880,7 @@ change, so check the source before relying on a number.
 | [muse-code.md](muse-code.md) | Installing and running Meta's coding agent safely: sandbox, Contributor mode, headless flags, config, hooks, skills, MCP |
 | [speech-to-text.md](speech-to-text.md) | Muse Voice Transcribe for files and realtime audio |
 | [astryx.md](astryx.md) | Meta's open-source React design system |
-| [open-weights-and-safety-tools.md](open-weights-and-safety-tools.md) | Prompt Guard 2, LlamaFirewall, Synthetic Data Kit, ARE, Faiss, Ax, partner inference |
+| [open-weights-and-safety-tools.md](open-weights-and-safety-tools.md) | Prompt Guard 2, ARE, Faiss, Ax, partner inference |
 
 Hackathon-specific rules about which tools to use are in [../event/12-models-and-tools.md](../event/12-models-and-tools.md).
 Terms of use and geography are in [../event/13-acceptable-use-and-data.md](../event/13-acceptable-use-and-data.md).
@@ -2169,14 +2169,12 @@ URL: https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/meta-platf
 
 | Tool | What it is | Notes |
 |---|---|---|
-| Llama Prompt Guard 2 | A small classifier for prompt injection and jailbreak attempts | Open weights only, not served by the Model API ([Llama and Model API](https://dev.meta.ai/help/about-model-api/llama-and-model-api)). On Hugging Face as `meta-llama/Llama-Prompt-Guard-2-86M` and `-22M`, gated with manual approval, so request access early |
-| LlamaFirewall | A guardrail framework that runs scanners such as Prompt Guard over inputs, tool outputs and agent traces | `pip install llamafirewall` (1.0.3, May 2025) pulls in torch and transformers; Python 3.10+ ([repo](https://github.com/meta-llama/PurpleLlama/tree/main/LlamaFirewall)). Its AlignmentCheck scanner needs a key for a non-Meta inference provider, so projects that keep every model call on Meta need their own trace review |
+| Prompt Guard 2 | A small classifier for prompt injection and jailbreak attempts | Open weights, gated on Hugging Face with manual approval, so request access early. Unverified here: whether the Model API serves it |
 
 ## Data and evaluation
 
 | Tool | What it is |
 |---|---|
-| [Synthetic Data Kit](https://github.com/meta-llama/synthetic-data-kit) | A pipeline to ingest material, generate examples, curate them with a judge and save them. Check whether it can point at the Model API or needs local weights |
 | [ARE and Gaia2](https://huggingface.co/blog/gaia2) | Meta's agent research environment: simulated worlds with apps, timed and triggered events, and JSON traces |
 | [Faiss](https://github.com/facebookresearch/faiss) | Vector similarity search; handy for finding duplicates and related items |
 | [Ax](https://github.com/facebook/Ax) | Adaptive experimentation and Bayesian optimization; handy for tuning a few settings against a metric |

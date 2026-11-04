@@ -9,7 +9,7 @@ You do not need to deploy the entire `ta-amps` ecosystem to use its primitives. 
 | Slice | Infrastructure Needed | Time to Run | Best For |
 | :--- | :--- | :--- | :--- |
 | **A. Seed Packs Only** | `0` servers (stdlib Python + git) | `< 60s` | Loading reusable **task objects (`nouns.json`)**, **tasks (things to do) (`verbs.json`)**, and deterministic QA verifiers (`109` seed packs, `1,819` task objects, `581` tasks (things to do)) into `Muse Code`, `Claude Code`, `OpenCode`, `Codex`, `Cursor`, or `Pi`. |
-| **B. Cloudflare Edge Stack** | Cloudflare Workers + Durable Objects + D1 + Pages (`$0` free tier) | `~5 min` | Running a private or public **Tessera** work/CAS engine + **Herma** context shim + **Eranos / Agora** surfaces on `*.workers.dev` or a custom domain. |
+| **B. Cloudflare Edge Stack** | Cloudflare Workers + Durable Objects + D1 + Pages (`$0` free tier) | `~5 min` | Running a private or public **Teleion Fabric** work/CAS engine + **The Teleion Fabric shim** context shim + **Eranos / Agora** surfaces on `*.workers.dev` or a custom domain. |
 | **C. Docker / VPS / Air-Gapped** | Docker Engine (`docker compose up`) on Linux, macOS, Fly.io, Railway, or ECS | `~2 min` | Strict data residency, air-gapped CI runners, sovereign NGO deployments, or local offline development. |
 | **D. Meta Open-Weight GPU + LoRAs** | Kaggle `2x Tesla T4` (`$0` quota), local GPU (`PEFT`), `vLLM`, or `api.meta.ai` | `~10 min` | Training and serving **LoRA-as-Memory** (`Muse-Glimmer-30B` QLoRA) and role-switched **Modular LoRAs** (`Llama-3.2 1B/3B` PEFT) plus contributor-tier made-up benchmark verification. |
 
@@ -26,13 +26,13 @@ python3 scripts/validate_packs.py
 make -C packs/frame-by-frame-video-qa/code check
 ```
 
-To connect an existing coding agent without cloning, paste the starting brief from `https://home.ta-amps.workers.dev/llms.txt`.
+To connect an existing coding agent without cloning, paste the starting brief from `https://teleionlabs.com/llms.txt`.
 
 ---
 
 ## 3. Slice B: Cloudflare Workers + Durable Objects + D1 + Pages
 
-### Step 1: Deploy Tessera (leased tasks (things to do), CAS task objects & `/mcp`)
+### Step 1: Deploy Teleion Fabric (leased tasks (things to do), CAS task objects & `/mcp`)
 ```bash
 npx wrangler login
 git clone https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine.git
@@ -43,7 +43,7 @@ openssl rand -hex 32 | npx wrangler secret put TESSERA_ADMIN_TOKEN
 npx wrangler deploy
 ```
 
-### Step 2: Deploy Herma (D1 Provision Search & `< 2ms` Context Shim)
+### Step 2: Deploy the Teleion Fabric shim (D1 Provision Search & `< 2ms` Context Shim)
 ```bash
 git clone https://github.com/ta-amps/herma-infrastructure-shim-for-intelligent-agents.git
 cd herma-infrastructure-shim-for-intelligent-agents
@@ -83,13 +83,13 @@ docker compose up --build -d
 ```
 
 - **Persistent Volumes**: Mount a host or Fly.io volume onto the SQLite data directory so leased tasks (things to do) and CAS task objects survive container restarts.
-- **Reverse Proxy**: Put Caddy, Nginx, or Cloudflare Tunnel in front of port `8787` (Tessera) and port `8080` (Agora) for automatic TLS.
+- **Reverse Proxy**: Put Caddy, Nginx, or Cloudflare Tunnel in front of port `8787` (Teleion Fabric) and port `8080` (Agora) for automatic TLS.
 
 ---
 
 ## 5. Slice D: GPU Fine-Tuning & Open-Weight Serving (`Kaggle 2xT4`, `vLLM`, `api.meta.ai`)
 
-Full manifests, SHA-256 provenance, and promotion gates live in [`../training/README.md`](../training/README.md) and [`../eval/README.md`](../eval/README.md).
+Full manifests, SHA-256 source, and promotion gates live in [`../training/README.md`](../training/README.md) and [`../eval/README.md`](../eval/README.md).
 
 1. **Fine-Tune `Muse Glimmer 30B` QLoRA / LoRA-as-Memory on Free Kaggle `2x Tesla T4` (`32 GB` Total VRAM, `$0` Spend)**:
    - Push a private Kaggle kernel (`"machine_shape": "NvidiaTeslaT4"`) against your pre-registered made-up MIT dataset (`train.jsonl` + `test_holdout.jsonl`).
@@ -123,8 +123,8 @@ Full manifests, SHA-256 provenance, and promotion gates live in [`../training/RE
 
 3. **Connect `api.meta.ai` Competition Credits (`muse-spark-1.3-contributor`, `Muse Wonder`, `Muse Code`, `nanoMuse`)**:
    - Export `LLM_API_KEY` / `META_API_KEY` strictly inside isolated worker environments (never on public surfaces or in `.toml` files).
-   - For made-up or public-domain tasks, pass `--model muse-spark-1.3-contributor` (`$0.10 / $0.20` per 1M input/output tokens, `$0.002` per 1M cached input tokens) behind a file-locked budget gate (`CAP_USD <= 2.00`) and issue **distinct Tessera keys** (`builder_key_id != reviewer_key_id`) so `Muse Code` builds kits in `eq02` and `nanoMuse` independently verifies them in `eq03`.
-   - Enforce contributor-tier privacy firewalls (`ContributorTierRefusedError` in Eranos and `HTTP 403 contributor_tier_refused` in Herma) so private or NGO-owned task objects never touch `*contributor*` endpoints, and run sensitive NGO kits offline on local `Llama 3.2 1B/3B` weights.
+   - For made-up or public-domain tasks, pass `--model muse-spark-1.3-contributor` (`$0.10 / $0.20` per 1M input/output tokens, `$0.002` per 1M cached input tokens) behind a file-locked budget gate (`CAP_USD <= 2.00`) and issue **distinct Teleion Fabric keys** (`builder_key_id != reviewer_key_id`) so `Muse Code` builds kits in `eq02` and `nanoMuse` independently verifies them in `eq03`.
+   - Enforce contributor-tier privacy firewalls (`ContributorTierRefusedError` in Eranos and `HTTP 403 contributor_tier_refused` in the Teleion Fabric shim) so private or NGO-owned task objects never touch `*contributor*` endpoints, and run sensitive NGO kits offline on local `Llama 3.2 1B/3B` weights.
 
 ---
 
@@ -133,8 +133,8 @@ Full manifests, SHA-256 provenance, and promotion gates live in [`../training/RE
 Run these three probes against your deployed URLs before connecting production workers:
 
 ```bash
-TESSERA_URL="https://tessera.ta-amps.workers.dev"
-HERMA_URL="https://herma.ta-amps.workers.dev"
+TESSERA_URL="https://fabric.teleionlabs.com"
+HERMA_URL="https://shim.teleionlabs.com"
 
 curl -fsS "$TESSERA_URL/v1/health"
 curl -fsS -X POST "$HERMA_URL/api/preview" \
