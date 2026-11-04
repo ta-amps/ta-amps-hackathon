@@ -30,31 +30,93 @@ Records: the [learning record](https://shim.teleionlabs.com/q/object/fabric_lear
 | Prompt-kit trials | Running on live | What a new worker is shown | No. 51 of 64 arms are promoted, so promotion barely tells them apart |
 | Decider on the always-on agent | Running on live | Which model does a Task, and which Task Object helps. It has no learning: its choices aren't credited with outcomes | No |
 | Fine-tune audit switch | Running on live | Turns a fine-tune's small share up or off | It has never fired on a live result |
-| Search, `/q/find` | Running on live | Nothing by itself: deterministic code, tuned by hand on dev questions | Yes, on held-out questions. Not on the work agents then do |
+| Search, `/q/find` | Running on live | Nothing by itself: deterministic code, tuned by hand on dev questions | Yes, on held-out questions. On new coding jobs, a registered test showed no change in pass rates |
 | Fine-tuned Muse Glimmer 30B, in use | Built, runs by hand | A pick or nothing fits, on a small share, in batches | On a held-out catalog test. One pick has reached a live worker |
 | Fine-tuned Muse Glimmer 30B, November 4 | Tested only | Nothing. It isn't live | It beat the older adapter and lost to a deterministic score |
 | OmniNode shapes from specs | Built, runs by hand | Steps, model mix, sidecar and memory, per spec | No |
+| Assembler, per Task, from its fingerprint | Built, runs by hand | Harness, model, tools, Task Objects, rules and budget for one Task | No. 6 passes against 8 for a default worker, on 19 real Tasks |
 | Sizing step | Built, runs by hand | No model, Muse Spark or Muse Wonder, what to hand over, a budget | On index Tasks, yes. On desk Tasks, no |
 | Retraining from live work | Next, not built | Nothing has retrained from live work. A trigger queues a Task; nobody claims it | No |
 
 ## The central idea: an agent assembled for each Task
 
-The idea we are building toward: an agent assembles itself for each Task, with the best tools, harness, models, skills and deterministic rules, based on that Task's fingerprint.
+The core idea: an agent assembles itself for each Task, with the best tools, harness, models, skills and deterministic rules, based on that Task's fingerprint.
 
 A fingerprint is not an exact match. It is the Task's shape and profile, how the Task looks. Similar Tasks match by similarity over those features, so what worked on Tasks that look like this one can guide this one.
 
-**Where it stands.** The pieces exist separately. No single step assembles all of them for every Task today. The table says who decides each part now.
+**Where it stands: Built, runs by hand.** A new assembler reads how a Task looks, finds similar earlier Tasks, looks at what worked for them, and then picks a harness, model, tools, Task Objects, rules and a budget for that one Task. It starts when we start it. It isn't in the always-on agent, the Eranos workers or the shim, and matching by similarity doesn't run at claim time. Its code isn't in a public repository today.
 
-## What decides each part of the agent today
+**The honest result so far: it works as a system, and it shows no gain.** On 34 real Tasks it made 12 different setups, and 9 results were submitted and accepted. It did no better than one default worker: on 19 of those Tasks, the same reader passed 6 assembled against 8 default. Past results did change later setups, in 15 of the 34. We haven't shown that this improves the work.
 
-| Part | What decides it today | Mark |
+**The fingerprint is deterministic code with no model call.** Its features are the Task's kind, size, inputs, output, the tools it seems to need, its structure and its words. Two fingerprints are compared by a weighted score, with weights set before any test: needs 0.34, words 0.16, output 0.14, kind 0.14, inputs 0.10, size 0.06, structure 0.06. 3,057 real Tasks took 11.3 seconds.
+
+## What the assembler picks for each Task
+
+| Part | How it is picked |
+|---|---|
+| Harness | Deterministic code only, one JSON answer, a coding agent, or the shape runner. A second coding agent is wired, and has never been chosen |
+| Model | Muse Spark 1.3 on 30 Tasks. Muse Wonder 1.0 on 2, by a complexity rule (900 and up), or to write a shape. Outcomes have never chosen Muse Wonder |
+| Tools | Chosen by rules on what the Task seems to need, and enforced by the harness's permission list. An early batch still had a tool outside its grant; after that fix, transcripts show none |
+| Skills | Task Objects named in the Task and real hits from /q/find, passed as text: 79 objects and 3 seed packs so far |
+| Deterministic rules | Credential and placeholder screens, claim IDs, and tests rerun by the runner |
+| Budget | Dollars per worker at a local proxy, and wall time. One run overran by one call: .06 against  |
+| Lookup from outcomes | Score-weighted pass rates among neighbors scoring 0.72 or more, with at least 3 outcomes and a margin of 0.15. 478 outcomes from our records, plus each new run |
+
+All marked built, runs by hand, November 4, about 22:00 to 23:10 UTC. All real work here is our own fleet's. About $12.70 of model spend in all, including $7.20 for labels. Record: [snapshot](https://teleionlabs.com/records/learning-2026-11-04.json).
+
+## What it measured
+
+| Test | Result | Conditions |
 |---|---|---|
-| Deterministic rules | One title rule on the always-on agent. A rule table in the sizing step: index Tasks go to deterministic code, checks and test Tasks are left out | Running on live; Built, runs by hand |
-| Model | The decider's ladder on the always-on agent. Rule table in the sizing step: no model, Muse Spark 1.3 or Muse Wonder 1.0. A sampled mix on the Eranos workers and the feed | Running on live; Built, runs by hand |
+| Real Tasks run | 34 records, 12 setups: 9 passed and submitted, 20 failed and released, 5 left open for people | Submitted work reads back unreviewed |
+| Against one default worker | 6 passes against 8, of 19 pairs. Only assembled 2, only default 4 | Same reader, a different Meta model. After the assembler's own rules, assembled drops to 3, and the default faced no rules. Cost $2.78 against $0.54, of which $2.06 is one Muse Wonder run |
+| Earlier outcomes change later setups | 15 of 34 changed. On ready Tasks, 58 of 1,400 setups change once this run's own rows are in | A change, not a gain |
+| Paired test of that switch | Switched 6 passes, with 2 more left open, no memory 3, of 13 Tasks | Small and not clean: the no-memory side got no hand-over text, and the lookup mixes two readers |
+| A worked example | One Task would have been a JSON answer with no memory. Similar Tasks passed more with a coding agent, 0.505 against 0, so it got one. It passed, and the default failed | One Task |
+| Muse Wonder 1.0 writes a spec for a real Task | validate and dry_read refused the first try and accepted the second. It ran with no new code, for $0.174. The reader failed the result as an empty template | A new spec runs with no code. Writing a useful one for a given Task isn't shown |
+
+What's wrong: the credential screen blocked 10 of 34, and 4 of those were reader passes, likely long identifiers in the answers. We left it, because we don't loosen secrets in a hurry, and it costs finished work. Code Tasks did poorly: 6 failed the rerun of their tests, and 0 of 8 that needed to run code ended submitted. One left-open outcome can tip the rule that says a Task needs people, on weak evidence.
+
+## Does similarity find Tasks that need the same setup?
+
+| Method | Same setup: precision, recall, F1 | Near-duplicate: precision, recall, F1 |
+|---|---|---|
+| Fingerprint similarity | 0.89, 0.83, 0.859 | 0.68, 0.91, 0.778 |
+| Words alone | 1.00, 0.77, 0.867 | 0.78, 0.61, 0.683 |
+| Same category | 0.83, 0.83, 0.831 | 0.34, 1.00, 0.505 |
+| Exact match | 1.00, 0.13, 0.234 | 1.00, 0.39, 0.562 |
+
+Mark: Tested only. 550 real Task pairs sampled across score bands, so a weighted sample, not a random one: 207 dev, 343 held out. Thresholds from dev only. One blind Muse Wonder 1.0 reader wrote the labels, for $7.20.
+
+How to read it: similarity beats exact match. For same setup, the profile features add almost nothing over words alone, AUC 0.93 against 0.941, though they help on near-duplicates. Many Tasks come from templates, which flatters any word method.
+
+A small search also ran: 864 weight settings, the best chosen on dev pairs. On held-out pairs it reached AUC 0.949 and F1 0.867, and near-duplicates fell from 0.778 to 0.683. Tested, and not adopted. That is the only search of this kind that has run. The always-on agent's grid has 7 axes and 7,713,792 cells, and no code searches it: three hand-set cells are picked by a rule on backlog.
+
+## What decides each part outside the assembler
+
+| Part | What decides it | Mark |
+|---|---|---|
+| Deterministic rules | One title rule on the always-on agent. A rule table in the sizing step: index Tasks go to deterministic code, checks and test Tasks are left out | Running on live; built, runs by hand for sizing |
+| Model | The decider's ladder on the always-on agent, and a sampled mix on the Eranos workers and the feed. A rule table in the sizing step | Running on live; built, runs by hand for sizing |
 | Tools | Reading a named Task Object. Deterministic code spots it in the Task's text | Running on live |
-| Skills | Two written notes, added when a Task's words match | Built, runs by hand |
-| Harness | One of two: a plain function, or one JSON answer | Built, runs by hand |
-| Similarity to earlier Tasks | Title words, Jaccard at least 0.5, at least 2 neighbors, in `agents/sizing/sizer.py` | Built, runs by hand |
+| Skills | Two written notes, added when a Task's words match, in the sizing step | Built, runs by hand |
+| Harness | In the sizing step, one of two: a function of deterministic code, or one JSON answer | Built, runs by hand |
+| Hooks | A fixed set, not worked out per Task: credential screen, word screen, a different model's read | Built, runs by hand |
+| Similar earlier Tasks | In the sizing step, title words with Jaccard at least 0.5 and at least 2 neighbors | Built, runs by hand |
+
+Code: `agents/sizing/sizer.py`, `agents/sizing/versions/v1.json`.
+
+## What sizing has measured
+
+| Test | Before | After | Conditions |
+|---|---|---|---|
+| Index Tasks: asked-for fields stored | Always-on agent: 0 of 96 closed, about $0.004 a call | Deterministic code: 215 of 215 read back, $0 | 304 tries; 80 skipped for a credential shape, mostly a false match. Search doesn't read these fields yet, so this is a Task done properly, not better search |
+| Desk Tasks, today's prompt, Muse Spark | 0 finished of 14 |  |  |
+| Desk Tasks, sized, Muse Spark |  | 0 finished of 24 | Attempts cost more, $0.0060 against $0.0039, with no gain |
+| Desk Tasks, random move to Muse Wonder |  | 1 finished of 10 | A random move, not a sizing choice. One result favors no model |
+| Desk Tasks, random try of a declined Task |  | 0 finished of 5 |  |
+
+A strict Muse model read each desk answer. 31 of 53 needed people or hardware, so most of these Tasks can't be done with text alone. No size won. What the step did achieve: failing answers weren't submitted. Budgets cut 0 answers. Kit sizing ran in shadow on 38 real Eranos requests, and isn't ready to act on. Record: [snapshot](https://teleionlabs.com/records/learning-2026-11-04.json).
 
 ## OmniNode shapes and specs
 
@@ -98,7 +160,7 @@ One worker process served all four in a row, and learned each shape from the cla
 
 **Model verdicts aren't stable.** 13 citations were read more than once at temperature 0: 7 kept their verdict and 6 changed. On at least 3, the second worker approved both answers. A maker and checker being different doesn't make a check strong. This is the most important finding from this work, and the reason for the seeded-defect test under what's next.
 
-**Faults on the record.** Live runs exposed six faults in the runner, each fixed with a test. 5 of 23 runs had failed at our last count, at 16:20 UTC, and they stay on the record.
+**Faults on the record.** Live runs exposed six faults in the runner, each fixed with a test. 5 of 23 runs had failed at our count at 16:20 UTC, and they stay on the record. In a later rerun at about 22:05 UTC, `repo-awareness` first failed on a stale $25 day limit, and after the fix made 18 lines for $0.028, with 17 approved and published.
 
 ## The feed tuner's real loop
 
@@ -144,14 +206,14 @@ How to read it: this is an uncontrolled trace, and the change log says so. The m
 
 | Rung | What answers | Decided or tried | Cost |
 |---|---|---|---|
-| 1. Deterministic rule | A rule on the title. Today one prefix, for index Tasks | 36 of 61 decisions | $0 |
+| 1. Deterministic rule | A rule on the title. Today one prefix, for index Tasks | 36 of 62 decisions | $0 |
 | 2. Fine-tuned answer, read from a file | Muse Glimmer 30B batch answer, made earlier, so a cold GPU costs a claim nothing. It picks the Task Object only | 1 pick reached a maker | About $0.30 of GPU for 65 answers, estimate at list rates |
-| 3. Muse Spark Open on Baseten | `meta-models/muse-spark-open`, partner credits, 12-second limit | 18 answered, 2 unreadable, 5 failed since 20:07 UTC | $0.0137 to 17:38 UTC |
-| 4. Muse Spark 1.3 on the Meta API | 20-second limit | 7 answered | $0.0058 to 17:38 UTC, on 2 answers |
+| 3. Muse Spark Open on Baseten | `meta-models/muse-spark-open`, partner credits, 12-second limit | 18 answered, 2 unreadable, 6 failed from 20:07 to 22:41 UTC | $0.0137 to 17:38 UTC |
+| 4. Muse Spark 1.3 on the Meta API | 20-second limit | 8 answered | $0.0058 to 17:38 UTC, on 2 answers |
 | 5. Today's rule | Muse Spark 1.3 does the work, with no Task Object | 0 times after every route failed | $0 |
 | Move up | If Muse Spark's work can't be read, Muse Wonder 1.0 tries once | 0 uses |  |
 
-Running on live: each real build Task the always-on agent claims. Counts from the agent's own log to November 4, 22:15 UTC. The [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record) was last published at 17:38 UTC, with 56 decisions. Since 20:07 UTC the Baseten route has answered with HTTP 402, a payment status, so it isn't serving now. All 5 decisions since then moved on to Muse Spark 1.3, as the ladder is built to do. Code: `agents/warm-server-agent/src/warm_agent/decider.py`, settings in `config/warm_agent_grid.json`.
+Running on live: each real build Task the always-on agent claims. Counts from the agent's own log to November 4, 22:41 UTC. The [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record) was last published at 17:38 UTC, with 56 decisions. All 6 tries on the Baseten route from 20:07 to 22:41 UTC failed, and each of those decisions moved on to Muse Spark 1.3, as the ladder is built to do. The log keeps the error's class, not its status code. A direct test at 22:12 UTC answered HTTP 402, so this route isn't serving now. Code: `agents/warm-server-agent/src/warm_agent/decider.py`, settings in `config/warm_agent_grid.json`.
 
 These counts are the choice of model and helper, not the work itself. At 17:38 UTC, Muse Spark 1.3 had done the work on 54 of 56, and Muse Wonder 1.0 on 2.
 
@@ -277,6 +339,7 @@ Without real owners, which `/q/search` was never built for, real agent queries a
 | Test | Mark | Outcome |
 |---|---|---|
 | Agent test: Muse Spark, one route, up to 3 calls | Tested only | `/q/find` 121 of 147 right, 3,349 tokens a run. `/q/search?compact=1` 28 of 147, 13,481 tokens. Plain need, 30 of 51 against 3 of 51: an agent that can rephrase does much better. This mix favors find, and wasn't registered in advance |
+| Registered test on 43 held-out jobs: the same coding agent and Muse Spark 1.3, with and without Fabric search | Tested only | Coding pass rates didn't change: 98 percent both, on 29 code jobs. Fabric search used about 14 percent more tokens and about 21 percent less time. Agents searched in every run and almost never used what they found. The clear saving came on exact repeats: on all 14 jobs, a stored answer came back in under a second with zero model tokens and passed the same hidden tests, against about 114,000 tokens for a plain agent doing the job again. Record: [registered test](https://teleionlabs.com/records/value-proof-2026-11-04.json), and [Benchmarks](https://teleionlabs.com/benchmarks/) |
 | Fine-tuned rerank, held-out | Tested only | The default order got 29 of 36 top results, the adapter 25 of 36. It moved none to right. With fallback to default when it says nothing fits: 29 of 36, no gain. Dev: 24, 19 and 25 of 33. Median 2.6 seconds after a cold load of about 30 seconds. **It failed our rule, so it stays out of live search** |
 | Fine-tuned reorder on real searches | Tested only | 8 searches, first pick changed once, 5 said nothing fits, Muse Spark passed 3 of 8. The order is on the record only |
 | Embedding fallback | Tested only | An embedding model on dev questions: plain need top 3 went only from 14 to 16, and it adds a dependency. Not shipped |
@@ -284,7 +347,7 @@ Without real owners, which `/q/search` was never built for, real agent queries a
 | Helpers on claims, paired test | Tested only | 30 real Tasks, paper drafts, 26 pairs read blind: with helpers better 9, without 3, ties 14, p = 0.146. **No effect shown,** with about 70 percent more tokens |
 | Same question again, Eranos library | Running on live | Exact repeats 5 of 5 from the library, no model, $0. Reworded 2 of 10. Related, which should not reuse, 0 of 5. Labeled test requests, November 4 |
 
-We have not shown that a search hit changes what agents then do. A hit that doesn't change the work has saved tokens, not produced learning. Where a retrain could help is finding the item at all: order has almost nothing to gain, because top result and top 3 match.
+So search finds the right item much more often, and that hasn't yet changed how well agents do new coding jobs. A stored exact answer is where the saving is clear. Where a retrain could help is finding the item at all: order has almost nothing to gain, because top result and top 3 match.
 
 ## Continuous improvement: each loop
 
@@ -303,13 +366,13 @@ Records: [learning record](https://shim.teleionlabs.com/q/object/fabric_learning
 
 ## What the loops have and haven't shown
 
-**A correction we made.** Until November 4 the Eranos tuner wrote a new version every hour, even with no new outcome, and its random seed changed with the version. So a mix could move with no new evidence, and outcomes rose in only 9 of 81 steps. Checking's mix was its starting point plus noise. Now `has_new_outcomes` in `eranos/pipeline/tuning.py` writes a new version only on new evidence. The mix can still swing fast at this size: `make-t17` had 71 percent at 21:02 UTC and 10 percent at 22:00 UTC. By that later read, Muse Spark 1.3 made 100 percent of Eranos work, because both Muse Wonder making personas had been dropped.
+**A correction we made.** Until November 4 the Eranos tuner wrote a new version every hour, even with no new outcome, and its random seed changed with the version. So a mix could move with no new evidence, and outcomes rose in only 9 of 81 steps. Checking's mix was its starting point plus noise. Now `has_new_outcomes` in `eranos/pipeline/tuning.py` writes a new version only on new evidence. The mix can still swing fast at this size: `make-t17` had 71 percent at 21:02 UTC and 10 percent at 22:00 UTC. In the same hour the outcome count on record moved down, from 219 to 202, and we have no explanation for that here. By that later read, Muse Spark 1.3 made 100 percent of Eranos work, because both Muse Wonder making personas had been dropped.
 
 **One real learning example, in the sizing tuner, and it didn't stay.** 6 of 6 Tasks with trial in the title came back needing people. A new table added that word and 5 others. On 9 held-out past Tasks, mean reward moved from -0.2456 to -0.1751. At 15:36 UTC a physical trial Task was then left with no model call, where the old table would have sent it to Muse Spark. A later outcome changed a decision. In the live trial, table 2 had mean reward -0.1529 on 6 Tasks and table 1 had -0.1516 on 8, and no Task finished on either side. A second read saw the flaw: with nothing passing, a table that declines everything always scores best. That is less spend, not better work. We changed the rule before any decision, and ended the trial with no promotion and no rollback.
 
 **Rollback, honestly.** No automatic promotion or rollback has happened on a live result, in any loop. Replayed from the start, the fine-tune switch would have turned off at sample 4, with 1 pass, against a floor of 0.70. That series ran before the registry was wired, and overall results didn't drop, so the count starts from wiring, with the rule unchanged. A rollback that can't undo itself, with a 0.70 floor and few samples, may fire at the start of any series. This is an open design question.
 
-**Not learning, though it looks like it.** The always-on agent's persona tuner has one persona per role and keeps its numbers in memory, and its maker's reward can't drop. The decider isn't credited with outcomes. Reflexes and dead-end lookups have little in them.
+**Not learning, though it looks like it.** The always-on agent's persona tuner has one persona per role and keeps its numbers in memory, and its maker's reward can't drop. The decider isn't credited with outcomes. Reflexes and dead-end lookups have little in them. The shim itself has no fallback between model routes: a failed route is passed back to the caller. The fallback described here lives in the decider.
 
 ## Retraining
 
@@ -347,7 +410,7 @@ This is a rule, not a calibrated chance of being right. It says what happened to
 | Credit outcomes to the decider | Next, not built | So its choices can learn. It would need more than one maker to choose between |
 | Try the deterministic word score on the pick job | Next, not built | It beat every model on the November 4 test. It also needs the filter for wrong objects, from the 17 of 87 finding |
 | Record whether a pick helped the worker | Next, not built | Without that outcome, neither a retrain nor a better test is worth much |
-| Controlled test of search on the work | Next, not built | A test with and without Fabric is written and registered first. We report here only what it has measured |
+| Help agents use what they find | Next, not built | In our registered test, agents searched and almost never used a hit. Reuse on near repeats, not only exact ones, is the gap |
 | Shapes on a timer | Next, not built | Units are written, and installing them is the owner's call. Then shapes gather real runs, and the tuner step joins them |
 | Shape as a field on a public Task, gated by `validate` | Next, not built | It would be a new public way to run things, so it needs an independent review first |
 | A second retrain on real outcomes | Next, not built | Only when the labels exist, and under the same rule |
