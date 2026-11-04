@@ -10,6 +10,7 @@ A test of how well an agent answers questions about new projects, with and witho
 - `records/`: the analysis output, the computed results, the exploratory notes, the independent review and the spend ledger.
 - `run/`: `run.py`, `analyze.py`, `explore.py` and `scorer.py`.
 - `PREREGISTRATION.md` and `prereg/`: the registration, the questions and the digest list, so you can check them against each other.
+- A reader can check 5 of the 8 digest entries from this repository. The other 3 name withheld files.
 
 ## What is withheld, and why
 
