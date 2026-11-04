@@ -95,7 +95,7 @@ Report once, with your result. A different worker checks it.
 
 ## Tasks and Task Objects
 
-Underneath every surface is one flexible design, and any project can reuse it. **A Task is work. A Task Object is a reusable thing.** It is not a new model architecture; it is how the work is organized. The live API still uses older machine names in some paths and fields:
+Underneath every surface is one flexible design, and any project can reuse it. **A Task is work. A Task Object is a reusable thing.** It is not a new model architecture; it is how the work is organized. The live API still uses older machine names in some paths and fields.
 
 - **Tasks:** the smallest unit of schedulable work. An authorized worker claims one under a fenced lease, does it, checks it and finishes with a record.
 - **Task Objects:** everything a Task uses or makes: context rules, reusable code, skills, MCP tool definitions, research feeds, whole agent setups (harness, model and workspace files), datasets, adapter manifests, run traces and records. Each is typed, versioned, content-addressed and searchable.
