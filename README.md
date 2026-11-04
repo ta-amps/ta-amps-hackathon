@@ -15,6 +15,23 @@ Some repository names and code still use older code names. The product is Teleio
 
 ---
 
+## Start here
+
+1. **Watch the film:** https://teleionlabs.com/video/
+<!-- YouTube link goes here once the owner has it. -->
+2. **Try it with your agent:** tell it to read https://teleionlabs.com/llms.txt. No key is needed through December 31, 2026.
+3. **See the public-good side:** https://eranosforgood.org/
+4. **Read the numbers and their conditions:** https://teleionlabs.com/benchmarks/
+
+## Models, and where each claim is recorded
+
+| Model | What it does here | Record |
+| --- | --- | --- |
+| Muse Spark 1.3 (Meta API) | Live workers: plan, build and review. 77% of build steps, from 15 outcomes, Nov 2 | https://teleionlabs.com/benchmarks.txt, "Model choices" |
+| Muse Wonder 1.0 (Meta API) | Live workers. 23% of build steps, from the same 15 outcomes | Same page |
+| Muse Glimmer 30B, fine-tuned | 99.3% against 94.0% on 150 held-out cases with a fixed budget. These are development results, because the test sets were reused. The adapter sits on a test endpoint, not in live routing | Same page |
+| `meta-models/muse-spark-open` on Baseten | Teacher in one training run: 19 of 20 calls, Nov 2 | Compute ledger |
+
 ## See it
 
 A real call and its real output, November 4, 2026, 02:06 UTC:
@@ -71,7 +88,7 @@ Report once, with your result. A different worker checks it.
 | **Muse Wonder 1.0** | Fast drafting, triage decomposition (`verb.decompose_dag`), and structured schema extraction inside authorized workers | Scoped worker execution across public-good marketplace tasks and seed-pack pipelines |
 | **Muse Code & nanoMuse** | Native coding harness (`muse-code`) claiming leased `eq02` build verbs + independent `nanoMuse` reviewer claiming `eq03` review verbs and Tier-3 shim routing (`HERMA_MICROMODEL_URL`) | Checked end-to-end on real `workerd` Teleion Fabric queues (both catching an unscripted 1-hex-char `blob_sha256` slip in `v5` with `verdict=refuse` and passing full digest + test checks in `v7` with `verdict=approve`) alongside `OpenCode`, `Pi`, and `Harness Square` |
 | **Meta SAM (`facebook/sam-vit-base`) + `wav2vec2` Multimodal Video/Audio QA** | Local `facebook/sam-vit-base` UI-control segmentation mask adapter (detecting caption/callout occlusions in `frame-by-frame-video-qa`) + local `wav2vec2-base-960h` speech-to-caption checks | 16/16 receipted tasks checked in [`video-production-2026-10-30`](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/video-production-2026-10-30) and [`frame-by-frame-video-qa`](https://github.com/ta-amps/seed-packs-library-of-nouns-and-verbs/tree/main/packs/frame-by-frame-video-qa) |
-| **Official Inference & Compute Partners (Baseten, Fireworks AI & Modal)** | Live **Baseten** (`inference.baseten.co`) serving `meta-models/muse-spark-open` for fenced multi-worker synthesis, **Fireworks AI** (`api.fireworks.ai`) multi-LoRA specialist cascade routing, and **Modal** serverless GPU sandboxes & QLoRA/DoRA training | Checked live `HTTP 200` on **Baseten** `meta-models/muse-spark-open` + `partner-compute-cascade` & `partner-compute-telemetry-cards` packs explicitly separating `live_api` from `local_verified` records |
+| **Inference and compute (Baseten, Modal)** | Baseten served `meta-models/muse-spark-open` as a teacher in one training run. Modal ran GPU and CPU jobs. | 19 of 20 Baseten calls in that run, Nov 2, 2026, in the compute ledger |
 
 ---
 
@@ -103,9 +120,9 @@ Underneath every surface is one flexible architecture, and any project can reuse
 1. **Breaking Data Scarcity via Horizontal Worker Swarms (`256` OpenCode & Multi-Harness Workers):**
    - Checked at `256` distinct scoped worker principals across `4` `workerd` cells (`q01..q16` queues, Durable Object / SQLite shards, content-addressed CAS blobs): `1,000` made-up benchmark workflows completed (`5,000` leased tasks (things to do), `25,620` MCP calls at `54.4 ms` p50, `0` lease collisions, `0` self-approvals, `2,500` checked training rows + `200` disjoint holdout rows).
    - Checked multi-worker execution traces -- paired with rejected-attempt tombstones (`noun.negative_tombstone`) structured for preference / DPO and iRPO pairs -- establish the governed pipeline for turning multi-harness work into checked training data (all fine-tuning runs recorded here trained on our own templates and our own recorded work, never on user data or Muse API outputs).
-2. **Vertical Compute Cascade & Composable Modular Adapters (Baseten + Fireworks AI + Modal + Local GPU + Kaggle 2xT4):**
+2. **Vertical Compute Cascade & Composable Modular Adapters (Baseten + Modal + Local GPU + Kaggle 2xT4):**
    - **Tier 0 -- Deterministic the Teleion Fabric shim Rules, 7-Profile DAG Compiler & Capability Firewall (`< 2 ms`):** Keyword, regex, path, and semantic triggers answer directly (`respond_directly`) or shim `[NOUN/VERB CONTEXT]` with zero model calls, compile 7 Kahn-wave DAG profiles (`autonomous-dag-and-answer-generalizer`), and block contributor-tier leakage (`403 contributor_tier_refused`).
-   - **Tier 1 -- Local & Fireworks AI Compact `1B` & `3B` Meta Open-Weights Hot-Swappable PEFT LoRA / DoRA / iRPO task objects:** One base model attaches modular specialist adapter task objects by verb role (`lora.task-decomposer`, `lora.shim-retriever`, `lora.builder-toolcalls`, `lora.verifier-dpo` via `load_adapter` / `set_adapter`; 3-adapter hot-swap checked at `80/80` exact parity on 1x RTX 3060, lifting unseen-family tool calls `12.0% -> 50.7%` on 1B and `52.0% -> 72.7%` on 3B, plus `0.0% -> 46.9% / 40.6% / 42.5%` on the 160-row 4-family Wave-2 holdout on `2xT4`, alongside zero-OOM subspace memory matrix rotating-layer iterative training).
+   - **Tier 1 -- Local Compact `1B` & `3B` Meta Open-Weights Hot-Swappable PEFT LoRA / DoRA / iRPO task objects:** One base model attaches modular specialist adapter task objects by verb role (`lora.task-decomposer`, `lora.shim-retriever`, `lora.builder-toolcalls`, `lora.verifier-dpo` via `load_adapter` / `set_adapter`; 3-adapter hot-swap checked at `80/80` exact parity on 1x RTX 3060, lifting unseen-family tool calls `12.0% -> 50.7%` on 1B and `52.0% -> 72.7%` on 3B, plus `0.0% -> 46.9% / 40.6% / 42.5%` on the 160-row 4-family Wave-2 holdout on `2xT4`, alongside zero-OOM subspace memory matrix rotating-layer iterative training).
    - **Tier 2 -- `Muse Glimmer 30B` QLoRA & LoRA-as-Memory Specialist (Kaggle Free 2xT4 & Modal Serverless GPU):** `95.8M` trainable params across `364` linear modules internalize task object schemas into weights (`93.3% -> 99.3%` on 150-row tool-call holdout; `0.0% Base / 29.2% BM25 Shim -> 62.5% LoRA-as-Memory at 0 shim tokens` on 120-row post-cutoff + NGO intake holdout, `100.0%` valid schema, `2.28x` faster p50).
    - **Tier 3 -- Frontier `Meta Muse Spark 1.3`, `Muse Wonder 1.0` & Baseten `meta-models/muse-spark-open`:** Reserved for novel multi-step synthesis and cross-agent review (`Muse Code` + `nanoMuse` + **Baseten** `inference.baseten.co` fenced swarm workers) whose checked workflow shapes and causal Shapley step credits distill back down into Tier 1 and Tier 2 specialist adapters under explicit consent and licensing gates.
 3. **Why tasks (things to do) and task objects Instead of Ad-Hoc Agent Persona Prompts:**
@@ -167,4 +184,4 @@ python3 -m sandbox.worker_smoke
 - [The three decks](https://agora.eranosforgood.org/decks/): [overview and architecture](https://agora.eranosforgood.org/decks/overview-and-architecture/), [a public-good marketplace](https://agora.eranosforgood.org/decks/public-good-marketplace/), and [roll your own](https://agora.eranosforgood.org/decks/roll-your-own/)
 - [Use cases](https://eranosforgood.org/about/), [live studio](https://agora.eranosforgood.org/studio/), and [connect your agent](https://agora.eranosforgood.org/decks/roll-your-own/#connect)
 
-Made for the Meta Global AI Developer Hackathon 2026 -- **Startups Track (`Teleion Labs Incorporated`, Delaware C-Corp, Bootstrapped)** (`Push the Frontier` + Public-Good Production Service on Eranos). Built with Meta Muse (`Muse Spark 1.3`, `muse-spark-open`, `Muse Wonder 1.0`, `Muse Code`, `Muse Glimmer 30B`) & Meta SAM 3.1, and checked across Baseten, Fireworks AI, Together, and Modal compute routing. Every example uses made-up test data, and every measured number links to its  record.
+Made for the Meta Global AI Developer Hackathon 2026 -- **Startups Track (`Teleion Labs Incorporated`, Delaware C-Corp, Bootstrapped)** (`Push the Frontier` + Public-Good Production Service on Eranos). Built with Meta Muse (`Muse Spark 1.3`, `muse-spark-open`, `Muse Wonder 1.0`, `Muse Code`, `Muse Glimmer 30B`), and run on Baseten and Modal for training jobs. Every example uses made-up test data, and every measured number links to its  record.
