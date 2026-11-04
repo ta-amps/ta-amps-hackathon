@@ -47,6 +47,34 @@ SITE_RULES = [
     ("brand T7 (misspelling)", r"tel[e]on"),
     ("unverified numbers from other sessions", r"28\.6|99\.85|40\+"),
 ]
+# The one narrow exception to the account-name rule (coordinator, Nov 4): an href, or a content value that is the whole
+# address, naming exactly one of the six public repositories. Any other use of the account name still fails.
+PUBLIC_REPOS = (
+    "teleionlabs-teleion-fabric",
+    "eranos-public-marketplace-for-public-good-token-burn",
+    "agora-public-overview-architecture-setup-and-contribution",
+    "teleion-fabric-infrastructure-work-and-storage-engine",
+    "herma-infrastructure-shim-for-intelligent-agents",
+    "seed-packs-library-of-nouns-and-verbs",
+)
+_REPO_URL = r"https://github\.com/ta-amps/(?:" + "|".join(re.escape(r) for r in PUBLIC_REPOS) + ")"
+REPO_URL_VALUE = re.compile(_REPO_URL)
+REPO_HREF = re.compile(r'''\shref=(["\'])''' + _REPO_URL + r"\1")
+T7_RAW = r"ta-amps|tel[e]on"
+COMMERCE_RAW = r"\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b"
+
+
+def raw_html_t7_hits(raw_html: str, allow_handoff: bool = False) -> list[re.Match]:
+    """T7 strings in a page's raw HTML. Only an exact public repository href is skipped, never visible text."""
+    pattern = T7_RAW if allow_handoff else f"{T7_RAW}|{COMMERCE_RAW}"
+    return list(re.finditer(pattern, REPO_HREF.sub(lambda m: " " * len(m.group(0)), raw_html), re.I))
+
+
+def is_public_repo_url(value: str) -> bool:
+    """True only when the whole content value is the address of one public repository."""
+    return REPO_URL_VALUE.fullmatch(value) is not None
+
+
 COMMERCE_RULE = re.compile(r"\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", re.I)
 PERCENT_RULE = re.compile(r"%")
 ALLOWED_NAMES = "Teleion Fabric, Teleion Labs, Meta's Muse models, Eranos"
@@ -242,7 +270,7 @@ def main() -> int:
         allow_handoff = rel == "story/index.html"
         gate(rel, "\n".join(parser.text + parser.attrs + parser.generated), allow_percent=allow_pct, allow_handoff=allow_handoff)
         # Also verify raw HTML carries zero T7 banned strings (including hrefs and metadata).
-        for m in re.finditer(r"ta-amps|tel[e]on" + ("" if allow_handoff else r"|\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b"), raw_html, re.I):
+        for m in raw_html_t7_hits(raw_html, allow_handoff):
             hits.append(f"{rel} (raw html): T7 hit: {mask(raw_html, m)}")
         shim = len(SHIM.findall("\n".join(parser.text)))
         if shim > 1:
@@ -274,6 +302,8 @@ def main() -> int:
             for m in re.finditer(r"ta-amps|tel[e]on|\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", vtext, re.I):
                 hits.append(f"captions {vtt.name}: T7 hit: {mask(vtext, m)}")
     for fname, s in content_strings_by_file(include_notes=True):
+        if is_public_repo_url(s):
+            continue
         gate(f"content/{fname}", s, full=s in vis_set, allow_percent=(fname in ("benchmarks.json", "methodology.json", "home.json", "judges.json")), allow_handoff=fname == "story.json")
     # On the sample list, a source scan would only find the sample's own made-up words.
     sources = [] if sample else [p for p in source_files() if p.suffix not in BINARY and p.is_file()]

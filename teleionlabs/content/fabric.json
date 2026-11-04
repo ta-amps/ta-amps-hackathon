@@ -224,6 +224,19 @@
    },
    "how": "List the checked example kits in Eranos's catalog over HTTPS, with each kit's identifier, title and open license:",
    "code": "curl -s https://eranosforgood.org/api/catalog \\\n  | jq -c '.kits[] | {kit_id: .kit.kit_id, title: .kit.title, license: .spdx_license}'"
+  },
+  {
+   "type": "links",
+   "id": "source",
+   "heading": "Source code",
+   "intro": "Read the code and its tests.",
+   "items": [
+    {
+     "label": "Source on GitHub",
+     "href": "https://github.com/ta-amps/teleionlabs-teleion-fabric",
+     "text": "The main repository, with links to the others."
+    }
+   ]
   }
  ]
 }
