@@ -1,0 +1,127 @@
+== primary
+ A         0/90 0.0% CI[0.0, 0.0] wrong 0 unk 90 tok/run 1003 total 90289 tok/correct None CINone sec 8.3 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         88/90 97.8% CI[93.3, 100.0] wrong 0 unk 2 tok/run 1785 total 160654 tok/correct 1826 CI(1432.967, 2570.393) sec 8.8 calls 2.16 tools 1.14 chars 340 direct 0.0
+ B-cold    88/90 97.8% CI[93.3, 100.0] wrong 0 unk 2 tok/run 5242 total 471778 tok/correct 5361 CI(4341.956, 6936.037) sec 12.5 calls 3.53 tools 2.5 chars 4925 direct 0.0
+ B-direct  90/90 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 1074 total 96645 tok/correct 1074 CI(639.378, 1615.522) sec 6.3 calls 1.14 tools 0.61 chars 211 direct 0.467
+ B-old     10/30 33.3% CI[16.7, 50.0] wrong 1 unk 19 tok/run 58002 total 1740064 tok/correct 174006 CI(92660.6, 407718.4) sec 41.1 calls 6.5 tools 4.7 chars 37907 direct 0.0
+ C         90/90 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 2230 total 200745 tok/correct 2230 CI(1668.656, 2949.9) sec 15.5 calls 2.63 tools 1.63 chars 1207 direct 0.0
+ C-raw     30/30 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 7048 total 211436 tok/correct 7048 CI(4900.2, 9528.567) sec 24.5 calls 2.57 tools 1.57 chars 12126 direct 0.0
+   B vs C: tok ratio 0.8 CI(0.68, 0.923) tok/correct ratio 0.818 CI(0.682, 0.966) points -2.2 CI[-6.7, 0.0] better 0/1 p=1 sec ratio 0.57
+   B vs C-raw: tok ratio 0.253 CI(0.199, 0.321) tok/correct ratio 0.259 CI(0.2, 0.333) points -2.2 CI[-6.7, 0.0] better 0/1 p=1 sec ratio 0.361
+   B-cold vs C: tok ratio 2.35 CI(1.983, 2.852) tok/correct ratio 2.404 CI(2.038, 2.875) points -2.2 CI[-6.7, 0.0] better 0/1 p=1 sec ratio 0.808
+   B-direct vs C: tok ratio 0.481 CI(0.363, 0.576) tok/correct ratio 0.481 CI(0.363, 0.576) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.406
+   B vs B-old: tok ratio 0.031 CI(0.022, 0.045) tok/correct ratio 0.01 CI(0.004, 0.021) points 64.4 CI[46.7, 81.1] better 20/0 p=0.0 sec ratio 0.215
+   B vs A: tok ratio 1.779 CI(1.399, 2.448) tok/correct ratio None CINone points 97.8 CI[93.3, 100.0] better 30/0 p=0.0 sec ratio 1.071
+== on_page
+ A         0/39 0.0% CI[0.0, 0.0] wrong 0 unk 39 tok/run 1053 total 41065 tok/correct None CINone sec 8.8 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         39/39 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 1484 total 57868 tok/correct 1484 CI(1332.744, 1660.769) sec 7.4 calls 2.05 tools 1.05 chars 250 direct 0.0
+ B-cold    39/39 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 4457 total 173813 tok/correct 4457 CI(3948.923, 5023.974) sec 11.3 calls 3.31 tools 2.31 chars 4635 direct 0.0
+ B-direct  39/39 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 747 total 29137 tok/correct 747 CI(354.692, 1206.282) sec 4.2 calls 0.92 tools 0.46 chars 118 direct 0.538
+ B-old     9/13 69.2% CI[46.2, 92.3] wrong 0 unk 4 tok/run 31679 total 411826 tok/correct 45758 CI(16208.833, 107525.167) sec 22.6 calls 4.46 tools 3.0 chars 26043 direct 0.0
+ C         39/39 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 1820 total 70978 tok/correct 1820 CI(1405.333, 2303.641) sec 12.7 calls 2.44 tools 1.44 chars 1092 direct 0.0
+ C-raw     13/13 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 5547 total 72117 tok/correct 5547 CI(3781.923, 7618.846) sec 15.9 calls 2.38 tools 1.38 chars 10658 direct 0.0
+   B vs C: tok ratio 0.815 CI(0.707, 0.962) tok/correct ratio 0.815 CI(0.707, 0.962) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.579
+   B vs C-raw: tok ratio 0.267 CI(0.213, 0.366) tok/correct ratio 0.267 CI(0.213, 0.366) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.463
+   B-cold vs C: tok ratio 2.449 CI(2.023, 3.086) tok/correct ratio 2.449 CI(2.023, 3.086) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.887
+   B-direct vs C: tok ratio 0.411 CI(0.233, 0.549) tok/correct ratio 0.411 CI(0.233, 0.549) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.328
+   B vs B-old: tok ratio 0.047 CI(0.027, 0.106) tok/correct ratio 0.032 CI(0.012, 0.098) points 30.8 CI[7.7, 53.8] better 4/0 p=0.125 sec ratio 0.326
+   B vs A: tok ratio 1.409 CI(1.215, 1.642) tok/correct ratio None CINone points 100.0 CI[100.0, 100.0] better 13/0 p=0.0002 sec ratio 0.834
+== deep
+ A         0/39 0.0% CI[0.0, 0.0] wrong 0 unk 39 tok/run 938 total 36577 tok/correct None CINone sec 7.6 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         37/39 94.9% CI[84.6, 100.0] wrong 0 unk 2 tok/run 2096 total 81729 tok/correct 2209 CI(1364.385, 4072.879) sec 10.2 calls 2.31 tools 1.28 chars 362 direct 0.0
+ B-cold    37/39 94.9% CI[84.6, 100.0] wrong 0 unk 2 tok/run 5581 total 217641 tok/correct 5882 CI(4020.333, 9517.364) sec 13.2 calls 3.67 tools 2.59 chars 4784 direct 0.0
+ B-direct  39/39 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 1202 total 46883 tok/correct 1202 CI(390.385, 2363.538) sec 8.1 calls 1.1 tools 0.64 chars 196 direct 0.538
+ B-old     0/13 0.0% CI[0.0, 0.0] wrong 0 unk 13 tok/run 78852 total 1025072 tok/correct None CINone sec 50.3 calls 8.08 tools 6.0 chars 47691 direct 0.0
+ C         39/39 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 2342 total 91327 tok/correct 2342 CI(1272.615, 3918.205) sec 17.3 calls 2.69 tools 1.69 chars 971 direct 0.0
+ C-raw     13/13 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 6980 total 90740 tok/correct 6980 CI(3268.0, 11972.769) sec 35.9 calls 2.54 tools 1.54 chars 11296 direct 0.0
+   B vs C: tok ratio 0.895 CI(0.666, 1.091) tok/correct ratio 0.943 CI(0.668, 1.18) points -5.1 CI[-15.4, 0.0] better 0/1 p=1 sec ratio 0.589
+   B vs C-raw: tok ratio 0.3 CI(0.197, 0.425) tok/correct ratio 0.316 CI(0.198, 0.437) points -5.1 CI[-15.4, 0.0] better 0/1 p=1 sec ratio 0.285
+   B-cold vs C: tok ratio 2.383 CI(1.852, 3.42) tok/correct ratio 2.512 CI(1.944, 3.42) points -5.1 CI[-15.4, 0.0] better 0/1 p=1 sec ratio 0.764
+   B-direct vs C: tok ratio 0.513 CI(0.271, 0.66) tok/correct ratio 0.513 CI(0.271, 0.66) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.467
+   B vs B-old: tok ratio 0.027 CI(0.016, 0.047) tok/correct ratio None CINone points 94.9 CI[84.6, 100.0] better 13/0 p=0.0002 sec ratio 0.203
+   B vs A: tok ratio 2.234 CI(1.423, 3.731) tok/correct ratio None CINone points 94.9 CI[84.6, 100.0] better 13/0 p=0.0002 sec ratio 1.341
+== fresh
+ A         0/30 0.0% CI[0.0, 0.0] wrong 0 unk 30 tok/run 1064 total 31918 tok/correct None CINone sec 8.6 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         27/30 90.0% CI[70.0, 100.0] wrong 0 unk 3 tok/run 2419 total 72556 tok/correct 2687 CI(1313.567, 6383.0) sec 9.5 calls 2.57 tools 1.5 chars 540 direct 0.0
+ B-cold    27/30 90.0% CI[70.0, 100.0] wrong 0 unk 3 tok/run 7171 total 215120 tok/correct 7967 CI(3882.8, 18172.333) sec 23.5 calls 3.87 tools 2.77 chars 5734 direct 0.0
+ B-direct  27/30 90.0% CI[70.0, 100.0] wrong 0 unk 3 tok/run 1536 total 46078 tok/correct 1707 CI(195.6, 5193.381) sec 6.4 calls 1.3 tools 0.83 chars 355 direct 0.6
+ B-old     0/10 0.0% CI[0.0, 0.0] wrong 0 unk 10 tok/run 78739 total 787391 tok/correct None CINone sec 51.3 calls 8.4 tools 6.0 chars 46642 direct 0.0
+ C         30/30 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 2462 total 73847 tok/correct 2462 CI(1387.267, 3851.5) sec 15.7 calls 2.63 tools 1.63 chars 1426 direct 0.0
+ C-raw     10/10 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 13977 total 139772 tok/correct 13977 CI(3236.0, 32648.8) sec 17.3 calls 2.9 tools 1.8 chars 15087 direct 0.0
+   B vs C: tok ratio 0.983 CI(0.448, 2.065) tok/correct ratio 1.092 CI(0.448, 2.825) points -10.0 CI[-30.0, 0.0] better 0/1 p=1 sec ratio 0.609
+   B vs C-raw: tok ratio 0.173 CI(0.048, 0.776) tok/correct ratio 0.192 CI(0.048, 1.023) points -10.0 CI[-30.0, 0.0] better 0/1 p=1 sec ratio 0.551
+   B-cold vs C: tok ratio 2.913 CI(1.56, 5.687) tok/correct ratio 3.237 CI(1.56, 7.951) points -10.0 CI[-30.0, 0.0] better 0/1 p=1 sec ratio 1.501
+   B-direct vs C: tok ratio 0.624 CI(0.119, 1.488) tok/correct ratio 0.693 CI(0.119, 2.202) points -10.0 CI[-30.0, 0.0] better 0/1 p=1 sec ratio 0.411
+   B vs B-old: tok ratio 0.031 CI(0.017, 0.058) tok/correct ratio None CINone points 90.0 CI[70.0, 100.0] better 9/0 p=0.0039 sec ratio 0.186
+   B vs A: tok ratio 2.273 CI(1.196, 4.425) tok/correct ratio None CINone points 90.0 CI[70.0, 100.0] better 9/0 p=0.0039 sec ratio 1.107
+== low_star_unindexed
+ A         0/30 0.0% CI[0.0, 0.0] wrong 0 unk 30 tok/run 1008 total 30249 tok/correct None CINone sec 8.1 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         21/30 70.0% CI[46.7, 90.0] wrong 0 unk 9 tok/run 2622 total 78646 tok/correct 3745 CI(2244.409, 6036.0) sec 14.0 calls 2.57 tools 1.53 chars 599 direct 0.0
+ B-cold    27/30 90.0% CI[70.0, 100.0] wrong 0 unk 3 tok/run 12936 total 388072 tok/correct 14373 CI(7314.367, 26761.19) sec 22.4 calls 5.17 tools 4.03 chars 10244 direct 0.0
+ B-direct  21/30 70.0% CI[43.3, 93.3] wrong 0 unk 9 tok/run 1889 total 56671 tok/correct 2699 CI(1810.423, 4548.692) sec 10.2 calls 2.2 tools 1.2 chars 383 direct 0.0
+ B-old     0/10 0.0% CI[0.0, 0.0] wrong 0 unk 10 tok/run 88107 total 881068 tok/correct None CINone sec 40.0 calls 8.4 tools 6.0 chars 54760 direct 0.0
+ C         30/30 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 2219 total 66570 tok/correct 2219 CI(1417.633, 3195.567) sec 14.1 calls 2.73 tools 1.73 chars 1233 direct 0.0
+ C-raw     10/10 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 10818 total 108178 tok/correct 10818 CI(2849.3, 23839.8) sec 18.8 calls 2.7 tools 1.7 chars 14552 direct 0.0
+   B vs C: tok ratio 1.181 CI(0.754, 1.683) tok/correct ratio 1.688 CI(0.911, 3.327) points -30.0 CI[-53.3, -10.0] better 0/5 p=0.0625 sec ratio 0.996
+   B vs C-raw: tok ratio 0.242 CI(0.094, 0.671) tok/correct ratio 0.346 CI(0.118, 1.318) points -30.0 CI[-53.3, -10.0] better 0/5 p=0.0625 sec ratio 0.749
+   B-cold vs C: tok ratio 5.83 CI(2.702, 11.973) tok/correct ratio 6.477 CI(2.71, 16.033) points -10.0 CI[-30.0, 0.0] better 0/1 p=1 sec ratio 1.587
+   B-direct vs C: tok ratio 0.851 CI(0.574, 1.319) tok/correct ratio 1.216 CI(0.656, 2.832) points -30.0 CI[-56.7, -6.7] better 0/4 p=0.125 sec ratio 0.724
+   B vs B-old: tok ratio 0.03 CI(0.02, 0.041) tok/correct ratio None CINone points 70.0 CI[46.7, 90.0] better 9/0 p=0.0039 sec ratio 0.351
+   B vs A: tok ratio 2.6 CI(1.683, 3.836) tok/correct ratio None CINone points 70.0 CI[46.7, 90.0] better 9/0 p=0.0039 sec ratio 1.727
+== not_on_feed
+ A         0/18 0.0% CI[0.0, 0.0] wrong 0 unk 18 tok/run 1021 total 18379 tok/correct None CINone sec 8.2 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         4/18 22.2% CI[11.1, 33.3] wrong 0 unk 14 tok/run 1997 total 35952 tok/correct 8988 CI(6348.5, 17100.5) sec 10.6 calls 2.22 tools 1.22 chars 597 direct 0.0
+ B-cold    17/18 94.4% CI[83.3, 100.0] wrong 0 unk 1 tok/run 21737 total 391267 tok/correct 23016 CI(21159.111, 25544.4) sec 28.5 calls 6.72 tools 5.72 chars 20035 direct 0.0
+ B-direct  7/18 38.9% CI[16.7, 61.1] wrong 0 unk 11 tok/run 2243 total 40369 tok/correct 5767 CI(4070.273, 12351.333) sec 12.7 calls 2.44 tools 1.44 chars 863 direct 0.0
+ B-old     0/6 0.0% CI[0.0, 0.0] wrong 0 unk 6 tok/run 84934 total 509603 tok/correct None CINone sec 46.4 calls 8.0 tools 6.0 chars 52670 direct 0.0
+ C         18/18 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 1154 total 20763 tok/correct 1154 CI(1059.722, 1244.444) sec 9.3 calls 2.0 tools 1.0 chars 447 direct 0.0
+ C-raw     6/6 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 2511 total 15065 tok/correct 2511 CI(2429.5, 2579.833) sec 5.4 calls 2.0 tools 1.0 chars 5914 direct 0.0
+   B vs C: tok ratio 1.732 CI(1.538, 1.952) tok/correct ratio 7.792 CI(5.529, 14.715) points -77.8 CI[-88.9, -66.7] better 0/6 p=0.0312 sec ratio 1.151
+   B vs C-raw: tok ratio 0.795 CI(0.72, 0.867) tok/correct ratio 3.58 CI(2.542, 6.752) points -77.8 CI[-88.9, -66.7] better 0/6 p=0.0312 sec ratio 1.977
+   B-cold vs C: tok ratio 18.844 CI(16.779, 21.028) tok/correct ratio 19.953 CI(17.711, 22.0) points -5.6 CI[-16.7, 0.0] better 0/1 p=1 sec ratio 3.084
+   B-direct vs C: tok ratio 1.944 CI(1.643, 2.249) tok/correct ratio 5.0 CI(3.64, 10.133) points -61.1 CI[-83.3, -38.9] better 0/6 p=0.0312 sec ratio 1.374
+   B vs B-old: tok ratio 0.024 CI(0.021, 0.028) tok/correct ratio None CINone points 22.2 CI[11.1, 33.3] better 4/0 p=0.125 sec ratio 0.229
+   B vs A: tok ratio 1.956 CI(1.755, 2.181) tok/correct ratio None CINone points 22.2 CI[11.1, 33.3] better 4/0 p=0.125 sec ratio 1.292
+== invented
+ A         9/9 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 820 total 7382 tok/correct 820 CI(712.667, 875.0) sec 9.3 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         9/9 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 2098 total 18886 tok/correct 2098 CI(1597.667, 3020.333) sec 11.5 calls 2.22 tools 1.22 chars 382 direct 0.0
+ B-cold    9/9 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 24842 total 223575 tok/correct 24842 CI(24486.0, 25037.333) sec 32.9 calls 8.11 tools 6.0 chars 16621 direct 0.0
+ B-direct  9/9 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 1880 total 16918 tok/correct 1880 CI(1671.0, 2134.333) sec 11.5 calls 2.11 tools 1.11 chars 313 direct 0.0
+ B-old     3/3 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 82401 total 247204 tok/correct 82401 CI(76387.0, 86623.0) sec 44.8 calls 8.33 tools 6.0 chars 47924 direct 0.0
+ C         9/9 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 2516 total 22648 tok/correct 2516 CI(2100.333, 3220.0) sec 25.0 calls 4.22 tools 3.22 chars 138 direct 0.0
+ C-raw     3/3 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 11641 total 34922 tok/correct 11641 CI(2351.0, 30100.0) sec 35.8 calls 5.0 tools 4.0 chars 12066 direct 0.0
+   B vs C: tok ratio 0.834 CI(0.521, 1.355) tok/correct ratio 0.834 CI(0.521, 1.355) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.462
+   B vs C-raw: tok ratio 0.18 CI(0.056, 1.222) tok/correct ratio 0.18 CI(0.056, 1.222) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.322
+   B-cold vs C: tok ratio 9.872 CI(7.764, 11.921) tok/correct ratio 9.872 CI(7.764, 11.921) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 1.318
+   B-direct vs C: tok ratio 0.747 CI(0.57, 1.016) tok/correct ratio 0.747 CI(0.57, 1.016) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.461
+   B vs B-old: tok ratio 0.025 CI(0.019, 0.04) tok/correct ratio 0.025 CI(0.019, 0.04) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.257
+   B vs A: tok ratio 2.558 CI(1.83, 3.452) tok/correct ratio 2.558 CI(1.83, 3.452) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 1.238
+== multi_discovery
+ A         0/24 0.0% CI[0.0, 0.0] wrong 0 unk 24 tok/run 989 total 23746 tok/correct None CINone sec 7.6 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         24/24 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 1903 total 45675 tok/correct 1903 CI(1763.0, 2043.667) sec 9.1 calls 2.0 tools 1.0 chars 610 direct 0.0
+ B-cold    24/24 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 7258 total 174197 tok/correct 7258 CI(5209.875, 9724.208) sec 16.6 calls 3.96 tools 2.88 chars 5508 direct 0.0
+ B-direct  24/24 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 1859 total 44623 tok/correct 1859 CI(1754.042, 1960.208) sec 8.3 calls 2.0 tools 1.0 chars 610 direct 0.0
+ B-old     0/8 0.0% CI[0.0, 0.0] wrong 5 unk 3 tok/run 54480 total 435838 tok/correct None CINone sec 75.4 calls 6.12 tools 4.5 chars 35006 direct 0.0
+ C         24/24 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 8124 total 194964 tok/correct 8124 CI(7284.875, 9363.583) sec 37.3 calls 5.12 tools 4.08 chars 3795 direct 0.0
+ C-raw     8/8 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 36397 total 291173 tok/correct 36397 CI(24496.625, 46631.625) sec 43.2 calls 5.25 tools 4.25 chars 36800 direct 0.0
+   B vs C: tok ratio 0.234 CI(0.205, 0.263) tok/correct ratio 0.234 CI(0.205, 0.263) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.244
+   B vs C-raw: tok ratio 0.052 CI(0.041, 0.078) tok/correct ratio 0.052 CI(0.041, 0.078) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.211
+   B-cold vs C: tok ratio 0.893 CI(0.62, 1.247) tok/correct ratio 0.893 CI(0.62, 1.247) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.445
+   B-direct vs C: tok ratio 0.229 CI(0.193, 0.263) tok/correct ratio 0.229 CI(0.193, 0.263) points 0.0 CI[0.0, 0.0] better 0/0 p=1 sec ratio 0.222
+   B vs B-old: tok ratio 0.035 CI(0.026, 0.059) tok/correct ratio None CINone points 100.0 CI[100.0, 100.0] better 8/0 p=0.0078 sec ratio 0.121
+   B vs A: tok ratio 1.923 CI(1.735, 2.148) tok/correct ratio None CINone points 100.0 CI[100.0, 100.0] better 8/0 p=0.0078 sec ratio 1.204
+== any_real_repo
+ A         0/168 0.0% CI[0.0, 0.0] wrong 0 unk 168 tok/run 1017 total 170835 tok/correct None CINone sec 8.3 calls 1.0 tools 0.0 chars 0 direct 0.0
+ B         140/168 83.3% CI[74.4, 91.1] wrong 0 unk 28 tok/run 2070 total 347808 tok/correct 2484 CI(1872.139, 3353.485) sec 10.1 calls 2.31 tools 1.29 chars 449 direct 0.0
+ B-cold    159/168 94.6% CI[88.7, 99.4] wrong 0 unk 9 tok/run 8728 total 1466237 tok/correct 9222 CI(6943.994, 12069.09) sec 18.0 calls 4.23 tools 3.17 chars 7638 direct 0.0
+ B-direct  145/168 86.3% CI[78.0, 93.5] wrong 0 unk 23 tok/run 1427 total 239763 tok/correct 1654 CI(1145.7, 2342.458) sec 7.7 calls 1.5 tools 0.85 chars 337 direct 0.357
+ B-old     10/56 17.9% CI[8.9, 28.6] wrong 1 unk 45 tok/run 69967 total 3918126 tok/correct 391813 CI(219669.812, 877581.0) sec 43.3 calls 7.34 tools 5.3 chars 44058 direct 0.0
+ C         168/168 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 2154 total 361925 tok/correct 2154 CI(1732.56, 2648.744) sec 14.6 calls 2.58 tools 1.58 chars 1170 direct 0.0
+ C-raw     56/56 100.0% CI[100.0, 100.0] wrong 0 unk 0 tok/run 8472 total 474451 tok/correct 8472 CI(5072.661, 13071.768) sec 20.1 calls 2.59 tools 1.57 chars 12422 direct 0.0
+   B vs C: tok ratio 0.961 CI(0.779, 1.191) tok/correct ratio 1.153 CI(0.881, 1.54) points -16.7 CI[-25.6, -8.9] better 0/13 p=0.0002 sec ratio 0.69
+   B vs C-raw: tok ratio 0.244 CI(0.154, 0.4) tok/correct ratio 0.293 CI(0.177, 0.503) points -16.7 CI[-25.6, -8.9] better 0/13 p=0.0002 sec ratio 0.501
+   B-cold vs C: tok ratio 4.051 CI(2.984, 5.512) tok/correct ratio 4.281 CI(3.081, 5.983) points -5.4 CI[-11.3, -0.6] better 0/4 p=0.125 sec ratio 1.229
+   B-direct vs C: tok ratio 0.662 CI(0.509, 0.863) tok/correct ratio 0.768 CI(0.555, 1.081) points -13.7 CI[-22.0, -6.5] better 0/11 p=0.001 sec ratio 0.527
+   B vs B-old: tok ratio 0.03 CI(0.023, 0.038) tok/correct ratio 0.006 CI(0.003, 0.011) points 65.5 CI[54.2, 76.8] better 42/0 p=0.0 sec ratio 0.233
+   B vs A: tok ratio 2.036 CI(1.607, 2.589) tok/correct ratio None CINone points 83.3 CI[74.4, 91.1] better 52/0 p=0.0 sec ratio 1.216
+{'failed_runs': 0, 'attempts': {'total': 3201, 'non_200': 65, 'missing_usage': 65, 'finish_not_stop': 13}, 'spend_usd': 2.074, 'read_through_misses_arm_B': {'primary': {}, 'on_page': {}, 'deep': {}, 'fresh': {'withheld': 3}, 'low_star_unindexed': {'rate_limited': 16}, 'not_on_feed': {'rate_limited': 18}, 'invented': {'rate_limited': 9, 'not_in_github_search': 1}, 'multi_discovery': {}, 'any_real_repo': {'withheld': 3, 'rate_limited': 34}}, 'read_through_misses_arm_B_direct': {'primary': {}, 'on_page': {}, 'deep': {}, 'fresh': {'withheld': 3}, 'low_star_unindexed': {'rate_limited': 13}, 'not_on_feed': {'rate_limited': 19}, 'invented': {'rate_limited': 9, 'not_in_github_search': 1}, 'multi_discovery': {}, 'any_real_repo': {'withheld': 3, 'rate_limited': 32}}}

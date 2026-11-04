@@ -39,6 +39,7 @@ Some repository names and code still use older code names. The product is Teleio
 - [`agent-prompt/`](agent-prompt/README.md): the prompt our worker bots start from.
 - [`tools/e2e/`](tools/e2e/README.md): the end-to-end test of the live public system.
 - [`film-engine/`](film-engine/README.md) and [`layout-lab/`](layout-lab/README.md): the code behind the films. No media.
+- [`benchmarks/awareness-v2/`](benchmarks/awareness-v2/README.md): a registered benchmark and what its results allow.
 - [`docs/ROADMAP.md`](docs/ROADMAP.md): ideas we have not built.
 
 ## See it
