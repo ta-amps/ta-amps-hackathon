@@ -1,0 +1,947 @@
+[
+ {
+  "id": "V001",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "owner",
+  "repo": "keli-wen/agy-staff",
+  "feed": [
+   "eval-frameworks"
+  ],
+  "created_at": "2026-08-18T16:08:25Z",
+  "stars_at_draw": 815,
+  "question": "A public GitHub repository named \"agy-staff\" is a new LLM or agent evaluation framework, created in 2026-08. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "keli-wen"
+ },
+ {
+  "id": "V002",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "owner",
+  "repo": "morganlinton/BeautifulRust",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-10-23T03:01:11Z",
+  "stars_at_draw": 1696,
+  "question": "A public GitHub repository named \"BeautifulRust\" is a new AI agent harness, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "morganlinton"
+ },
+ {
+  "id": "V003",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "owner",
+  "repo": "kienpt91/support-copilot-core",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-10-31T02:59:28Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"support-copilot-core\" is a new PII detection or redaction tool, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "kienpt91"
+ },
+ {
+  "id": "V004",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "owner",
+  "repo": "ArgirisViv/bulwark-llm-gateway",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-10-30T01:58:11Z",
+  "stars_at_draw": 2,
+  "question": "A public GitHub repository named \"bulwark-llm-gateway\" is a new PII detection or redaction tool, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "ArgirisViv"
+ },
+ {
+  "id": "V005",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "owner",
+  "repo": "dmustapha/travelproof",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-10-31T23:36:13Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"travelproof\" is a new PII detection or redaction tool, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "dmustapha"
+ },
+ {
+  "id": "V006",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "owner",
+  "repo": "tavern-labs-ai/persona-ai-sdk",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-10-31T14:29:10Z",
+  "stars_at_draw": 197,
+  "question": "A public GitHub repository named \"persona-ai-sdk\" is a new agent memory system, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "tavern-labs-ai"
+ },
+ {
+  "id": "V007",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "license",
+  "repo": "shanjeevrajendran/cloakroom",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-10-11T04:09:21Z",
+  "stars_at_draw": 11,
+  "question": "What software licence does the GitHub repository shanjeevrajendran/cloakroom use? Answer with the licence name.",
+  "truth": "Apache-2.0"
+ },
+ {
+  "id": "V008",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "license",
+  "repo": "cogniolab/dolphi",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-10-31T23:49:16Z",
+  "stars_at_draw": 1,
+  "question": "What software licence does the GitHub repository cogniolab/dolphi use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V009",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "license",
+  "repo": "kajisho5/ffmpeg-skill",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-09-03T14:33:38Z",
+  "stars_at_draw": 4467,
+  "question": "What software licence does the GitHub repository kajisho5/ffmpeg-skill use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V010",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "license",
+  "repo": "deeplethe/utopia",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-08-07T19:33:17Z",
+  "stars_at_draw": 8667,
+  "question": "What software licence does the GitHub repository deeplethe/utopia use? Answer with the licence name.",
+  "truth": "Apache-2.0"
+ },
+ {
+  "id": "V011",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "language",
+  "repo": "BotHarness/DeepSeekBot",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-09-16T22:02:12Z",
+  "stars_at_draw": 593,
+  "question": "What is the primary programming language of the GitHub repository BotHarness/DeepSeekBot? Answer with the language name.",
+  "truth": "TypeScript"
+ },
+ {
+  "id": "V012",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "language",
+  "repo": "okf-memory/okf-agent-memory",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-09-05T21:26:04Z",
+  "stars_at_draw": 851,
+  "question": "What is the primary programming language of the GitHub repository okf-memory/okf-agent-memory? Answer with the language name.",
+  "truth": "Go"
+ },
+ {
+  "id": "V013",
+  "group": "primary",
+  "stratum": "on_page",
+  "kind": "language",
+  "repo": "jev-chat/jev-chat-jarvis",
+  "feed": [
+   "ocr-llm"
+  ],
+  "created_at": "2026-09-21T11:12:53Z",
+  "stars_at_draw": 8238,
+  "question": "What is the primary programming language of the GitHub repository jev-chat/jev-chat-jarvis? Answer with the language name.",
+  "truth": "Kotlin"
+ },
+ {
+  "id": "V014",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "owner",
+  "repo": "serkankorkut/mask2ai",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-09-18T14:44:58Z",
+  "stars_at_draw": 21,
+  "question": "A public GitHub repository named \"mask2ai\" is a new PII detection or redaction tool, created in 2026-09. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "serkankorkut"
+ },
+ {
+  "id": "V015",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "owner",
+  "repo": "LightLLM/MacCodingAgent",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-10-31T21:00:50Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"MacCodingAgent\" is a new AI agent harness, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "LightLLM"
+ },
+ {
+  "id": "V016",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "owner",
+  "repo": "keerthanak-art/pii-anonymizer-core",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-10-30T16:13:33Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"pii-anonymizer-core\" is a new PII detection or redaction tool, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "keerthanak-art"
+ },
+ {
+  "id": "V017",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "owner",
+  "repo": "aw3-technology/router-index",
+  "feed": [
+   "eval-frameworks"
+  ],
+  "created_at": "2026-10-31T21:34:58Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"router-index\" is a new LLM or agent evaluation framework, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "aw3-technology"
+ },
+ {
+  "id": "V018",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "owner",
+  "repo": "Inayat-0007/INAYAT-v1.1.0",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-10-31T17:15:05Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"INAYAT-v1.1.0\" is a new agent memory system, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "Inayat-0007"
+ },
+ {
+  "id": "V019",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "owner",
+  "repo": "KateMajzel/pilot-xstest-pl",
+  "feed": [
+   "eval-frameworks"
+  ],
+  "created_at": "2026-10-31T22:27:32Z",
+  "stars_at_draw": 1,
+  "question": "A public GitHub repository named \"pilot-xstest-pl\" is a new LLM or agent evaluation framework, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "KateMajzel"
+ },
+ {
+  "id": "V020",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "license",
+  "repo": "LysCongThanh/heavyq",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-10-31T14:13:16Z",
+  "stars_at_draw": 4,
+  "question": "What software licence does the GitHub repository LysCongThanh/heavyq use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V021",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "license",
+  "repo": "arturvstavskij930-art/CounterStrike-ChatBotAi",
+  "feed": [
+   "ocr-llm"
+  ],
+  "created_at": "2026-10-31T07:32:15Z",
+  "stars_at_draw": 1,
+  "question": "What software licence does the GitHub repository arturvstavskij930-art/CounterStrike-ChatBotAi use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V022",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "license",
+  "repo": "vivekchopra/rate-limited-cli",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-10-31T02:24:47Z",
+  "stars_at_draw": 0,
+  "question": "What software licence does the GitHub repository vivekchopra/rate-limited-cli use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V023",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "license",
+  "repo": "sqlchan/llm-benchmark-selftest",
+  "feed": [
+   "eval-frameworks"
+  ],
+  "created_at": "2026-10-30T13:43:23Z",
+  "stars_at_draw": 0,
+  "question": "What software licence does the GitHub repository sqlchan/llm-benchmark-selftest use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V024",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "language",
+  "repo": "SyedAbdulAkram/rag-chatbot-hackathon",
+  "feed": [
+   "ocr-llm"
+  ],
+  "created_at": "2026-10-31T10:22:02Z",
+  "stars_at_draw": 0,
+  "question": "What is the primary programming language of the GitHub repository SyedAbdulAkram/rag-chatbot-hackathon? Answer with the language name.",
+  "truth": "Python"
+ },
+ {
+  "id": "V025",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "language",
+  "repo": "ssshek2-cell/pii-redactor",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-10-31T23:05:01Z",
+  "stars_at_draw": 0,
+  "question": "What is the primary programming language of the GitHub repository ssshek2-cell/pii-redactor? Answer with the language name.",
+  "truth": "JavaScript"
+ },
+ {
+  "id": "V026",
+  "group": "primary",
+  "stratum": "deep",
+  "kind": "language",
+  "repo": "AbdulkadirKhoujja/coding-agent-benchmark-lab",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-10-31T01:24:13Z",
+  "stars_at_draw": 0,
+  "question": "What is the primary programming language of the GitHub repository AbdulkadirKhoujja/coding-agent-benchmark-lab? Answer with the language name.",
+  "truth": "Python"
+ },
+ {
+  "id": "V027",
+  "group": "primary",
+  "stratum": "discovery",
+  "kind": "discovery",
+  "repo": null,
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": null,
+  "question": "Name one public GitHub repository created on or after 2026-08-01 that is a PII detection or redaction tool, with primary language JavaScript and licence MIT. Answer with owner/name.",
+  "truth": {
+   "category": "pii-redaction",
+   "language": "JavaScript",
+   "license": "MIT",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V028",
+  "group": "primary",
+  "stratum": "discovery",
+  "kind": "discovery",
+  "repo": null,
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": null,
+  "question": "Name one public GitHub repository created on or after 2026-08-01 that is a AI agent harness, with primary language Go and licence MIT. Answer with owner/name.",
+  "truth": {
+   "category": "agent-harnesses",
+   "language": "Go",
+   "license": "MIT",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V029",
+  "group": "primary",
+  "stratum": "discovery",
+  "kind": "discovery",
+  "repo": null,
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": null,
+  "question": "Name one public GitHub repository created on or after 2026-08-01 that is a agent memory system, with primary language Python and licence MIT. Answer with owner/name.",
+  "truth": {
+   "category": "memory-systems",
+   "language": "Python",
+   "license": "MIT",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V030",
+  "group": "primary",
+  "stratum": "discovery",
+  "kind": "discovery",
+  "repo": null,
+  "feed": [
+   "eval-frameworks"
+  ],
+  "created_at": null,
+  "question": "Name one public GitHub repository created on or after 2026-08-01 that is a LLM or agent evaluation framework, with primary language Shell and licence MIT. Answer with owner/name.",
+  "truth": {
+   "category": "eval-frameworks",
+   "language": "Shell",
+   "license": "MIT",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V031",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "owner",
+  "repo": "froglssh/hermes-agent-cli",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-11-01T15:57:48Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"hermes-agent-cli\" is a new AI agent harness, created in 2026-11. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "froglssh"
+ },
+ {
+  "id": "V032",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "owner",
+  "repo": "ShryukGrandhi/roodiff",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-11-02T18:45:26Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"roodiff\" is a new agent memory system, created in 2026-11. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "ShryukGrandhi"
+ },
+ {
+  "id": "V033",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "owner",
+  "repo": "SertogaTech/obsidian-memory-starter",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-11-02T23:48:59Z",
+  "stars_at_draw": 2,
+  "question": "A public GitHub repository named \"obsidian-memory-starter\" is a new agent memory system, created in 2026-11. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "SertogaTech"
+ },
+ {
+  "id": "V034",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "owner",
+  "repo": "Haoduo9/image-hash-memory",
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": "2026-11-02T14:54:30Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"image-hash-memory\" is a new agent memory system, created in 2026-11. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "Haoduo9"
+ },
+ {
+  "id": "V035",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "license",
+  "repo": "Balanov/verdict",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-11-02T19:14:51Z",
+  "stars_at_draw": 228,
+  "question": "What software licence does the GitHub repository Balanov/verdict use? Answer with the licence name.",
+  "truth": "Apache-2.0"
+ },
+ {
+  "id": "V036",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "license",
+  "repo": "Balanov/shim",
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": "2026-11-02T17:54:29Z",
+  "stars_at_draw": 442,
+  "question": "What software licence does the GitHub repository Balanov/shim use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V037",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "license",
+  "repo": "albinjm/echolocate",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-11-03T02:45:58Z",
+  "stars_at_draw": 0,
+  "question": "What software licence does the GitHub repository albinjm/echolocate use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V038",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "language",
+  "repo": "tahirwaseemtk/quilrai-assessment",
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": "2026-11-02T15:17:50Z",
+  "stars_at_draw": 0,
+  "question": "What is the primary programming language of the GitHub repository tahirwaseemtk/quilrai-assessment? Answer with the language name.",
+  "truth": "TypeScript"
+ },
+ {
+  "id": "V039",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "language",
+  "repo": "anilbade98/LLM-Evaluation-Tool",
+  "feed": [
+   "eval-frameworks"
+  ],
+  "created_at": "2026-11-03T10:12:05Z",
+  "stars_at_draw": 0,
+  "question": "What is the primary programming language of the GitHub repository anilbade98/LLM-Evaluation-Tool? Answer with the language name.",
+  "truth": "Python"
+ },
+ {
+  "id": "V040",
+  "group": "fresh",
+  "stratum": "scan",
+  "kind": "language",
+  "repo": "purvi-j38/Lawgorithm",
+  "feed": [
+   "ocr-llm"
+  ],
+  "created_at": "2026-11-01T17:13:28Z",
+  "stars_at_draw": 0,
+  "question": "What is the primary programming language of the GitHub repository purvi-j38/Lawgorithm? Answer with the language name.",
+  "truth": "Python"
+ },
+ {
+  "id": "V041",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "owner",
+  "repo": "bookchaowalit/platform-agent-skills",
+  "feed": null,
+  "created_at": "2026-10-11T15:04:01Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"platform-agent-skills\" is a new software project, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "bookchaowalit"
+ },
+ {
+  "id": "V042",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "owner",
+  "repo": "mrscraper-com/mrscraper-open-webui",
+  "feed": null,
+  "created_at": "2026-10-22T08:20:50Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"mrscraper-open-webui\" is a new software project, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "mrscraper-com"
+ },
+ {
+  "id": "V043",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "owner",
+  "repo": "rajakumaranaap-rgb/makkal-agent-ai",
+  "feed": null,
+  "created_at": "2026-10-26T16:33:33Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"makkal-agent-ai\" is a new software project, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "rajakumaranaap-rgb"
+ },
+ {
+  "id": "V044",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "owner",
+  "repo": "manningyangs/AI-Shovel-Collection",
+  "feed": null,
+  "created_at": "2026-10-29T01:33:02Z",
+  "stars_at_draw": 1,
+  "question": "A public GitHub repository named \"AI-Shovel-Collection\" is a new software project, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "manningyangs"
+ },
+ {
+  "id": "V045",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "owner",
+  "repo": "euron-sde-team/euron-rag-kit",
+  "feed": null,
+  "created_at": "2026-10-23T14:12:48Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"euron-rag-kit\" is a new software project, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "euron-sde-team"
+ },
+ {
+  "id": "V046",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "owner",
+  "repo": "cdf-eagles/mcp-allowlist-proxy",
+  "feed": null,
+  "created_at": "2026-10-20T06:19:06Z",
+  "stars_at_draw": 0,
+  "question": "A public GitHub repository named \"mcp-allowlist-proxy\" is a new software project, created in 2026-10. Which GitHub account or organization owns it? Answer with the owner name.",
+  "truth": "cdf-eagles"
+ },
+ {
+  "id": "V047",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "license",
+  "repo": "li-shaozhe/dsh-chatops-mcp",
+  "feed": null,
+  "created_at": "2026-11-04T02:30:08Z",
+  "stars_at_draw": 0,
+  "question": "What software licence does the GitHub repository li-shaozhe/dsh-chatops-mcp use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V048",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "license",
+  "repo": "ammfed/ai-workstation-setup",
+  "feed": null,
+  "created_at": "2026-09-14T16:01:54Z",
+  "stars_at_draw": 1,
+  "question": "What software licence does the GitHub repository ammfed/ai-workstation-setup use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V049",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "language",
+  "repo": "Rainsongit/sentinel",
+  "feed": null,
+  "created_at": "2026-11-04T02:55:59Z",
+  "stars_at_draw": 0,
+  "question": "What is the primary programming language of the GitHub repository Rainsongit/sentinel? Answer with the language name.",
+  "truth": "Python"
+ },
+ {
+  "id": "V050",
+  "group": "low_star_unindexed",
+  "stratum": "broad_search",
+  "kind": "language",
+  "repo": "Vishnu5g67/portfolio-Raipally-Vishnu-Vardhan-",
+  "feed": null,
+  "created_at": "2026-10-25T13:49:04Z",
+  "stars_at_draw": 0,
+  "question": "What is the primary programming language of the GitHub repository Vishnu5g67/portfolio-Raipally-Vishnu-Vardhan-? Answer with the language name.",
+  "truth": "HTML"
+ },
+ {
+  "id": "V051",
+  "group": "not_on_feed",
+  "stratum": "stars10",
+  "kind": "license",
+  "repo": "libingzheren/Jev-Mem",
+  "feed": null,
+  "created_at": "2026-09-20T05:27:53Z",
+  "stars_at_draw": 254,
+  "question": "What software licence does the GitHub repository libingzheren/Jev-Mem use? Answer with the licence name.",
+  "truth": "MIT"
+ },
+ {
+  "id": "V052",
+  "group": "not_on_feed",
+  "stratum": "stars10",
+  "kind": "license",
+  "repo": "agents-universe/agents-universe",
+  "feed": null,
+  "created_at": "2026-09-10T12:45:40Z",
+  "stars_at_draw": 817,
+  "question": "What software licence does the GitHub repository agents-universe/agents-universe use? Answer with the licence name.",
+  "truth": "Apache-2.0"
+ },
+ {
+  "id": "V053",
+  "group": "not_on_feed",
+  "stratum": "stars10",
+  "kind": "license",
+  "repo": "mpaymenremora/CacheCraft",
+  "feed": null,
+  "created_at": "2026-09-03T13:34:21Z",
+  "stars_at_draw": 21,
+  "question": "What software licence does the GitHub repository mpaymenremora/CacheCraft use? Answer with the licence name.",
+  "truth": "Apache-2.0"
+ },
+ {
+  "id": "V054",
+  "group": "not_on_feed",
+  "stratum": "stars10",
+  "kind": "language",
+  "repo": "Mohamad-Hachem/LLM_Evaluation_System",
+  "feed": null,
+  "created_at": "2026-09-25T10:43:41Z",
+  "stars_at_draw": 26,
+  "question": "What is the primary programming language of the GitHub repository Mohamad-Hachem/LLM_Evaluation_System? Answer with the language name.",
+  "truth": "Python"
+ },
+ {
+  "id": "V055",
+  "group": "not_on_feed",
+  "stratum": "stars10",
+  "kind": "language",
+  "repo": "kuafuai/andee",
+  "feed": null,
+  "created_at": "2026-09-17T13:20:59Z",
+  "stars_at_draw": 3478,
+  "question": "What is the primary programming language of the GitHub repository kuafuai/andee? Answer with the language name.",
+  "truth": "Kotlin"
+ },
+ {
+  "id": "V056",
+  "group": "not_on_feed",
+  "stratum": "stars10",
+  "kind": "language",
+  "repo": "SLEEPYBQ/MemoSync",
+  "feed": null,
+  "created_at": "2026-09-05T06:43:26Z",
+  "stars_at_draw": 195,
+  "question": "What is the primary programming language of the GitHub repository SLEEPYBQ/MemoSync? Answer with the language name.",
+  "truth": "TypeScript"
+ },
+ {
+  "id": "V057",
+  "group": "invented",
+  "stratum": "invented",
+  "kind": "license",
+  "repo": "copper-fennel/agentloom-kit",
+  "feed": null,
+  "created_at": null,
+  "question": "What software licence does the GitHub repository copper-fennel/agentloom-kit use? Answer with the licence name.",
+  "truth": "__unknown__"
+ },
+ {
+  "id": "V058",
+  "group": "invented",
+  "stratum": "invented",
+  "kind": "license",
+  "repo": "marrow-lake/redactquill",
+  "feed": null,
+  "created_at": null,
+  "question": "What software licence does the GitHub repository marrow-lake/redactquill use? Answer with the licence name.",
+  "truth": "__unknown__"
+ },
+ {
+  "id": "V059",
+  "group": "invented",
+  "stratum": "invented",
+  "kind": "license",
+  "repo": "ostrich-signal/memorybarge",
+  "feed": null,
+  "created_at": null,
+  "question": "What software licence does the GitHub repository ostrich-signal/memorybarge use? Answer with the licence name.",
+  "truth": "__unknown__"
+ },
+ {
+  "id": "V060",
+  "group": "multi_discovery",
+  "stratum": "different_test",
+  "kind": "multi",
+  "repo": null,
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": null,
+  "question": "Name three different public GitHub repositories created on or after 2026-08-01, each a AI agent harness, with primary language TypeScript and licence Apache-2.0. Answer with three owner/name values separated by commas.",
+  "truth": {
+   "category": "agent-harnesses",
+   "language": "TypeScript",
+   "license": "Apache-2.0",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V061",
+  "group": "multi_discovery",
+  "stratum": "different_test",
+  "kind": "multi",
+  "repo": null,
+  "feed": [
+   "agent-harnesses"
+  ],
+  "created_at": null,
+  "question": "Name three different public GitHub repositories created on or after 2026-08-01, each a AI agent harness, with primary language Python and licence MIT. Answer with three owner/name values separated by commas.",
+  "truth": {
+   "category": "agent-harnesses",
+   "language": "Python",
+   "license": "MIT",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V062",
+  "group": "multi_discovery",
+  "stratum": "different_test",
+  "kind": "multi",
+  "repo": null,
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": null,
+  "question": "Name three different public GitHub repositories created on or after 2026-08-01, each a PII detection or redaction tool, with primary language Python and licence Apache-2.0. Answer with three owner/name values separated by commas.",
+  "truth": {
+   "category": "pii-redaction",
+   "language": "Python",
+   "license": "Apache-2.0",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V063",
+  "group": "multi_discovery",
+  "stratum": "different_test",
+  "kind": "multi",
+  "repo": null,
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": null,
+  "question": "Name three different public GitHub repositories created on or after 2026-08-01, each a agent memory system, with primary language Python and licence MIT. Answer with three owner/name values separated by commas.",
+  "truth": {
+   "category": "memory-systems",
+   "language": "Python",
+   "license": "MIT",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V064",
+  "group": "multi_discovery",
+  "stratum": "different_test",
+  "kind": "multi",
+  "repo": null,
+  "feed": [
+   "pii-redaction"
+  ],
+  "created_at": null,
+  "question": "Name three different public GitHub repositories created on or after 2026-08-01, each a PII detection or redaction tool, with primary language TypeScript and licence MIT. Answer with three owner/name values separated by commas.",
+  "truth": {
+   "category": "pii-redaction",
+   "language": "TypeScript",
+   "license": "MIT",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V065",
+  "group": "multi_discovery",
+  "stratum": "different_test",
+  "kind": "multi",
+  "repo": null,
+  "feed": [
+   "memory-systems"
+  ],
+  "created_at": null,
+  "question": "Name three different public GitHub repositories created on or after 2026-08-01, each a agent memory system, with primary language Rust and licence Apache-2.0. Answer with three owner/name values separated by commas.",
+  "truth": {
+   "category": "memory-systems",
+   "language": "Rust",
+   "license": "Apache-2.0",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V066",
+  "group": "multi_discovery",
+  "stratum": "different_test",
+  "kind": "multi",
+  "repo": null,
+  "feed": [
+   "eval-frameworks"
+  ],
+  "created_at": null,
+  "question": "Name three different public GitHub repositories created on or after 2026-08-01, each a LLM or agent evaluation framework, with primary language Python and licence Apache-2.0. Answer with three owner/name values separated by commas.",
+  "truth": {
+   "category": "eval-frameworks",
+   "language": "Python",
+   "license": "Apache-2.0",
+   "created_since": "2026-08-01"
+  }
+ },
+ {
+  "id": "V067",
+  "group": "multi_discovery",
+  "stratum": "different_test",
+  "kind": "multi",
+  "repo": null,
+  "feed": [
+   "ocr-llm"
+  ],
+  "created_at": null,
+  "question": "Name three different public GitHub repositories created on or after 2026-08-01, each a OCR or LLM document-reading tool, with primary language Python and licence AGPL-3.0. Answer with three owner/name values separated by commas.",
+  "truth": {
+   "category": "ocr-llm",
+   "language": "Python",
+   "license": "AGPL-3.0",
+   "created_since": "2026-08-01"
+  }
+ }
+]
