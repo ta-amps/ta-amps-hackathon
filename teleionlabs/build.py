@@ -28,6 +28,7 @@ TEMPLATES = HERE / "templates"
 STATIC = HERE / "static"
 
 SHARED_WORDS = Path(os.environ.get("BANNED_WORDS") or HERE.parents[2] / "coordination-2026-10-31" / "rules" / "banned-words.json")
+SAMPLE_WORDS = HERE / "tests" / "sample-word-list.json"
 WORD_CATEGORIES = ("always", "visible_text", "agent_apps_outside_models_page")
 WORKER_WORDS = HERE / "worker" / "banned.generated.js"
 WORKER_MEDIA = HERE / "worker" / "media.generated.js"
@@ -950,10 +951,19 @@ def render_llms(llms: dict) -> str:
     return "\n".join(lines)
 
 
+def word_list_path() -> Path:
+    """The real list. Only `make` asks for the made-up sample, only when the real one is absent; a deploy never can."""
+    if not SHARED_WORDS.is_file() and not os.environ.get("BANNED_WORDS") and os.environ.get("TELEION_SAMPLE_WORD_LIST") == "1":
+        print("build: ON THE MADE-UP SAMPLE WORD LIST. The full list is kept private; this build must not be deployed.", file=sys.stderr)
+        return SAMPLE_WORDS
+    return SHARED_WORDS
+
+
 def shared_words() -> tuple[list[str], list[str]]:
-    if not SHARED_WORDS.is_file():
+    path = word_list_path()
+    if not path.is_file():
         raise BuildError(f"the shared banned-words list is missing: {SHARED_WORDS} (set BANNED_WORDS to its path)")
-    words = json.loads(SHARED_WORDS.read_text(encoding="utf-8"))
+    words = json.loads(path.read_text(encoding="utf-8"))
     patterns = []
     for cat in WORD_CATEGORIES:
         found = words.get(cat, {}).get("patterns")

@@ -1,0 +1,31 @@
+{
+ "kind": "sample",
+ "id": "rules.banned-words.sample",
+ "purpose": "A small MADE-UP sample in the shape of our word list, so a public copy can run its checks. The full list is kept private. None of these words is real. Never used in a deploy.",
+ "always": {
+  "patterns": [
+   "\\bzorptest\\b"
+  ]
+ },
+ "visible_text": {
+  "patterns": [
+   "\\bplorps?\\b",
+   "\\b[0-9a-f]{12,}\\b"
+  ]
+ },
+ "agent_apps_outside_models_page": {
+  "patterns": [
+   "\\bglimboapp\\b"
+  ]
+ },
+ "marketing_voice": {
+  "patterns": [
+   "\\bquuxworthy\\b"
+  ]
+ },
+ "private_names": {
+  "sha256": [
+   "1c5dee26257041644db8a24fc4eb19d0035e75c99353228d0b467bbc47b0cd1d"
+  ]
+ }
+}

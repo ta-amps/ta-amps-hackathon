@@ -189,7 +189,10 @@ def check_benchmarks_contract(hits: list[str]) -> None:
 
 def main() -> int:
     try:
-        shared = Shared(SHARED)
+        sample = not SHARED.is_file() and not os.environ.get("BANNED_WORDS") and os.environ.get("TELEION_SAMPLE_WORD_LIST") == "1"
+        if sample:
+            print("words: ON THE MADE-UP SAMPLE WORD LIST. The full list is kept private; this result does not clear a deploy.", file=sys.stderr)
+        shared = Shared(Path(__file__).resolve().parent / "sample-word-list.json" if sample else SHARED)
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
         print(f"cannot read the shared banned-words list at {SHARED}: {exc}", file=sys.stderr)
         return 2
@@ -272,12 +275,13 @@ def main() -> int:
                 hits.append(f"captions {vtt.name}: T7 hit: {mask(vtext, m)}")
     for fname, s in content_strings_by_file(include_notes=True):
         gate(f"content/{fname}", s, full=s in vis_set, allow_percent=(fname in ("benchmarks.json", "methodology.json", "home.json", "judges.json")), allow_handoff=fname == "story.json")
-    sources = [p for p in source_files() if p.suffix not in BINARY and p.is_file()]
+    # On the sample list, a source scan would only find the sample's own made-up words.
+    sources = [] if sample else [p for p in source_files() if p.suffix not in BINARY and p.is_file()]
     for p in sources:
         gate(f"source {p.relative_to(HERE)}", p.read_text(encoding="utf-8", errors="replace"), full=False)
 
     print(f"checked {len(pages)} pages, {len(AGENT_FILES)} agent-readable files, {len(vis_pairs)} content strings and "
-          f"{len(sources)} source files against the shared list (v{json.loads(SHARED.read_text())['version']}); "
+          f"{len(sources)} source files against the {'sample' if sample else 'shared'} list ({'made-up' if sample else 'v' + str(json.loads(SHARED.read_text())['version'])}); "
           f"names allowed: {ALLOWED_NAMES}")
     if hits:
         print(f"FAIL {len(hits)}")

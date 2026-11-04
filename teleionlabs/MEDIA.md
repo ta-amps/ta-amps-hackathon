@@ -10,3 +10,7 @@ Video and voice files are not kept in git. The site serves them from these addre
 | `media/shim-explained-20261103.mp4` | https://teleionlabs.com/media/shim-explained-20261103.mp4 | 3298733 | `4d498f20e9f287e36a8972cd02ac0b3c436a886481629fb3b701e2254f4d8b10` |
 | `video-gallery/3d-simple/voice.mp3` | https://teleionlabs.com/video-gallery/3d-simple/voice.mp3 | 2160620 | `c823ab811469cba230920973b7eecbdad97b306603f5ab1dbae0d07a622527d3` |
 | `media/main-film-20261104c.mp4` | https://teleionlabs.com/media/main-film-20261104c.mp4 | 10763921 | `5bac89c70d4bb8de688b6d79008417cc8d46e5b098c4daae86f02bbcdddda87d` |
+
+## Word list
+
+Our full banned-word list is kept private. In a public copy, `make check` runs on the made-up sample in `tests/sample-word-list.json` and says so. A deploy can't: the build command in `wrangler.jsonc` drops that setting and fails without the real list.

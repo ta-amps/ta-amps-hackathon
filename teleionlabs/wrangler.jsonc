@@ -7,7 +7,7 @@
   "compatibility_date": "2026-04-01",
   // Rule 15: the gates run inside the build. The build reads the shared banned-words list (rule 16) and rewrites dist/
   // and the gitignored worker/banned.generated.js, so neither can ship stale; the word gate then checks the result.
-  "build": { "command": "python3 build.py && python3 tests/check_words.py" },
+  "build": { "command": "env -u TELEION_SAMPLE_WORD_LIST -u MEDIA_BASE python3 build.py && env -u TELEION_SAMPLE_WORD_LIST python3 tests/check_words.py" },
   "workers_dev": true,
   "preview_urls": true,
   "routes": [
