@@ -2,7 +2,7 @@
  "kind": "task_object",
  "id": "teleion.instructions/page.home",
  "version": 7,
- "updated": "2026-11-02",
+ "updated": "2026-11-04",
  "route": "/",
  "output": "index.html",
  "title": "Teleion Labs · Supercharge your agentic operations",
@@ -96,8 +96,7 @@
       "A long job is too big for one agent session.",
       "Teleion Fabric splits it into small Durable Tasks.",
       "The most suited agent can pick up each Task, and reports back.",
-      "Tasks wait for the ones they depend on.",
-      "A separate worker audits and approves the result."
+      "Tasks wait for the ones they depend on."
      ]
     },
     {
@@ -105,13 +104,13 @@
      "seconds": 22,
      "heading": "Inside Fabric Intelligence: OmniNodes.",
      "paragraphs": [
-      "An OmniNode can keep improving, search a grid and retrain. Together the three parts solve all three problems, and get smarter over time."
+      "An OmniNode is built to keep improving. Today, our first one adjusts its model mix and settings from its own recorded runs. Together, the three parts work on all three problems."
      ],
      "steps": [
       "Deterministic: a tool or a rule, when the answer is known.",
       "Non-deterministic: the most appropriate model, when it takes judgment.",
       "Reuse: reusing code components, with no rewriting.",
-      "Continuously learning: recorded runs and traces tune the next run."
+      "Learning from results: recorded outcomes adjust the next run of our feed OmniNode."
      ],
      "marks": {
       "OmniNodes.": "blue"
@@ -125,7 +124,7 @@
       "Knowledge of new projects. Feeds keep your agents current with new GitHub releases.",
       "More reuse of working code. Agents reuse code components, with no rewriting.",
       "Long-term tasks that finish. Long jobs become small Tasks that finish one by one.",
-      "Always getting better. Custom models train on recorded runs and traces. Work moves to cheaper models, deterministic engines and tools, so it's built to use fewer tokens as it learns."
+      "Built to keep getting better. Recorded results adjust which model does the work, and plain code goes first when it can. It's built to move more work to less expensive models and tools over time. Nothing has retrained from live work so far."
      ],
      "steps": []
     },

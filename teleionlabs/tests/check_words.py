@@ -60,6 +60,10 @@ PUBLIC_REPOS = (
 _REPO_URL = r"https://github\.com/ta-amps/(?:" + "|".join(re.escape(r) for r in PUBLIC_REPOS) + ")"
 REPO_URL_VALUE = re.compile(_REPO_URL)
 REPO_HREF = re.compile(r'''\shref=(["\'])''' + _REPO_URL + r"\1")
+# The one legal notice file (owner, Nov 4, MUST-FOLLOW rule 6). It holds license wording and exact model names. Only this exact
+# path skips the word and site rules, and it still answers to the private names and the one word no notice needs.
+NOTICE_FILES = frozenset({"static/legal/meta-models.txt"})
+NOTICE_STILL_BANNED = re.compile("syn" + "thetic", re.I)
 T7_RAW = r"ta-amps|tel[e]on"
 COMMERCE_RAW = r"\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b"
 
@@ -73,6 +77,17 @@ def raw_html_t7_hits(raw_html: str, allow_handoff: bool = False) -> list[re.Matc
 def is_public_repo_url(value: str) -> bool:
     """True only when the whole content value is the address of one public repository."""
     return REPO_URL_VALUE.fullmatch(value) is not None
+
+
+def notice_hits(rel: str, text: str, shared) -> list[str]:
+    """What still fails in the notice file: private names, and the word no notice needs."""
+    out = []
+    if NOTICE_STILL_BANNED.search(text):
+        out.append(f"notice {rel}: a word no notice needs")
+    n = shared.private_hits(text)
+    if n:
+        out.append(f"notice {rel}: {n} private-name token(s) (shared list, hashed)")
+    return out
 
 
 COMMERCE_RULE = re.compile(r"\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", re.I)
@@ -308,7 +323,11 @@ def main() -> int:
     # On the sample list, a source scan would only find the sample's own made-up words.
     sources = [] if sample else [p for p in source_files() if p.suffix not in BINARY and p.is_file()]
     for p in sources:
-        gate(f"source {p.relative_to(HERE)}", p.read_text(encoding="utf-8", errors="replace"), full=False)
+        text = p.read_text(encoding="utf-8", errors="replace")
+        if p.relative_to(HERE).as_posix() in NOTICE_FILES:
+            hits.extend(notice_hits(p.relative_to(HERE).as_posix(), text, shared))
+            continue
+        gate(f"source {p.relative_to(HERE)}", text, full=False)
 
     print(f"checked {len(pages)} pages, {len(AGENT_FILES)} agent-readable files, {len(vis_pairs)} content strings and "
           f"{len(sources)} source files against the {'sample' if sample else 'shared'} list ({'made-up' if sample else 'v' + str(json.loads(SHARED.read_text())['version'])}); "

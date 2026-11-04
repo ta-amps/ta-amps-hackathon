@@ -26,7 +26,7 @@
    "type": "page_head",
    "eyebrow": "Fabric Intelligence",
    "title": "OmniNode",
-   "lead": "An OmniNode is one node design, built for many kinds of jobs. It lives in Fabric Intelligence, inside Teleion Fabric. It picks up a Durable Task, and uses Durable Task Objects to do the work. Then a separate worker audits and approves the result."
+   "lead": "An OmniNode is one node design, built for many kinds of jobs. It lives in Fabric Intelligence, inside Teleion Fabric. It picks up a Durable Task, and uses Durable Task Objects to do the work. In our feed OmniNode, a separate worker then audits and approves the result."
   },
   {
    "type": "prose",

@@ -148,6 +148,10 @@
    {
     "label": "Contact",
     "href": "/company/#contact"
+   },
+   {
+    "label": "Built with Muse Spark Open",
+    "href": "/legal/meta-models.txt"
    }
   ],
   "line": "Teleion Labs Incorporated. Free through December 31, 2026.",

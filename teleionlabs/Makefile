@@ -15,6 +15,7 @@ film-fixture:
 
 test: film-fixture build
 	$(PYTHON) tests/test_t7_repo_links.py
+	$(PYTHON) tests/test_notice_exempt.py
 	node --test tests/word_list_refusal.test.mjs tests/worker.test.mjs tests/worker_example.test.mjs tests/network.test.mjs tests/network_client.test.mjs
 
 # Real workerd streaming/Content-Length checks using the existing workspace install.

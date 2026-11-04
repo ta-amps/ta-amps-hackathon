@@ -51,7 +51,8 @@
    "id": "shim",
    "heading": "Teleion Fabric's model shim",
    "paragraphs": [
-    "The free preview calls no model and saves nothing. The shim's request logs are off."
+    "The free preview calls no model and saves nothing. The shim's request logs are off.",
+    "Some Tasks, queue text and public help requests go to Meta's models through the Meta Model API, or to Muse Spark Open hosted by Baseten. Test work uses Meta's Contributor tier, where Meta may use the text and answers to train and improve its models."
    ]
   },
   {

@@ -310,6 +310,15 @@ test("the footer keeps its short line, with the small beta note under it, in the
   assert.match(txt, /Free through December 31, 2026\.\n+Beta until 2027\. Open to everyone; your experience may vary\.\n$/);
 });
 
+test("the footer shows the required Muse Spark Open line and the notice is plain text at its address", async () => {
+  const body = await (await handle(new Request("https://teleionlabs.com/free/"), { ASSETS: assets() }, ctx)).text();
+  assert.match(body, /<a href="\/legal\/meta-models\.txt">Built with Muse Spark Open<\/a>/);
+  const txt = await handle(new Request("https://teleionlabs.com/legal/meta-models.txt"), { ASSETS: assets() }, ctx);
+  assert.equal(txt.status, 200);
+  assert.match(txt.headers.get("content-type"), /^text\/plain/);
+  assert.match(await txt.text(), /Built with Muse Spark Open/);
+});
+
 test("the sitemap and the build drop the retired 3D page and its film code", async () => {
   const map = await (await handle(new Request("https://teleionlabs.com/sitemap.xml"), { ASSETS: assets() }, ctx)).text();
   assert.doesNotMatch(map, /experience/);
