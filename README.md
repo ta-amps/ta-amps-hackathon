@@ -25,7 +25,7 @@ Some repository names and code still use older code names. The product is Teleio
 | Muse Spark 1.3 (Meta API) | Live workers: research, planning, building and review. It also audits the fine-tuned model's answers | [Live record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record) |
 | Muse Wonder 1.0 (Meta API) | Live workers. A tuner moves work between Spark and Wonder based on recorded results (18 outcomes on Nov 4). This is sampling from results, not a model choosing | Same record |
 | Muse Glimmer 30B, fine-tuned | In small live use, in batches only. It looked at 65 real Tasks, about 8% of those ready, and Muse Spark passed 49 of its 65 answers. 1 pick has reached a live worker so far, as of Nov 4, 13:35 UTC. Before going live it reached 99.3% on tool calls against 94.0% for the base (150 held-out cases from our own catalog, fixed response budget; 96.7% for the base with a longer budget). We reused these test sets while choosing the adapter, so they are development results, and they don't describe live work | Same record, and https://teleionlabs.com/benchmarks.txt, "Model choices" |
-| `meta-models/muse-spark-open` on Baseten | A Meta open model, not fine-tuned. It helps our always-on agent choose: 15 of 17 tries answered, and a worker got a pick on 12 Tasks, as of Nov 4, 13:35 UTC. It was also the teacher in one training run (19 of 20 calls, Nov 2; this figure is in our private compute ledger) | Same record |
+| Muse Spark Open on Baseten (`meta-models/muse-spark-open`) | Not fine-tuned. It helps our always-on agent choose: 15 of 17 tries answered, and a worker got a pick on 12 Tasks, as of Nov 4, 13:35 UTC. It was also the teacher in one training run (19 of 20 calls, Nov 2; this figure is in our private compute ledger) | Same record |
 | Muse Code | Ran the build step in one test, Oct 31, 2026. The live workers call the Meta API directly | https://teleionlabs.com/records/eranos-featured-run-2026-10-31.json |
 | SAM and `wav2vec2` | Local quality checks on an earlier film, Oct 30, 2026. That film is retired | [Evidence](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/video-production-2026-10-30) |
 
@@ -81,7 +81,7 @@ Report once, with your result. A different worker checks it.
   - **Private files stay with the nonprofit.** Eranos sends back a kit to run on the nonprofit's own computer or account. We don't accept private information at this stage.
   - **The contributor tier is refused where it matters.** The shim refuses any model id with `contributor` in it (`HTTP 403 contributor_tier_refused`), and so does Eranos' model client (`ContributorTierRefusedError`). Our own public test work does use that tier, on public and made-up data only.
   - **A kit brings no model.** The nonprofit's own agent runs it with the model it already uses, which can be a local open-weight model. We have no outside nonprofit on record running one this way.
-  - **Training data:** our fine-tuning runs use our own templates and our own recorded work, never nonprofit requests or private logs. The Nov 2 Glimmer run has no Meta API outputs in its training data. One other run used an open Meta model on Baseten as a teacher.
+  - **Training data:** our fine-tuning runs use our own templates and our own recorded work, never nonprofit requests or private logs. The Nov 2 Glimmer run has no Meta API outputs in its training data. One other run used Muse Spark Open on Baseten as a teacher.
 
 ## What runs today
 
@@ -155,7 +155,7 @@ Run the complete local developer sandbox offline with zero cloud credentials, or
 - **Copy-Paste Starter Templates (`templates/`):**
   1. **[`templates/new-seed-pack/`](templates/new-seed-pack/README.md)** -- starter `manifest.json`, `nouns.json` (Task Objects), and `verbs.json` (Tasks) ready for `python3 -m sandbox.verify_pack templates/new-seed-pack`.
   2. **[`templates/connect-agent-harness/`](templates/connect-agent-harness/README.md)** -- MCP JSON-RPC config ([`mcp-config.example.json`](templates/connect-agent-harness/mcp-config.example.json)) and the Teleion Fabric shim environment setup ([`herma-env.example.sh`](templates/connect-agent-harness/herma-env.example.sh)) for **Muse Code**, **OpenCode**, **Pi**, **Claude Code**, and **Codex**.
-  3. **[`templates/finetune-meta-lora/`](templates/finetune-meta-lora/README.md)** -- runnable PEFT LoRA (`Muse Glimmer 30B` / compact Meta open weights) and 4-bit NF4 QLoRA ([`train_lora_template.py`](templates/finetune-meta-lora/train_lora_template.py)) with an offline `--dry-run-manifest /tmp/lora-dry-run.json` check over MIT example fixtures.
+  3. **[`templates/finetune-meta-lora/`](templates/finetune-meta-lora/README.md)** -- runnable PEFT LoRA (`Muse Glimmer 30B` / Meta's open-weight 1B and 3B models) and 4-bit NF4 QLoRA ([`train_lora_template.py`](templates/finetune-meta-lora/train_lora_template.py)) with an offline `--dry-run-manifest /tmp/lora-dry-run.json` check over MIT example fixtures.
 
 ## Reproducible Checks, Training & Evaluation in This Repo
 
