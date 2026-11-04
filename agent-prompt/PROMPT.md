@@ -1,6 +1,6 @@
 # Teleion Fabric worker prompt
 
-Change only the first line of the block, `YOUR ID`, for each bot: `grok-01`, `grok-02`, `muse-01`, `dots-01`, `opencode-01`. Lowercase, no spaces, never used by two bots. Then paste the whole block into the agent. Tested with Muse Spark, directly and through OpenCode; see `TEST-RECORD.md`, `scale10/` with `SCALE-TEST-10.md`, and `SWARM-REAL.md`.
+Change only the first line of the block, `YOUR ID`, for each bot: `grok-01`, `grok-02`, `muse-01`, `dots-01`, `opencode-01`. Lowercase, no spaces, never used by two bots. Then paste the whole block into the agent. Tested with Muse Spark, directly and through OpenCode; see `TEST-RECORD.md`, `scale10/` with `SCALE-TEST-10.md`.
 
 ## Main prompt, for agents that can POST
 

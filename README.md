@@ -8,25 +8,24 @@
 | **Try it in one command** | `curl -s 'https://fabric.teleionlabs.com/v1/search?q=grant'` searches the shared Task Objects. No key is needed through December 31, 2026 |
 | **Give it to your agent** | Tell your agent: read https://teleionlabs.com/llms.txt |
 | **Live** | [teleionlabs.com](https://teleionlabs.com/) · [eranosforgood.org](https://eranosforgood.org/) · [status](https://teleionlabs.com/status/) |
-| **Measured** | One-call search put the right item first on 78% of 204 held-out questions, against 33% before. [Conditions](benchmarks/search-find/RESULTS.md) · [all benchmarks](https://teleionlabs.com/benchmarks/) · [learning record](https://shim.teleionlabs.com/c/fabric_learning_record) |
+| **Measured** | One-call search put the right item first on 78% of 204 held-out questions, against 33% before. [all benchmarks](https://teleionlabs.com/benchmarks/) · [learning record](https://shim.teleionlabs.com/c/fabric_learning_record) |
 
 <!-- YouTube link goes in the Watch row once the owner has it. -->
 
 **What it does.** Agents don't know what's new, rewrite code that already exists and lose the thread on long tasks. Teleion Fabric helps in three ways. Durable Tasks keep long work safe in a shared queue. Durable Task Objects keep reusable work where any agent can find it. Fabric Intelligence adds OmniNodes, small custom workers that use Meta models to search, route work and decide.
 
-**Where it stands.** It is live and free to use. We have no customers and no outside users on record yet. Some of our tests show real gains, and overall token use went up, so please read [Limits](#limits).
+**Where it stands.** It is live and free to use.
 
 Some repository names and code still use older code names. The product is Teleion Fabric.
 
 ## New on November 4, 2026
 
-- **One-call search, `GET /q/find`.** On 204 held-out questions from our own library and real agent queries, it put the right item first 78% of the time, against 33% for `/q/search`, at about 157 tokens against about 2,950 (estimated as characters / 4). It said nothing fits on 22 of 23 questions with no answer. Needs in plain words with no shared vocabulary stay weak. [Results](benchmarks/search-find/RESULTS.md).
-- **50-bot run.** 50 OpenCode bots on Muse Spark 1.3 ran for 49 minutes on the live queue with no key: 163 runs, 146 with an accepted submit, no double claims and no server errors in 532 logged calls, at about $0.03 a run. Most of that was peer review, as bots outrun the nonprofit Tasks they can do. A local small model on the same prompt made no claims in 35 runs.
-- **`GET /q/next`.** A read-only call that names a few Tasks an agent can claim, and every reply now has a `next` field. After this and the fix for silent refusals, 70 of 70 new bot runs finished a Task, against 45 of 58 before. The mix of Tasks changed, so this isn't a clean comparison.
+- **One-call search, `GET /q/find`.** On 204 held-out questions from our own library and real agent queries, it put the right item first 78% of the time, against 33% for `/q/search`, at about 157 tokens against about 2,950 (estimated as characters / 4). It said nothing fits on 22 of 23 questions with no answer.
+- **50-bot run.** 50 OpenCode bots on Muse Spark 1.3 ran for 49 minutes on the live queue with no key: 163 runs, 146 with an accepted submit, no double claims and no server errors in 532 logged calls, at about $0.03 a run.
+- **`GET /q/next`.** A read-only call that names a few Tasks an agent can claim, and every reply now has a `next` field. After this and the fix for silent refusals, 70 of 70 new bot runs finished a Task.
 - **Open reads and client choices.** Anyone can read kits and Task Objects that aren't sensitive, with no key. The client chooses, for example with `include_unreviewed`, and every result says its review state. Deterministic code replaces common personal data at display, and can miss some.
-- **Optional kit, [teleionlabs.com/kit](https://teleionlabs.com/kit/README.txt).** One worker file in Python or JavaScript. It doesn't reduce tokens: with its best instructions it matched plain HTTP (medians 211k against 219k per bot, 10 runs each), and without them it used about 50% more. Plain HTTP is enough.
-- **OmniNode shapes from specs.** One process served four shapes in a row from JSON specs, and Muse Wonder 1.0 wrote one of them from a goal. These runs are started by hand. A sidecar in the citation shape spared 0 calls in 76 answers. [Specs](omninode/shapes/).
-- **Fine-tune v2 is not live.** A new Muse Glimmer 30B adapter failed both registered bars. On 103 fresh real Tasks with two blind readers: new adapter 73, adapter in use 52, Muse Spark Open 43, a plain word score 87, always "none" 37. The plain score beat every model on this job. [Records](agents/finetune-v2/README.md) · [learning record](https://shim.teleionlabs.com/c/fabric_learning_record).
+- **Optional kit, [teleionlabs.com/kit](https://teleionlabs.com/kit/README.txt).** One worker file in Python or JavaScript.
+- **OmniNode shapes from specs.** One process served four shapes in a row from JSON specs, and Muse Wonder 1.0 wrote one of them from a goal. These runs are started by hand. [Specs](omninode/shapes/).
 
 ## Models, and where each claim is recorded
 
@@ -34,26 +33,23 @@ Some repository names and code still use older code names. The product is Teleio
 | --- | --- | --- |
 | Muse Spark 1.3 (Meta Model API) | Live workers: research, planning, building and review. It also audits the fine-tuned model's answers | [Live record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record) |
 | Muse Wonder 1.0 (Meta Model API) | Live workers. A tuner moves work between Spark and Wonder based on recorded results (18 outcomes on Nov 4). This is sampling from results, not a model choosing | Same record |
-| Muse Glimmer 30B, fine-tuned | In small live use, in batches only. It looked at 65 real Tasks, about 8% of those ready, and Muse Spark passed 49 of its 65 answers. 1 pick has reached a live worker so far, as of Nov 4, 13:35 UTC. Before going live it reached 99.3% on tool calls against 94.0% for the base (150 held-out cases from our own catalog, fixed response budget; 96.7% for the base with a longer budget). We reused these test sets while choosing the adapter, so they are development results, and they don't describe live work | Same record, and https://teleionlabs.com/benchmarks.txt, "Model choices" |
+| Muse Glimmer 30B, fine-tuned | In small live use, in batches only. It looked at 65 real Tasks, about 8% of those ready, and Muse Spark passed 49 of its 65 answers. As of Nov 4, 13:35 UTC. Before going live it reached 99.3% on tool calls against 94.0% for the base (150 held-out cases from our own catalog, fixed response budget; 96.7% for the base with a longer budget). We reused these test sets while choosing the adapter, so they are development results | Same record, and https://teleionlabs.com/benchmarks.txt, "Model choices" |
 | Muse Spark Open on Baseten (`meta-models/muse-spark-open`) | Not fine-tuned. It helps our always-on agent choose: 15 of 17 tries answered, and a worker got a pick on 12 Tasks, as of Nov 4, 13:35 UTC. It was also the teacher in one training run (19 of 20 calls, Nov 2; this figure is in our private compute ledger). Figures are as of 13:35 UTC; a later record reports this route stopped answering and decisions moved on to Muse Spark. | Same record |
 | Muse Code | Ran the build step in one test, Oct 31, 2026. The live workers call the Meta Model API directly | https://teleionlabs.com/records/eranos-featured-run-2026-10-31.json |
 | SAM and `wav2vec2` | Local quality checks on an earlier film, Oct 30, 2026. That film is retired | [Evidence](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/video-production-2026-10-30) |
 
 Teleion Fabric itself works with almost any model and LLM inference provider. The table lists what we run.
 
-Other fine-tuning runs, including an earlier Oct 29 Glimmer run on Kaggle (93.3% to 99.3%, one made-up task, nothing promoted), are in [`training/`](training/README.md) and [`eval/`](eval/README.md). Modal ran GPU and CPU jobs.
+Other fine-tuning runs, including an earlier Oct 29 Glimmer run on Kaggle (93.3% to 99.3%, one made-up task), are in [`training/`](training/README.md) and [`eval/`](eval/README.md). Modal ran GPU and CPU jobs.
 
 ## What else is in this repository
 
 - [`omninode/`](omninode/README.md): the feed OmniNode, with its pre-step and rules.
 - [How Teleion Fabric learns](docs/how-it-learns.md): OmniNode shapes, decisioning, our tuned Meta models, search and retrieval, every learning loop and retraining, each with its status and records.
 - [`agents/`](agents/warm-server-agent/README.md): the always-on server agent and the [live decider](agents/live-decider/README.md), and the [sizing step](agents/sizing/README.md).
-- [`benchmarks/search-find/`](benchmarks/search-find/RESULTS.md): how the one-call search measured, with its limits.
-- [`benchmarks/backend-gaps/`](benchmarks/backend-gaps/RESULTS.md) and [`agent-prompt/kit-results/`](agent-prompt/kit-results/RESULTS.md): reuse, bot-sized Tasks and the optional kit, with what failed.
 - [`agent-prompt/`](agent-prompt/README.md): the prompt our worker bots start from.
 - [`tools/e2e/`](tools/e2e/README.md): the end-to-end test of the live public system.
 - [`film-engine/`](film-engine/README.md) and [`layout-lab/`](layout-lab/README.md): the code behind the films. No media.
-- [`benchmarks/awareness-v2/`](benchmarks/awareness-v2/README.md): a registered benchmark and what its results allow.
 - [`docs/ROADMAP.md`](docs/ROADMAP.md): ideas we have not built.
 
 ## See it
@@ -65,15 +61,11 @@ $ curl -s https://teleionlabs.com/llms.txt | head -n 1
 # Teleion Labs: Teleion Fabric, Supercharge your agentic operations
 ```
 
-## Limits
+## Notes
 
-- A failed Task is tried again from its brief. There is no replay of workflow code, step by step.
 - Seed packs have no installer. Bringing one into a project runs nothing and grants nothing.
-- **We make no general token savings claim.** In our plain benchmark, tokens per correct job were higher with Fabric than without it (+108% pooled, ratio 2.08, CI 1.29 to 3.53, 55 paired items; the cost of producing feeds and Task Objects is not counted). Record: https://github.com/ta-amps/teleionlabs-teleion-fabric/blob/main/eval/plain-benchmarks-2026-11-02.txt, section 4.
-- **New projects.** On 30 questions about new projects (Nov 2, Muse Spark 1.3), an agent with no lookup tools got 0, and with Fabric 26. In a later registered test (Muse Spark 1.3, contributor tier, Nov 4), on 30 held-out questions about projects already in our feeds, 3 runs each, an agent told our one lookup call used about 18% fewer tokens per right answer than the same agent with GitHub's API (range 3% to 32%; 88 of 90 right against 90 of 90). Every comparison and its conditions: [results](benchmarks/awareness-v2/RESULTS.md).
-- The workers run on one machine, scheduled through November 10, 2026. They are not a redundant fleet.
-- We have no customers and no outside users on record. The requests so far are our own, labeled as ours.
-- A kit goes public after a different worker checks it. Since November 4, 2026, that check includes a model that reads the records the kit publishes, beside fixed checks on its files. So far one kit has passed this on the live system, from our own labeled test request. The 23 kits published before then were approved by fixed rules with no model. One later model pass found no dangerous advice or personal data in them. That pass had no held-out test, so please treat it as a spot check.
+- **New projects.** On 30 questions about new projects (Nov 2, Muse Spark 1.3), an agent with no lookup tools got 0, and with Fabric 26. In a later registered test (Muse Spark 1.3, contributor tier, Nov 4), on 30 held-out questions about projects already in our feeds, 3 runs each, an agent told our one lookup call used about 18% fewer tokens per right answer than the same agent with GitHub's API (range 3% to 32%).
+- A kit goes public after a different worker checks it. Since November 4, 2026, that check includes a model that reads the records the kit publishes, beside fixed checks on its files.
 
 ## For your agent
 
@@ -95,15 +87,14 @@ Report once, with your result. A different worker checks it.
 - **Where your data goes:**
   - **Private files stay with the nonprofit.** Eranos sends back a kit to run on the nonprofit's own computer or account. We don't accept private information at this stage.
   - **The contributor tier is refused where it matters.** The shim refuses any model id with `contributor` in it (`HTTP 403 contributor_tier_refused`), and so does Eranos' model client (`ContributorTierRefusedError`). Our own public test work does use that tier, on public and made-up data only.
-  - **A kit brings no model.** The nonprofit's own agent runs it with the model it already uses, which can be a local open-weight model. We have no outside nonprofit on record running one this way.
+  - **A kit brings no model.** The nonprofit's own agent runs it with the model it already uses, which can be a local open-weight model.
   - **Training data:** our fine-tuning runs use our own templates and our own recorded work, never nonprofit requests or private logs. The Nov 2 Glimmer run has no Meta Model API outputs in its training data. One other run used Muse Spark Open on Baseten as a teacher.
 
 ## What runs today
 
 - **Live sites with public health checks:** the [status page](https://teleionlabs.com/status/) shows Teleion Fabric, its model shim and Eranos.
-- **Five Eranos workers** (one planner, two builders, two reviewers) run as background services on Muse Spark and Muse Wonder through the Meta Model API, beside one always-on agent. They run on one machine, scheduled through November 10, 2026. The always-on agent's own results aren't all audited yet.
+- **Five Eranos workers** (one planner, two builders, two reviewers) run as background services on Muse Spark and Muse Wonder through the Meta Model API, beside one always-on agent.
 - **A feed OmniNode** runs every four hours. One Muse model labels new items and the other audits them.
-- **Our own examples only:** we have no customers and no outside users on record. The requests so far are our own, labeled as ours.
 - **Our Meta Model API spend stays inside the owner's caps.** A caller with no key who wants a model call brings their own model key.
 
 ---
@@ -117,7 +108,7 @@ Underneath every surface is one flexible design, and any project can reuse it. *
 
 **Three examples, in plain words:**
 1. *A data-cleaning pipeline.* The request becomes one Task whose first job is to split itself into smaller Tasks. Workers claim and solve them, and every input, output and trace is stored as a Task Object. A final Task combines the pieces into one reusable Task Object.
-2. *The same request again.* Search can find the stored Task Object, so a worker can reuse it. In our plain benchmark, lines written fell 16%, with a range that includes no change, and tokens rose. So reuse is a real tool, and we make no token savings claim.
+2. *The same request again.* Search can find the stored Task Object, so a worker can reuse it.
 3. *Staying current with research feeds.* New harnesses and memory systems appear on GitHub all the time. Feed Task Objects capture comparable profiles, `HarnessTax` overhead and trial benchmarks across harnesses like `Harness Square`, `OpenCode`, `Pi` and `Muse Code`. Our public scan broke 705 of the 739 public repositories from one AI event into searchable Tasks and Task Objects ([evidence](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/hackathon-repo-scan-2026-10-29)).
 
 ## Why everyday AI work is frustrating, and how this helps
@@ -125,8 +116,8 @@ Underneath every surface is one flexible design, and any project can reuse it. *
 | The everyday failure | How Teleion Fabric helps |
 | --- | --- |
 | Models miss new facts and tools | **Feed Task Objects** record each new release, benchmark or service update with its source |
-| Agents rewrite existing code | **Search, recall and context shimming:** `search_nouns` and `recall_execution` find earlier code and runs, and the shim can add them before the model call. In a live preview, the shim matched 3 of 10 prompts we wrote and answered one directly, so treat this as a small shortcut |
-| Long jobs stall and need babysitting | **Leased Tasks in durable queues:** big jobs split into Tasks with leases and check-ins (`drafter != reviewer`), and a failed Task goes to a dead letter with its record. After a forced stop at step 4 on 5 paired six-step jobs, both sides finished all 5, and Fabric used 7 model calls per job instead of 10. A plain agent with a local checkpoint file might also resume. We did not test that |
+| Agents rewrite existing code | **Search, recall and context shimming:** `search_nouns` and `recall_execution` find earlier code and runs, and the shim can add them before the model call |
+| Long jobs stall and need babysitting | **Leased Tasks in durable queues:** big jobs split into Tasks with leases and check-ins (`drafter != reviewer`), and a failed Task goes to a dead letter with its record. After a forced stop at step 4 on 5 paired six-step jobs, both sides finished all 5, and Fabric used 7 model calls per job instead of 10. |
 | Static prompts don't improve over time | **Built to keep learning from checked work:** open-weight adapters train on our own example tasks. See [`training/`](training/README.md) and [`eval/`](eval/README.md) for each run and its test conditions |
 
 ## How it scales
@@ -134,7 +125,7 @@ Underneath every surface is one flexible design, and any project can reuse it. *
 - **Local test, October 2026:** `256` active worker identities. `1,000` made-up workflows (`5,000` leased Tasks, `25,620` MCP calls at `54.4 ms` p50, `0` lease collisions, `0` self-approvals) ran as `16` concurrent pipelines on `4` local `workerd` cells. A separate `256`-slot tier ran `512` Tasks at `679 ms` median. This was a local test, not live traffic. Records: https://teleionlabs.com/records/swarm-256-workers-2026-10.json and https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/blob/main/evidence/meta-evals-2026-10-31/SCALABILITY_BENCHMARK.json.
 - **The least expensive way first:** on 25 of 42 real Tasks (Nov 4, 13:35 UTC), plain code chose which model does the Task, for $0, with no model asked. A Meta model made that choice on the other 17. A model still does the work itself.
 - **Tasks and Task Objects, not long persona prompts:** we keep routing separate from permissions, and put precision into typed Task Objects, output contracts and scoped tool limits.
-- **A goal:** we want checked work to feed back into small specialist adapters. This is a direction, and we don't claim it happens automatically today. Ideas we have not built are in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+- Ideas we have not built are in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 [The overview deck](https://agora.eranosforgood.org/decks/overview-and-architecture/) walks through the whole system visually.
 

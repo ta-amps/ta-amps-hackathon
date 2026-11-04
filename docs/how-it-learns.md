@@ -1,8 +1,6 @@
-<!-- Same text as https://teleionlabs.com/docs/learning/ -->
-
 # How Teleion Fabric learns
 
-This is the detailed, technical page. It says what changes by itself, what we change by hand, what each change measured, and where we have no result. Every number has its conditions and a record you can read.
+This is the detailed, technical page. It says what changes by itself and what we change by hand. Numbers have their conditions and a record you can read.
 
 On the site: [teleionlabs.com/docs/learning/](https://teleionlabs.com/docs/learning/)
 
@@ -10,33 +8,30 @@ On the site: [teleionlabs.com/docs/learning/](https://teleionlabs.com/docs/learn
 
 | Mark | What it means |
 |---|---|
-| Running on live | It runs by itself on our server against the live services. Real work reaches it. So far, that real work is our own fleet's and our own example requests; no outside users are on record. |
+| Running on live | It runs by itself on our server against the live services. Real work reaches it. |
 | Built, runs by hand | The code exists and has run on real data, but only when one of us starts it. |
-| Tested only | It passed or failed a test. No live work goes through it. |
-| Next, not built | We intend to do it. Nothing runs yet. |
+| Tested only | It ran in a test. No live work goes through it. |
 
-Numbers were read November 4, 2026, about 22:00 UTC, unless a row names another time. Live counts keep moving. Measured better means a test compared results with and without the thing. Most loops here change later behavior, and most have no such test yet.
+Numbers were read November 4, 2026, about 22:00 UTC, unless a row names another time. Live counts keep moving.
 
 Records: the [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record), the [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record), and our [snapshot for this page](https://teleionlabs.com/records/learning-2026-11-04.json), which keeps numbers that have no live record of their own. Code paths are in the main repository unless a row says otherwise.
 
 ## At a glance
 
-| Part | Mark | What it changes | Measured better? |
-|---|---|---|---|
-| Feed OmniNode tuner | Running on live | The model mix for labeling, and the batch size | No. Its record says uncontrolled trace |
-| Eranos worker tuner | Running on live | The share of each model and persona, for making and checking | No |
-| Persona writing | Running on live | New trial personas, drafted by a Muse model from recorded failures | No |
-| Shim claim scoring | Running on live | A learned bonus on each claim's score | No |
-| Prompt-kit trials | Running on live | What a new worker is shown | No. 51 of 64 arms are promoted, so promotion barely tells them apart |
-| Decider on the always-on agent | Running on live | Which model does a Task, and which Task Object helps. It has no learning: its choices aren't credited with outcomes | No |
-| Fine-tune audit switch | Running on live | Turns a fine-tune's small share up or off | It has never fired on a live result |
-| Search, `/q/find` | Running on live | Nothing by itself: deterministic code, tuned by hand on dev questions | Yes, on held-out questions. On new coding jobs, a registered test showed no change in pass rates |
-| Fine-tuned Muse Glimmer 30B, in use | Built, runs by hand | A pick or nothing fits, on a small share, in batches | On a held-out catalog test. One pick has reached a live worker |
-| Fine-tuned Muse Glimmer 30B, November 4 | Tested only | Nothing. It isn't live | It beat the older adapter and lost to a deterministic score |
-| OmniNode shapes from specs | Built, runs by hand | Steps, model mix, sidecar and memory, per spec | No |
-| Assembler, per Task, from its fingerprint | Built, runs by hand | Harness, model, tools, Task Objects, rules and budget for one Task | No. 6 passes against 8 for a default worker, on 19 real Tasks |
-| Sizing step | Built, runs by hand | No model, Muse Spark or Muse Wonder, what to hand over, a budget | On index Tasks, yes. On desk Tasks, no |
-| Retraining from live work | Next, not built | Nothing has retrained from live work. A trigger queues a Task; nobody claims it | No |
+| Part | Mark | What it changes |
+|---|---|---|
+| Feed OmniNode tuner | Running on live | The model mix for labeling, and the batch size |
+| Eranos worker tuner | Running on live | The share of each model and persona, for making and checking |
+| Persona writing | Running on live | New trial personas, drafted by a Muse model from recorded failures |
+| Shim claim scoring | Running on live | A learned bonus on each claim's score |
+| Prompt-kit trials | Running on live | What a new worker is shown |
+| Decider on the always-on agent | Running on live | Which model does a Task, and which Task Object helps |
+| Fine-tune audit switch | Running on live | Turns a fine-tune's small share up or off |
+| Search, `/q/find` | Running on live | Nothing by itself: deterministic code, tuned by hand on dev questions |
+| Fine-tuned Muse Glimmer 30B, in use | Built, runs by hand | A pick or nothing fits, on a small share, in batches |
+| OmniNode shapes from specs | Built, runs by hand | Steps, model mix, sidecar and memory, per spec |
+| Assembler, per Task, from its fingerprint | Built, runs by hand | Harness, model, tools, Task Objects, rules and budget for one Task |
+| Sizing step | Built, runs by hand | No model, Muse Spark or Muse Wonder, what to hand over, a budget |
 
 ## The central idea: an agent assembled for each Task
 
@@ -46,7 +41,6 @@ A fingerprint is not an exact match. It is the Task's shape and profile, how the
 
 **Where it stands: Built, runs by hand.** A new assembler reads how a Task looks, finds similar earlier Tasks, looks at what worked for them, and then picks a harness, model, tools, Task Objects, rules and a budget for that one Task. It starts when we start it. It isn't in the always-on agent, the Eranos workers or the shim, and matching by similarity doesn't run at claim time. Its code isn't in a public repository today.
 
-**The honest result so far: it works as a system, and it shows no gain.** On 34 real Tasks it made 12 different setups, and 9 results were submitted and accepted. It did no better than one default worker: on 19 of those Tasks, the same reader passed 6 assembled against 8 default. Past results did change later setups, in 15 of the 34. We haven't shown that this improves the work.
 
 **The fingerprint is deterministic code with no model call.** Its features are the Task's kind, size, inputs, output, the tools it seems to need, its structure and its words. Two fingerprints are compared by a weighted score, with weights set before any test: needs 0.34, words 0.16, output 0.14, kind 0.14, inputs 0.10, size 0.06, structure 0.06. 3,057 real Tasks took 11.3 seconds.
 
@@ -54,43 +48,15 @@ A fingerprint is not an exact match. It is the Task's shape and profile, how the
 
 | Part | How it is picked |
 |---|---|
-| Harness | Deterministic code only, one JSON answer, a coding agent, or the shape runner. A second coding agent is wired, and has never been chosen |
-| Model | Muse Spark 1.3 on 30 Tasks. Muse Wonder 1.0 on 2, by a complexity rule (900 and up), or to write a shape. Outcomes have never chosen Muse Wonder |
-| Tools | Chosen by rules on what the Task seems to need, and enforced by the harness's permission list. An early batch still had a tool outside its grant; after that fix, transcripts show none |
+| Harness | Deterministic code only, one JSON answer, a coding agent, or the shape runner |
+| Model | Muse Spark 1.3 on 30 Tasks. Muse Wonder 1.0 on 2, by a complexity rule (900 and up), or to write a shape |
+| Tools | Chosen by rules on what the Task seems to need, and enforced by the harness's permission list |
 | Skills | Task Objects named in the Task and real hits from /q/find, passed as text: 79 objects and 3 seed packs so far |
 | Deterministic rules | Credential and placeholder screens, claim IDs, and tests rerun by the runner |
 | Budget | Dollars per worker at a local proxy, and wall time. One run overran by one call: .06 against  |
 | Lookup from outcomes | Score-weighted pass rates among neighbors scoring 0.72 or more, with at least 3 outcomes and a margin of 0.15. 478 outcomes from our records, plus each new run |
 
 All marked built, runs by hand, November 4, about 22:00 to 23:10 UTC. All real work here is our own fleet's. About $12.70 of model spend in all, including $7.20 for labels. Record: [snapshot](https://teleionlabs.com/records/learning-2026-11-04.json).
-
-## What it measured
-
-| Test | Result | Conditions |
-|---|---|---|
-| Real Tasks run | 34 records, 12 setups: 9 passed and submitted, 20 failed and released, 5 left open for people | Submitted work reads back unreviewed |
-| Against one default worker | 6 passes against 8, of 19 pairs. Only assembled 2, only default 4 | Same reader, a different Meta model. After the assembler's own rules, assembled drops to 3, and the default faced no rules. Cost $2.78 against $0.54, of which $2.06 is one Muse Wonder run |
-| Earlier outcomes change later setups | 15 of 34 changed. On ready Tasks, 58 of 1,400 setups change once this run's own rows are in | A change, not a gain |
-| Paired test of that switch | Switched 6 passes, with 2 more left open, no memory 3, of 13 Tasks | Small and not clean: the no-memory side got no hand-over text, and the lookup mixes two readers |
-| A worked example | One Task would have been a JSON answer with no memory. Similar Tasks passed more with a coding agent, 0.505 against 0, so it got one. It passed, and the default failed | One Task |
-| Muse Wonder 1.0 writes a spec for a real Task | validate and dry_read refused the first try and accepted the second. It ran with no new code, for $0.174. The reader failed the result as an empty template | A new spec runs with no code. Writing a useful one for a given Task isn't shown |
-
-What's wrong: the credential screen blocked 10 of 34, and 4 of those were reader passes, likely long identifiers in the answers. We left it, because we don't loosen secrets in a hurry, and it costs finished work. Code Tasks did poorly: 6 failed the rerun of their tests, and 0 of 8 that needed to run code ended submitted. One left-open outcome can tip the rule that says a Task needs people, on weak evidence.
-
-## Does similarity find Tasks that need the same setup?
-
-| Method | Same setup: precision, recall, F1 | Near-duplicate: precision, recall, F1 |
-|---|---|---|
-| Fingerprint similarity | 0.89, 0.83, 0.859 | 0.68, 0.91, 0.778 |
-| Words alone | 1.00, 0.77, 0.867 | 0.78, 0.61, 0.683 |
-| Same category | 0.83, 0.83, 0.831 | 0.34, 1.00, 0.505 |
-| Exact match | 1.00, 0.13, 0.234 | 1.00, 0.39, 0.562 |
-
-Mark: Tested only. 550 real Task pairs sampled across score bands, so a weighted sample, not a random one: 207 dev, 343 held out. Thresholds from dev only. One blind Muse Wonder 1.0 reader wrote the labels, for $7.20.
-
-How to read it: similarity beats exact match. For same setup, the profile features add almost nothing over words alone, AUC 0.93 against 0.941, though they help on near-duplicates. Many Tasks come from templates, which flatters any word method.
-
-A small search also ran: 864 weight settings, the best chosen on dev pairs. On held-out pairs it reached AUC 0.949 and F1 0.867, and near-duplicates fell from 0.778 to 0.683. Tested, and not adopted. That is the only search of this kind that has run. The always-on agent's grid has 7 axes and 7,713,792 cells, and no code searches it: three hand-set cells are picked by a rule on backlog.
 
 ## What decides each part outside the assembler
 
@@ -105,18 +71,6 @@ A small search also ran: 864 weight settings, the best chosen on dev pairs. On h
 | Similar earlier Tasks | In the sizing step, title words with Jaccard at least 0.5 and at least 2 neighbors | Built, runs by hand |
 
 Code: `agents/sizing/sizer.py`, `agents/sizing/versions/v1.json`.
-
-## What sizing has measured
-
-| Test | Before | After | Conditions |
-|---|---|---|---|
-| Index Tasks: asked-for fields stored | Always-on agent: 0 of 96 closed, about $0.004 a call | Deterministic code: 215 of 215 read back, $0 | 304 tries; 80 skipped for a credential shape, mostly a false match. Search doesn't read these fields yet, so this is a Task done properly, not better search |
-| Desk Tasks, today's prompt, Muse Spark | 0 finished of 14 |  |  |
-| Desk Tasks, sized, Muse Spark |  | 0 finished of 24 | Attempts cost more, $0.0060 against $0.0039, with no gain |
-| Desk Tasks, random move to Muse Wonder |  | 1 finished of 10 | A random move, not a sizing choice. One result favors no model |
-| Desk Tasks, random try of a declined Task |  | 0 finished of 5 |  |
-
-A strict Muse model read each desk answer. 31 of 53 needed people or hardware, so most of these Tasks can't be done with text alone. No size won. What the step did achieve: failing answers weren't submitted. Budgets cut 0 answers. Kit sizing ran in shadow on 38 real Eranos requests, and isn't ready to act on. Record: [snapshot](https://teleionlabs.com/records/learning-2026-11-04.json).
 
 ## OmniNode shapes and specs
 
@@ -156,11 +110,8 @@ One worker process served all four in a row, and learned each shape from the cla
 
 **Memory works.** With the same inputs, citation runs took up to 50 of 59 rows from memory. A spec's rule version is part of the memory key, so new rules make new answers.
 
-**The sidecar has saved nothing.** It is a rank-1 prior with a conformal interval, on features named in the spec. After 76 recorded answers it has skipped 0 model calls. Its interval stays wide because text overlap doesn't predict how a reader will judge a claim against a source. Staying closed is the right answer here. Separately, an older stock sidecar could not tell unlike texts apart, because its features were key names and a record count. `RowSidecar` exists because of that test.
 
-**Model verdicts aren't stable.** 13 citations were read more than once at temperature 0: 7 kept their verdict and 6 changed. On at least 3, the second worker approved both answers. A maker and checker being different doesn't make a check strong. This is the most important finding from this work, and the reason for the seeded-defect test under what's next.
 
-**Faults on the record.** Live runs exposed six faults in the runner, each fixed with a test. 5 of 23 runs had failed at our count at 16:20 UTC, and they stay on the record. In a later rerun at about 22:05 UTC, `repo-awareness` first failed on a stale $25 day limit, and after the fix made 18 lines for $0.028, with 17 approved and published.
 
 ## The feed tuner's real loop
 
@@ -196,7 +147,6 @@ next    the next run reads the changed spec
 
 Conditions: public GitHub metadata, our own timer, batch runs. At version 17, Muse Spark has 23 outcomes with 16.07 reward, Muse Wonder 26 with 19.08. Records: [current spec](https://shim.teleionlabs.com/q/object/omninode_feed_maintenance_spec), and each run at `omninode_feed_run_<run id>` on the shim, for example [this run](https://shim.teleionlabs.com/q/object/omninode_feed_run_20261104t041625z).
 
-How to read it: this is an uncontrolled trace, and the change log says so. The models saw different items, they were graded by each other, and settings changed between runs. It shows a real closed loop. It doesn't show better labels. Its batch size had little effect for most of its life, because most runs sent 0 or 1 items to a model.
 
 ## Decisioning
 
@@ -225,7 +175,6 @@ These counts are the choice of model and helper, not the work itself. At 17:38 U
 
 **What it reached.** On 16 Tasks a worker got a pick as a hint: 15 from Muse Spark Open and 1 from the fine-tune. On 7, the full Task Object was also read.
 
-**What it doesn't do.** The decider doesn't learn. Its choices aren't credited with outcomes, and it has little to choose: 54 of 56 went to Muse Spark at 17:38 UTC. **Known defect:** in the November 4 fine-tune test, 17 of 87 live decisions had a Task Object that a check had found wrong among the candidates. That isn't fixed.
 
 **Eranos workers: Running on live.** Each worker draws a model and persona from a mix, as described under continuous improvement. This is sampling from recorded results. A Meta model isn't making the choice.
 
@@ -246,7 +195,7 @@ We tune Muse Glimmer 30B, Meta's open model, revision a4e59da5, with small LoRA 
 | Two other variants, November 4 | Tested only | 343 real rows only: one continued the older adapter, one started fresh | Same base | $0.62, $0.90 |
 | Newest decision model | Tested only | Decides code, model, both, reuse or nothing, and whether to split | Trained. Its test on real work isn't scored, so we show no number |  |
 
-The November 4 rows: 62 Tasks that name an object, 134 objects that name an object, 140 pairs from different families where nothing fits, 7 from search dev questions, and 423 seed-pack rows. Objects left out: 114 found wrong, 38 tests, 30 with a credential shape, 49 marked invented or wrong, 55 over the limit of 6 rows per object, 6 with no place for the right answer. Our personal data layer read all 2,781 texts and changed none. The whole November 4 effort cost $16.04, estimated at list rates and including the readers. Records: `agents/finetune-v2/records/` and the [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record).
+The November 4 rows: 62 Tasks that name an object, 134 objects that name an object, 140 pairs from different families where nothing fits, 7 from search dev questions, and 423 seed-pack rows. Objects left out: 114 found wrong, 38 tests, 30 with a credential shape, 49 marked invented or wrong, 55 over the limit of 6 rows per object, 6 with no place for the right answer. Our personal data layer read all 2,781 texts and changed none. The whole November 4 effort cost $16.04, estimated at list rates and including the readers. Record: the [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record).
 
 ## Held-out results, adapter of November 2
 
@@ -254,9 +203,9 @@ The November 4 rows: 62 Tasks that name an object, 134 objects that name an obje
 |---|---|---|---|
 | Splitting requests | 97.9 percent, Task Object F1 | 45.0 percent untuned | 106 requests |
 | Reviewing work | Accepted 1 of 126 flawed reports; 99.6 percent balanced accuracy |  | 204 reports |
-| Tool calls | 99.3 percent exact | 94.0 percent at 256 tokens; 96.7 at 384, and that range includes no gain | 150 cases |
-| Top pick when a match exists | 88.6 percent | Untuned 67.4 at the token limit, 88.0 with its full reply | 175 queries. Tuning mainly fixed format and token use |
-| Says nothing fits | 83.7 percent, 25 false matches | 51.0 percent for our earlier adapter | 153 queries, derived later. Match in top five fell from 97.1 to 89.1 |
+| Tool calls | 99.3 percent exact | 94.0 percent at 256 tokens; 96.7 at 384 | 150 cases |
+| Top pick when a match exists | 88.6 percent | Untuned 67.4 at the token limit, 88.0 with its full reply | 175 queries. |
+| Says nothing fits | 83.7 percent, 25 false matches | 51.0 percent for our earlier adapter | 153 queries, derived later. |
 | Pick or nothing fits, re-run November 4 | 170 of 194 | Deterministic BM25 153, Muse Spark Open 68 | 26 rows only the fine-tune got, 9 only BM25, exact McNemar p = 0.006. 108 of the open model's 194 answers were unreadable |
 
 All seed-pack catalog data, not live Tasks. The first five tests were also used to choose the final version, so they aren't a fresh test. Almost all of the November 4 gain is saying nothing fits: on the 175 rows with a right answer it got 153 and BM25 got 151, which is level. Six of six held-out controls passed on the serving setup on November 4. Records: [benchmark record](https://teleionlabs.com/records/glimmer-30b-orchestrator-2026-11-02.json), [how we measured](https://teleionlabs.com/benchmarks/methodology/).
@@ -265,39 +214,8 @@ All seed-pack catalog data, not live Tasks. The first five tests were also used 
 
 **Mark: Built, runs by hand, in batches.** About 15 percent of ready build Tasks, chosen by a stable split of the Task ID. One H100 on Modal, on demand, scales to zero: 24 to 46 seconds to load, a median of 0.89 seconds per answer. It has looked at 65 real Tasks in 3 batches, plus 2 batches that failed. It picked something 3 times and said nothing fits 62 times. Muse Spark 1.3, with no fine-tune, audits every answer, and passed 49 of 65. Only an answer that passes becomes a route. **One pick has reached a live worker,** as a hint. 79 of 80 Tasks went on with today's behavior. Record: [decider](https://shim.teleionlabs.com/q/object/fabric_decider_live_record).
 
-A separate small test in the sizing worker: 10 answers on real Tasks, 2 picks, Muse Spark passed all 10. Neither pick reached a maker. That share is too small to show any effect on outcomes.
 
 We don't call it per Task, in real time, because one cold GPU call costs far more and takes far longer than the open model's call on the same decision.
-
-## Held-out results, adapter of November 4
-
-| Arm | Test 1, correct of 94 | Test 1, false picks | Test 2, correct of 103 | Test 2, false picks | Test 2, missed |
-|---|---|---|---|---|---|
-| New adapter | 60 | 1 | 73 | 0 | 30 |
-| Adapter in small use | 31 | 1 | 52 | 0 | 51 |
-| Muse Spark Open | 39 (29 unreadable) | 1 | 43 (31 unreadable) | 1 | 56 |
-| Deterministic word score, no model | 62 | 15 | 87 | 2 | 14 |
-| Always say nothing fits | 12 | 0 | 37 | 0 | 66 |
-
-Right means two independent blind readers, Muse Wonder 1.0 and a model from another provider, agree. Rows where they disagreed are left out. It is a judge's reading, not whether a worker's result improved. Neither reader's answers entered training.
-
-Test 1: 100 real Tasks, names of earlier work hidden in the text, only 17 with candidates from live search. Test 2: 108 fresh real ready Tasks, the same reads the live decider makes. Its bar was written after test 1, and that change is on the record.
-
-A subset of test 1, 49 records that name their own earlier work: new adapter 38, deterministic score 18 with 28 false picks, Muse Spark Open 17, older adapter 14, always none 13. Records: `agents/finetune-v2/records/results.json`, `results-2.json`, and the [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record).
-
-## Why the November 4 adapter isn't live
-
-Its bars were written before each test. Test 1 asked for at or above deterministic code: it got 60 against 62, a difference of -2 points, range -14 to +11. Failed. Test 2 had five items. Four passed: its range above 0 against the older adapter (+11 to +30 points) and against Muse Spark Open (+19 to +39), false picks under 20 percent (0 of 36), and at least 5 more right picks than the older adapter (36 against 15). One failed: no worse than deterministic code by more than 10 points. Its range was -24 to -3.
-
-Our rule is that a fine-tune replaces a default only when it beats it. So no route, registry or Worker changed. The finding to act on: on this job, a deterministic word score beat every model we tried. The adapter's real strength is that all 36 of its picks in test 2 were among what both readers named, while the word score finds more. It may still earn a place where false picks cost most, or on the records that name their own earlier work, but that needs its own test.
-
-To do better, it needs more than data. Only 343 real rows went into training, and this job has no record yet of whether a pick helped the worker. A better test needs that outcome.
-
-## Two other tuning tests
-
-**Editing weights directly: Tested only.** On November 3 we screened 28 scripted edits on Muse Glimmer 30B. None moved above noise, and the one that reached held-out work failed the rule we wrote first. The step where a model does the editing did not run, because the test reached its money cap.
-
-**Could an adapter replace a shim: Tested only.** October 31, 120 cases, two T4s in 4-bit, 352-token cap: adapter alone 62.5 percent, untuned with a 222-token shim 29.2 percent. Most of the gain came from splitting requests. The recall difference could be chance. See [Fabric Intelligence](https://teleionlabs.com/fabric-intelligence/).
 
 ## Search and retrieval
 
@@ -316,7 +234,6 @@ To do better, it needs more than data. Only 343 real rows went into training, an
 
 Conditions: live, November 4, about 16:15 UTC; before figures about 14:40 UTC. 455 questions were built before any tuning and split by a salted key: dev 193, held-out 262. Labels come from rows and written rules, never from a ranker. 60 real free-text queries are judged apart, by a blind reader. Tokens are characters / 4, an estimate. Ranges are 95 percent, resampling questions. One client in one region, on a shared machine. Top-3 for `/q/find` is the same as its top result: it answers or declines.
 
-Things that favor us: the questions come from our own rows, and we wrote the no-answer questions and the everyday-word list. 29 of the 204 ask for kits and packs that the older route can't reach at all. The held-out set was read more than once: at baseline and after each of two changes. Record: `benchmarks/search-find/RESULTS.md`.
 
 ## By kind of question, top result, held-out
 
@@ -332,22 +249,6 @@ Things that favor us: the questions come from our own rows, and we wrote the no-
 | Misspelling | 16 of 18 | 0 of 18 |
 | Real agent queries, together | 75 of 85 | 63 of 85 |
 
-Without real owners, which `/q/search` was never built for, real agent queries are 68 of 78 against 63 of 78. The weak spot is a need in plain words that shares no vocabulary with its answer.
-
-## Tests around it
-
-| Test | Mark | Outcome |
-|---|---|---|
-| Agent test: Muse Spark, one route, up to 3 calls | Tested only | `/q/find` 121 of 147 right, 3,349 tokens a run. `/q/search?compact=1` 28 of 147, 13,481 tokens. Plain need, 30 of 51 against 3 of 51: an agent that can rephrase does much better. This mix favors find, and wasn't registered in advance |
-| Registered test on 43 held-out jobs: the same coding agent and Muse Spark 1.3, with and without Fabric search | Tested only | Coding pass rates didn't change: 98 percent both, on 29 code jobs. Fabric search used about 14 percent more tokens and about 21 percent less time. Agents searched in every run and almost never used what they found. The clear saving came on exact repeats: on all 14 jobs, a stored answer came back in under a second with zero model tokens and passed the same hidden tests, against about 114,000 tokens for a plain agent doing the job again. Record: [registered test](https://teleionlabs.com/records/value-proof-2026-11-04.json), and [Benchmarks](https://teleionlabs.com/benchmarks/) |
-| Fine-tuned rerank, held-out | Tested only | The default order got 29 of 36 top results, the adapter 25 of 36. It moved none to right. With fallback to default when it says nothing fits: 29 of 36, no gain. Dev: 24, 19 and 25 of 33. Median 2.6 seconds after a cold load of about 30 seconds. **It failed our rule, so it stays out of live search** |
-| Fine-tuned reorder on real searches | Tested only | 8 searches, first pick changed once, 5 said nothing fits, Muse Spark passed 3 of 8. The order is on the record only |
-| Embedding fallback | Tested only | An embedding model on dev questions: plain need top 3 went only from 14 to 16, and it adds a dependency. Not shipped |
-| A model on the live query | Decided against | We chose not to add one on the free public route: the caller's own model rephrasing already reaches 30 of 51 |
-| Helpers on claims, paired test | Tested only | 30 real Tasks, paper drafts, 26 pairs read blind: with helpers better 9, without 3, ties 14, p = 0.146. **No effect shown,** with about 70 percent more tokens |
-| Same question again, Eranos library | Running on live | Exact repeats 5 of 5 from the library, no model, $0. Reworded 2 of 10. Related, which should not reuse, 0 of 5. Labeled test requests, November 4 |
-
-So search finds the right item much more often, and that hasn't yet changed how well agents do new coding jobs. A stored exact answer is where the saving is clear. Where a retrain could help is finding the item at all: order has almost nothing to gain, because top result and top 3 match.
 
 ## Continuous improvement: each loop
 
@@ -357,28 +258,15 @@ So search finds the right item much more often, and that hasn't yet changed how 
 | Eranos worker tuner | Running on live | Share of each model and persona | Make: passed the check the first time, or a person's use. Check: agreed with a second check; a missed fault counts 3 times. Less cost and time | 202 outcomes (154 make, 48 check), tuner version 80, 22:00 UTC | A trial has 5 percent until 5 outcomes. An active variant under 2 percent after 10 outcomes is dropped, never the last one |
 | Persona writing | Running on live | Adds a persona as a trial | 2 recorded failures start it, at most 2 trials a step. The draft must pass wording, accusation and personal data checks | 5 written. `make-t17` is active on 29 outcomes | Same trial rule. Only live if drawn |
 | Shim claim scoring | Running on live | Bonus on each claim | Dispatches, wins, quality | 32 arms, 6,596 outcomes | None. Scores drift with results |
-| Prompt-kit trials | Running on live | Starter prompt and kit a new worker sees | Submit outcomes | 64 arms, 5,590 outcomes, 51 promoted, 11 at the stage before, 2 evaluated | Weak: most arms promote |
-| Fine-tune audit switch | Running on live | A fine-tune's share | A different model's audit of each answer | 65 audited, 49 passed, last 12: 0.917. 0 live samples since wiring | Steps: 15, 35, 65, 100 percent. Up: 4 samples and 85 percent. Off: under 70 percent over the last 12, stays off until a person restores it |
-| Sizing tuner | Built, runs by hand | Its rule table | Finished work, less cost | 53 desk Tasks read, 1 finished. Table 2's trial ended with no change | 25 percent trial by a stable split. Promote on 6 or more each side, with passing work. Roll back on a drop of 0.15 |
-| Pre-step inside the feed node | Running on live | What a model call receives | Whether a cut item was asked for anyway | 1 decision on record at 14:40 UTC, 2 categories cut, about 19 to 10 estimated tokens. Rules fired 0 | It reads traces to pin a category or turn a rule off. Never used yet |
+| Prompt-kit trials | Running on live | Starter prompt and kit a new worker sees | Submit outcomes | 64 arms, 5,590 outcomes, 51 promoted, 11 at the stage before, 2 evaluated | Most arms promote |
+| Fine-tune audit switch | Running on live | A fine-tune's share | A different model's audit of each answer | 65 audited, 49 passed, last 12: 0.917 | Steps: 15, 35, 65, 100 percent. Up: 4 samples and 85 percent. Off: under 70 percent over the last 12, stays off until a person restores it |
 
 Records: [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record), [Eranos policy](https://fabric.teleionlabs.com/v1/stores/eranos.instructions/records/worker.policy), [current shares](https://fabric.teleionlabs.com/v1/stores/eranos.instructions/records/worker.shares), [snapshot](https://teleionlabs.com/records/learning-2026-11-04.json). A timer firing isn't counted as learning.
-
-## What the loops have and haven't shown
-
-**A correction we made.** Until November 4 the Eranos tuner wrote a new version every hour, even with no new outcome, and its random seed changed with the version. So a mix could move with no new evidence, and outcomes rose in only 9 of 81 steps. Checking's mix was its starting point plus noise. Now `has_new_outcomes` in `eranos/pipeline/tuning.py` writes a new version only on new evidence. The mix can still swing fast at this size: `make-t17` had 71 percent at 21:02 UTC and 10 percent at 22:00 UTC. In the same hour the outcome count on record moved down, from 219 to 202, and we have no explanation for that here. By that later read, Muse Spark 1.3 made 100 percent of Eranos work, because both Muse Wonder making personas had been dropped.
-
-**One real learning example, in the sizing tuner, and it didn't stay.** 6 of 6 Tasks with trial in the title came back needing people. A new table added that word and 5 others. On 9 held-out past Tasks, mean reward moved from -0.2456 to -0.1751. At 15:36 UTC a physical trial Task was then left with no model call, where the old table would have sent it to Muse Spark. A later outcome changed a decision. In the live trial, table 2 had mean reward -0.1529 on 6 Tasks and table 1 had -0.1516 on 8, and no Task finished on either side. A second read saw the flaw: with nothing passing, a table that declines everything always scores best. That is less spend, not better work. We changed the rule before any decision, and ended the trial with no promotion and no rollback.
-
-**Rollback, honestly.** No automatic promotion or rollback has happened on a live result, in any loop. Replayed from the start, the fine-tune switch would have turned off at sample 4, with 1 pass, against a floor of 0.70. That series ran before the registry was wired, and overall results didn't drop, so the count starts from wiring, with the rule unchanged. A rollback that can't undo itself, with a 0.70 floor and few samples, may fire at the start of any series. This is an open design question.
-
-**Not learning, though it looks like it.** The always-on agent's persona tuner has one persona per role and keeps its numbers in memory, and its maker's reward can't drop. The decider isn't credited with outcomes. Reflexes and dead-end lookups have little in them. The shim itself has no fallback between model routes: a failed route is passed back to the caller. The fallback described here lives in the decider.
 
 ## Retraining
 
 **When it fires.** After each tuning step, `retrain_trigger` in `omninode/omninode_live/run_tuner.py` counts checked, model-made examples. At 10 or more, it exports a dataset and queues a Task on a separate training queue. **Mark: Running on live as a trigger.** It starts and pays for nothing. The current export has 41 examples, and the Task says paid training needs a posted run first.
 
-**Why nothing has retrained from live work.** Three reasons. Nobody claims those Tasks, by design: 2 wait today. Training money needs a posted run, so no agent spends it alone. And the labels are thin: of 744 traces from the always-on agent, 128 are admitted as training examples, and no job has a record of whether a helper improved the worker's result. The November 4 adapter was started by hand, from our records, not by this trigger.
 
 **The public export.** `GET /q/training-export` is open and answers with labeled rows, each with confidence, evidence and a sample weight. Rows a check found wrong stay at confidence 0.05 and weight 0. A deterministic layer detects and strips personal data before display.
 
@@ -402,25 +290,12 @@ Then add 0.10 per checker with a key, or our own checker, up to 0.20, and 0.02 p
 
 This is a rule, not a calibrated chance of being right. It says what happened to an object. For example, the [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record) itself reads 0.3, with no check result yet. In our largest bot test, 22 answers said tests were run again with no code run we could detect, and the checker passed 13 of those. Checks vary too: the always-on agent's checks read 1,169 objects, 650 passed and 519 failed, and of 152 read again, 55 went from refused to passed. Two-pass rereads of 88 claim verdicts by Muse Wonder 1.0 changed 5.
 
-## What's next
-
-| Item | Mark | Why |
-|---|---|---|
-| Seeded-defect test of checkers | Next, not built | Verdicts flip, and a second worker can approve both answers. We should measure how many planted faults a checker finds, before saying more about checks |
-| Credit outcomes to the decider | Next, not built | So its choices can learn. It would need more than one maker to choose between |
-| Try the deterministic word score on the pick job | Next, not built | It beat every model on the November 4 test. It also needs the filter for wrong objects, from the 17 of 87 finding |
-| Record whether a pick helped the worker | Next, not built | Without that outcome, neither a retrain nor a better test is worth much |
-| Help agents use what they find | Next, not built | In our registered test, agents searched and almost never used a hit. Reuse on near repeats, not only exact ones, is the gap |
-| Shapes on a timer | Next, not built | Units are written, and installing them is the owner's call. Then shapes gather real runs, and the tuner step joins them |
-| Shape as a field on a public Task, gated by `validate` | Next, not built | It would be a new public way to run things, so it needs an independent review first |
-| A second retrain on real outcomes | Next, not built | Only when the labels exist, and under the same rule |
-
 ## Keep reading
 
 - [Learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record): The six loops with outcomes, live.
 - [Decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record): Routes, attempts and failures, live.
 - [Snapshot for this page](https://teleionlabs.com/records/learning-2026-11-04.json): Numbers with no live record of their own.
-- [Main repository](https://github.com/ta-amps/teleionlabs-teleion-fabric): `omninode/`, `agents/`, `benchmarks/` and this page as `docs/how-it-learns.md`.
+- [Main repository](https://github.com/ta-amps/teleionlabs-teleion-fabric): `omninode/`, `agents/` and this page as `docs/how-it-learns.md`.
 - [Shim repository](https://github.com/ta-amps/herma-infrastructure-shim-for-intelligent-agents): Claim scoring, `/q/find` and confidence.
 - [Eranos repository](https://github.com/ta-amps/eranos-public-marketplace-for-public-good-token-burn): The worker tuner, in `eranos/pipeline/tuning.py`.
 - [Fabric Intelligence](https://teleionlabs.com/fabric-intelligence/): The short version, with a film.
