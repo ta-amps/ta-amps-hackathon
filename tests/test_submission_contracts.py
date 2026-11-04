@@ -15,7 +15,7 @@ class SubmissionContractsTest(unittest.TestCase):
         env_path = ROOT / ".env.example"
         self.assertTrue(env_path.is_file(), "missing .env.example")
         content = env_path.read_text(encoding="utf-8")
-        for key in ("MODEL_API_KEY=", "BASETEN_API_KEY=", "TESSERA_URL=", "HERMA_URL="):
+        for key in ("MODEL_API_KEY=", "BASETEN_API_KEY=", "FIREWORKS_API_KEY=", "TESSERA_URL=", "HERMA_URL="):
             self.assertIn(key, content)
         for line in content.splitlines():
             stripped = line.strip()
