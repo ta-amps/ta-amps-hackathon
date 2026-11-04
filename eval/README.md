@@ -2,7 +2,7 @@
 
 Every model-tuning round in `ta-amps` is scored by a deterministic evaluation Task (`verb.benchmark_harness`) and gated by a pre-registered promotion rule task object (`tool-call-specialist.promotion` v1, `sha256: bf0fa821717c2400faab77652f067ea85f2616eea329c6e139af33a423e4b3b7`) fixed before training runs.
 
-> **What these benchmarks show -- and what they do not:** All splits evaluate bounded, synthetic Tasks (producing schema-valid Teleion Fabric MCP JSON tool calls, recalling post-cutoff 2026 task objects without context bloat, or decomposing nonprofit intake briefs with `builder != reviewer` and contributor-tier privacy checks). They prove that the continuous task and task-object learning loop measures real specialist gains, blocks contaminated rows, and rejects regressions; they are not general LLM capability claims.
+> **What these benchmarks show -- and what they do not:** All splits evaluate bounded, made-up Tasks (producing schema-valid Teleion Fabric MCP JSON tool calls, recalling post-cutoff 2026 task objects without context bloat, or decomposing nonprofit intake briefs with `builder != reviewer` and contributor-tier privacy checks). They prove that the continuous task and task-object learning loop measures real specialist gains, blocks contaminated rows, and rejects regressions; they are not general LLM capability claims.
 
 ## 1. Typed MCP Tool-Call Specialist Accuracy (`n = 150`)
 
@@ -50,7 +50,7 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 
 
 
-- **15 PEFT SFT/DPO Adapters + 2 Linear/TIES Merges (`glimmer-modular-swarm-2026-10-31`):** Across `64 -> 256 -> 1,600` synthetic OpenCode-Swarm traces on free Kaggle `2x Tesla T4` GPUs (`11.27 GiB` / `11.03 GiB` peak VRAM, `$0` spend), `lora.shim-retriever` SFT loss dropped **`0.769 -> 0.440 -> 0.355`**, `lora.task-decomposer` cut held-out decomposition cross-entropy **`1.310 -> 0.368` (`-71.9%`)**, and `lora.verifier-dpo` (`SFT + DPO` on chosen vs `noun.negative_tombstone` pairs) expanded preference margin **`+13.64 -> +20.12 -> +24.54`** (`100.0%` batch win rate).
+- **15 PEFT SFT/DPO Adapters + 2 Linear/TIES Merges (`glimmer-modular-swarm-2026-10-31`):** Across `64 -> 256 -> 1,600` made-up OpenCode-Swarm traces on free Kaggle `2x Tesla T4` GPUs (`11.27 GiB` / `11.03 GiB` peak VRAM, `$0` spend), `lora.shim-retriever` SFT loss dropped **`0.769 -> 0.440 -> 0.355`**, `lora.task-decomposer` cut held-out decomposition cross-entropy **`1.310 -> 0.368` (`-71.9%`)**, and `lora.verifier-dpo` (`SFT + DPO` on chosen vs `noun.negative_tombstone` pairs) expanded preference margin **`+13.64 -> +20.12 -> +24.54`** (`100.0%` batch win rate).
 - **Why Dynamic `set_adapter(role)` Beats Static Weight Merging:** Direct inspection of the six `97.3 MB` `.safetensors` checkpoints (`392` `F32` tensors, `24,313,856` trainable parameters each) shows pairwise cosine similarity **`|cos| <= 0.00054`** across the four specialist roles (near-exact mathematical orthogonality), whereas static `add_weighted_adapter(..., combination_type="ties")` attenuates alignment with each specialist to **`0.377..0.388`** (`~61.7%` loss of directional alignment). *(Honesty note: Stage 4 batched greedy generation at `batch_size=13..25, max_new_tokens=1,472` hit T4 VRAM OOM after saving all 17 manifests and 6 `.safetensors` checkpoints, so no batched greedy holdout exact-match score is claimed from that scaling run.)*
 
 ---

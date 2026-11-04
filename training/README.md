@@ -2,7 +2,7 @@
 
 `ta-amps` treats continuous fine-tuning and specialist adapter routing as ordinary **tasks (things to do)** (`verbs`) and **task objects** (`nouns`) on [Teleion Fabric](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine), without adding a separate model registry, server-side training daemon, or task authority.
 
-> **Scope and honesty boundary:** Every training and evaluation example in the measured adapter runs below comes from owned deterministic synthetic MIT repository templates. No Muse API outputs, provider completions, nonprofit files, or private execution traces entered training. Base weights and derived LoRA/QLoRA `.safetensors` weights remain private under their respective licenses (*Built with Llama* under the Llama 3.2 Community License). Adapters are recorded as unadmitted candidate manifests, not deployed hosted endpoints or general-capability claims.
+> **Scope and honesty boundary:** Every training and evaluation example in the measured adapter runs below comes from owned deterministic made-up MIT repository templates. No Muse API outputs, provider completions, nonprofit files, or private execution traces entered training. Base weights and derived LoRA/QLoRA `.safetensors` weights remain private under their respective licenses (*Built with Llama* under the Llama 3.2 Community License). Adapters are recorded as unadmitted candidate manifests, not deployed hosted endpoints or general-capability claims.
 
 ## Measured Meta & Open-Weights Fine-Tuning Runs
 
@@ -19,7 +19,7 @@
 - [adapters/source.json](adapters/provenance.json): Full SHA-256 source manifest linking base shards, promotion rule (`bf0fa821717c2400...`), holdout records, and evaluation outputs across all four checked adapter runs.
 - [adapters/glimmer-30b-qlora/adapter_config.json](adapters/glimmer-30b-qlora/adapter_config.json): PEFT LoRA configuration manifest for the Muse Glimmer 30B 4-bit NF4 tool-call specialist.
 - [adapters/glimmer-30b-lora-memory/adapter_config.json](adapters/glimmer-30b-lora-memory/adapter_config.json): PEFT LoRA configuration manifest for the Muse Glimmer 30B 2xT4 LoRA-as-Memory specialist.
-- [`../templates/finetune-meta-lora/`](../templates/finetune-meta-lora/README.md): Copy-paste starter script ([`train_lora_template.py`](../templates/finetune-meta-lora/train_lora_template.py)) and synthetic MIT fixture ([`sample_practice_tasks.json`](../templates/finetune-meta-lora/sample_practice_tasks.json)).
+- [`../templates/finetune-meta-lora/`](../templates/finetune-meta-lora/README.md): Copy-paste starter script ([`train_lora_template.py`](../templates/finetune-meta-lora/train_lora_template.py)) and made-up MIT fixture ([`sample_practice_tasks.json`](../templates/finetune-meta-lora/sample_practice_tasks.json)).
 
 ---
 
@@ -40,7 +40,7 @@
      "enable_gpu": true,
      "enable_internet": true,
      "machine_shape": "NvidiaTeslaT4",
-     "dataset_sources": ["<your-handle>/synthetic-mit-task-objects"]
+     "dataset_sources": ["<your-handle>/made-up-mit-task-objects"]
    }
    ```
 3. **Attach PEFT QLoRA / LoRA across `cuda:0` and `cuda:1`:**
@@ -122,14 +122,14 @@ vllm serve meta-llama/Llama-3.2-3B-Instruct \
 Meta's `api.meta.ai` platform (`muse-spark-1.3-contributor` at `$0.10 / $0.20` per 1M input/output tokens and `$0.002` per 1M cached input tokens, plus `Muse Wonder 1.0` and `Muse Code`) powers end-to-end multi-harness verification at penny-scale cost while enforcing strict privacy and licensing separation:
 
 1. **Contributor-Tier Firewall (`ContributorTierRefusedError` & `HTTP 403`):**
-   - `muse-spark-1.3-contributor` is used **exclusively** on `100%` synthetic or public-domain task objects.
-   - If a task references any private, sensitive, or NGO-owned record (`visibility_scope != public` and `synthetic != true`), Eranos raises `ContributorTierRefusedError` and the Teleion Fabric shim returns `HTTP 403 contributor_tier_refused` before any network socket opens.
+   - `muse-spark-1.3-contributor` is used **exclusively** on `100%` made-up or public-domain task objects.
+   - If a task references any private, sensitive, or NGO-owned record (`visibility_scope != public` and not marked as made-up), Eranos raises `ContributorTierRefusedError` and the Teleion Fabric shim returns `HTTP 403 contributor_tier_refused` before any network socket opens.
    - Note on `Muse Code` CLI flags: `--contributor-mode off` only toggles a CLI mode flag; the contributor tier on `api.meta.ai` is selected explicitly via `--model muse-spark-1.3-contributor` routed through a local budget-capped gate (`CAP_USD <= 2.00`).
 2. **Multi-Harness Builder + Independent Reviewer Execution (`< $0.03` per E2E Kit):**
-   - **Builder (`Muse Code` on `muse-spark-1.3-contributor` via `/v1/responses`):** Claims an `eq02` `build` task under a fenced lease, fetches the synthetic input task object, writes stdlib Python code + unit tests + README, runs acceptance checks, stores 4 content-addressed task objects (`put_record`), and submits with SHA-256 digests (`receipt_hash`).
+   - **Builder (`Muse Code` on `muse-spark-1.3-contributor` via `/v1/responses`):** Claims an `eq02` `build` task under a fenced lease, fetches the made-up input task object, writes stdlib Python code + unit tests + README, runs acceptance checks, stores 4 content-addressed task objects (`put_record`), and submits with SHA-256 digests (`receipt_hash`).
    - **Independent Reviewer (`nanoMuse` on `muse-spark-1.3-contributor` via `/v1/chat/completions`):** Using a **distinct scoped API key** (`reviewer_key_id != builder_key_id`), claims the dependent `eq03` `review` task, recomputes every SHA-256 digest and `blob_sha256` from scratch, re-executes the unit tests and coverage checks in an isolated workspace, writes the `kit.reviews` task object, and submits an independent verdict (`approve` or `refuse`) while holding final publication for a human operator.
-3. **Measured Synthetic Curation vs. Proposed Live Distillation (Honesty Boundary):**
-   - **Measured today:** All open-weights LoRA/QLoRA runs (`Muse Glimmer 30B` and `Llama 3.2 1B/3B`) trained **100% on owned deterministic synthetic MIT Python generators** -- zero `api.meta.ai` completions entered those adapter weights, ensuring clean open-weights licensing. Meanwhile, our `256`-worker OpenCode/MCP swarm benchmark (`1,000` synthetic workflows, `25,620` MCP calls at `54.4 ms` p50, `$0.0007` spend) and real `Muse Code` + `nanoMuse` `api.meta.ai` E2E runs prove the multi-harness execution, receipting, and `noun.negative_tombstone` DPO pair-collection plumbing end to end.
+3. **Measured Made-Up Curation vs. Proposed Live Distillation (Honesty Boundary):**
+   - **Measured today:** All open-weights LoRA/QLoRA runs (`Muse Glimmer 30B` and `Llama 3.2 1B/3B`) trained **100% on owned deterministic made-up MIT Python generators** -- zero `api.meta.ai` completions entered those adapter weights, ensuring clean open-weights licensing. Meanwhile, our `256`-worker OpenCode/MCP swarm benchmark (`1,000` made-up workflows, `25,620` MCP calls at `54.4 ms` p50, `$0.0007` spend) and real `Muse Code` + `nanoMuse` `api.meta.ai` E2E runs prove the multi-harness execution, receipting, and `noun.negative_tombstone` DPO pair-collection plumbing end to end.
    - **Proposed next step (governed production loop):** When organizations or opted-in contributors explicitly authorize trace learning under Standard (non-contributor) mode and license-compatible terms, Teleion Fabric's curation task (`curate_dataset`) filters checked multi-step frontier records (`ok: true` + independent `approved: true`) alongside rejected attempts (`ok: false` tombstones) into three-fingerprint-deduplicated SFT and DPO rounds for Tier 1 (`Llama 3.2`) and Tier 2 (`Muse Glimmer 30B`) adapters.
 
 ---

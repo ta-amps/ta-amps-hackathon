@@ -101,12 +101,12 @@ Full manifests, SHA-256 source, and promotion gates live in [`../training/README
    ```bash
    # Dry-run receipt on CPU (zero GPU required), then train on local CUDA or Kaggle GPU:
    python3 templates/finetune-meta-lora/train_lora_template.py \
-     --dataset templates/finetune-meta-lora/sample_synthetic_tasks.json \
+     --dataset templates/finetune-meta-lora/sample_practice_tasks.json \
      --dry-run-manifest /tmp/lora-dry-run-receipt.json
 
    python3 templates/finetune-meta-lora/train_lora_template.py \
      --base-model meta-llama/Llama-3.2-3B-Instruct \
-     --dataset templates/finetune-meta-lora/sample_synthetic_tasks.json \
+     --dataset templates/finetune-meta-lora/sample_practice_tasks.json \
      --output-dir ./adapters/lora.builder-toolcalls
 
    # Serve one shared base model in VRAM with hot-swapped specialist LoRA task objects per verb kind:
