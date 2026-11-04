@@ -1,0 +1,711 @@
+{
+  "schema_id": "tessera.omninode_warm_dag_and_resilience.grid.v1",
+  "generation": 1,
+  "description": "Multi-dimensional Configuration Settings Grid governing Stage-0 OmniNode regime classification, demand-anticipation warm working directories, and self-healing HTTP/resource waterfalling.",
+  "parameters": {
+    "dag_topology_mode": {
+      "type": "choice",
+      "choices": [
+        "deterministic_bypass",
+        "warm_omninode_dag",
+        "quorum_omninode_dag",
+        "granular_fabric_fallback"
+      ],
+      "default": "warm_omninode_dag"
+    },
+    "placement_scope": {
+      "type": "choice",
+      "choices": [
+        "ingress_root",
+        "interior_branch",
+        "leaf_operator",
+        "peer_checker",
+        "nested_omninode"
+      ],
+      "default": "ingress_root"
+    },
+    "max_omninode_nesting_depth": {
+      "type": "integer_range",
+      "low": 1,
+      "high": 32,
+      "step": 1,
+      "default": 12
+    },
+    "harness_profile": {
+      "type": "choice",
+      "choices": [
+        "tier_4_deep_architect_astra",
+        "tier_3_cli_code_harness",
+        "tier_2_sandboxed_chat_worker",
+        "tier_1_lightweight_get"
+      ],
+      "default": "tier_3_cli_code_harness"
+    },
+    "router_policy": {
+      "type": "choice",
+      "choices": [
+        "stage0_anchor_ewma",
+        "strict_schema_exact",
+        "quorum_consensus",
+        "conservative_fallback"
+      ],
+      "default": "stage0_anchor_ewma"
+    },
+    "llm_inference_profile": {
+      "type": "choice",
+      "choices": [
+        "zero_token_deterministic",
+        "targeted_edge_delta",
+        "balanced_hybrid_verify",
+        "deep_frontier_synthesis"
+      ],
+      "default": "targeted_edge_delta"
+    },
+    "context_hydration_budget_bytes": {
+      "type": "integer_range",
+      "low": 4096,
+      "high": 262144,
+      "step": 4096,
+      "default": 65536
+    },
+    "shim_abstention_margin": {
+      "type": "float_range",
+      "low": 0.05,
+      "high": 0.85,
+      "step": 0.05,
+      "default": 0.25
+    },
+    "warm_pool_max_slots": {
+      "type": "integer_range",
+      "low": 1,
+      "high": 64,
+      "step": 1,
+      "default": 16
+    },
+    "warm_pool_ttl_sec": {
+      "type": "integer_range",
+      "low": 60,
+      "high": 14400,
+      "step": 60,
+      "default": 1800
+    },
+    "demand_promotion_rate_threshold": {
+      "type": "float_range",
+      "low": 0.05,
+      "high": 10.0,
+      "step": 0.05,
+      "default": 0.35
+    },
+    "workdir_tools_mode": {
+      "type": "choice",
+      "choices": [
+        "precompiled_stdlib_fast",
+        "full_cli_suite",
+        "minimal_readonly",
+        "disabled"
+      ],
+      "default": "precompiled_stdlib_fast"
+    },
+    "workdir_skills_mode": {
+      "type": "choice",
+      "choices": [
+        "compact_playbook",
+        "full_procedural_bundle",
+        "digest_reference_only",
+        "disabled"
+      ],
+      "default": "compact_playbook"
+    },
+    "workdir_hooks_mode": {
+      "type": "choice",
+      "choices": [
+        "pre_claim_and_pre_submit",
+        "pre_submit_only",
+        "strict_tenant_audit",
+        "disabled"
+      ],
+      "default": "pre_claim_and_pre_submit"
+    },
+    "route_timeout_ms": {
+      "type": "integer_range",
+      "low": 500,
+      "high": 45000,
+      "step": 500,
+      "default": 4000
+    },
+    "circuit_open_404_cooldown_sec": {
+      "type": "integer_range",
+      "low": 300,
+      "high": 172800,
+      "step": 300,
+      "default": 86400
+    },
+    "circuit_open_timeout_cooldown_sec": {
+      "type": "integer_range",
+      "low": 60,
+      "high": 7200,
+      "step": 60,
+      "default": 900
+    },
+    "max_task_failures_before_quarantine": {
+      "type": "integer_range",
+      "low": 1,
+      "high": 10,
+      "step": 1,
+      "default": 3
+    },
+    "min_batch_size": {
+      "type": "integer_range",
+      "low": 1,
+      "high": 16,
+      "step": 1,
+      "default": 1
+    },
+    "max_batch_size": {
+      "type": "integer_range",
+      "low": 1,
+      "high": 128,
+      "step": 1,
+      "default": 32
+    },
+    "lease_safety_margin_sec": {
+      "type": "integer_range",
+      "low": 5,
+      "high": 300,
+      "step": 5,
+      "default": 30
+    },
+    "max_object_key_chars": {
+      "type": "integer_range",
+      "low": 16,
+      "high": 128,
+      "step": 8,
+      "default": 64
+    },
+    "max_utf8_payload_bytes": {
+      "type": "integer_range",
+      "low": 4096,
+      "high": 16777216,
+      "step": 4096,
+      "default": 16777216
+    },
+    "anchor_dimension_k": {
+      "type": "integer_range",
+      "low": 16,
+      "high": 512,
+      "step": 16,
+      "default": 128
+    },
+    "base_feature_dim": {
+      "type": "integer_range",
+      "low": 32,
+      "high": 512,
+      "step": 32,
+      "default": 192
+    },
+    "warm_hit_cosine_threshold": {
+      "type": "float_range",
+      "low": 0.2,
+      "high": 0.96,
+      "step": 0.02,
+      "default": 0.68
+    },
+    "cold_hydrate_cosine_threshold": {
+      "type": "float_range",
+      "low": 0.1,
+      "high": 0.9,
+      "step": 0.02,
+      "default": 0.44
+    },
+    "ewma_alpha": {
+      "type": "float_range",
+      "low": 0.05,
+      "high": 0.95,
+      "step": 0.05,
+      "default": 0.25
+    },
+    "drift_eviction_error_rate": {
+      "type": "float_range",
+      "low": 0.05,
+      "high": 0.8,
+      "step": 0.05,
+      "default": 0.25
+    },
+    "cold_baseline_step_count": {
+      "type": "integer_range",
+      "low": 2,
+      "high": 16,
+      "step": 1,
+      "default": 7
+    },
+    "scratch_ttl_sec": {
+      "type": "integer_range",
+      "low": 300,
+      "high": 86400,
+      "step": 300,
+      "default": 21600
+    },
+    "nofile_per_worker_divisor": {
+      "type": "integer_range",
+      "low": 4,
+      "high": 128,
+      "step": 4,
+      "default": 16
+    },
+    "batch_halving_divisor": {
+      "type": "integer_range",
+      "low": 2,
+      "high": 4,
+      "step": 1,
+      "default": 2
+    },
+    "graphql_error_budget_count": {
+      "type": "integer_range",
+      "low": 1,
+      "high": 20,
+      "step": 1,
+      "default": 2
+    },
+    "sidecar_feature_dim": {
+      "type": "integer_range",
+      "low": 4,
+      "high": 64,
+      "step": 4,
+      "default": 16
+    },
+    "sidecar_conformal_alpha": {
+      "type": "float_range",
+      "low": 0.01,
+      "high": 0.3,
+      "step": 0.01,
+      "default": 0.1
+    },
+    "sidecar_bypass_max_width": {
+      "type": "float_range",
+      "low": 0.02,
+      "high": 1.0,
+      "step": 0.02,
+      "default": 0.28
+    },
+    "sidecar_min_calibration_samples": {
+      "type": "integer_range",
+      "low": 2,
+      "high": 64,
+      "step": 1,
+      "default": 6
+    },
+    "router_ucb_exploration_c": {
+      "type": "float_range",
+      "low": 0.05,
+      "high": 2.0,
+      "step": 0.05,
+      "default": 0.35
+    },
+    "feed_sandbox_trial_count": {
+      "type": "integer_range",
+      "low": 5,
+      "high": 100,
+      "step": 5,
+      "default": 20
+    },
+    "feed_live_query_limit": {
+      "type": "integer_range",
+      "low": 1,
+      "high": 50,
+      "step": 1,
+      "default": 8
+    },
+    "feed_selector_top_k": {
+      "type": "integer_range",
+      "low": 1,
+      "high": 25,
+      "step": 1,
+      "default": 5
+    },
+    "static_prefix_cache": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "hard_bounds": {
+    "max_omninode_nesting_depth": { "min": 1, "max": 64 },
+    "context_hydration_budget_bytes": { "min": 1024, "max": 1048576 },
+    "shim_abstention_margin": { "min": 0.01, "max": 0.95 },
+    "warm_pool_max_slots": { "min": 1, "max": 256 },
+    "warm_pool_ttl_sec": { "min": 15, "max": 86400 },
+    "demand_promotion_rate_threshold": { "min": 0.01, "max": 100.0 },
+    "route_timeout_ms": { "min": 100, "max": 120000 },
+    "circuit_open_404_cooldown_sec": { "min": 60, "max": 604800 },
+    "circuit_open_timeout_cooldown_sec": { "min": 15, "max": 86400 },
+    "max_task_failures_before_quarantine": { "min": 1, "max": 32 },
+    "min_batch_size": { "min": 1, "max": 64 },
+    "max_batch_size": { "min": 1, "max": 512 },
+    "lease_safety_margin_sec": { "min": 1, "max": 900 },
+    "max_object_key_chars": { "min": 16, "max": 128 },
+    "max_utf8_payload_bytes": { "min": 1024, "max": 16777216 },
+    "anchor_dimension_k": { "min": 8, "max": 1024 },
+    "base_feature_dim": { "min": 16, "max": 1024 },
+    "warm_hit_cosine_threshold": { "min": 0.05, "max": 0.99 },
+    "cold_hydrate_cosine_threshold": { "min": 0.05, "max": 0.95 },
+    "ewma_alpha": { "min": 0.01, "max": 0.99 },
+    "drift_eviction_error_rate": { "min": 0.01, "max": 0.95 },
+    "cold_baseline_step_count": { "min": 2, "max": 32 },
+    "scratch_ttl_sec": { "min": 60, "max": 604800 },
+    "nofile_per_worker_divisor": { "min": 2, "max": 512 },
+    "batch_halving_divisor": { "min": 2, "max": 8 },
+    "graphql_error_budget_count": { "min": 1, "max": 50 },
+    "sidecar_feature_dim": { "min": 4, "max": 256 },
+    "sidecar_conformal_alpha": { "min": 0.005, "max": 0.5 },
+    "sidecar_bypass_max_width": { "min": 0.005, "max": 2.0 },
+    "sidecar_min_calibration_samples": { "min": 2, "max": 512 },
+    "router_ucb_exploration_c": { "min": 0.01, "max": 5.0 },
+    "feed_sandbox_trial_count": { "min": 3, "max": 500 },
+    "feed_live_query_limit": { "min": 1, "max": 100 },
+    "feed_selector_top_k": { "min": 1, "max": 50 }
+  },
+  "constraints": [
+    {
+      "id": "batch_min_lte_max",
+      "kind": "lte_param",
+      "left": "min_batch_size",
+      "right": "max_batch_size",
+      "description": "Minimum batch size cannot exceed maximum batch size."
+    },
+    {
+      "id": "cold_hydrate_lte_warm_hit",
+      "kind": "lte_param",
+      "left": "cold_hydrate_cosine_threshold",
+      "right": "warm_hit_cosine_threshold",
+      "description": "Cold hydration threshold cannot exceed warm hit threshold."
+    },
+    {
+      "id": "deterministic_bypass_zero_token",
+      "kind": "when_eq_require_in",
+      "when_param": "dag_topology_mode",
+      "when_value": "deterministic_bypass",
+      "target_param": "llm_inference_profile",
+      "allowed_values": ["zero_token_deterministic"],
+      "description": "Deterministic bypass topology forbids model token invocation."
+    },
+    {
+      "id": "lightweight_harness_tool_restriction",
+      "kind": "when_eq_require_in",
+      "when_param": "harness_profile",
+      "when_value": "tier_1_lightweight_get",
+      "target_param": "workdir_tools_mode",
+      "allowed_values": ["minimal_readonly", "disabled"],
+      "description": "Lightweight HTTP workers only mount minimal readonly or disabled toolsets."
+    },
+    {
+      "id": "strict_tenant_audit_abstention_floor",
+      "kind": "when_eq_require_min",
+      "when_param": "workdir_hooks_mode",
+      "when_value": "strict_tenant_audit",
+      "target_param": "shim_abstention_margin",
+      "min_value": 0.3,
+      "description": "Strict tenant audit hooks require conservative abstention margin."
+    }
+  ],
+  "default_verified_cell": {
+    "dag_topology_mode": "warm_omninode_dag",
+    "harness_profile": "tier_3_cli_code_harness",
+    "router_policy": "stage0_anchor_ewma",
+    "llm_inference_profile": "targeted_edge_delta",
+    "context_hydration_budget_bytes": 65536,
+    "shim_abstention_margin": 0.25,
+    "warm_pool_max_slots": 16,
+    "warm_pool_ttl_sec": 1800,
+    "demand_promotion_rate_threshold": 0.35,
+    "workdir_tools_mode": "precompiled_stdlib_fast",
+    "workdir_skills_mode": "compact_playbook",
+    "workdir_hooks_mode": "pre_claim_and_pre_submit",
+    "route_timeout_ms": 4000,
+    "circuit_open_404_cooldown_sec": 86400,
+    "circuit_open_timeout_cooldown_sec": 900,
+    "max_task_failures_before_quarantine": 3,
+    "min_batch_size": 1,
+    "max_batch_size": 32,
+    "lease_safety_margin_sec": 30,
+    "max_object_key_chars": 64,
+    "max_utf8_payload_bytes": 16777216,
+    "anchor_dimension_k": 128,
+    "base_feature_dim": 192,
+    "warm_hit_cosine_threshold": 0.68,
+    "cold_hydrate_cosine_threshold": 0.44,
+    "ewma_alpha": 0.25,
+    "drift_eviction_error_rate": 0.25,
+    "cold_baseline_step_count": 7,
+    "scratch_ttl_sec": 21600,
+    "nofile_per_worker_divisor": 16,
+    "batch_halving_divisor": 2,
+    "graphql_error_budget_count": 2,
+    "static_prefix_cache": true
+  },
+  "regimes": {
+    "single_worker": {
+      "description": "Dedicated single CLI code worker optimizing warm working-directory reuse and full tool suite.",
+      "cell": {
+        "dag_topology_mode": "warm_omninode_dag",
+        "harness_profile": "tier_4_deep_architect_astra",
+        "router_policy": "stage0_anchor_ewma",
+        "llm_inference_profile": "targeted_edge_delta",
+        "context_hydration_budget_bytes": 131072,
+        "shim_abstention_margin": 0.25,
+        "warm_pool_max_slots": 16,
+        "warm_pool_ttl_sec": 3600,
+        "demand_promotion_rate_threshold": 0.25,
+        "workdir_tools_mode": "full_cli_suite",
+        "workdir_skills_mode": "full_procedural_bundle",
+        "workdir_hooks_mode": "pre_claim_and_pre_submit",
+        "route_timeout_ms": 4000,
+        "circuit_open_404_cooldown_sec": 86400,
+        "circuit_open_timeout_cooldown_sec": 900,
+        "max_task_failures_before_quarantine": 3,
+        "min_batch_size": 1,
+        "max_batch_size": 32,
+        "lease_safety_margin_sec": 30,
+        "max_object_key_chars": 64,
+        "max_utf8_payload_bytes": 16777216,
+        "anchor_dimension_k": 128,
+        "base_feature_dim": 192,
+        "warm_hit_cosine_threshold": 0.68,
+        "cold_hydrate_cosine_threshold": 0.44,
+        "ewma_alpha": 0.25,
+        "drift_eviction_error_rate": 0.25,
+        "cold_baseline_step_count": 7,
+        "scratch_ttl_sec": 21600,
+        "nofile_per_worker_divisor": 16,
+        "batch_halving_divisor": 2,
+        "graphql_error_budget_count": 2,
+        "static_prefix_cache": true
+      }
+    },
+    "swarm_100x": {
+      "description": "100-worker concurrent swarm with single-claim lease discipline, jittered handoffs, and quorum checks.",
+      "cell": {
+        "dag_topology_mode": "quorum_omninode_dag",
+        "harness_profile": "tier_3_cli_code_harness",
+        "router_policy": "quorum_consensus",
+        "llm_inference_profile": "balanced_hybrid_verify",
+        "context_hydration_budget_bytes": 65536,
+        "shim_abstention_margin": 0.3,
+        "warm_pool_max_slots": 32,
+        "warm_pool_ttl_sec": 1800,
+        "demand_promotion_rate_threshold": 0.5,
+        "workdir_tools_mode": "precompiled_stdlib_fast",
+        "workdir_skills_mode": "compact_playbook",
+        "workdir_hooks_mode": "pre_claim_and_pre_submit",
+        "route_timeout_ms": 3500,
+        "circuit_open_404_cooldown_sec": 86400,
+        "circuit_open_timeout_cooldown_sec": 900,
+        "max_task_failures_before_quarantine": 2,
+        "min_batch_size": 1,
+        "max_batch_size": 1,
+        "lease_safety_margin_sec": 45,
+        "max_object_key_chars": 64,
+        "max_utf8_payload_bytes": 16777216,
+        "anchor_dimension_k": 128,
+        "base_feature_dim": 192,
+        "warm_hit_cosine_threshold": 0.7,
+        "cold_hydrate_cosine_threshold": 0.46,
+        "ewma_alpha": 0.3,
+        "drift_eviction_error_rate": 0.2,
+        "cold_baseline_step_count": 7,
+        "scratch_ttl_sec": 10800,
+        "nofile_per_worker_divisor": 32,
+        "batch_halving_divisor": 2,
+        "graphql_error_budget_count": 2,
+        "static_prefix_cache": true
+      }
+    },
+    "constrained_edge": {
+      "description": "Low-RAM sandboxed or edge worker running zero-token deterministic bypass and compact slots.",
+      "cell": {
+        "dag_topology_mode": "deterministic_bypass",
+        "harness_profile": "tier_2_sandboxed_chat_worker",
+        "router_policy": "strict_schema_exact",
+        "llm_inference_profile": "zero_token_deterministic",
+        "context_hydration_budget_bytes": 16384,
+        "shim_abstention_margin": 0.35,
+        "warm_pool_max_slots": 4,
+        "warm_pool_ttl_sec": 600,
+        "demand_promotion_rate_threshold": 0.6,
+        "workdir_tools_mode": "minimal_readonly",
+        "workdir_skills_mode": "digest_reference_only",
+        "workdir_hooks_mode": "pre_submit_only",
+        "route_timeout_ms": 2500,
+        "circuit_open_404_cooldown_sec": 86400,
+        "circuit_open_timeout_cooldown_sec": 600,
+        "max_task_failures_before_quarantine": 2,
+        "min_batch_size": 1,
+        "max_batch_size": 8,
+        "lease_safety_margin_sec": 20,
+        "max_object_key_chars": 64,
+        "max_utf8_payload_bytes": 1048576,
+        "anchor_dimension_k": 128,
+        "base_feature_dim": 192,
+        "warm_hit_cosine_threshold": 0.72,
+        "cold_hydrate_cosine_threshold": 0.48,
+        "ewma_alpha": 0.2,
+        "drift_eviction_error_rate": 0.2,
+        "cold_baseline_step_count": 7,
+        "scratch_ttl_sec": 3600,
+        "nofile_per_worker_divisor": 8,
+        "batch_halving_divisor": 2,
+        "graphql_error_budget_count": 1,
+        "static_prefix_cache": true
+      }
+    },
+    "degraded_network": {
+      "description": "High-latency or rate-limited upstream links with aggressive circuit-breaking and conservative retries.",
+      "cell": {
+        "dag_topology_mode": "warm_omninode_dag",
+        "harness_profile": "tier_3_cli_code_harness",
+        "router_policy": "conservative_fallback",
+        "llm_inference_profile": "targeted_edge_delta",
+        "context_hydration_budget_bytes": 32768,
+        "shim_abstention_margin": 0.3,
+        "warm_pool_max_slots": 12,
+        "warm_pool_ttl_sec": 3600,
+        "demand_promotion_rate_threshold": 0.2,
+        "workdir_tools_mode": "precompiled_stdlib_fast",
+        "workdir_skills_mode": "compact_playbook",
+        "workdir_hooks_mode": "pre_claim_and_pre_submit",
+        "route_timeout_ms": 2000,
+        "circuit_open_404_cooldown_sec": 86400,
+        "circuit_open_timeout_cooldown_sec": 1800,
+        "max_task_failures_before_quarantine": 2,
+        "min_batch_size": 1,
+        "max_batch_size": 8,
+        "lease_safety_margin_sec": 60,
+        "max_object_key_chars": 64,
+        "max_utf8_payload_bytes": 4194304,
+        "anchor_dimension_k": 128,
+        "base_feature_dim": 192,
+        "warm_hit_cosine_threshold": 0.66,
+        "cold_hydrate_cosine_threshold": 0.42,
+        "ewma_alpha": 0.35,
+        "drift_eviction_error_rate": 0.25,
+        "cold_baseline_step_count": 7,
+        "scratch_ttl_sec": 21600,
+        "nofile_per_worker_divisor": 16,
+        "batch_halving_divisor": 2,
+        "graphql_error_budget_count": 1,
+        "static_prefix_cache": true
+      }
+    },
+    "strict_tenant_isolated": {
+      "description": "Private acct.<tenant> workspace execution enforcing strict scope inheritance and zero public bleed.",
+      "cell": {
+        "dag_topology_mode": "quorum_omninode_dag",
+        "harness_profile": "tier_4_deep_architect_astra",
+        "router_policy": "strict_schema_exact",
+        "llm_inference_profile": "targeted_edge_delta",
+        "context_hydration_budget_bytes": 65536,
+        "shim_abstention_margin": 0.4,
+        "warm_pool_max_slots": 8,
+        "warm_pool_ttl_sec": 900,
+        "demand_promotion_rate_threshold": 0.4,
+        "workdir_tools_mode": "precompiled_stdlib_fast",
+        "workdir_skills_mode": "compact_playbook",
+        "workdir_hooks_mode": "strict_tenant_audit",
+        "route_timeout_ms": 4000,
+        "circuit_open_404_cooldown_sec": 86400,
+        "circuit_open_timeout_cooldown_sec": 900,
+        "max_task_failures_before_quarantine": 2,
+        "min_batch_size": 1,
+        "max_batch_size": 16,
+        "lease_safety_margin_sec": 45,
+        "max_object_key_chars": 64,
+        "max_utf8_payload_bytes": 8388608,
+        "anchor_dimension_k": 128,
+        "base_feature_dim": 192,
+        "warm_hit_cosine_threshold": 0.74,
+        "cold_hydrate_cosine_threshold": 0.5,
+        "ewma_alpha": 0.25,
+        "drift_eviction_error_rate": 0.15,
+        "cold_baseline_step_count": 7,
+        "scratch_ttl_sec": 3600,
+        "nofile_per_worker_divisor": 16,
+        "batch_halving_divisor": 2,
+        "graphql_error_budget_count": 1,
+        "static_prefix_cache": true
+      }
+    }
+  },
+  "protocol_constants": {
+    "protocol_version": "19.0",
+    "user_agent": "tessera-eranos-omninode-worker/19.0",
+    "herma_primary": "https://herma.teleionlabs.com",
+    "herma_fallback": "https://herma.ta-amps.workers.dev",
+    "tessera_primary": "https://tessera.teleionlabs.com",
+    "eranos_primary": "https://eranosforgood.org",
+    "trusted_redirect_suffixes": [
+      "teleionlabs.com",
+      "eranosforgood.org",
+      "ta-amps.workers.dev"
+    ],
+    "redirect_statuses": [301, 302, 307, 308],
+    "schema_reject_statuses": [400, 422],
+    "not_found_status": 404,
+    "payload_too_large_status": 413,
+    "rate_limit_statuses": [403, 429],
+    "server_error_min_status": 500,
+    "http_ok_status": 200,
+    "owner_only_file_mode_octal": 384,
+    "owner_only_dir_mode_octal": 448,
+    "exit_signal_base": 128,
+    "kib_bytes": 1024,
+    "mib_kib": 1024,
+    "ms_per_sec": 1000.0,
+    "epoch_ms_cutoff": 99999999999.0,
+    "boundary_expansion_factor": 1.5,
+    "boundary_touch_eps": 0.0001,
+    "whitening_ridge_eps": 0.001,
+    "anchor_seed_multiplier": 2654435761,
+    "anchor_seed_modulus": 4294967296,
+    "feature_hash_prime": 31,
+    "structural_weight": 0.45,
+    "transition_weight": 0.25,
+    "anchor_cosine_weight": 0.3,
+    "tier1_min_ram_mib": 6144,
+    "tier2_min_ram_mib": 64,
+    "tier3_min_ram_mib": 16,
+    "tier4_architect_min_ram_mib": 2048,
+    "gzip_min_utf8_bytes": 32768,
+    "object_key_version_reserve_chars": 8,
+    "short_digest_chars": 10,
+    "submit_timeout_ms": 45000,
+    "health_timeout_ms": 6000,
+    "release_timeout_ms": 5000,
+    "plateau_neighbor_min_score": 0.85,
+    "plateau_max_cliff_drop": 0.08,
+    "recommended_min_model_params_b": 8,
+    "recommended_context_window_tokens": 131072,
+    "recommended_max_output_tokens": 8192,
+    "token_cost_per_cold_step": 420,
+    "token_cost_per_edge_record": 48,
+    "harness_token_estimate": 256,
+    "cold_step_overhead_us": 180,
+    "feed_percentile_p50": 0.5,
+    "feed_percentile_p95": 0.95,
+    "feed_metric_round_digits": 4,
+    "feed_summary_max_chars": 240,
+    "feed_tier1_min_perturbation": 0.92,
+    "feed_tier2_min_perturbation": 0.85,
+    "feed_perturbation_count": 5,
+    "feed_managed_by_label": "dedicated worker (run by ta-amps)",
+    "feed_endpoint_path": "teleionlabs.com/feeds/",
+    "v8_core_keys": [
+      "agent_id",
+      "worker_uuid",
+      "worker_token",
+      "task_id",
+      "lease_epoch",
+      "fencing_token",
+      "summary",
+      "task_objects",
+      "evaluations"
+    ]
+  }
+}

@@ -8,6 +8,7 @@ ERANOS_WORKER=/path/to/eranos-checkout ./run_tests.sh
 
 ## Limits
 
+- `src/` is the warm-graph and grid library the node runs on. The tests also need `numpy`.
 - It needs a Teleion Fabric address, Meta API keys and an Eranos checkout for its Python environment.
 - Files in `deploy/` are samples. Set the paths and key ids for your own machine.
 - Spend caps come from the shared worker ledger, so a run stops when a cap is reached.
