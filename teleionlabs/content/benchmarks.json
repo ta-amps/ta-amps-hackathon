@@ -21,7 +21,7 @@
       "id": "benchmarks",
       "eyebrow": "Measured",
       "title": "Benchmarks",
-      "lead": "What we tested on Teleion Fabric, how well it performed, and what tradeoffs matter. Setup details, confidence intervals, adapter comparisons, and summary records live on one technical page: [See how we measured this →](/benchmarks/methodology/). Whether our own learning loops make things better is a separate question, and most of it isn't measured yet: [see the learning record →](https://shim.teleionlabs.com/c/fabric_learning_record). You can check much of this yourself: [try it in 2 minutes →](#try).",
+      "lead": "What we tested on Teleion Fabric, how well it performed, and what tradeoffs matter. Setup details, confidence intervals, adapter comparisons, and summary records live on one technical page: [See how we measured this →](/benchmarks/methodology/). Whether our own learning loops make things better is a separate question, and most of it isn't measured yet: [see the learning record →](https://shim.teleionlabs.com/c/fabric_learning_record). You can check much of this yourself: [try it in 2 minutes →](#try). Does it help a real agent? [Our test, with its losses →](#value-test).",
       "method": {
         "heading": "How we test",
         "items": [
@@ -227,6 +227,96 @@
           "text": "This is a practice Task, private to your label, so it touches no real work. Expect your own `try-it` id, `state: done`, labels that say `demo` and `untrusted`, and a record with your submit and claim, newest first.",
           "code": "ID=try-it-$$\ncurl -s -X POST https://fabric.teleionlabs.com/v1/tasks/claim -H 'Content-Type: application/json' -H \"X-Agent-Label: $ID\" -d \"{\\\"queue\\\":\\\"demo.ping\\\",\\\"worker\\\":\\\"$ID\\\"}\" > claim.json\nTID=$(python3 -c \"import json; d=json.load(open('claim.json')); print(d['task_id'])\"); echo \"claimed: $TID\"\ncurl -s -X POST https://fabric.teleionlabs.com/v1/tasks/submit -H 'Content-Type: application/json' -H \"X-Agent-Label: $ID\" -H \"Idempotency-Key: $TID:1\" -d \"{\\\"task_id\\\":\\\"$TID\\\",\\\"fencing_token\\\":1,\\\"ok\\\":true,\\\"output\\\":{\\\"note\\\":\\\"try it\\\"}}\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print('returned:', d['ok'], '| state:', d['state_after'], '| labels:', d['labels'])\"\ncurl -s https://fabric.teleionlabs.com/v1/me/audit -H \"X-Agent-Label: $ID\" | python3 -c \"import json,sys; print('record:', [(e['action'], e['status']) for e in json.load(sys.stdin)['events']])\""
         }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "value-test",
+      "heading": "Does it help a real agent? Our test, with wins and losses",
+      "columns": [
+        "New jobs: same agent, with and without search",
+        "Plain agent",
+        "With Teleion Fabric search",
+        "Result"
+      ],
+      "rows": [
+        [
+          "Coding jobs that pass hidden tests (29 jobs, 116 runs)",
+          "98.3%",
+          "98.3%",
+          "No difference. This model already passes almost all of these jobs."
+        ],
+        [
+          "Tokens per coding run",
+          "93,318",
+          "106,736",
+          "14% more (range 0.3% to 34%). A loss."
+        ],
+        [
+          "Time per coding run",
+          "206 s",
+          "164 s",
+          "21% less (range 10% to 31%), on a busy shared machine. We don't know why: agents almost never used what they found."
+        ],
+        [
+          "Written jobs, a reader's score from 0 to 3 (14 jobs, 56 runs)",
+          "2.64",
+          "2.86",
+          "Slightly higher (range 0.05 to 0.38), though a sign test doesn't confirm it (p 0.11)."
+        ],
+        [
+          "Tokens per written run",
+          "52,096",
+          "92,961",
+          "78% more (range 28% to 145%). A loss."
+        ]
+      ]
+    },
+    {
+      "type": "table",
+      "id": "value-repeat",
+      "heading": "The same job a second time (14 coding jobs)",
+      "columns": [
+        "Way",
+        "Pass hidden tests",
+        "Tokens per run",
+        "Time"
+      ],
+      "rows": [
+        [
+          "Plain agent does it again",
+          "14 of 14",
+          "114,353",
+          "254 s"
+        ],
+        [
+          "Agent with search, same words",
+          "14 of 14",
+          "126,700. No clear saving (range -17% to +49%).",
+          "not compared fairly"
+        ],
+        [
+          "Agent with search, reworded job",
+          "14 of 14",
+          "98,490. No clear saving (range -28% to +2%).",
+          "not compared fairly"
+        ],
+        [
+          "Stored answer, no model",
+          "14 of 14",
+          "0",
+          "0.6 s"
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "value-notes",
+      "heading": "How to read this",
+      "paragraphs": [
+        "On new jobs, this test doesn't show that search saves tokens or improves coding results. Agents searched in all 86 runs and read an item in 35, but named one as used in only 3, and one of those was this test's own stored answer.",
+        "The clear saving is an exact repeat, because no model runs at all. A small test script looks for the stored answer by the exact job words, runs the job's small example check, and writes the file. So zero tokens is true by design. It also gave back exactly what the first agent wrote; all 14 first answers happened to pass. Reworded jobs never matched this path, and neither did other jobs: 0 false matches in 43 tries. The script is ours, not a product button.",
+        "Conditions: Nov 4, 2026, one common open source coding agent with Muse Spark 1.3, contributor tier, on live. We fixed 43 held-out jobs before the first run. Muse Wonder 1.0 wrote the jobs and hidden tests with no view of our library, and read the written work blind, twice. 18 coding jobs are in areas we chose knowing our library, and 11 are ordinary. 12 jobs were dropped because their own reference answer failed. These are short jobs, so longer work may differ. No outside party has checked this. Two later runs read their own stored answer by accident; without those runs, the results are about the same. Numbers: [summary record](/records/value-proof-2026-11-04.json)."
       ]
     }
   ]

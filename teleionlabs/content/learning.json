@@ -126,6 +126,12 @@
      "No"
     ],
     [
+     "Assembler, per Task, from its fingerprint",
+     "Built, runs by hand",
+     "Harness, model, tools, Task Objects, rules and budget for one Task",
+     "No. 6 passes against 8 for a default worker, on 19 real Tasks"
+    ],
+    [
      "Sizing step",
      "Built, runs by hand",
      "No model, Muse Spark or Muse Wonder, what to hand over, a budget",
@@ -144,10 +150,98 @@
    "id": "assemble",
    "heading": "The central idea: an agent assembled for each Task",
    "paragraphs": [
-    "The idea we are building toward: an agent assembles itself for each Task, with the best tools, harness, models, skills and deterministic rules, based on that Task's fingerprint.",
+    "The core idea: an agent assembles itself for each Task, with the best tools, harness, models, skills and deterministic rules, based on that Task's fingerprint.",
     "A fingerprint is not an exact match. It is the Task's shape and profile, how the Task looks. Similar Tasks match by similarity over those features, so what worked on Tasks that look like this one can guide this one.",
-    "Where it stands: Built, runs by hand. A new assembler reads a Task's fingerprint and chooses tools, harness, model, skills, rules and a budget for that Task, by rules plus a lookup of recorded outcomes for similar Tasks. It runs on real Tasks when we start it. It isn't in the always-on agent, the Eranos workers or the shim. Assemblies do differ by Task. As of 5:25 PM ET on November 4, its first real batch has no outcomes, so we don't say it improves results.",
-    "The fingerprint is deterministic code with no model call. Its features are the Task's kind, size, inputs, output, the tools it seems to need, its structure and its words. Two fingerprints are compared by a weighted score, with weights set before any test: needs 0.34, words 0.16, output 0.14, kind 0.14, inputs 0.10, size 0.06, structure 0.06."
+    "Where it stands: Built, runs by hand. A new assembler reads how a Task looks, finds similar earlier Tasks, looks at what worked for them, and then picks a harness, model, tools, Task Objects, rules and a budget for that one Task. It starts when we start it. It isn't in the always-on agent, the Eranos workers or the shim, and matching by similarity doesn't run at claim time. Its code isn't in a public repository today.",
+    "The honest result so far: it works as a system, and it shows no gain. On 34 real Tasks it made 12 different setups, and 9 results were submitted and accepted. It did no better than one default worker: on 19 of those Tasks, the same reader passed 6 assembled against 8 default. Past results did change later setups, in 15 of the 34. We haven't shown that this improves the work.",
+    "The fingerprint is deterministic code with no model call. Its features are the Task's kind, size, inputs, output, the tools it seems to need, its structure and its words. Two fingerprints are compared by a weighted score, with weights set before any test: needs 0.34, words 0.16, output 0.14, kind 0.14, inputs 0.10, size 0.06, structure 0.06. 3,057 real Tasks took 11.3 seconds."
+   ]
+  },
+  {
+   "type": "table",
+   "id": "assembler-parts",
+   "heading": "What the assembler picks for each Task",
+   "columns": [
+    "Part",
+    "How it is picked"
+   ],
+   "rows": [
+    [
+     "Harness",
+     "Deterministic code only, one JSON answer, a coding agent, or the shape runner. A second coding agent is wired, and has never been chosen"
+    ],
+    [
+     "Model",
+     "Muse Spark 1.3 on 30 Tasks. Muse Wonder 1.0 on 2, by a complexity rule (900 and up), or to write a shape. Outcomes have never chosen Muse Wonder"
+    ],
+    [
+     "Tools",
+     "Chosen by rules on what the Task seems to need, and enforced by the harness's permission list. An early batch still had a tool outside its grant; after that fix, transcripts show none"
+    ],
+    [
+     "Skills",
+     "Task Objects named in the Task and real hits from /q/find, passed as text: 79 objects and 3 seed packs so far"
+    ],
+    [
+     "Deterministic rules",
+     "Credential and placeholder screens, claim IDs, and tests rerun by the runner"
+    ],
+    [
+     "Budget",
+     "Dollars per worker at a local proxy, and wall time. One run overran by one call: .06 against "
+    ],
+    [
+     "Lookup from outcomes",
+     "Score-weighted pass rates among neighbors scoring 0.72 or more, with at least 3 outcomes and a margin of 0.15. 478 outcomes from our records, plus each new run"
+    ]
+   ],
+   "notes": [
+    "All marked built, runs by hand, November 4, about 22:00 to 23:10 UTC. All real work here is our own fleet's. About $12.70 of model spend in all, including $7.20 for labels. Record: [snapshot](/records/learning-2026-11-04.json)."
+   ]
+  },
+  {
+   "type": "table",
+   "id": "assembler-results",
+   "heading": "What it measured",
+   "columns": [
+    "Test",
+    "Result",
+    "Conditions"
+   ],
+   "rows": [
+    [
+     "Real Tasks run",
+     "34 records, 12 setups: 9 passed and submitted, 20 failed and released, 5 left open for people",
+     "Submitted work reads back unreviewed"
+    ],
+    [
+     "Against one default worker",
+     "6 passes against 8, of 19 pairs. Only assembled 2, only default 4",
+     "Same reader, a different Meta model. After the assembler's own rules, assembled drops to 3, and the default faced no rules. Cost $2.78 against $0.54, of which $2.06 is one Muse Wonder run"
+    ],
+    [
+     "Earlier outcomes change later setups",
+     "15 of 34 changed. On ready Tasks, 58 of 1,400 setups change once this run's own rows are in",
+     "A change, not a gain"
+    ],
+    [
+     "Paired test of that switch",
+     "Switched 6 passes, with 2 more left open, no memory 3, of 13 Tasks",
+     "Small and not clean: the no-memory side got no hand-over text, and the lookup mixes two readers"
+    ],
+    [
+     "A worked example",
+     "One Task would have been a JSON answer with no memory. Similar Tasks passed more with a coding agent, 0.505 against 0, so it got one. It passed, and the default failed",
+     "One Task"
+    ],
+    [
+     "Muse Wonder 1.0 writes a spec for a real Task",
+     "validate and dry_read refused the first try and accepted the second. It ran with no new code, for $0.174. The reader failed the result as an empty template",
+     "A new spec runs with no code. Writing a useful one for a given Task isn't shown"
+    ]
+   ],
+   "notes": [
+    "What's wrong: the credential screen blocked 10 of 34, and 4 of those were reader passes, likely long identifiers in the answers. We left it, because we don't loosen secrets in a hurry, and it costs finished work. Code Tasks did poorly: 6 failed the rerun of their tests, and 0 of 8 that needed to run code ended submitted. One left-open outcome can tip the rule that says a Task needs people, on weak evidence."
    ]
   },
   {
@@ -156,35 +250,41 @@
    "heading": "Does similarity find Tasks that need the same setup?",
    "columns": [
     "Method",
-    "Same-setup F1",
-    "Mark"
+    "Same setup: precision, recall, F1",
+    "Near-duplicate: precision, recall, F1"
    ],
    "rows": [
     [
      "Fingerprint similarity",
-     "0.859",
-     "Tested only"
+     "0.89, 0.83, 0.859",
+     "0.68, 0.91, 0.778"
     ],
     [
      "Words alone",
-     "0.867",
-     "Tested only"
+     "1.00, 0.77, 0.867",
+     "0.78, 0.61, 0.683"
+    ],
+    [
+     "Same category",
+     "0.83, 0.83, 0.831",
+     "0.34, 1.00, 0.505"
     ],
     [
      "Exact match",
-     "0.234",
-     "Tested only"
+     "1.00, 0.13, 0.234",
+     "1.00, 0.39, 0.562"
     ]
    ],
    "notes": [
-    "343 held-out real Task pairs, a sample weighted across score bands, with labels from one blind Muse Wonder 1.0 reader. Similarity is far better than an exact match. So far the profile features add little over words alone: that is the honest reading.",
-    "A later assembly changed by an earlier outcome: tested only, in unit tests so far, and on no real Task."
+    "Mark: Tested only. 550 real Task pairs sampled across score bands, so a weighted sample, not a random one: 207 dev, 343 held out. Thresholds from dev only. One blind Muse Wonder 1.0 reader wrote the labels, for $7.20.",
+    "How to read it: similarity beats exact match. For same setup, the profile features add almost nothing over words alone, AUC 0.93 against 0.941, though they help on near-duplicates. Many Tasks come from templates, which flatters any word method.",
+    "A small search also ran: 864 weight settings, the best chosen on dev pairs. On held-out pairs it reached AUC 0.949 and F1 0.867, and near-duplicates fell from 0.778 to 0.683. Tested, and not adopted. That is the only search of this kind that has run. The always-on agent's grid has 7 axes and 7,713,792 cells, and no code searches it: three hand-set cells are picked by a rule on backlog."
    ]
   },
   {
    "type": "table",
    "id": "assemble-parts",
-   "heading": "What decides each part of the agent elsewhere today",
+   "heading": "What decides each part outside the assembler",
    "columns": [
     "Part",
     "What decides it",
@@ -390,7 +490,7 @@
     "Memory works. With the same inputs, citation runs took up to 50 of 59 rows from memory. A spec's rule version is part of the memory key, so new rules make new answers.",
     "The sidecar has saved nothing. It is a rank-1 prior with a conformal interval, on features named in the spec. After 76 recorded answers it has skipped 0 model calls. Its interval stays wide because text overlap doesn't predict how a reader will judge a claim against a source. Staying closed is the right answer here. Separately, an older stock sidecar could not tell unlike texts apart, because its features were key names and a record count. `RowSidecar` exists because of that test.",
     "Model verdicts aren't stable. 13 citations were read more than once at temperature 0: 7 kept their verdict and 6 changed. On at least 3, the second worker approved both answers. A maker and checker being different doesn't make a check strong. This is the most important finding from this work, and the reason for the seeded-defect test under what's next.",
-    "Faults on the record. Live runs exposed six faults in the runner, each fixed with a test. 5 of 23 runs had failed at our last count, at 16:20 UTC, and they stay on the record."
+    "Faults on the record. Live runs exposed six faults in the runner, each fixed with a test. 5 of 23 runs had failed at our count at 16:20 UTC, and they stay on the record. In a later rerun at about 22:05 UTC, `repo-awareness` first failed on a stale $25 day limit, and after the fix made 18 lines for $0.028, with 17 approved and published."
    ]
   },
   {
@@ -525,7 +625,7 @@
     [
      "1. Deterministic rule",
      "A rule on the title. Today one prefix, for index Tasks",
-     "36 of 61 decisions",
+     "36 of 62 decisions",
      "$0"
     ],
     [
@@ -537,13 +637,13 @@
     [
      "3. Muse Spark Open on Baseten",
      "`meta-models/muse-spark-open`, partner credits, 12-second limit",
-     "18 answered, 2 unreadable, 5 failed since 20:07 UTC",
+     "18 answered, 2 unreadable, 6 failed from 20:07 to 22:41 UTC",
      "$0.0137 to 17:38 UTC"
     ],
     [
      "4. Muse Spark 1.3 on the Meta API",
      "20-second limit",
-     "7 answered",
+     "8 answered",
      "$0.0058 to 17:38 UTC, on 2 answers"
     ],
     [
@@ -560,7 +660,7 @@
     ]
    ],
    "notes": [
-    "Running on live: each real build Task the always-on agent claims. Counts from the agent's own log to November 4, 22:15 UTC. The [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record) was last published at 17:38 UTC, with 56 decisions. Since 20:07 UTC the Baseten route has answered with HTTP 402, so it isn't serving now. All 5 decisions since then moved on to Muse Spark 1.3, as the ladder is built to do. Code: `agents/warm-server-agent/src/warm_agent/decider.py`, settings in `config/warm_agent_grid.json`.",
+    "Running on live: each real build Task the always-on agent claims. Counts from the agent's own log to November 4, 22:41 UTC. The [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record) was last published at 17:38 UTC, with 56 decisions. All 6 tries on the Baseten route from 20:07 to 22:41 UTC failed, and each of those decisions moved on to Muse Spark 1.3, as the ladder is built to do. The log keeps the error's class, not its status code. A direct test at 22:12 UTC answered HTTP 402, so this route isn't serving now. Code: `agents/warm-server-agent/src/warm_agent/decider.py`, settings in `config/warm_agent_grid.json`.",
     "These counts are the choice of model and helper, not the work itself. At 17:38 UTC, Muse Spark 1.3 had done the work on 54 of 56, and Muse Wonder 1.0 on 2."
    ]
   },
@@ -1037,10 +1137,10 @@
    "id": "loops-honest",
    "heading": "What the loops have and haven't shown",
    "paragraphs": [
-    "A correction we made. Until November 4 the Eranos tuner wrote a new version every hour, even with no new outcome, and its random seed changed with the version. So a mix could move with no new evidence, and outcomes rose in only 9 of 81 steps. Checking's mix was its starting point plus noise. Now `has_new_outcomes` in `eranos/pipeline/tuning.py` writes a new version only on new evidence. The mix can still swing fast at this size: `make-t17` had 71 percent at 21:02 UTC and 10 percent at 22:00 UTC. By that later read, Muse Spark 1.3 made 100 percent of Eranos work, because both Muse Wonder making personas had been dropped.",
+    "A correction we made. Until November 4 the Eranos tuner wrote a new version every hour, even with no new outcome, and its random seed changed with the version. So a mix could move with no new evidence, and outcomes rose in only 9 of 81 steps. Checking's mix was its starting point plus noise. Now `has_new_outcomes` in `eranos/pipeline/tuning.py` writes a new version only on new evidence. The mix can still swing fast at this size: `make-t17` had 71 percent at 21:02 UTC and 10 percent at 22:00 UTC. In the same hour the outcome count on record moved down, from 219 to 202, and we have no explanation for that here. By that later read, Muse Spark 1.3 made 100 percent of Eranos work, because both Muse Wonder making personas had been dropped.",
     "One real learning example, in the sizing tuner, and it didn't stay. 6 of 6 Tasks with trial in the title came back needing people. A new table added that word and 5 others. On 9 held-out past Tasks, mean reward moved from -0.2456 to -0.1751. At 15:36 UTC a physical trial Task was then left with no model call, where the old table would have sent it to Muse Spark. A later outcome changed a decision. In the live trial, table 2 had mean reward -0.1529 on 6 Tasks and table 1 had -0.1516 on 8, and no Task finished on either side. A second read saw the flaw: with nothing passing, a table that declines everything always scores best. That is less spend, not better work. We changed the rule before any decision, and ended the trial with no promotion and no rollback.",
     "Rollback, honestly. No automatic promotion or rollback has happened on a live result, in any loop. Replayed from the start, the fine-tune switch would have turned off at sample 4, with 1 pass, against a floor of 0.70. That series ran before the registry was wired, and overall results didn't drop, so the count starts from wiring, with the rule unchanged. A rollback that can't undo itself, with a 0.70 floor and few samples, may fire at the start of any series. This is an open design question.",
-    "Not learning, though it looks like it. The always-on agent's persona tuner has one persona per role and keeps its numbers in memory, and its maker's reward can't drop. The decider isn't credited with outcomes. Reflexes and dead-end lookups have little in them."
+    "Not learning, though it looks like it. The always-on agent's persona tuner has one persona per role and keeps its numbers in memory, and its maker's reward can't drop. The decider isn't credited with outcomes. Reflexes and dead-end lookups have little in them. The shim itself has no fallback between model routes: a failed route is passed back to the caller. The fallback described here lives in the decider."
    ]
   },
   {

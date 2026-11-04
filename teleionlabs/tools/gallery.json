@@ -191,18 +191,6 @@
    "The main film, now on the home page and /video/: the cube fabric with real agent runs, then real clicks on Eranos. Captions are off at first; turn the sound on."
   ],
   [
-   "cut-e-v8",
-   "The earlier main film: cube fabric, then real clicks on the live site. Words burned in."
-  ],
-  [
-   "cube-term-center",
-   "Draft. The cube fabric with one agent terminal under it, in the center."
-  ],
-  [
-   "cube-term-both",
-   "Draft. The cube fabric with two terminals under it: the Task queue and Task Objects."
-  ],
-  [
    "deep-omninode",
    "Explainer: OmniNode. Has six recorded runs where tokens fall from 9,094 to 1,872 as reuse grows, on one repeated job."
   ],
@@ -213,10 +201,6 @@
   [
    "deep-shimming",
    "Explainer: Shimming."
-  ],
-  [
-   "deep-feeds",
-   "Explainer: Feeds."
   ],
   [
    "style-tabletop",
@@ -233,13 +217,9 @@
  ],
  "site_videos": [
   "cube-main-12",
-  "cut-e-v8",
-  "cube-term-center",
-  "cube-term-both",
   "deep-omninode",
   "deep-intelligence",
   "deep-shimming",
-  "deep-feeds",
   "style-tabletop",
   "style-papercut",
   "blocks-reel"

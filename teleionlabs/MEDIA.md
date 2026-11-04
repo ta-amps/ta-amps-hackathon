@@ -4,7 +4,6 @@ Video and voice files are not kept in git. The site serves them from these addre
 
 | File | Address | Bytes | sha256 |
 | --- | --- | --- | --- |
-| `media/feeds-explained-20261103.mp4` | https://teleionlabs.com/media/feeds-explained-20261103.mp4 | 3687916 | `1ef67fb59eab40fdc4a5a633ea12356477a7571e43fb9ce0a1ca13638b36366d` |
 | `media/intelligence-explained-20261103.mp4` | https://teleionlabs.com/media/intelligence-explained-20261103.mp4 | 4673754 | `b605934265d2c26ac8a4a06065a0ab46d1d4cd84af63a8b4a4d6284e1be0d262` |
 | `media/omninode-explained-20261103.mp4` | https://teleionlabs.com/media/omninode-explained-20261103.mp4 | 5108762 | `9db10961ad6ad623ab9d438b3432a7f9520bf1e20b36894097e4b3b0ebd12f1f` |
 | `media/shim-explained-20261103.mp4` | https://teleionlabs.com/media/shim-explained-20261103.mp4 | 3298733 | `4d498f20e9f287e36a8972cd02ac0b3c436a886481629fb3b701e2254f4d8b10` |

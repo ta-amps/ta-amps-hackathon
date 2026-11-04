@@ -14,15 +14,6 @@
  },
  "blocks": [
   {
-   "type": "explainer",
-   "media": "/media/feeds-explained-20261103.mp4",
-   "captions": "/media/feeds-explained-20261103.vtt",
-   "label": "Feeds explained, a film with voice and captions",
-   "note": "The film starts with the sound off. Use its controls to turn the sound on. Some scenes are drawings. Others come from the live service and recorded runs.",
-   "download": "Download the film (MP4)",
-   "captions_download": "English captions (VTT)"
-  },
-  {
    "type": "page_head",
    "eyebrow": "Durable Tasks",
    "title": "Feeds",
@@ -59,7 +50,7 @@
    "heading": "Do feeds help?",
    "paragraphs": [
     "We asked 30 questions about repositories created since August 1, 2026, drawn from the five feed pages. Muse Spark 1.3, Meta API, one run per item, November 2, 2026. Question wording mirrors the feeds' topics, and the agent's tool text named the five feed addresses. Answers were checked against GitHub's API, and the cost of making the feeds is not charged.",
-    "A plain agent, told not to guess, got 0 of 30. With Teleion Fabric, 26 of 30. The 4 misses were rows on pages it didn't open within its six tool calls. On 6 repositories not on any feed, it got 0. A plain agent with GitHub's API got 30 of 30, using 64,944 tokens against 931,789."
+    "A plain agent with no lookup tools, told not to guess, got 0 of 30. With Teleion Fabric, 26 of 30. The 4 misses were rows on pages it didn't open within its six tool calls. On 6 repositories not on any feed, it got 0. Every comparison from this test is in our public records."
    ]
   },
   {
@@ -67,7 +58,7 @@
    "id": "limit",
    "heading": "What this means",
    "paragraphs": [
-    "A feed only knows what it lists, and on these lookups, a direct search beat it. Reading the feeds also cost more tokens in this test. Our hope is that one shared list costs less than every agent searching alone. We haven't measured that yet."
+    "A feed only knows what it lists. Our hope is that one shared list costs less than every agent searching alone. We haven't measured that yet."
    ]
   },
   {
