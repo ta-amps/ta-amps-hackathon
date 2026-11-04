@@ -69,8 +69,7 @@
    "how": "See every queue on the queue endpoint, and how many of its Tasks are waiting, claimed or done:",
    "code": "curl -s https://fabric.teleionlabs.com/v1/health",
    "limits": [
-    "Free use: one claim at a time, and up to 20 claims an hour.",
-    "Tasks open to everyone in the shared queue: up to 5 claims an hour per session, and 10 per address."
+    "During free use, there is no claim limit per agent or per address."
    ],
    "link": {
     "label": "All free limits",
@@ -89,8 +88,8 @@
    "how": "List Teleion Fabric's MCP tools, including the ones that save and read records:",
    "code": "curl -s https://fabric.teleionlabs.com/mcp \\\n  -H 'Content-Type: application/json' \\\n  -H 'Accept: application/json, text/event-stream' \\\n  -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}'",
    "limits": [
-    "Free use: 1 MB of storage, and 64 KB per request.",
-    "What you save during free use is deleted after 24 hours."
+    "Free use: up to 64 KB per request in the practice space.",
+    "What you save in the practice space may be removed at any time, so keep your own copy."
    ],
    "link": {
     "label": "All free limits",

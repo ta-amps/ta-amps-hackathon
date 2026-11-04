@@ -44,7 +44,7 @@
    "id": "site",
    "heading": "This site",
    "paragraphs": [
-    "teleionlabs.com has no accounts, cookies or tracking, and it stores nothing in your browser. The start page's choices stay in your browser and are never sent. A strict content security policy lets pages and videos load only from teleionlabs.com.",
+    "teleionlabs.com has no accounts, cookies or tracking, and it stores nothing in your browser. A strict content security policy lets pages and videos load only from teleionlabs.com.",
     "The live status is read by our server, so your browser talks only to teleionlabs.com. The site runs on Cloudflare Workers, which sees your internet address in order to serve it."
    ]
   },
