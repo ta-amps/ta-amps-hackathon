@@ -57,7 +57,29 @@ def test_the_live_record_keeps_plain_code_apart_from_a_model(tmp_path, monkeypat
     assert live["decided_by_route"] == {"plain_code_rule": 2, "meta_api_muse_spark": 1, "rule_no_model": 1}
     assert live["fell_back_after_every_route_failed"] == 1
     assert "decided_by_a_model" not in live and "models_chosen" not in live
+    assert live["task_object_hint_reached_a_maker_by_route"] == {}
     assert live["routes_each_attempt_including_failures"]["baseten_meta_open_model"]["answered"] == 0
+
+
+def test_a_pick_counts_as_fine_tuned_only_on_its_own_route_and_a_failed_read_is_kept_apart(tmp_path, monkeypatch):
+    log = tmp_path / "warm.jsonl"
+    rows = [
+        {"kind": "fabric_decision_effect", "task_id": "a", "object_id": "x", "object_route": d.GLIMMER_ROUTE},
+        {"kind": "fabric_decision_effect", "task_id": "b", "object_id": "y", "object_route": "baseten_meta_open_model"},
+        {"kind": "fabric_decision_effect", "task_id": "c", "object_id": "z", "object_route": "baseten_meta_open_model"},
+        {"kind": "fabric_decision_effect", "task_id": "e", "object_id": None, "object_route": None},
+        {"kind": "fabric_tool_call", "task_id": "b", "ok": True, "chosen_by": "baseten_meta_open_model"},
+        {"kind": "fabric_tool_call", "task_id": "c", "ok": False, "chosen_by": "baseten_meta_open_model"},
+    ]
+    log.write_text("\n".join(json.dumps(r) for r in rows))
+    monkeypatch.setattr(d, "WARM_LOG", log)
+    for name in ("DECISIONS", "RUNS", "SEARCHES"):
+        monkeypatch.setattr(d, name, tmp_path / f"{name}.jsonl")
+    body = d.tally()
+    assert body["fine_tuned_decider"]["fine_tuned_picks_given_to_a_live_maker"] == 1
+    live = body["live_route_list"]
+    assert live["task_object_hint_reached_a_maker_by_route"] == {d.GLIMMER_ROUTE: 1, "baseten_meta_open_model": 2}
+    assert live["full_task_object_also_read_by_route"] == {"baseten_meta_open_model": 1}
 
 
 def test_publish_refuses_without_its_own_record_key(monkeypatch, capsys):

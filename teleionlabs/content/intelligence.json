@@ -2,15 +2,15 @@
  "kind": "task_object",
  "id": "teleion.instructions/page.intelligence",
  "version": 1,
- "updated": "2026-11-03",
+ "updated": "2026-11-04",
  "route": "/fabric-intelligence/",
  "output": "fabric-intelligence/index.html",
  "title": "Fabric Intelligence explained · Teleion Labs",
- "description": "A film and full text on deciding, fine-tuning Meta models for shimming and search and retrieval, and a test of direct weight editing that is being set up.",
+ "description": "A film and full text on deciding, fine-tuning Meta models for shimming and search and retrieval, and what we found when we tried direct weight editing.",
  "sources": {
   "records": "static/records/glimmer-30b-orchestrator-2026-11-02.json; content/methodology.json",
   "decision": "notes/work-2026-11-02/glimmer-decision-model (no number shown under its pre-registered rule)",
-  "weights": "https://rikiyat.github.io/blog/weight-space-programming/; notes/work-2026-11-03/weight-edit-test (no RESULTS.md)"
+  "weights": "https://rikiyat.github.io/blog/weight-space-programming/; notes/work-2026-11-03/weight-edit-test/RESULTS.md"
  },
  "blocks": [
   {
@@ -33,7 +33,7 @@
    "id": "policy",
    "heading": "One decider on our Eranos workers",
    "paragraphs": [
-    "One decider runs on our Eranos workers. An hourly job reads recorded results, and sets the mix of models and personas. Its choices are Muse Spark 1.3 and Muse Wonder 1.0. At tuner version 28, read November 2, 2026, with 15 recorded outcomes, the mix was 77 / 23 for making work and 66 / 34 for checking work."
+    "One decider runs on our Eranos workers. An hourly job reads recorded results, and sets the mix of models and personas. Its choices are Muse Spark 1.3 and Muse Wonder 1.0. At tuner version 28, read November 2, 2026, with 15 recorded outcomes, the mix was 77 / 23 for making work. Checking has no recorded outcomes yet, so its mix is close to its starting point."
    ]
   },
   {
@@ -75,7 +75,7 @@
    "id": "live",
    "heading": "What runs live",
    "paragraphs": [
-    "These fine-tuned models don't carry routine live work today. A private evaluation endpoint recorded 7 correct calls on November 2, 2026: one cold at 55.2 seconds and six warm, with a median of 3.27 seconds. That is not a speed promise. Our rule: a fine-tuned model must beat the default on held-out tests, starts on a small share of live work, and switches back if results drop. A checker never shares a fine-tune with the maker it checks."
+    "These fine-tuned models don't carry routine live work today. One runs in small on-demand batches; see the [live record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record). A private evaluation endpoint recorded 7 correct calls on November 2, 2026: one cold at 55.2 seconds and six warm, with a median of 3.27 seconds. That is not a speed promise. Our rule: a fine-tuned model must beat the default on held-out tests, starts on a small share of live work, and switches back if results drop. A checker never shares a fine-tune with the maker it checks."
    ]
   },
   {
@@ -84,7 +84,7 @@
    "heading": "Editing weights directly",
    "paragraphs": [
     "The newest idea is editing weights directly. Researchers at MIT call it Weight-Space Programming. A capable model reads a network's weights, runs a few test passes, and edits them, with no training loop. Credit goes to Rikiya Takehi, Jayden Teoh, Alex Zhang and Omar Khattab at MIT CSAIL: [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/). The method and its results are theirs.",
-    "We're setting up a test based on their method, on Muse Glimmer 30B, with test problems the editor will never see. We have no result yet. No edited weights run in production. Whatever we find, we'll show it."
+    "We tried this on Muse Glimmer 30B, on November 3, 2026. Scripted edits showed no gain on held-out work: we screened 28, none moved above noise, and the one that reached held-out work failed the rule we wrote before the test. The step where a model does the editing did not run, because the test stopped at its money cap. So their method is still untested on Glimmer. No edited weights run in production."
    ]
   },
   {

@@ -144,7 +144,7 @@
     {
      "group": "model",
      "value": "Spark 77% · Wonder 23%",
-     "label": "dated operational snapshot of build-step allocation between Muse Spark 1.3 and Muse Wonder 1.0 (check step: Spark 66% · Wonder 34%); reflects recorded outcomes, and does not mean one model is better",
+     "label": "dated operational snapshot of build-step allocation between Muse Spark 1.3 and Muse Wonder 1.0 (the check step has no recorded outcomes yet); reflects recorded outcomes, and does not mean one model is better",
      "setup": "Operational policy snapshot, 15 outcomes",
      "date": "Nov 2, 2026",
      "record_href": null

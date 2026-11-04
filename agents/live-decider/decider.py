@@ -439,9 +439,14 @@ def tally() -> dict[str, Any]:
     tools = [r for r in read_jsonl(WARM_LOG) if r.get("kind") == "fabric_tool_call"]
     moved_up = [r for r in read_jsonl(WARM_LOG) if r.get("kind") == "fabric_moved_up"]
     effect_routes: dict[str, int] = {}
+    read_ok = {t.get("task_id") for t in tools if t.get("ok")}
+    full_object_read: dict[str, int] = {}
     for e in effects:
         if e.get("object_route"):
             effect_routes[e["object_route"]] = effect_routes.get(e["object_route"], 0) + 1
+            if e.get("task_id") in read_ok:
+                full_object_read[e["object_route"]] = full_object_read.get(e["object_route"], 0) + 1
+    audited = [r for r in rows if isinstance(r.get("audit_pass"), bool) and not r.get("failed_validation")]
     audited = [r for r in rows if isinstance(r.get("audit_pass"), bool) and not r.get("failed_validation")]
     return {
         "fine_tuned_decider": {
@@ -466,7 +471,7 @@ def tally() -> dict[str, Any]:
             "decided_by_route": decided_by_route,
             "fell_back_after_every_route_failed": sum(1 for e in events if e.get("fallback")),
             "maker_model_chosen": chosen,
-            "routes_each_attempt_including_failures": route_stats, "task_object_given_to_a_maker_by_route": effect_routes, "maker_runs_after_a_decision": len(effects),
+            "routes_each_attempt_including_failures": route_stats, "task_object_hint_reached_a_maker_by_route": effect_routes, "full_task_object_also_read_by_route": full_object_read, "maker_runs_after_a_decision": len(effects),
             "latest": [{k: e.get(k) for k in ("at", "task_id", "model", "model_route", "object_route", "route_object_id", "fallback", "seconds")} for e in events[-20:]],
         },
         "search_reorder": {
@@ -501,7 +506,7 @@ def publish() -> int:
         body["search_reorder"].pop("latest", None)
     f, m = body["fine_tuned_decider"], body["live_route_list"]
     summary = (f"Live record of Teleion Fabric's Meta-based deciding. Fine-tuned Muse Glimmer 30B answered on {f['model_answered']} real Tasks in "
-               f"{f['batches']} batches; {f['audit_passed']} of {f['audited']} answers passed a Muse Spark audit; {f['fine_tuned_picks_given_to_a_live_maker']} of its picks reached a live worker so far. Choosing the maker's model on {m['decisions']} real Tasks: plain code with no model on {m['decided_by_plain_code_no_model']}, a Meta model on {m['decided_by_a_meta_model']}.")
+               f"{f['batches']} batches; {f['audit_passed']} of {f['audited']} answers passed a Muse Spark audit; {f['fine_tuned_picks_given_to_a_live_maker']} of its picks reached a live worker so far; the Meta open model, not fine-tuned, had {sum(n for r, n in m['task_object_hint_reached_a_maker_by_route'].items() if r != GLIMMER_ROUTE)}. Choosing the maker's model on {m['decisions']} real Tasks: plain code with no model on {m['decided_by_plain_code_no_model']}, a Meta model on {m['decided_by_a_meta_model']}.")
     shim = Shim("fabric-decider", Path.home() / ".config/ta-amps/fabric-decider-identity.json")
     res = shim.publish({record_key: {"summary": summary, "category": "live_record", "search_hints": ["decider", "fine-tuned", "muse glimmer", "muse spark", "routing"], "payload": body}},
                        summary, f"fabric-decider-{int(time.time() // 900)}")

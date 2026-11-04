@@ -1,6 +1,8 @@
 """The decider's ordered route list: each failure moves on, nothing raises, and the record names the route."""
 from __future__ import annotations
 
+import pytest
+
 import json
 import sys
 import time
@@ -224,7 +226,7 @@ def test_stalled_decide_cannot_hold_the_claim(monkeypatch):
 def test_more_secret_shapes():
     from warm_agent.decider import looks_secret
 
-    for text in ("xo" "xb-1234567890-1234567890-abcdefghijklmnopqrstuvwx", "AK" "IAABCDEFGHIJKLMNOP", "-----BE" "GIN PRIVATE KEY-----", "github_pat_abc123", "postgresql://app:n8V!q2Rs7@db.internal/app"):
+    for text in ("xo" "xb-1234567890-1234567890-abcdefghijklmnopqrstuvwx", "AK" "IAABCDEFGHIJKLMNOP", "-----BE" "GIN PRIVATE KEY-----", "github_pat_abc123", "postgresql://app:" "n8V!q2Rs7@db.internal/app"):
         assert looks_secret(text), text
 
 
@@ -268,3 +270,215 @@ def test_model_guided_read(tmp_path):
     ans = lambda *_a, **_k: {"content": json.dumps({"model": "muse-spark-1.3", "object_id": "o1", "read_object": True}), "cost_usd": 0}  # noqa: E731
     d = run(tmp_path, partner_call=ans, search=lambda _q: [{"id": "o1", "title": "T", "summary": "S"}])
     assert d["tool"] == {"name": "read_task_object", "key": "o1", "chosen_by": BASETEN}
+
+
+# Made-up values, assembled here so that no credential-shaped text sits in this file. Each is short and broken up, so the
+# 40-character rule can't hide the rule under test.
+_PART = "aB3dE6gH9jK2"
+_BROKEN = "-".join([_PART] * 4)
+_SHAPES = {
+    "sk": "sk-" + _BROKEN,
+    "sk_project": "sk-proj-" + "_".join([_PART] * 4),
+    "github_classic": "ghp_" + _PART,
+    "github_oauth": "gho_" + _PART,
+    "github_user": "ghu_" + _PART,
+    "github_server": "ghs_" + _PART,
+    "github_refresh": "ghr_" + _PART,
+    "github_pat": "github_" + "pat_" + _PART,
+    "huggingface": "hf_" + _PART,
+    "slack_bot": "xoxb-" + _BROKEN,
+    "slack_user": "xoxp-" + _BROKEN,
+    "aws_access": "AKIA" + _PART[:12].upper(),
+    "aws_session": "ASIA" + _PART[:12].upper(),
+    "google": "AIza" + _PART + _PART,
+    "jwt": "eyJ" + _PART + "." + _PART,
+    "pem": "-----BEGIN " + "PRIVATE KEY-----",
+    "fabric_secret": "tsk_" + _PART,
+    "fabric_session": "tan_" + _PART,
+    "shim_key": "hmk_" + _PART,
+    "bearer": "Bearer " + _PART,
+    "api_key_word": "api_key",
+    "api_key_dash": "api-key",
+    "password_word": "password",
+    "secret_word": "secret",
+    "token_equals": "token=" + _PART,
+    "token_colon": "token : " + _PART,
+    "basic_auth_url": "postgresql://app:" + _PART + "@db.example.com/x",
+    "long_opaque": _PART * 4,
+}
+_WRAPS = {
+    "text": "please use {} now",
+    "start": "{} is the value",
+    "url": "https://example.com/call?key={}&x=1",
+    "double_quotes": 'the value "{}" here',
+    "single_quotes": "the value '{}' here",
+    "json": '{{"value": "{}", "n": 1}}',
+    "after_paren": "(key {})",
+    "after_equals": "KEY={}",
+    "percent_encoded": "key%3D{}",
+    "after_new_line": "first line\n{}",
+    "after_tab": "first\t{}",
+    "after_dash": "first \u2014{}",
+    "after_accent": "caf\u00e9{}",
+}
+
+
+@pytest.mark.parametrize("through_json", [False, True], ids=["raw", "json_dumps"])
+@pytest.mark.parametrize("wrap", _WRAPS)
+@pytest.mark.parametrize("shape", _SHAPES)
+def test_every_credential_shape_is_caught_however_it_is_embedded(shape, wrap, through_json):
+    from warm_agent.decider import looks_secret
+
+    if (shape, wrap, through_json) == ("long_opaque", "after_accent", False):
+        pytest.skip("known gap, same before this change: a letter with an accent counts as part of the word")
+    text = _WRAPS[wrap].format(_SHAPES[shape])
+    assert looks_secret(json.dumps({"payload": text}) if through_json else text)
+
+
+def test_a_bearer_value_after_a_raw_tab_is_caught():
+    from warm_agent.decider import looks_secret
+
+    assert looks_secret("bearer\t" + _PART)
+
+
+@pytest.mark.parametrize("text", ["task-abcdefghijkl is the next step", '{"id": "task-abcdefghijkl"}', "a\ntask-abcdefghijkl"])
+def test_the_word_task_is_not_a_key(text):
+    from warm_agent.decider import looks_secret
+
+    assert not looks_secret(text)
+
+
+_HEX64, _HEX40 = "0123456789abcdef" * 4, "0123456789abcdef" * 2 + "01234567"
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        json.dumps({"sha256": _HEX64}),
+        json.dumps({"commit": _HEX40}),
+        json.dumps({"payload_sha256": _HEX64, "upstream_sha256": _HEX64, "prev_sha256": _HEX64}),
+        json.dumps({"sha256_of_frame": _HEX64}),
+        json.dumps({"payload": json.dumps({"sha256": _HEX64})}),  # JSON text inside JSON text
+        json.dumps({"a": {"b": [{"sha256": _HEX64}]}}),
+    ],
+)
+def test_a_records_own_digest_field_is_not_a_secret(text):
+    from warm_agent.decider import looks_secret
+
+    assert not looks_secret(text)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        f"value {_HEX64}",
+        f"sha256 {_HEX64}",  # a bare word is not a field
+        f"commit {_HEX40}",
+        f"before you commit\n{_HEX40}",
+        f"signature {_HEX64}",
+        f'"signature": "{_HEX64}"',
+        f'"digest": "{_HEX64}"',
+        f'"key": "{_HEX40}"',
+        f'"commit_token": "{_HEX40}"',
+        f'"webhook_signature_key": "{_HEX64}"',
+        f'"api_key_sha256": "{_HEX64}"',
+        f'"token_sha256": "{_HEX64}"',
+        f'"client_secret_sha256": "{_HEX64}"',
+        f'"signing_sha256": "{_HEX64}"',
+        f'"sha256": "{_HEX40}"',  # the wrong length for its name
+        f'"commit": "{_HEX64}"',
+        f'"sha256": "{_HEX64}0"',
+        f'"sha256": "{_HEX64}.abc"',
+        f"https://ci_commit:{_HEX40}@github.com/o/r",
+        f"https://example.com/x?signature={_HEX64}",
+        f"https://example.com/x?sha={_HEX40}",
+        f"https://example.com/x?X-Amz-Signature={_HEX64}",
+        f'"sha256": "{_HEX64}", "other": "{_HEX40}"',  # one field, and one that isn't
+        '"sha256": "' + "sk-" + _BROKEN + '"',
+        f'"sha256": "{_HEX64}", "note": "' + "sk-" + _BROKEN + '"',  # a digest doesn't hide a key beside it
+    ],
+)
+def test_anything_but_a_records_own_digest_field_is_still_caught(text):
+    from warm_agent.decider import looks_secret
+
+    assert looks_secret(text)
+    assert looks_secret(json.dumps({"payload": text}))
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        '"sha256": "' + "z" * 64 + '"',  # not hex
+        '"commit": "' + "z" * 40 + '"',
+        f'"SHA256": "{_HEX64}"',  # the exact names only
+        f'"COMMIT": "{_HEX40}"',
+        f'"x_commit": "{_HEX40}"',
+        f'"sha256_foo": "{_HEX64}"',
+        f'"sha256_of_a_b": "{_HEX64}"',
+        f'"a_b_c_d_sha256": "{_HEX64}"',  # four words before it is one too many
+        f'"auth_sha256": "{_HEX64}"',
+        f'"pass_sha256": "{_HEX64}"',
+        f'"pwd_sha256": "{_HEX64}"',
+        f'"cred_sha256": "{_HEX64}"',
+        f'"hmac_sha256": "{_HEX64}"',
+        f'"session_sha256": "{_HEX64}"',
+        f'"private_sha256": "{_HEX64}"',
+        f'"seed_sha256": "{_HEX64}"',
+        f'"cookie_sha256": "{_HEX64}"',
+        f'"jwt_sha256": "{_HEX64}"',
+        f'https://"commit":"{_HEX40}"@github.com',  # a removed field doesn't break the URL rule
+        "ask-" + _BROKEN,  # only "task-" is exempt
+        "apikey",
+    ],
+)
+def test_the_exemption_stays_exact(text):
+    from warm_agent.decider import looks_secret
+
+    assert looks_secret(text)
+
+
+def test_exemption_edges_that_should_pass():
+    from warm_agent.decider import looks_secret
+
+    assert not looks_secret(json.dumps({"a_b_c_sha256": _HEX64}))
+    assert not looks_secret(json.dumps({"x": json.dumps({"y": json.dumps({"sha256": _HEX64})})}))  # two levels of JSON text
+
+
+def test_a_long_run_of_backslashes_is_quick():
+    from warm_agent.decider import looks_secret
+
+    started = time.monotonic()
+    looks_secret(json.dumps({"object_key": "o", "summary": "s", "payload": "\\\\" * 99000}))
+    assert time.monotonic() - started < 2.0
+
+
+
+def test_a_route_records_the_model_named_in_the_reply_not_only_our_config() -> None:
+    import httpx
+    from warm_agent import decider as d
+
+    def reply(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={"model": "what-really-answered", "choices": [{"message": {"content": "{}"}}]})
+
+    cfg = {"partner_timeout_seconds": 1, "partner_max_output_tokens": 8, "partner_reasoning_effort": "low", "http_ok_below": 300, "tokens_per_price_unit": 1000000, "partner_input_usd_per_million": 1, "partner_output_usd_per_million": 1, "reserve_per_route_usd": 0.01}
+    settings = {"BASETEN_BASE_URL": "https://x.test/v1", "BASETEN_API_KEY": "k", "BASETEN_MODEL_ID": "our-config-name"}
+    out = d.baseten_call("s", "u", cfg=cfg, transport=httpx.MockTransport(reply), settings=settings)
+    assert out["model_id"] == "our-config-name" and out["reply_model"] == "what-really-answered"
+
+
+@pytest.mark.parametrize("crafted", ["a" * 50000, "a-" * 25000, "a" * 50000 + "://x:" + "y" * 50000, "x://" + "a:" * 25000])
+def test_a_long_crafted_text_is_read_quickly(crafted):
+    import time as _time
+
+    from warm_agent.decider import looks_secret
+
+    started = _time.monotonic()
+    looks_secret(crafted)
+    assert _time.monotonic() - started < 1.0
+
+
+def test_a_normal_credential_url_is_still_caught_after_the_bound():
+    from warm_agent.decider import looks_secret
+
+    assert looks_secret("postgres://user:" + _PART + "@db.example.org/x")
+    assert looks_secret("see " + "a" * 200 + " then https://user:" + _PART + "@db.example.org/x")

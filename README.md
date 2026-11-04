@@ -29,6 +29,8 @@ Some repository names and code still use older code names. The product is Teleio
 | Muse Code | Ran the build step in one test, Oct 31, 2026. The live workers call the Meta API directly | https://teleionlabs.com/records/eranos-featured-run-2026-10-31.json |
 | SAM and `wav2vec2` | Local quality checks on an earlier film, Oct 30, 2026. That film is retired | [Evidence](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/video-production-2026-10-30) |
 
+Teleion Fabric itself works with almost any model and LLM inference provider. The table lists what we run.
+
 Other fine-tuning runs, including an earlier Oct 29 Glimmer run on Kaggle (93.3% to 99.3%, one made-up task, nothing promoted), are in [`training/`](training/README.md) and [`eval/`](eval/README.md). Modal ran GPU and CPU jobs.
 
 ## What else is in this repository
@@ -86,7 +88,7 @@ Report once, with your result. A different worker checks it.
 ## What runs today
 
 - **Live sites with public health checks:** the [status page](https://teleionlabs.com/status/) shows Teleion Fabric, its model shim and Eranos.
-- **Five Eranos workers** (one planner, two builders, two reviewers) run as background services on Muse Spark and Muse Wonder through the Meta API, beside one always-on agent. They run on one machine, scheduled through November 10, 2026.
+- **Five Eranos workers** (one planner, two builders, two reviewers) run as background services on Muse Spark and Muse Wonder through the Meta API, beside one always-on agent. They run on one machine, scheduled through November 10, 2026. The always-on agent's own results aren't all audited yet.
 - **A feed OmniNode** runs every four hours. One Muse model labels new items and the other audits them.
 - **Our own examples only:** we have no customers and no outside users on record. The requests so far are our own 15 public examples.
 - **Our Meta API spend has fixed caps:** $25 a day for workers, $5 a day for feeds and $150 in total. A caller with no key who wants a model call brings their own model key.
@@ -111,7 +113,7 @@ Underneath every surface is one flexible design, and any project can reuse it. *
 | --- | --- |
 | Models miss new facts and tools | **Feed Task Objects** record each new release, benchmark or service update with its source. For repositories outside our feeds, GitHub's API is the better choice |
 | Agents rewrite existing code | **Search, recall and context shimming:** `search_nouns` and `recall_execution` find earlier code and runs, and the shim can add them before the model call. In a live preview, the shim matched 3 of 10 prompts we wrote and answered one directly, so treat this as a small shortcut |
-| Long jobs stall and need babysitting | **Leased Tasks on one shared queue:** big jobs split into Tasks with leases and check-ins (`drafter != reviewer`), and a failed Task goes to a dead letter with its record. After a forced stop at step 4 on 5 paired six-step jobs, both sides finished all 5, and Fabric used 7 model calls per job instead of 10. A plain agent with a local checkpoint file might also resume. We did not test that |
+| Long jobs stall and need babysitting | **Leased Tasks in durable queues:** big jobs split into Tasks with leases and check-ins (`drafter != reviewer`), and a failed Task goes to a dead letter with its record. After a forced stop at step 4 on 5 paired six-step jobs, both sides finished all 5, and Fabric used 7 model calls per job instead of 10. A plain agent with a local checkpoint file might also resume. We did not test that |
 | Static prompts don't improve over time | **Built to keep learning from checked work:** open-weight adapters train on our own example tasks. See [`training/`](training/README.md) and [`eval/`](eval/README.md) for each run and its test conditions |
 
 ## How it scales
