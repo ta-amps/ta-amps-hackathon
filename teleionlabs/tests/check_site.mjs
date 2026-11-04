@@ -10,15 +10,17 @@
 // Then axe per page and width: no serious or critical issue. Exit 1 on any failure.
 import { createRequire } from "node:module";
 import { readFile } from "node:fs/promises";
+import { homedir } from "node:os";
+import { join } from "node:path";
 
 const require = createRequire(import.meta.url);
-const PLAYWRIGHT = process.env.PLAYWRIGHT || "/home/username/meta_hacakthon/notes/claude-work-2026-10-31/herma/herma-src/node_modules/playwright";
-const AXE = process.env.AXE || "/home/username/meta_hacakthon/eranos/web/node_modules/.pnpm/axe-core@4.14.0/node_modules/axe-core/axe.min.js";
+const PLAYWRIGHT = process.env.PLAYWRIGHT || join(homedir(), "meta_hacakthon/notes/claude-work-2026-10-31/herma/herma-src/node_modules/playwright");
+const AXE = process.env.AXE || join(homedir(), "meta_hacakthon/eranos/web/node_modules/.pnpm/axe-core@4.14.0/node_modules/axe-core/axe.min.js");
 const { chromium } = require(PLAYWRIGHT);
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : dflt; };
 const BASE = opt("--base", "http://127.0.0.1:8799").replace(/\/$/, "");
-const PAGES = ["/", "/experience/", "/judges/", "/fabric/", "/video/", "/benchmarks/", "/benchmarks/methodology/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"];
+const PAGES = ["/", "/experience/", "/fabric/", "/omninode/", "/shimming/", "/fabric-intelligence/", "/feeds/", "/video/", "/benchmarks/", "/benchmarks/methodology/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"];
 const FILMS = ["/", "/experience/"];
 const VIEWPORTS = [{ width: 1280, height: 720 }, { width: 390, height: 844 }];
 const PAPER = "rgb(245, 242, 234)";
@@ -56,7 +58,7 @@ for (const viewport of VIEWPORTS) for (const colorScheme of ["light", "dark"]) {
     if (!/only/.test(r.scheme) || !/light/.test(r.scheme) || /dark/.test(r.scheme)) fail(where, `color-scheme ${r.scheme}`);
     if (r.dark.length) fail(where, `dark element ${r.dark.join(",")}`);
     if (r.sideways) fail(where, "sideways scroll");
-    if (!r.first.startsWith("For AI agents:")) fail(where, "first line isn't for agents");
+    if (!r.first.startsWith("Teleion Labs is an agent-first")) fail(where, "first line isn't for agents");
     if (r.sheets || r.fonts || r.imgs) fail(where, `not text only: ${JSON.stringify([r.sheets, r.fonts, r.imgs])}`);
     if (r.footerRows !== 2) fail(where, `footer has ${r.footerRows} lines`);
     const scripts = await page.evaluate(() => [...document.scripts].map((s) => s.src).filter(Boolean).concat(performance.getEntriesByType("resource").filter((e) => /\.m?js(\?|$)/.test(e.name)).map((e) => e.name)));

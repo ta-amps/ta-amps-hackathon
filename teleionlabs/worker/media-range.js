@@ -74,7 +74,7 @@ export async function maybeMediaRange(request, asset, ctx) {
   const length = asset.headers.get("Content-Length");
   const contentType = asset.headers.get("Content-Type")?.split(";", 1)[0].trim().toLowerCase();
   if (!["GET", "HEAD"].includes(request.method) || !knownBytes ||
-      asset.status !== 200 || contentType !== "video/mp4" ||
+      asset.status !== 200 || !["video/mp4", "audio/mpeg"].includes(contentType) ||
       (encoding && encoding.toLowerCase() !== "identity") ||
       (length !== null && !/^\d+$/.test(length))) {
     return asset;

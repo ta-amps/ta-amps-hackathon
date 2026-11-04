@@ -95,9 +95,9 @@
   const typed = (v, s, cps) => Math.floor(Math.max(0, v.t - s) * (cps || 34));
   const fade = (v, s, l) => clamp((v.t - s) / (l || 0.5));
   const head = (v, y, size) => text(v.s.h, { x: v.W / 2, y: v.H * (y || 0.16), size: Math.max(19, (size || 40) * v.u), weight: 700, align: "center", maxW: v.W * 0.88, shown: typed(v, 0, 42) });
-  function caption(v, list, times, y) {
+  function caption(v, list, times, y, wide) {
     let cur = 0; times.forEach((t, i) => { if (v.t >= t) cur = i; });
-    if (list[cur]) text(list[cur], { x: v.W / 2, y, size: Math.max(15, 24 * v.u), align: "center", maxW: v.W * 0.84, alpha: fade(v, times[cur], 0.3), color: SOFT });
+    if (list[cur]) text(list[cur], { x: v.W / 2, y, size: Math.max(15, 24 * v.u), align: "center", maxW: v.W * (wide || 0.84), alpha: fade(v, times[cur], 0.3), color: SOFT });
   }
   function box(x, y, w, h, stroke, fill) {
     c.fillStyle = fill || CARD; c.strokeStyle = stroke || INK; c.lineWidth = Math.max(1, 2 * (w > 0 ? 1 : 1));
@@ -130,6 +130,9 @@
     const [x, y] = route(pts, p);
     dot(x, y, bad ? RUST : BLUE, v.u);
   }
+  // When each sentence starts in the voice, in seconds into its scene.
+  const marks = (kind) => (words.labels.marks || {})[kind] || null;
+  const lastMark = (list, t) => { let cur = 0; list.forEach((m, i) => { if (t >= m) cur = i; }); return cur; };
   const moved = (keys, t) => {
     for (let i = 0; i < keys.length - 1; i++) if (t >= keys[i][0] && t < keys[i + 1][0]) return keys[i][1] + (keys[i + 1][1] - keys[i][1]) * ease((t - keys[i][0]) / (keys[i + 1][0] - keys[i][0]));
     return keys[keys.length - 1][1];
@@ -137,15 +140,34 @@
 
   const draw = {
     parts(v) {
-      const n = v.s.steps.length, start = 1.6, each = (v.s.secs - start - 0.8) / n, cur = Math.min(n - 1, Math.floor(Math.max(0, v.t - start) / each));
-      head(v, 0.14, 36);
-      if (v.t < start) return;
-      const keys = v.s.steps.map((_, i) => [start + i * each, i]);
-      chain(v, v.s.steps.map(nameOf), cur, moved(keys.flatMap(([t, i]) => [[t, i], [t + each - 1.1, i]]), v.t), cur + 1);
-      caption(v, v.s.steps, v.s.steps.map((_, i) => start + i * each), v.H * 0.8);
+      // The real shape of the system, not a line: who talks to whom. Each part lights its own connections.
+      const { W, H, u } = v, n = v.s.steps.length, pm = marks("parts") || [], start = pm[0] ?? 1.2, each = (v.s.secs - start - 0.8) / n, t = v.t, narrow = W < 700;
+      const stepAt = v.s.steps.map((_, i) => pm[i] ?? start + i * each), cur = lastMark(stepAt, t);
+      head(v, 0.13, 36);
+      const L = words.labels.map;
+      const N = { agent: [0.09, 0.14], shim: [0.36, 0.14], model: [0.68, 0.0], store: [0.36, 0.72], feeds: [0.09, 0.72], queue: [0.68, 0.5], workers: [0.93, 0.5], tuned: [0.68, 1.0] };
+      const P = (k) => [W * (0.04 + N[k][0] * 0.92), H * (0.27 + N[k][1] * 0.38)];
+      const E = [["agent", "shim"], ["shim", "model"], ["store", "shim"], ["feeds", "store"], ["shim", "queue"], ["queue", "workers"], ["workers", "store"], ["workers", "shim"], ["tuned", "queue"]];
+      const lit = [[4, 5], [3, 6], [0, 1, 2, 7, 8]][cur] || [];
+      const hot = [["queue", "workers"], ["feeds", "store"], ["shim", "model", "tuned"]][cur] || [];
+      const started = t >= start;
+      E.forEach(([p, q], i) => {
+        const [x1, y1] = P(p), [x2, y2] = P(q), on = started && lit.includes(i);
+        line(x1, y1, x2, y2, on ? BLUE : "#BDB6A6");
+        if (on) { const k = ((t * 0.6 + i * 0.37) % 1); dot(x1 + (x2 - x1) * k, y1 + (y2 - y1) * k, BLUE, u * 0.7); }
+      });
+      const size = narrow ? 11 : Math.max(13, 20 * u);
+      Object.keys(N).forEach((k) => {
+        const [x, y] = P(k), on = started && hot.includes(k), r = Math.max(4, 7 * u);
+        c.fillStyle = on ? BLUE : PAPER; c.strokeStyle = on ? BLUE : INK; c.lineWidth = 1;
+        c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill(); c.stroke();
+        const below = N[k][1] > 0.3 ? 1 : -1;
+        text(L[k], { x, y: y + below * (r + size * (below > 0 ? 1.3 : 0.7)), size, weight: on ? 700 : 400, align: "center", maxW: narrow ? W * 0.27 : W * 0.24, color: on ? BLUE : INK, lh: 1.15 });
+      });
+      if (started) caption(v, v.s.steps, stepAt, H * 0.82);
     },
     title(v) {
-      const y = text(v.s.h, { x: v.W / 2, y: v.H * 0.44, size: 60 * v.u, weight: 700, align: "center", maxW: v.W * 0.86, shown: typed(v, 0.2, 26) });
+      const y = text(v.s.h, { x: v.W / 2, y: v.H * 0.44, size: 60 * v.u, weight: 700, align: "center", maxW: v.W * 0.86 });
       text(v.s.ps[0], { x: v.W / 2, y: y + 24 * v.u, size: 24 * v.u, align: "center", maxW: v.W * 0.7, alpha: fade(v, 2), color: MUTED });
     },
     hook(v) {
@@ -157,9 +179,10 @@
       text(v.s.h, { x, y: v.H * 0.2, size: 24 * u, maxW, alpha: fade(v, 0), color: MUTED });
       let y = v.H * 0.34;
       v.s.ps.slice(0, 3).forEach((p, i) => {
-        const st = 0.6 + i * 3.6;
+        const st = (marks("three") || [0.6, 4.2, 7.8])[i];
         if (v.t < st) return;
-        text("0" + (i + 1), { x, y, size: 22 * u, color: RUST, weight: 700, maxW: 80 * u });
+        // The number sits centered on the first line of its sentence.
+        text("0" + (i + 1), { x, y: y - (42 - 22) * u * 0.36, size: 22 * u, color: RUST, weight: 700, maxW: 80 * u });
         y = text(p, { x: x + 72 * u, y, size: 42 * u, weight: 700, maxW: maxW - 72 * u, shown: typed(v, st, 26) }) + 44 * u;
       });
     },
@@ -228,24 +251,56 @@
         c.globalAlpha = 1;
       });
     },
-    omninode(v) {
-      const { W, H, u } = v, n = v.s.steps.length, start = 3.4, each = (v.s.secs - start - 0.8) / n, narrow = W < 700;
+    split(v) {
+      // One long job becomes a graph of small Tasks. Tasks wait for what they depend on. Then a separate worker approves.
+      const { W, H, u } = v, n = v.s.steps.length, each = (v.s.secs - 0.8) / n, t = v.t;
       head(v, 0.13, 36);
-      const cur = Math.min(n - 1, Math.floor(Math.max(0, v.t - start) / each));
+      const apart = ease((t - each) / 1.2), bw = W * 0.72, bx = W * 0.14, by = H * 0.42, r = Math.max(10, 16 * u);
+      const G = [[0.06, 0.5], [0.34, 0.15], [0.34, 0.85], [0.64, 0.5], [0.94, 0.5]], D = [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4]];
+      const at = (i) => { const hx = bx + bw * G[i][0], hy = H * (0.27 + G[i][1] * 0.36); return [bx + bw * (i + 0.5) / 5 + (hx - (bx + bw * (i + 0.5) / 5)) * apart, by + (hy - by) * apart]; };
+      if (apart < 1) { c.strokeStyle = RULE; c.lineWidth = 1; c.strokeRect(bx, by - r, bw, r * 2); }
+      const finish = [2, 2.5, 2.9, 3.5, 4.2].map((x) => each * x), done = (i) => t > finish[i];
+      if (apart >= 1) D.forEach(([p, q]) => { const [x1, y1] = at(p), [x2, y2] = at(q); line(x1, y1, x2, y2, done(p) ? BLUE : RULE); });
+      for (let i = 0; i < 5; i++) {
+        const [x, y] = at(i);
+        c.fillStyle = done(i) ? BLUE : PAPER; c.strokeStyle = done(i) ? BLUE : INK; c.lineWidth = 1;
+        c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill(); c.stroke();
+        text(String(i + 1), { x, y: y + r * 0.42, size: Math.max(12, r), align: "center", maxW: r * 2, color: done(i) ? PAPER : INK });
+      }
+      caption(v, v.s.steps, marks("split") || v.s.steps.map((_, i) => i * each), H * 0.8);
+    },
+    four(v) {
+      // Four outcomes, one at a time. Each paragraph is "Lead. Detail."
+      const { W, H, u } = v, x = W * (W < 700 ? 0.06 : 0.12), maxW = W * (W < 700 ? 0.88 : 0.76), each = (v.s.secs - 1) / 4;
+      head(v, 0.13, 36);
+      let y = H * 0.25;
+      v.s.ps.slice(0, 4).forEach((p, i) => {
+        const st = (marks("four") || [])[i] ?? 0.8 + i * each;
+        if (v.t < st) return;
+        const a = chars(p), d = a.findIndex((q) => q.ch === ".") + 1;
+        const lead = a.slice(0, d).map((q) => q.ch).join(""), rest = a.slice(d).map((q) => q.ch).join("").trim();
+        y = text(lead, { x, y, size: Math.max(20, 32 * u), weight: 700, maxW, shown: typed(v, st, 34), color: BLUE });
+        y = text(rest, { x, y: y + 2 * u, size: Math.max(14, 21 * u), maxW, alpha: fade(v, st + 0.7), color: SOFT }) + 24 * u;
+      });
+    },
+    omninode(v) {
+      const { W, H, u } = v, n = v.s.steps.length, start = (marks("omninode") || [3.4])[0], each = (v.s.secs - start - 0.8) / n, narrow = W < 700;
+      head(v, 0.13, 36);
+      const om = marks("omninode") || v.s.steps.map((_, i) => 3.4 + i * each), cur = lastMark(om, v.t);
       const hub = narrow ? [W * 0.1, H * 0.46] : [W / 2, H * 0.3];
       v.sp = narrow ? 0 : Math.min((W * 0.86) / n, 300 * u);
       const pts = v.s.steps.map((_, i) => (narrow ? [W * 0.3, H * 0.28 + (i * H * 0.36) / (n - 1)] : [W / 2 + (i - (n - 1) / 2) * v.sp, H * 0.56]));
-      pts.forEach((p, i) => { if (v.t >= start + i * each) line(hub[0], hub[1], p[0], p[1], i === cur ? BLUE : RULE); });
+      pts.forEach((p, i) => line(hub[0], hub[1], p[0], p[1], v.t >= start && i === cur ? BLUE : RULE));
       const size = Math.max(16, 24 * u);
       c.fillStyle = PAPER; c.strokeStyle = INK; c.lineWidth = 1;
       c.beginPath(); c.arc(hub[0], hub[1], Math.max(5, 8 * u), 0, Math.PI * 2); c.fill(); c.stroke();
       if (narrow) text("OmniNode", { x: hub[0] - Math.max(5, 8 * u), y: hub[1] - size, size, weight: 700, maxW: W * 0.4 });
       else text("OmniNode", { x: hub[0], y: hub[1] - size, size, weight: 700, align: "center", maxW: W * 0.5 });
+      v.s.steps.forEach((st, i) => node(v, pts[i][0], pts[i][1], nameOf(st), v.t >= start && i === cur ? "hot" : "", narrow));
       if (v.t < start) { text(v.s.ps[0], { x: W / 2, y: H * 0.8, size: Math.max(15, 24 * u), align: "center", maxW: W * 0.84, alpha: fade(v, 0.3), color: SOFT }); return; }
-      v.s.steps.forEach((st, i) => { if (v.t >= start + i * each) node(v, pts[i][0], pts[i][1], nameOf(st), i === cur ? "hot" : "", narrow); });
       const k = ease(((v.t - start) % each) / Math.min(1.2, each));
       dot(hub[0] + (pts[cur][0] - hub[0]) * k, hub[1] + (pts[cur][1] - hub[1]) * k, BLUE, u);
-      caption(v, v.s.steps, v.s.steps.map((_, i) => start + i * each), H * 0.8);
+      caption(v, v.s.steps, om, H * 0.8);
     },
     queue(v) {
       // Same story as the captions: claimed, stopped, back in the queue, picked up again, saved, checked.
@@ -329,10 +384,59 @@
       text(v.s.ps[0], { x: W / 2, y: H * 0.93, size: Math.max(13, 17 * u), align: "center", maxW: W * 0.86, color: MUTED, alpha: fade(v, 1) });
     },
     eranos(v) {
-      const { W, H, u } = v;
-      const y = text(v.s.h, { x: W / 2, y: H * 0.34, size: 38 * u, weight: 700, align: "center", maxW: W * 0.82, shown: typed(v, 0.1, 40) });
-      const y2 = text(v.s.ps[0], { x: W / 2, y: y + 24 * u, size: 25 * u, align: "center", maxW: W * 0.68, alpha: fade(v, 3), color: SOFT });
-      text(v.s.ps[1], { x: W / 2, y: y2 + 30 * u, size: 26 * u, align: "center", maxW: W * 0.8, alpha: fade(v, 6), color: BLUE });
+      // The two-sided marketplace as its real shape: NGOs on one side, helpers on the other, a network of agents between, then a separate audit, then what the NGO gets.
+      const { W, H, u } = v, narrow = W < 700, L = words.labels.eranos, em = marks("eranos") || [8.2, 11, 17, 21];
+      const knots = [[0, 0], [em[0], 8.2], [em[1], 11], [em[2], 17], [em[3], 21]], warp = (x) => { for (let i = knots.length - 1; i >= 0; i--) if (x >= knots[i][0]) { const a = knots[i], b = knots[i + 1]; return b ? a[1] + ((x - a[0]) * (b[1] - a[1])) / (b[0] - a[0]) : a[1] + (x - a[0]); } return x; };
+      const t = warp(v.t); v = { ...v, t };
+      const into = ease((t - 7.4) / 1.6);
+      const P = narrow
+        ? { ngo: [W * 0.1, H * 0.2], help: [W * 0.58, H * 0.2], net: [W * 0.34, H * 0.36], audit: [W * 0.1, H * 0.52], info: [W * 0.1, H * 0.65], reuse: [W * 0.5, H * 0.65], own: [W * 0.1, H * 0.78] }
+        : { ngo: [W * 0.1, H * 0.34], help: [W * 0.34, H * 0.2], net: [W * 0.34, H * 0.46], audit: [W * 0.58, H * 0.46], info: [W * 0.74, H * 0.3], reuse: [W * 0.74, H * 0.62], own: [W * 0.88, H * 0.46] };
+      // The agents start spread across the frame behind the words, then gather into the network.
+      const small = narrow ? 34 : 92 * u;
+      const A = [[0, 0], [0.95, -0.35], [0.55, 0.75], [-0.6, 0.7], [-0.95, -0.2], [-0.4, -0.8], [0.4, -0.85]].map(([a, b]) => [
+        W / 2 + a * W * 0.42 + (P.net[0] + a * small - W / 2 - a * W * 0.42) * into,
+        H / 2 + b * H * 0.42 + (P.net[1] + b * small * 0.62 - H / 2 - b * H * 0.42) * into]);
+      const E = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 1]];
+      E.forEach(([a, b]) => line(A[a][0], A[a][1], A[b][0], A[b][1]));
+      A.forEach(([x, y]) => { c.fillStyle = PAPER; c.strokeStyle = INK; c.lineWidth = 1; c.beginPath(); c.arc(x, y, Math.max(4, 6 * u), 0, Math.PI * 2); c.fill(); c.stroke(); });
+      E.forEach(([a, b], i) => { if (i % 3) return; const k = ((t * 0.5 + i * 0.37) % 1); dot(A[a][0] + (A[b][0] - A[a][0]) * k, A[a][1] + (A[b][1] - A[a][1]) * k, BLUE, u * 0.6); });
+      if (t < 8.2) {
+        c.fillStyle = PAPER; c.globalAlpha *= 0.86; c.fillRect(W * 0.04, H * 0.22, W * 0.92, H * 0.5); c.globalAlpha = 1;
+        text(v.s.h, { x: W / 2, y: H * (narrow ? 0.34 : 0.4), size: Math.max(19, 38 * u), weight: 700, align: "center", maxW: W * 0.82, shown: typed(v, 0.1, 40) });
+        return;
+      }
+      text([{ t: "Eranos", c: null }], { x: W / 2, y: H * 0.1, size: Math.max(22, 36 * u), weight: 700, align: "center", maxW: W * 0.8, alpha: fade(v, 8.2) });
+      const lit = (name, from, to) => (t >= from && (to === undefined || t < to) ? "hot" : "");
+      v.sp = narrow ? 0 : W * 0.19;
+      const wire = (a, b, from) => { if (t >= from) { c.globalAlpha = fade(v, from); line(P[a][0], P[a][1], P[b][0], P[b][1], BLUE); c.globalAlpha = 1; } };
+      wire("ngo", "net", 8.2); wire("help", "net", 11); wire("net", "audit", 13); wire("audit", "info", 13); wire("audit", "reuse", 14); wire("info", "own", 15); wire("reuse", "own", 15);
+      // Labels sit where no line runs through them.
+      const place = (key, from, hot, pos) => {
+        if (t < from) return;
+        const [x, y] = P[key], size = Math.max(14, 20 * u), name = [{ t: L[key], c: null }], r = Math.max(4, 6 * u);
+        c.globalAlpha = fade(v, from);
+        if (narrow || pos === "side") node(v, x, y, name, hot, true);
+        else if (pos === "below") node(v, x, y, name, hot, false);
+        else {
+          node(v, x, y, [], hot, true);
+          text(name, { x: pos === "left" ? x - 96 * u : x, y: y - r - size * 0.7, size, weight: hot ? 700 : 400, align: "center", maxW: W * 0.26, alpha: fade(v, from), color: hot ? BLUE : INK });
+        }
+        c.globalAlpha = 1;
+      };
+      place("ngo", 8.2, lit("ngo", 8.2, 11), "above");
+      place("help", 11, "", "side");
+      place("audit", 13, lit("audit", 17, 21), "left");
+      place("info", 13, lit("info", 13, 15), "above");
+      place("reuse", 14, lit("reuse", 14, 15.5), "below");
+      place("own", 15, lit("own", 15.5, 17), "side");
+      if (!narrow) text([{ t: L.net, c: null }], { x: P.net[0], y: P.net[1] + small * 0.62 + 34 * u, size: Math.max(14, 20 * u), weight: t >= 11 && t < 13 ? 700 : 400, align: "center", maxW: W * 0.26, alpha: fade(v, 11), color: t >= 11 && t < 13 ? BLUE : INK });
+      else text([{ t: L.net, c: null }], { x: P.net[0] + small + 18, y: P.net[1] + 6, size: 14, maxW: W * 0.5, alpha: fade(v, 11) });
+      // Tasks keep arriving: one from the NGO to the network, then through the audit to both results and home.
+      const flow = [[P.ngo, P.net, 8.2, 2.6], [P.help, P.net, 11, 2.6], [P.net, P.audit, 13, 2.2], [P.audit, P.info, 13, 2.4], [P.audit, P.reuse, 14, 2.4], [P.info, P.own, 15, 2.4], [P.reuse, P.own, 15.6, 2.4]];
+      flow.forEach(([p, q, from, each]) => { if (t < from) return; const k = ease(((t - from) % each) / each); dot(p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k, BLUE, u); });
+      const times = [8.2, 11, 17, 21], y = H * (narrow ? 0.86 : 0.82);
+      caption(v, v.s.ps, times, y, 0.94);
     },
     connect(v) {
       const y = text(v.s.h, { x: v.W / 2, y: v.H * 0.44, size: 72 * v.u, weight: 700, align: "center", maxW: v.W * 0.9, shown: typed(v, 0.1, 24) });
@@ -382,7 +486,14 @@
         c.globalAlpha = rest || idx === scenes.length - 1 ? 1 : clamp((s.secs - t) / 0.3);
         draw[s.kind](v);
       }
-      c.globalAlpha = 1; c.fillStyle = INK; c.fillRect(0, H - 2, W * (F.t / total), 2);
+      c.globalAlpha = 1;
+      // The hackathon line stays still on screen from 0:00 to 0:20, never typed. Same words as the page.
+      if (F.t < 20 && scenes[0].ps[1]) {
+        const small = W < 700, size = Math.max(13, 17 * v.u), by = H - (small ? 46 : 22);
+        c.fillStyle = PAPER; c.fillRect(0, by - size * 1.2, W, H - by + size * 1.2);
+        text(scenes[0].ps[1], { x: W / 2, y: by, size, align: "center", maxW: W * 0.92, color: MUTED });
+      }
+      c.fillStyle = INK; c.fillRect(0, H - 2, W * (F.t / total), 2);
     }
     requestAnimationFrame(frame);
   }
@@ -394,6 +505,21 @@
   btnBack.addEventListener("click", () => go(-1));
   btnNext.addEventListener("click", () => go(1));
   btnToggle.addEventListener("click", () => { if (F.t >= total) F.t = 0; F.playing = !F.playing; F.held = false; label(); });
+  // Voice: browsers allow sound only after a click, so the visitor turns it on. The track follows the film's clock.
+  const btnSound = bar.querySelector('[data-film="sound"]');
+  let voice = null;
+  const syncVoice = () => {
+    if (!voice) return;
+    if (F.playing) { if (Math.abs(voice.currentTime - F.t) > 0.35) voice.currentTime = F.t; if (voice.paused) voice.play().catch(() => {}); }
+    else if (!voice.paused) voice.pause();
+  };
+  if (btnSound && btnSound.dataset.src) btnSound.addEventListener("click", () => {
+    if (voice) { voice.pause(); voice = null; btnSound.textContent = words.sound_on; return; }
+    voice = new Audio(btnSound.dataset.src); voice.preload = "auto";
+    if (!F.playing && F.t < total) { F.playing = true; label(); }
+    btnSound.textContent = words.sound_off; syncVoice();
+  });
+  setInterval(syncVoice, 500);
   label();
   requestAnimationFrame(frame);
 })();

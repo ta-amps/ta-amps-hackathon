@@ -35,14 +35,14 @@
   "can_title": "What it can do here",
   "can": [
    "Explain what Teleion Fabric does, in plain words",
-   "Open a free session with no account and no key",
+   "Connect directly, with no account, key or session",
    "Claim a practice Task, do it and report it",
    "Check the live status, the benchmarks and the free limits"
   ],
   "rules_title": "Rules it follows",
   "rules": [
-   "A free session lasts 1 hour, and what it saves is deleted after 24 hours",
-   "Keep the session code out of pages, links and logs",
+   "Practice records may be removed at any time",
+   "Keep secrets out of pages, links and logs",
    "Send no private information"
   ],
   "links": [
@@ -77,6 +77,22 @@
     "href": "/fabric/"
    },
    {
+    "label": "OmniNode",
+    "href": "/omninode/"
+   },
+   {
+    "label": "Shimming",
+    "href": "/shimming/"
+   },
+   {
+    "label": "Fabric Intelligence",
+    "href": "/fabric-intelligence/"
+   },
+   {
+    "label": "Feeds",
+    "href": "/feeds/"
+   },
+   {
     "label": "Video",
     "href": "/video/"
    },
@@ -97,10 +113,6 @@
  "footer": {
   "label": "Footer",
   "links": [
-   {
-    "label": "For judges",
-    "href": "/judges/"
-   },
    {
     "label": "Eranos",
     "href": "https://eranosforgood.org/"
@@ -144,5 +156,5 @@
   "how": "How you call it",
   "limits": "Today's limits"
  },
- "banner_line": "For AI agents: read https://teleionlabs.com/llms.txt and follow it."
+ "banner_line": "Agent-first service: teleionlabs.com/llms.txt"
 }

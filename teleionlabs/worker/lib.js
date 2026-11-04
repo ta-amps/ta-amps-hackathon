@@ -19,7 +19,7 @@ const isTextFile = (path) => path.endsWith(".txt");
 // Retired pages: their job moved to the home film and the visitor's agent.
 const RETIRED = new Set(["/start", "/story", "/network"]);
 const OVERVIEW_PREFIXES = new Set([
-  "how-it-works", "source", "library", "feeds", "scenarios",
+  "judges", "how-it-works", "source", "library", "feeds", "scenarios",
   "models", "use-cases", "learning", "deploy", "studio", "accessibility",
   "decks", "storyboards", "evidence", "contribute", "hub-3d", "downloads",
 ]);
@@ -177,7 +177,8 @@ export async function handle(request, env, ctx) {
   const method = request.method.toUpperCase();
   const safe = method === "GET" || method === "HEAD";
 
-  if (url.hostname !== APEX || url.protocol !== "https:" || url.port !== "") {
+  const versionPreview = /^[0-9a-f]{8}-teleionlabs\.ta-amps\.workers\.dev$/.test(url.hostname);
+  if (!versionPreview && (url.hostname !== APEX || url.protocol !== "https:" || url.port !== "")) {
     const target = new URL(url.toString());
     target.protocol = "https:";
     target.hostname = APEX;
@@ -207,7 +208,8 @@ export async function handle(request, env, ctx) {
 
   // Legacy overview paths move 301/308 to agora.eranosforgood.org (T9).
   const firstSeg = url.pathname.split("/").filter(Boolean)[0] || "";
-  if (OVERVIEW_PREFIXES.has(firstSeg)) {
+  // /feeds/ itself is our own page now; the Agora feed pages below it keep their redirect.
+  if (OVERVIEW_PREFIXES.has(firstSeg) && url.pathname !== "/feeds" && url.pathname !== "/feeds/") {
     const path = url.pathname.split("/").filter(Boolean).length === 1 && !url.pathname.endsWith("/")
       ? `${url.pathname}/`
       : url.pathname;
@@ -260,6 +262,13 @@ export async function handle(request, env, ctx) {
   if (url.pathname.startsWith("/media/") && mediaOk) {
     if (url.pathname.endsWith(".mp4")) extra["Content-Type"] = "video/mp4";
     else if (url.pathname.endsWith(".vtt")) extra["Content-Type"] = "text/vtt; charset=utf-8";
+  }
+  if (url.pathname.startsWith("/video-gallery/") && url.pathname.endsWith(".mp4") && mediaOk) extra["Content-Type"] = "video/mp4";
+  // The owner's review gallery stays out of search. The World film brings its own inline styles and script, so only that folder relaxes those two lines.
+  if (url.pathname.startsWith("/video-gallery")) extra["X-Robots-Tag"] = "noindex";
+  if (url.pathname === "/video-gallery/") extra["Content-Security-Policy"] = SECURITY_HEADERS["Content-Security-Policy"].replace(`style-src '${TEXT_CSS_HASH}'`, `style-src 'self' '${TEXT_CSS_HASH}'`);
+  if (url.pathname.startsWith("/video-gallery/world/") || url.pathname.startsWith("/video-gallery/claude-design/") || url.pathname.startsWith("/video-gallery/iso/") || url.pathname.startsWith("/video-gallery/mix/")) {
+    extra["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'";
   }
   if ((asset.headers.get("Content-Type") || "").startsWith("text/html")) {
     const cc = extra["Cache-Control"] || asset.headers.get("Cache-Control") || "public, max-age=0, must-revalidate";

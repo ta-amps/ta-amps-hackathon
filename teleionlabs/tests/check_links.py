@@ -11,6 +11,7 @@ Usage: python3 tests/check_links.py [DIST]. Exit 1 on any broken link. Stdlib on
 """
 from __future__ import annotations
 
+import os
 import re
 import sys
 import urllib.error
@@ -18,6 +19,10 @@ import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
+
+# Set MEDIA_BASE=https://teleionlabs.com in a clean checkout, which holds no video or voice files.
+MEDIA_BASE = os.environ.get("MEDIA_BASE", "").rstrip("/")
+MEDIA_SUFFIXES = (".mp4", ".mp3", ".jpg", ".webm")
 
 HERE = Path(__file__).resolve().parent.parent
 DIST = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "dist"
@@ -75,6 +80,8 @@ def fetch(url: str) -> int:
 def main() -> int:
     pages = {}
     for p in sorted(DIST.rglob("*.html")):
+        if "video-gallery" in p.parts and ("world" in p.parts or "claude-design" in p.parts or "iso" in p.parts or "3d-simple" in p.parts or "mix" in p.parts):
+            continue  # A film built elsewhere, with its own check.
         parser = Links()
         parser.feed(p.read_text(encoding="utf-8"))
         pages[p] = parser
@@ -98,6 +105,10 @@ def main() -> int:
                 continue
             path = parts.path or "/" + rel
             f = target_file(path) if parts.path else p
+            if not f.is_file() and MEDIA_BASE and path.endswith(MEDIA_SUFFIXES):
+                # Video and voice files are not in git (see MEDIA.md): the live copy must answer instead.
+                external.setdefault(MEDIA_BASE + path, set()).add(rel)
+                continue
             if not f.is_file():
                 bad.append(f"{rel}: {href} -> missing {f.relative_to(DIST) if f.is_relative_to(DIST) else f}")
                 continue

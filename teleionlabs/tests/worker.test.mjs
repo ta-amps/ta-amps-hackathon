@@ -157,7 +157,7 @@ test("/products and /tessera redirect 301 to /fabric/, /video and /film redirect
     assert.equal(res.status, 301, from);
     assert.equal(res.headers.get("Location"), to, from);
   }
-  for (const path of ["/models/"]) {
+  for (const path of ["/models/", "/judges/"]) {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     assert.equal(res.status, 301, path);
     assert.equal(res.headers.get("Location"), `https://agora.eranosforgood.org${path}`, path);
@@ -268,7 +268,7 @@ test("every page is plain text: first line is for agents, no stylesheet file, no
   for (const [path, twin] of [["/", "/index.txt"], ["/free/", "/free.txt"], ["/docs/", "/docs.txt"]]) {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     const body = await res.text();
-    assert.match(body, /<body>\s*<p>For AI agents: read/);
+    assert.match(body, /<body>\s*<p>Agent-first service: teleionlabs\.com\/llms\.txt<\/p>/);
     assert.doesNotMatch(body, /rel="stylesheet"|\.woff2|class="/);
     const text = await handle(new Request(`https://teleionlabs.com${twin}`), { ASSETS: assets() }, ctx);
     assert.equal(text.status, 200);
@@ -283,7 +283,7 @@ test("the home film is exactly 180 seconds and its words are the page's text", a
   const secs = [...body.matchAll(/data-seconds="(\d+)"/g)].reduce((a, m) => a + Number(m[1]), 0);
   assert.equal(secs, 180);
   assert.match(body, /<canvas id="film"[^>]* hidden/);
-  assert.match(body, /Connect your agents\./);
+  assert.match(body, /Connect your agents today\./);
 });
 
 test("retired pages redirect home", async () => {
@@ -313,7 +313,7 @@ test("a link page reads without acting, posts one answer, and sends the token on
   assert.equal(calls[0].method, "GET");
   assert.ok(!calls[0].url.includes(token));
   const post = await handle(new Request(`https://teleionlabs.com/l/${token}`, { method: "POST", body: new URLSearchParams({ answer: "confirm" }) }), { ASSETS: assets(), TESSERA }, ctx);
-  assert.match(await post.text(), /Confirmed/);
+  assert.match(await post.text(), /Your agent has been told/);
   assert.deepEqual(calls[1].body, { answer: "confirm" });
   assert.equal(calls[1].token, token);
   const bad = await handle(new Request("https://teleionlabs.com/l/nope"), { ASSETS: assets(), TESSERA }, ctx);
@@ -338,4 +338,15 @@ test("links never touch once styling is gone", async () => {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     assert.doesNotMatch(await res.text(), /<\/a><a\b/, path);
   }
+});
+
+test("/feeds/ is our own page; Agora feed pages below it keep their redirect", async () => {
+  const ctx = { waitUntil() {} };
+  const own = await handle(new Request("https://teleionlabs.com/feeds/"), { ASSETS: assets() }, ctx);
+  assert.equal(own.status, 200);
+  const bare = await handle(new Request("https://teleionlabs.com/feeds"), { ASSETS: assets() }, ctx);
+  assert.ok(![301, 308].includes(bare.status) || !String(bare.headers.get("location")).includes("agora"));
+  const below = await handle(new Request("https://teleionlabs.com/feeds/agent-harnesses/"), { ASSETS: assets() }, ctx);
+  assert.equal(below.status, 301);
+  assert.equal(below.headers.get("location"), "https://agora.eranosforgood.org/feeds/agent-harnesses/");
 });

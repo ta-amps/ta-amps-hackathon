@@ -1,0 +1,152 @@
+WEBVTT
+
+00:00:00.250 --> 00:00:04.610
+Fabric Intelligence is custom OmniNodes, powered by Meta models.
+
+00:00:04.871 --> 00:00:08.244
+They do deciding, shimming, and search and retrieval.
+
+00:00:08.505 --> 00:00:12.530
+Here's what runs today, what we've measured, and what we're still trying.
+
+00:00:12.560 --> 00:00:15.549
+One decider runs on our Eranos workers.
+
+00:00:15.579 --> 00:00:20.380
+An hourly job reads recorded results, and sets the mix of models and personas.
+
+00:00:20.733 --> 00:00:23.525
+Its choices are Muse Spark and Muse Wonder.
+
+00:00:23.555 --> 00:00:28.160
+We set a goal and a reward, and it changes its own mix from what it measures.
+
+00:00:28.190 --> 00:00:29.785
+We also fine-tune.
+
+00:00:29.815 --> 00:00:33.061
+Muse Glimmer thirty B is Meta's open model.
+
+00:00:33.252 --> 00:00:36.648
+We train a small add-on for it, called an adapter.
+
+00:00:37.002 --> 00:00:40.932
+No answers from the Meta API went into its training data.
+
+00:00:41.124 --> 00:00:43.265
+One adapter learns four jobs:
+
+00:00:43.295 --> 00:00:48.340
+splitting requests, reviewing work, search and retrieval, and tool calls.
+
+00:00:48.370 --> 00:00:50.977
+Here are the results on held-out tests.
+
+00:00:51.331 --> 00:00:56.515
+For splitting requests, the score rose from forty-five percent to about ninety-eight.
+
+00:00:56.869 --> 00:01:01.495
+For review, it accepted one flawed report out of one hundred twenty-six.
+
+00:01:01.687 --> 00:01:06.750
+These tests were also used to choose the final version, so they aren't a fresh test.
+
+00:01:06.780 --> 00:01:10.617
+For search and retrieval, it picks one Task Object from a list.
+
+00:01:10.878 --> 00:01:15.703
+When a match exists, its top pick was right about eighty-nine percent of the time.
+
+00:01:15.963 --> 00:01:19.718
+Untuned, counted generously, the model got eighty-eight.
+
+00:01:19.748 --> 00:01:22.134
+So tuning mainly fixed its format.
+
+00:01:22.325 --> 00:01:26.610
+We also taught it to say that nothing fits, and that cost some recall.
+
+00:01:26.640 --> 00:01:30.338
+We also tested whether fine-tuning could replace a shim.
+
+00:01:30.785 --> 00:01:33.425
+In an earlier test of one hundred twenty cases,
+
+00:01:33.455 --> 00:01:38.326
+a separate adapter alone, with no added notes, scored sixty-two percent.
+
+00:01:38.459 --> 00:01:43.399
+The untuned model with a shim of two hundred twenty-two tokens scored twenty-nine.
+
+00:01:43.962 --> 00:01:46.707
+Most of that gain came from splitting requests.
+
+00:01:46.737 --> 00:01:49.760
+On recall alone, the difference could be chance.
+
+00:01:49.790 --> 00:01:52.850
+Our newest model decides how to handle each request:
+
+00:01:53.041 --> 00:01:58.573
+with code, with a model, with both, by reuse, or not at all, and whether to split it.
+
+00:01:58.834 --> 00:01:59.791
+It's trained.
+
+00:01:59.821 --> 00:02:04.040
+But its test on real work isn't scored yet, so we show no number.
+
+00:02:04.070 --> 00:02:08.127
+These fine-tuned models don't carry routine live work today.
+
+00:02:08.157 --> 00:02:09.556
+Our rule is simple.
+
+00:02:09.689 --> 00:02:13.573
+A fine-tuned model must beat the default on held-out tests.
+
+00:02:13.706 --> 00:02:16.325
+It starts on a small share of live work.
+
+00:02:16.400 --> 00:02:18.716
+And it switches back if results drop.
+
+00:02:19.279 --> 00:02:22.680
+A checker never shares a fine-tune with the maker it checks.
+
+00:02:22.710 --> 00:02:25.665
+The newest idea is editing weights directly.
+
+00:02:25.856 --> 00:02:29.566
+Researchers at MIT call it Weight-Space Programming.
+
+00:02:29.757 --> 00:02:33.744
+A capable model reads a network's weights, runs a few test passes,
+
+00:02:33.774 --> 00:02:36.056
+and edits them, with no training loop.
+
+00:02:36.247 --> 00:02:39.875
+We're setting up a test based on their method, on Muse Glimmer,
+
+00:02:39.905 --> 00:02:42.662
+with test problems the editor will never see.
+
+00:02:42.854 --> 00:02:44.333
+We have no result yet.
+
+00:02:44.363 --> 00:02:46.726
+No edited weights run in production.
+
+00:02:47.080 --> 00:02:49.330
+Whatever we find, we'll show it.
+
+00:02:49.360 --> 00:02:52.105
+Our live policies learn from recorded results.
+
+00:02:52.135 --> 00:02:54.742
+Our fine-tuned models are still in testing.
+
+00:02:54.933 --> 00:02:58.155
+Connect your agents at teleionlabs.com.
+

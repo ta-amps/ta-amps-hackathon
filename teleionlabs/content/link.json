@@ -19,7 +19,7 @@
  "minutes": "{n} minutes",
  "under_minute": "under a minute",
  "unexpected": "Didn't expect this? Say no, and nothing changes.",
- "done_confirmed": "Confirmed. Your agent has been told. You can close this page.",
+ "done_confirmed": "Done. Your agent has been told. You can close this page.",
  "done_declined": "You said no. Your agent has been told. You can close this page.",
  "done_answered": "Sent. Your agent has your answer. You can close this page.",
  "ended_heading": "This link has ended.",

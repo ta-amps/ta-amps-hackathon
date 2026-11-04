@@ -1,0 +1,128 @@
+{
+ "kind": "task_object",
+ "id": "teleion.instructions/page.shim",
+ "version": 1,
+ "updated": "2026-11-03",
+ "route": "/shimming/",
+ "output": "shimming/index.html",
+ "title": "Shimming explained · Teleion Labs",
+ "description": "A film and full text on the model shim: what it does, a real run on the live preview, and how far it reaches today.",
+ "sources": {
+  "reach": "Live /api/preview, November 3, 2026; notes/work-2026-11-03/deep-films/real/shim-probe.json",
+  "earlier": "notes/COORDINATION-2026-10-31.md"
+ },
+ "blocks": [
+  {
+   "type": "explainer",
+   "media": "/media/shim-explained-20261103.mp4",
+   "captions": "/media/shim-explained-20261103.vtt",
+   "label": "Shimming explained, a film with voice and captions",
+   "note": "The film starts with the sound off. Use its controls to turn the sound on. Scenes marked Animation are drawings. Scenes marked Real come from the live service and recorded runs.",
+   "download": "Download the film (MP4)",
+   "captions_download": "English captions (VTT)"
+  },
+  {
+   "type": "page_head",
+   "eyebrow": "Fabric Intelligence",
+   "title": "Shimming",
+   "lead": "A shim sits between your agent and its model. It's built to give cheap but valuable direction, or a direct response with a reusable component. Sometimes a good answer already exists."
+  },
+  {
+   "type": "prose",
+   "id": "how",
+   "heading": "How it works",
+   "paragraphs": [
+    "A request arrives. Before any model runs, the shim checks its saved rules. Today, in our checks, the rules matched by keyword or by a simple word list. The shim is also built to match the meaning, with a small classifier; we did not see that fire in these checks. Then one of three things happens: a direct response, where no model is called; direction, where a short note is added and then the model runs; or no match, where the request passes through unchanged."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "try",
+   "heading": "Try the live preview",
+   "paragraphs": [
+    "The preview needs no key, and it calls no model. It shows what the built-in rules would add.",
+    "`curl -s https://shim.teleionlabs.com/api/preview -H 'Content-Type: application/json' -d '{\"prompt\":\"What is a Task Object in Teleion Fabric?\"}' | jq '{responded_directly, reasons: .matches[0].reasons}'`"
+   ]
+  },
+  {
+   "type": "table",
+   "id": "reach",
+   "heading": "How far it reaches today",
+   "columns": [
+    "Prompt",
+    "What happened"
+   ],
+   "rows": [
+    [
+     "What is a Task Object in Teleion Fabric?",
+     "Direct answer, matched by keyword"
+    ],
+    [
+     "Write a flyer for our nonprofit food bank's spring drive.",
+     "Direction: a note of 702 characters, matched by the word list"
+    ],
+    [
+     "Set up a weekly grant research report for my NGO.",
+     "Direction: the same note"
+    ],
+    [
+     "How should my agent claim a Task?",
+     "Passed through"
+    ],
+    [
+     "Find me a recent open source skill pack for motion graphics.",
+     "Passed through"
+    ],
+    [
+     "Which model should I use to label GitHub repositories cheaply?",
+     "Passed through"
+    ],
+    [
+     "Fix this Python bug: list index out of range in my loop.",
+     "Passed through"
+    ],
+    [
+     "Summarize what changed in tenant deposit laws this year.",
+     "Passed through"
+    ],
+    [
+     "How do I split a long job into small Tasks?",
+     "Passed through"
+    ]
+   ],
+   "notes": [
+    "Live public preview, November 3, 2026. Ten prompts written by us, not a random sample; nine are listed here, and the tenth, on long jobs, also passed through. Three matched and one got a direct answer. An earlier check on November 2 matched 1 of 6, with no direct answers. \"Flyer for a food bank\", without the word nonprofit, matched nothing. So today the shim knows a small number of things. Teaching it more is the work ahead."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "cost",
+   "heading": "Direction isn't free",
+   "paragraphs": [
+    "A note adds tokens to the request. So a shim must earn its place, with notes that are short, and only when they help. We haven't measured savings from these notes yet. The note above says that crisis work stays with people, and that a different reviewer checks the work; it also covers survivor interviews, eligibility decisions and outbound sends. Sending a question on to a model uses your own model key."
+   ]
+  },
+  {
+   "type": "links",
+   "id": "more",
+   "heading": "Keep reading",
+   "items": [
+    {
+     "label": "Fabric Intelligence",
+     "href": "/fabric-intelligence/",
+     "text": "Deciding, shimming, search and retrieval, and what we are still trying."
+    },
+    {
+     "label": "OmniNode",
+     "href": "/omninode/",
+     "text": "One node design, and six recorded runs."
+    },
+    {
+     "label": "Benchmarks",
+     "href": "/benchmarks/",
+     "text": "What we measured, with its conditions."
+    }
+   ]
+  }
+ ]
+}

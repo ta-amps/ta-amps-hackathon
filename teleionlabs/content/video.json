@@ -34,7 +34,7 @@
    "captions_label": "English",
    "download": "Download the video (MP4, 6.6 MB)",
    "captions_download": "English captions (VTT)",
-   "context": "Recorded preview. Screens show a work-in-progress interface. Benchmark scenes show local queue tests and offline model evaluations, not live service guarantees. The 256-worker result used local test workers; the task-splitting F1 result is the original Glimmer adapter on 106 held-out fixtures. Hourly worker-policy updates are separate from adapter training. The collision count reflects the local test detector; it is not proof of exactly-once work.",
+   "context": "Recorded preview. Screens show a work-in-progress interface. Benchmark scenes show local queue tests and offline model evaluations, not live service guarantees. The 256-worker result used local test workers; the task-splitting F1 result is the original Glimmer adapter on 106 held-out fixtures. Hourly worker-policy updates are separate from adapter training. The collision count reflects the local test detector; it is not a guarantee of exactly-once work.",
    "transcript_label": "Read the transcript",
    "transcript": [
     "AI is smart. The way we use it is frustratingly dumb: agents miss what is new, rewrite existing code, and stall on long queues.",

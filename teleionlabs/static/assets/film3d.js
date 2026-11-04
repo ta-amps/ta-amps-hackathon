@@ -306,7 +306,7 @@ export function create({ target, scenes, words, api }) {
   const sceneNamed = (kind) => scenes.find((s) => s.kind === kind) || { secs: 1, steps: [] };
   const paced = (s, start) => (s.secs - start - 0.6) / Math.max(1, s.steps.length);
   const stepName = (st) => st.map((r) => r.t).join("").trim().split(":")[0];
-  const STATION_OF = [[/feed/i, "feeds"], [/task objects/i, "store"], [/shim/i, "shim"], [/durable tasks/i, "queue"], [/custom|glimmer/i, "glimmer"], [/tuning/i, "tuning"]];
+  const STATION_OF = [[/feed/i, "feeds"], [/task objects/i, "store"], [/shim|intelligence/i, "shim"], [/durable tasks/i, "queue"], [/custom|glimmer/i, "glimmer"], [/tuning/i, "tuning"]];
   const stationOf = (st) => (STATION_OF.find(([re]) => re.test(stepName(st))) || [null, "overview"])[1];
   const partsScene = sceneNamed("parts"), omniScene = sceneNamed("omninode");
   const omniStart = 3.6, omniEach = paced(omniScene, omniStart), partsStart = 2, partsEach = paced(partsScene, partsStart);
@@ -619,7 +619,7 @@ export function create({ target, scenes, words, api }) {
     if (kind === "queue") return pick(steps, [0, 1.4, 4.2, 6.6, 9.2]);
     if (kind === "workers") return pick(ps, [0.2, 2]);
     if (kind === "reuse") return pick(ps, [5]);
-    if (kind === "eranos") return pick(ps, [3, 8]);
+    if (kind === "eranos") return pick(ps, [8.2, 11, 17, 21]);
     return null;
   }
 

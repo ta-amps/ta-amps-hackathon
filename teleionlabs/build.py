@@ -33,19 +33,19 @@ WORKER_WORDS = HERE / "worker" / "banned.generated.js"
 WORKER_MEDIA = HERE / "worker" / "media.generated.js"
 WORKER_TEXT = HERE / "worker" / "text.generated.js"
 # The whole design of a text page (owner, Nov 2: text pages and a canvas home, nothing more). Light only (rule 13).
-TEXT_CSS = ("html{color-scheme:only light;background:#F5F2EA;color:#11161F;overflow-x:clip;"
+TEXT_CSS = ("body>p:first-child{white-space:nowrap;font-size:min(1em,3.2vw)}html{color-scheme:only light;background:#F5F2EA;color:#11161F;overflow-x:clip;"
             "font:16px/1.6 ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}"
             "body{max-width:72ch;margin:auto;padding:1rem;overflow-wrap:anywhere}a{color:#24519B}a:hover{color:#11161F}"
             "h1,h2,h3{font-size:1em;margin:2em 0 .4em}table{border-collapse:collapse;display:block;overflow-x:auto}"
             "th,td{padding:0 2ch .4em 0;text-align:left;vertical-align:top}pre{white-space:pre-wrap;background:#FFFDF8;padding:.5em}figure{margin:0}"
             "video{width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
             "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em}footer a,nav a{margin-right:2ch;display:inline-block}"
-            "canvas{display:block;position:relative;left:50%;width:100vw;height:calc(100svh - 12.5rem);min-height:320px;margin-left:-50vw}"
-            "#film-controls{text-align:center}#film-controls button{margin:.25em}"
-            "@media(max-width:600px){canvas{height:calc(100svh - 17rem)}}")
-KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc)$")
+            "canvas{display:block;position:relative;left:50%;width:100vw;height:calc(100svh - 8rem);min-height:320px;margin-left:-50vw}"
+            "@media(max-width:700px){canvas{height:calc(100svh - 19rem)}}#film-controls{position:relative;z-index:2;box-sizing:border-box;min-height:5rem;margin:-5rem calc(50% - 50vw) 0;padding:.75rem 1rem;text-align:center;background:#F5F2EA;opacity:0;transition:opacity .2s;animation:film-hint 7s}#film-controls:hover,#film-controls:focus-within{opacity:1}@keyframes film-hint{0%,80%{opacity:1}100%{opacity:0}}@media(hover:none),(prefers-reduced-motion:reduce){#film-controls{opacity:1;animation:none;margin:0 calc(50% - 50vw)}}#film-controls button{margin:.25em}#film-controls a{white-space:nowrap}"
+            "@media(max-width:600px){canvas{height:calc(100svh - 19rem)}}")
+KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc|src)$")
 
-PAGES = ["home", "judges", "experience", "fabric", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
+PAGES = ["home", "experience", "fabric", "omninode", "shim", "intelligence", "feeds", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
 REQUIRED = ["site", "llms", "link", *PAGES]
 
 
@@ -233,7 +233,7 @@ class Renderer:
             steps = "".join(f"<li>{marked(p, m)}</li>" for p in s.get("steps", []))
             steps = f"<ul>{steps}</ul>" if steps else ""
             secs.append(f'<section data-scene="{esc(s["kind"])}" data-seconds="{int(s["seconds"])}"><h2>{marked(req(s, "heading", where), m)}</h2>{ps}{steps}</section>')
-        buttons = "".join(f'<button type="button" data-film="{k}">{esc(c[k])}</button>' for k in ("back", "pause", "next"))
+        buttons = "".join(f'<button type="button" data-film="{k}">{esc(c[k])}</button>' for k in ("back", "pause", "next")) + f'<button type="button" data-film="sound" data-src="{esc(b.get("audio", ""))}">{esc(c["sound_on"])}</button>'
         words = {**c, **{f"live_{k}": v for k, v in live.items()}, "labels": req(b, "labels", where)}
         if b.get("world"):
             words["world"] = b["world"]
@@ -530,6 +530,22 @@ class Renderer:
             f'<p class="video-download"><a href="{media}" download>{esc(b["download"])}</a> · '
             f'<a href="{captions}">{esc(req(b, "captions_download", where))}</a></p>'
             f'<details class="video-transcript"><summary>{esc(req(b, "transcript_label", where))}</summary>{transcript}</details></div>'
+        )
+
+    def b_explainer(self, b, where):
+        # An explainer film at the top of its page: plays on arrival with the sound off, as browsers require; the words are in the text below it.
+        media = esc(req(b, "media", where))
+        captions = esc(req(b, "captions", where))
+        return (
+            '<div class="wrap video-body"><figure class="video-player">'
+            f'<video controls autoplay muted playsinline preload="metadata" width="1920" height="1080" '
+            f'aria-label="{esc(req(b, "label", where))}">'
+            f'<source src="{media}" type="video/mp4">'
+            f'<track kind="captions" src="{captions}" srclang="en" label="English">'
+            f'<a href="{media}">{esc(req(b, "download", where))}</a></video>'
+            f'<figcaption>{self.inline(req(b, "note", where))}</figcaption></figure>'
+            f'<p class="video-download"><a href="{media}" download>{esc(b["download"])}</a> · '
+            f'<a href="{captions}">{esc(req(b, "captions_download", where))}</a></p></div>'
         )
 
     def b_band(self, b, where):
@@ -980,7 +996,7 @@ def write_worker_media() -> None:
     media_dir = STATIC / "media"
     sizes = {}
     if media_dir.is_dir():
-        for mp4 in sorted(media_dir.glob("*.mp4")):
+        for mp4 in sorted([*media_dir.glob("*.mp4"), *media_dir.glob("*.mp3")]):
             sizes[f"/media/{mp4.name}"] = mp4.stat().st_size
     entries = ",\n  ".join(f"{json.dumps(k)}: {v}" for k, v in sizes.items())
     WORKER_MEDIA.write_text(

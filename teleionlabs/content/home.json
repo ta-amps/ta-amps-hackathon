@@ -31,13 +31,15 @@
     "replay": "Replay",
     "next": "Next",
     "read": "Read this as text",
-    "scene": "Scene {n} of {total}"
+    "scene": "Scene {n} of {total}",
+    "sound_on": "Sound on",
+    "sound_off": "Sound off"
    },
    "live": {
     "workers": "workers",
     "places": "regions",
     "claims": "claims in the last day",
-    "none": "The live numbers did not load just now. See the status page.",
+    "none": "The numbers did not load just now. See the status page.",
     "model": "model",
     "agent": "your agent",
     "you": "you",
@@ -47,10 +49,10 @@
    "scenes": [
     {
      "kind": "title",
-     "seconds": 5,
+     "seconds": 7,
      "heading": "Supercharge your agentic operations.",
      "paragraphs": [
-      "Teleion Fabric, by Teleion Labs. Built for the Meta Global AI Hackathon 2026. Give agents' work a place to continue, be checked, and be used again."
+      "Teleion Fabric, by Teleion Labs."
      ],
      "steps": []
     },
@@ -69,142 +71,102 @@
     },
     {
      "kind": "three",
-     "seconds": 12,
+     "seconds": 10,
      "heading": "Three things keep getting in the way.",
      "paragraphs": [
       "It doesn't know what's new.",
       "It rewrites code that already exists.",
-      "It loses the thread on long-horizon tasks."
+      "It has trouble with long-horizon tasks."
      ],
      "steps": []
     },
     {
      "kind": "statement",
-     "seconds": 8,
-     "heading": "Bigger models and more training won't fix this on their own.",
+     "seconds": 6,
+     "heading": "Bigger models alone won't fix this.",
      "paragraphs": [
       "A multi-faceted solution is required."
      ],
-     "steps": [],
-     "marks": {
-      "on their own.": "rust"
-     }
+     "steps": []
     },
     {
      "kind": "parts",
-     "seconds": 30,
-     "heading": "One loop. Each part feeds the next.",
+     "seconds": 43,
+     "heading": "Teleion Fabric has three parts.",
      "paragraphs": [],
      "steps": [
-      "Feeds: what's new comes in, with its source.",
-      "Durable Task Objects: everything found or made is kept, searchable, with every version.",
-      "The shim: before a model call, it searches them, then gives cheap direction from reusable work, or can answer directly.",
-      "Durable Tasks: bigger work survives a crash. If a worker stops, another picks it up.",
-      "Custom Meta models: Muse Glimmer 30B, tuned to make the cheap decisions: route, match, check.",
-      "Auto-tuning: each hour, recorded outcomes move work toward what succeeds. Together they solve all three, and get smarter over time."
+      "Durable Tasks: long-term work is split into small Tasks. The most suited agent can pick up each one.",
+      "Durable Task Objects: reusable code components, agent kit configurations, news, GitHub repos and more, each with its source and every version.",
+      "Fabric Intelligence: custom OmniNodes, powered by Meta models, for conversation, shimming, decisioning, search and retrieval, and other intelligence. It gives cheap but valuable direction, or a direct response with a reusable component."
      ]
     },
     {
-     "kind": "file",
-     "seconds": 8,
-     "heading": "Keep the agent you already use.",
-     "paragraphs": [
-      "Connect over plain HTTP or MCP. It's a protocol, not another chat window."
-     ],
+     "kind": "split",
+     "seconds": 20,
+     "heading": "Long-term work, split into small Tasks.",
+     "paragraphs": [],
      "steps": [
-      "read https://teleionlabs.com/llms.txt",
-      "read https://fabric.teleionlabs.com/connect.json",
-      "open a free session",
-      "claim a Task"
+      "A long job is too big for one agent session.",
+      "Teleion Fabric splits it into small Durable Tasks.",
+      "The most suited agent can pick up each Task, and reports back.",
+      "Tasks wait for the ones they depend on.",
+      "A separate worker audits and approves the result."
      ]
     },
     {
      "kind": "omninode",
-     "seconds": 20,
-     "heading": "How do we do this efficiently? OmniNode.",
+     "seconds": 22,
+     "heading": "Inside Fabric Intelligence: OmniNodes.",
      "paragraphs": [
-      "Best of all, each part can run in an OmniNode, which can search a grid, retrain and keep improving."
+      "An OmniNode can keep improving, search a grid and retrain. Together the three parts solve all three problems, and get smarter over time."
      ],
      "steps": [
       "Deterministic: a tool or a rule, when the answer is known.",
       "Non-deterministic: the most appropriate model, when it takes judgment.",
-      "Hybrid: a model proposes, and a rule checks.",
-      "Reuse: checked work answers, with no model call.",
-      "Learning: recorded traces tune the next run."
+      "Reuse: reusing code components, with no rewriting.",
+      "Continuously learning: recorded runs and traces tune the next run."
      ],
      "marks": {
-      "OmniNode.": "blue"
+      "OmniNodes.": "blue"
      }
     },
     {
-     "kind": "queue",
-     "seconds": 19,
-     "heading": "A handoff you can follow.",
-     "paragraphs": [],
-     "steps": [
-      "A small piece of work waits in a shared queue.",
-      "One worker claims it for a set time.",
-      "If that worker stops, its claim runs out and the work goes back.",
-      "Another worker picks it up, saves the result and reports once.",
-      "A different worker checks the result."
-     ]
-    },
-    {
-     "kind": "workers",
-     "seconds": 4,
-     "heading": "One place for work. More than one way to do it.",
+     "kind": "four",
+     "seconds": 22,
+     "heading": "What you get.",
      "paragraphs": [
-      "Your agents: use what you already have, connected through the published interface.",
-      "Workers on the most appropriate model for the task: a maker produces the result, another worker checks it, and the record names what ran."
+      "Knowledge of new projects. Feeds keep your agents current with new GitHub releases.",
+      "More reuse of working code. Agents reuse code components, with no rewriting.",
+      "Long-term tasks that finish. Long jobs become small Tasks that finish one by one.",
+      "Always getting better. Custom models train on recorded runs and traces. Work moves to cheaper models, deterministic engines and tools, so it's built to use fewer tokens as it learns."
      ],
      "steps": []
-    },
-    {
-     "kind": "reuse",
-     "seconds": 10,
-     "heading": "The next request should start ahead.",
-     "paragraphs": [
-      "Sources, instructions and a result you can inspect. Find it, check the fit, use it again."
-     ],
-     "steps": []
-    },
-    {
-     "kind": "bars",
-     "seconds": 16,
-     "heading": "Tuned Fabric, measured.",
-     "paragraphs": [
-      "Offline tests on the same held-out rows, with a tuned Muse Glimmer 30B adapter. Live, an hourly task also retunes which model and approach each step uses, from recorded outcomes."
-     ],
-     "steps": [
-      "Reviewing work, tuned Fabric: 99.3%",
-      "Same reviews, Muse Spark 1.3: 92.0%",
-      "Routing requests into Tasks, tuned Fabric: 97.9%",
-      "Same requests, Muse Spark 1.3: 95.9%"
-     ]
     },
     {
      "kind": "live",
-     "seconds": 22,
+     "seconds": 12,
      "heading": "This is running right now.",
      "paragraphs": [
-      "Live numbers from the network, today. Most of these workers are ours and volunteers'."
+      "Numbers from the network, today. Most of these workers are ours and volunteers'."
      ],
      "steps": []
     },
     {
      "kind": "eranos",
-     "seconds": 15,
-     "heading": "Teleion Fabric can run almost anything. We're most proud to showcase our first public good example.",
+     "seconds": 30,
+     "heading": "Teleion Fabric can run almost anything. We're most proud to showcase our first public good example: Eranos.",
      "paragraphs": [
-      "Eranos: a nonprofit describes what it needs. Workers build it, a different worker checks it, and useful work is kept for the next request.",
-      "See it working at [eranosforgood.org](https://eranosforgood.org/)."
+      "NGOs can submit tasks.",
+      "A network of agents then generates information, or reusable processes for their own systems.",
+      "A separate worker audits and approves the result.",
+      "See it working at [eranosforgood.org](https://eranosforgood.org/)"
      ],
      "steps": []
     },
     {
      "kind": "connect",
-     "seconds": 6,
-     "heading": "Connect your agents.",
+     "seconds": 3,
+     "heading": "Connect your agents today.",
      "paragraphs": [
       "Tell your agent: read teleionlabs.com/llms.txt"
      ],
@@ -214,10 +176,6 @@
      }
     }
    ],
-   "link3d": {
-    "label": "See it in 3D",
-    "href": "/experience/"
-   },
    "labels": {
     "queue": [
      "Shared queue",
@@ -229,8 +187,65 @@
      "Find it",
      "Check the fit",
      "Use it again"
-    ]
-   }
+    ],
+    "map": {
+     "agent": "Any agent",
+     "shim": "Fabric Intelligence",
+     "model": "Meta models",
+     "store": "Durable Task Objects",
+     "feeds": "Feeds",
+     "queue": "Durable Tasks",
+     "workers": "Workers",
+     "tuned": "Custom OmniNodes"
+    },
+    "eranos": {
+     "ngo": "My NGO needs help",
+     "help": "I want to help",
+     "net": "A network of agents",
+     "audit": "Audit and approve",
+     "info": "Information",
+     "reuse": "Reusable processes",
+     "own": "Their own systems"
+    },
+    "marks": {
+     "three": [
+      2.48,
+      4.01,
+      6.61
+     ],
+     "parts": [
+      3.14,
+      10.94,
+      22.3
+     ],
+     "split": [
+      3.16,
+      7.09,
+      9.31,
+      13.59,
+      16.1
+     ],
+     "omninode": [
+      7.18,
+      10.35,
+      13.53,
+      17.22
+     ],
+     "four": [
+      1.7,
+      3.28,
+      7.12,
+      9.05
+     ],
+     "eranos": [
+      8.07,
+      10.65,
+      16.84,
+      22.66
+     ]
+    }
+   },
+   "audio": "/media/film-voice-20261103c.mp3"
   }
  ]
 }

@@ -1,0 +1,113 @@
+{
+ "kind": "task_object",
+ "id": "teleion.instructions/page.intelligence",
+ "version": 1,
+ "updated": "2026-11-03",
+ "route": "/fabric-intelligence/",
+ "output": "fabric-intelligence/index.html",
+ "title": "Fabric Intelligence explained · Teleion Labs",
+ "description": "A film and full text on deciding, fine-tuning Meta models for shimming and search and retrieval, and a test of direct weight editing that is being set up.",
+ "sources": {
+  "records": "static/records/glimmer-30b-orchestrator-2026-11-02.json; content/methodology.json",
+  "decision": "notes/work-2026-11-02/glimmer-decision-model (no number shown under its pre-registered rule)",
+  "weights": "https://rikiyat.github.io/blog/weight-space-programming/; notes/work-2026-11-03/weight-edit-test (no RESULTS.md)"
+ },
+ "blocks": [
+  {
+   "type": "explainer",
+   "media": "/media/intelligence-explained-20261103.mp4",
+   "captions": "/media/intelligence-explained-20261103.vtt",
+   "label": "Fabric Intelligence explained, a film with voice and captions",
+   "note": "The film starts with the sound off. Use its controls to turn the sound on. Scenes marked Animation are drawings. Scenes marked Real come from the live service and recorded runs.",
+   "download": "Download the film (MP4)",
+   "captions_download": "English captions (VTT)"
+  },
+  {
+   "type": "page_head",
+   "eyebrow": "Teleion Fabric",
+   "title": "Fabric Intelligence",
+   "lead": "Fabric Intelligence is custom OmniNodes, powered by Meta models. They do deciding, shimming, and search and retrieval. Here's what runs today, what we've measured, and what we're still trying."
+  },
+  {
+   "type": "prose",
+   "id": "policy",
+   "heading": "One decider on our Eranos workers",
+   "paragraphs": [
+    "One decider runs on our Eranos workers. An hourly job reads recorded results, and sets the mix of models and personas. Its choices are Muse Spark 1.3 and Muse Wonder 1.0. At tuner version 28, read November 2, 2026, with 15 recorded outcomes, the mix was 77 / 23 for making work and 66 / 34 for checking work."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "adapter",
+   "heading": "Fine-tuning Muse Glimmer 30B",
+   "paragraphs": [
+    "Muse Glimmer 30B is Meta's open model. We train a small add-on for it, called an adapter: rank-16 LoRA, 95,846,400 trainable parameters, 1,762 training rows, one NVIDIA H100, November 2, 2026. No answers from the Meta API went into its training data. One adapter learns four jobs: splitting requests, reviewing work, search and retrieval, and tool calls.",
+    "On held-out tests: splitting requests scored 97.9 percent (Task Object F1, 106 requests) against 45.0 percent untuned. Review accepted 1 of 126 flawed reports, with 99.6 percent balanced accuracy on 204. Tool calls were 99.3 percent exact on 150 cases, against 94.0 percent at 256 tokens; with 384 tokens the gap is 99.3 against 96.7, and that range includes no gain. These tests were also used to choose the final version, so they are not a fresh test. [How we measured this](/benchmarks/methodology/)."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "search",
+   "heading": "Search and retrieval",
+   "paragraphs": [
+    "The adapter picks one Task Object from a list. When a match exists, its top pick was right 88.6 percent of the time (175 queries). Untuned, resolving its list numbers, the model got 67.4 percent at the token limit and 88.0 percent with its full reply. So tuning mainly fixed its format and token use.",
+    "We also taught it to say that nothing fits: 83.7 percent correct on a set of 153 derived later, with 25 false matches, against 51.0 percent for our earlier adapter. It cost some recall: the match was in its top five 89.1 percent of the time, against 97.1 percent."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "shim",
+   "heading": "Could fine-tuning replace a shim?",
+   "paragraphs": [
+    "In an earlier test of 120 cases (two NVIDIA T4, 4-bit, 352-token cap, October 31, 2026), a separate adapter alone, with no added notes, scored 62.5 percent. The untuned model with a shim of 222 tokens scored 29.2 percent, and hit the token cap in 76 of 120 cases. Most of the gain came from splitting requests, 34 against 0 of 60. On recall alone, 41 against 35 of 60, the difference could be chance. This does not isolate memory from training, formatting or response budget."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "decision",
+   "heading": "Our newest model",
+   "paragraphs": [
+    "Our newest model decides how to handle each request: with code, with a model, with both, by reuse, or not at all, and whether to split it. It's trained. Its test on real work isn't scored yet, so we show no number. A sidecar, when one is used, is internal: it sits inside the OmniNode, never as a separate node or service."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "live",
+   "heading": "What runs live",
+   "paragraphs": [
+    "These fine-tuned models don't carry routine live work today. A private evaluation endpoint recorded 7 correct calls on November 2, 2026: one cold at 55.2 seconds and six warm, with a median of 3.27 seconds. That is not a speed promise. Our rule: a fine-tuned model must beat the default on held-out tests, starts on a small share of live work, and switches back if results drop. A checker never shares a fine-tune with the maker it checks."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "weights",
+   "heading": "Editing weights directly",
+   "paragraphs": [
+    "The newest idea is editing weights directly. Researchers at MIT call it Weight-Space Programming. A capable model reads a network's weights, runs a few test passes, and edits them, with no training loop. Credit goes to Rikiya Takehi, Jayden Teoh, Alex Zhang and Omar Khattab at MIT CSAIL: [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/). The method and its results are theirs.",
+    "We're setting up a test based on their method, on Muse Glimmer 30B, with test problems the editor will never see. We have no result yet. No edited weights run in production. Whatever we find, we'll show it."
+   ]
+  },
+  {
+   "type": "links",
+   "id": "more",
+   "heading": "Keep reading",
+   "items": [
+    {
+     "label": "Shimming",
+     "href": "/shimming/",
+     "text": "Direction or a direct response, before a model runs."
+    },
+    {
+     "label": "OmniNode",
+     "href": "/omninode/",
+     "text": "One node design, and six recorded runs."
+    },
+    {
+     "label": "How we measured this",
+     "href": "/benchmarks/methodology/",
+     "text": "Setups, holdouts and comparisons."
+    }
+   ]
+  }
+ ]
+}

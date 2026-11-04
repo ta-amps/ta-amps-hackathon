@@ -21,10 +21,10 @@
     "labels": {
      "agent": [
       "Your agent",
-      "Connects over HTTP or MCP"
+      "Connects over HTTPS or MCP"
      ],
      "http": [
-      "HTTP or MCP",
+      "HTTPS or MCP",
       "The published interface, not another chat window"
      ],
      "gate": [

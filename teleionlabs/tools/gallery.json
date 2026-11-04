@@ -1,0 +1,238 @@
+{
+ "ffmpeg": "~/.local/share/aidr-tools/ffmpeg-7.0.2-amd64-static/ffmpeg",
+ "film3d_dist": "~/meta_hacakthon/notes/work-2026-11-02/claude-teleion-deploy/teleionlabs/dist",
+ "title": "Video gallery",
+ "intro": "Every film and cut for review. These are candidates and rough work, not final films. A mix-and-match player and more films arrive here as they finish.",
+ "live_heading": "Films that play in your browser",
+ "live_intro": "These run live in the page, so they take a moment to start.",
+ "live": [
+  {
+   "id": "film-3d-simple",
+   "href": "/video-gallery/3d-simple/",
+   "title": "Simple 3D film, live in the browser",
+   "note": "Rough pass, 3:00 with voice. Teleion Fabric as one bounded section with the three parts lit one at a time, then real Eranos pages on screens. Being improved: an empty moment at 2:27, and labels that collide on phones. Sound with picture hasn't been tested in real time.",
+   "type": "Browser film",
+   "style": "3D",
+   "status": "Rough",
+   "audio": "Voice",
+   "seconds": 180
+  }
+ ],
+ "groups": [
+  {
+   "id": "cuts",
+   "heading": "Full cuts"
+  },
+  {
+   "id": "shots",
+   "heading": "3D shots"
+  },
+  {
+   "id": "older",
+   "heading": "Older, for comparison"
+  }
+ ],
+ "videos": [
+  {
+   "id": "iso-v2-rough",
+   "group": "cuts",
+   "file": "~/meta_hacakthon/notes/work-2026-11-03/gallery-extra/iso-rough.mp4",
+   "title": "Isometric film, first full cut",
+   "note": "3:00 with the new voice and soft music. Your pick so far; a polished version is on the way. This render still shows the hackathon line, now removed from new films.",
+   "type": "Full cut",
+   "style": "Isometric",
+   "status": "Candidate",
+   "audio": "Voice",
+   "poster_at": 50
+  },
+  {
+   "id": "cut-m-v5",
+   "group": "cuts",
+   "file": "claude-real-demo-film/out/cuts/cut-m-minimal-v5.mp4",
+   "title": "Cut M v5",
+   "note": "About 3:00, with voice. Real Eranos pages and a real agent terminal. Rough: a strip of small labels still overlaps the content, and it ends on the older Connect line.",
+   "type": "Full cut",
+   "style": "Real footage",
+   "status": "Rough",
+   "audio": "Voice",
+   "poster_at": 120
+  },
+  {
+   "id": "cut-m-v4",
+   "group": "cuts",
+   "file": "claude-real-demo-film/out/cuts/cut-m-minimal-v4.mp4",
+   "title": "Cut M v4",
+   "note": "About 3:00, with voice. Real Eranos pages and a real agent terminal. Rough: a strip of small labels overlaps the content, and the Eranos example section still cuts away to a terminal.",
+   "poster_at": 120,
+   "type": "Full cut",
+   "style": "Real footage",
+   "status": "Older",
+   "audio": "Voice"
+  },
+  {
+   "id": "cut-m-v3",
+   "group": "cuts",
+   "file": "claude-real-demo-film/out/cuts/cut-m-minimal-v3.mp4",
+   "title": "Cut M v3",
+   "note": "2:57, with voice. Rough. Known problems: the three problems shot is wrong around 0:14, it leaves the Eranos design for about 26 s, and it fails the film check for having no numbers. M v4 fixes these.",
+   "type": "Full cut",
+   "style": "Real footage",
+   "status": "Rough",
+   "audio": "Voice"
+  },
+  {
+   "id": "cut-m-v2",
+   "group": "older",
+   "file": "claude-real-demo-film/out/cuts/cut-m-minimal-v2.mp4",
+   "title": "Cut M v2",
+   "note": "Older script. For comparison only.",
+   "type": "Full cut",
+   "style": "Real footage",
+   "status": "Older",
+   "audio": "Voice"
+  },
+  {
+   "id": "cut-a",
+   "group": "older",
+   "file": "claude-real-demo-film/out/cuts/cut-a-explanation-first.mp4",
+   "title": "Cut A, explanation first",
+   "note": "Older script. For comparison only.",
+   "type": "Full cut",
+   "style": "Real footage",
+   "status": "Older",
+   "audio": "Voice"
+  },
+  {
+   "id": "world-a-min",
+   "group": "older",
+   "file": "~/meta_hacakthon/notes/claude-design-2026-11-02/review/v17/teleion-film-A-minimal-v17.mp4",
+   "title": "Claude Design cut A, Minimal",
+   "note": "Older flat look, now dropped. For comparison only.",
+   "type": "Full cut",
+   "style": "Flat",
+   "status": "Older",
+   "audio": "No voice"
+  },
+  {
+   "id": "hero-dive",
+   "group": "shots",
+   "file": "claude-hero-render/out/hero-dive.mp4",
+   "title": "Ray-traced shot: the dive",
+   "note": "Illustration, not the product.",
+   "poster_at": 3,
+   "type": "Shot",
+   "style": "Ray-traced",
+   "status": "Older",
+   "audio": "No voice"
+  },
+  {
+   "id": "hero-stacks",
+   "group": "shots",
+   "file": "claude-hero-render/out/hero-stacks.mp4",
+   "title": "Ray-traced shot: the stacks",
+   "note": "Illustration, not the product.",
+   "poster_at": 3,
+   "type": "Shot",
+   "style": "Ray-traced",
+   "status": "Older",
+   "audio": "No voice"
+  },
+  {
+   "id": "hero-alive",
+   "group": "shots",
+   "file": "claude-hero-render/out/hero-alive.mp4",
+   "title": "Ray-traced shot: alive",
+   "note": "Illustration, not the product.",
+   "poster_at": 3,
+   "type": "Shot",
+   "style": "Ray-traced",
+   "status": "Older",
+   "audio": "No voice"
+  }
+ ],
+ "extra": [
+  {
+   "id": "blocks-stills",
+   "title": "Ray-traced communication blocks, first stills",
+   "note": "Six still frames, not video yet. Tasks are blue blocks and Task Objects are black. Illustration. Motion is rendering now.",
+   "type": "Stills",
+   "style": "Ray-traced",
+   "status": "Candidate",
+   "audio": "No voice",
+   "open": "/media/gallery-blocks-stills.jpg",
+   "poster": "/media/gallery-blocks-stills.jpg"
+  },
+  {
+   "id": "cube-stills",
+   "title": "Cube fabric: first frames, your idea",
+   "note": "Stills, not video yet. Two queues as pillars, five cube colors, and a different skyline for each Task. The full film is rendering.",
+   "type": "Stills",
+   "style": "Isometric",
+   "status": "Candidate",
+   "audio": "No voice",
+   "open": "/media/gallery-cube-stills.jpg",
+   "poster": "/media/gallery-cube-stills.jpg"
+  },
+  {
+   "id": "cube-versions",
+   "title": "Cube fabric: camera and cube-size versions",
+   "note": "Stills comparing a front view, fine terrain, tall city and sparse large cubes. Full films follow.",
+   "type": "Stills",
+   "style": "Isometric",
+   "status": "Candidate",
+   "audio": "No voice",
+   "open": "/media/gallery-cube-versions.jpg",
+   "poster": "/media/gallery-cube-versions.jpg"
+  }
+ ],
+ "picks": [
+  [
+   "cube-fabric-1-calm",
+   "Your cube fabric, 2:55: Tasks left, fabric centered, Task Objects right, and a shape that changes with each Task. Cursor and highlights on Eranos are coming next."
+  ],
+  [
+   "cut-e-v2",
+   "Real browser footage of Eranos in motion. Its technical clips are the older look; the next version swaps in the cube fabric."
+  ],
+  [
+   "deep-omninode",
+   "The OmniNode tab film. Has six recorded runs where tokens fall from 9,094 to 1,872 as reuse grows, on one repeated job."
+  ],
+  [
+   "deep-intelligence",
+   "The Fabric Intelligence tab film: decisioning, fine-tuning, and weight editing as work in progress."
+  ],
+  [
+   "omninode-grid-24s",
+   "Claude Design's large grid. You said it's okay, and that the middle blocks need a clear meaning."
+  ],
+  [
+   "blocks-reel",
+   "Ray-traced blocks for communications. Could anchor the explainers or a hero moment."
+  ],
+  [
+   "style-tabletop",
+   "A different direction: a physical tabletop. Earlier script; compare the look."
+  ],
+  [
+   "style-papercut",
+   "Layered paper, warm and human. Earlier script; compare the look."
+  ],
+  [
+   "music-el-pads",
+   "The steadiest music under the voice. Is the voice, music level and pronunciation right?"
+  ]
+ ],
+ "site_videos": [
+  "cube-fabric-1-calm",
+  "cut-e-v2",
+  "deep-omninode",
+  "deep-intelligence",
+  "deep-shimming",
+  "deep-feeds",
+  "omninode-grid-24s",
+  "blocks-reel",
+  "style-tabletop",
+  "style-papercut"
+ ]
+}

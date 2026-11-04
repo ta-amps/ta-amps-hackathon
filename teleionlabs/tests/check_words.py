@@ -72,6 +72,7 @@ class Shared:
         self.always = [re.compile(p, re.I) for p in data["always"]["patterns"]]
         self.visible = [re.compile(p, re.I) for p in data["visible_text"]["patterns"]]
         self.visible += [re.compile(p, re.I) for p in data["agent_apps_outside_models_page"]["patterns"]]
+        self.visible += [re.compile(p, re.I) for p in data.get("marketing_voice", {}).get("patterns", [])]
         self.private = set(data["private_names"]["sha256"])
         if not (self.always and self.visible and self.private):
             raise ValueError("the shared list is missing a category")
@@ -234,7 +235,7 @@ def main() -> int:
         raw_html = p.read_text(encoding="utf-8")
         parser.feed(raw_html)
         rel = str(p.relative_to(DIST))
-        allow_pct = rel.startswith("benchmarks/") or rel in ("index.html", "experience/index.html") or rel == "judges/index.html"
+        allow_pct = rel.startswith(("benchmarks/", "video-gallery/")) or rel in ("index.html", "experience/index.html") or rel == "judges/index.html"
         allow_handoff = rel == "story/index.html"
         gate(rel, "\n".join(parser.text + parser.attrs + parser.generated), allow_percent=allow_pct, allow_handoff=allow_handoff)
         # Also verify raw HTML carries zero T7 banned strings (including hrefs and metadata).
@@ -245,7 +246,8 @@ def main() -> int:
             hits.append(f"{rel}: the shim's name appears {shim} times in visible text (at most once, as its address)")
         for t in parser.text + parser.attrs:
             frag = t.replace(mark, "").strip()
-            if frag and frag not in corpus:
+            # The review gallery's words live in tools/gallery.json and its films' own sources. The word gate above still reads them.
+            if frag and frag not in corpus and not rel.startswith("video-gallery/"):
                 hits.append(f"{rel}: text not found in any content Task Object: {frag[:80]!r}")
     for name in AGENT_FILES:
         p = DIST / name

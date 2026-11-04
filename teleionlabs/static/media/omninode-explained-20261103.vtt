@@ -1,0 +1,170 @@
+WEBVTT
+
+00:00:00.250 --> 00:00:04.016
+An OmniNode is one node design, built for many kinds of jobs.
+
+00:00:04.046 --> 00:00:07.605
+It lives in Fabric Intelligence, inside Teleion Fabric.
+
+00:00:07.959 --> 00:00:12.598
+It picks up a Durable Task, and uses Durable Task Objects to do the work.
+
+00:00:12.858 --> 00:00:16.000
+Then a separate worker audits and approves the result.
+
+00:00:16.030 --> 00:00:17.892
+This design has six parts.
+
+00:00:17.922 --> 00:00:18.554
+Tools.
+
+00:00:18.584 --> 00:00:19.204
+Skills.
+
+00:00:19.234 --> 00:00:20.203
+A model.
+
+00:00:20.233 --> 00:00:22.201
+Hooks, such as a spending limit.
+
+00:00:22.334 --> 00:00:23.291
+Working files.
+
+00:00:23.321 --> 00:00:24.488
+And settings.
+
+00:00:24.935 --> 00:00:28.076
+For a new job, you change the parts, not the design.
+
+00:00:28.170 --> 00:00:30.381
+You can place it anywhere in a workflow.
+
+00:00:30.411 --> 00:00:32.738
+At the entry, to sort requests.
+
+00:00:32.930 --> 00:00:34.016
+On a branch.
+
+00:00:34.207 --> 00:00:36.477
+At the end, as one small tool.
+
+00:00:36.669 --> 00:00:38.810
+Beside another node, to audit it.
+
+00:00:38.840 --> 00:00:41.145
+Even inside another OmniNode.
+
+00:00:41.190 --> 00:00:44.342
+OmniNodes also join together, in four ways.
+
+00:00:44.534 --> 00:00:45.688
+One after another.
+
+00:00:45.718 --> 00:00:46.895
+Side by side.
+
+00:00:46.925 --> 00:00:49.020
+A backup, if the first one fails.
+
+00:00:49.050 --> 00:00:52.214
+And a pair, where one works and the other audits.
+
+00:00:52.475 --> 00:00:57.220
+The group is one OmniNode too, so small parts can build large systems.
+
+00:00:57.250 --> 00:00:59.985
+In a run, it tries the simple ways first.
+
+00:01:00.338 --> 00:01:02.272
+Code, when the answer is known.
+
+00:01:02.463 --> 00:01:06.161
+Reuse, when the work is already done and the details haven't changed.
+
+00:01:06.352 --> 00:01:08.599
+A Meta model, when it takes judgment.
+
+00:01:08.953 --> 00:01:12.840
+Then a rule tests the answer against the item's own text.
+
+00:01:12.870 --> 00:01:14.164
+Now, a real one.
+
+00:01:14.194 --> 00:01:18.565
+This OmniNode does feed maintenance, and a feed is simply a type of Task.
+
+00:01:18.919 --> 00:01:24.347
+Every four hours, it searches public GitHub for recently updated skill packs and tools.
+
+00:01:24.608 --> 00:01:29.258
+Muse Spark or Muse Wonder labels the new or changed ones.
+
+00:01:29.704 --> 00:01:34.204
+Once approved, each becomes a Task Object that any agent can find.
+
+00:01:34.270 --> 00:01:36.993
+Here are its first six recorded runs.
+
+00:01:37.126 --> 00:01:41.556
+Each looks at twenty-four items, and seven always stop at the license check.
+
+00:01:41.816 --> 00:01:44.377
+In run one, nothing can be reused.
+
+00:01:44.452 --> 00:01:47.198
+Eight items go to a model, and nine wait.
+
+00:01:47.389 --> 00:01:50.147
+In run two, four answers are reused.
+
+00:01:50.280 --> 00:01:52.144
+In run three, twelve.
+
+00:01:52.404 --> 00:01:55.857
+In run four, fifteen are reused, two wait for a retry,
+
+00:01:55.887 --> 00:01:59.156
+and no model is called at all: zero tokens.
+
+00:01:59.510 --> 00:02:04.961
+After that, a model sees only what needs it: two retries, then one project new to the feed.
+
+00:02:05.408 --> 00:02:08.884
+Tokens go from about nine thousand to under two thousand.
+
+00:02:09.145 --> 00:02:14.644
+Most listings stay the same between runs, so this is a real trace, not a savings claim.
+
+00:02:14.750 --> 00:02:19.540
+A separate worker audits and approves, with its own key and the other Muse model.
+
+00:02:19.800 --> 00:02:22.848
+It approved fifteen items, and rejected three.
+
+00:02:23.109 --> 00:02:26.424
+One model call failed, and it stays on the record.
+
+00:02:26.490 --> 00:02:29.271
+Then it learns from recorded runs and traces.
+
+00:02:29.404 --> 00:02:32.290
+After each run, a tuner changes the spec.
+
+00:02:32.481 --> 00:02:37.259
+It moved the model mix from fifty-fifty to about sixty-four, thirty-six.
+
+00:02:37.334 --> 00:02:41.845
+It raised the batch size from eight to ten, after a run passed its gate.
+
+00:02:42.106 --> 00:02:46.840
+With twenty outcomes, this is an early reading, not a model comparison.
+
+00:02:46.870 --> 00:02:50.336
+One design, built for many jobs, with every run on the record.
+
+00:02:50.690 --> 00:02:54.225
+Feed maintenance is our first OmniNode on its own timer.
+
+00:02:54.486 --> 00:02:57.708
+Connect your agents at teleionlabs.com.
+

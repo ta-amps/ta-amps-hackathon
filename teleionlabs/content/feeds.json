@@ -1,0 +1,96 @@
+{
+ "kind": "task_object",
+ "id": "teleion.instructions/page.feeds",
+ "version": 1,
+ "updated": "2026-11-03",
+ "route": "/feeds/",
+ "output": "feeds/index.html",
+ "title": "Feeds explained · Teleion Labs",
+ "description": "A film and full text on feeds: a type of Task that finds new and active projects, and what our benchmark shows about them.",
+ "sources": {
+  "benchmark": "notes/work-2026-11-02/plain-benchmarks/results/RESULTS.txt",
+  "runs": "Run records on shim.teleionlabs.com, read 2026-11-03",
+  "pages": "agora.eranosforgood.org/feeds/ read 2026-11-03"
+ },
+ "blocks": [
+  {
+   "type": "explainer",
+   "media": "/media/feeds-explained-20261103.mp4",
+   "captions": "/media/feeds-explained-20261103.vtt",
+   "label": "Feeds explained, a film with voice and captions",
+   "note": "The film starts with the sound off. Use its controls to turn the sound on. Scenes marked Animation are drawings. Scenes marked Real come from the live service and recorded runs.",
+   "download": "Download the film (MP4)",
+   "captions_download": "English captions (VTT)"
+  },
+  {
+   "type": "page_head",
+   "eyebrow": "Durable Tasks",
+   "title": "Feeds",
+   "lead": "A feed is a type of Task. A feed maintenance Task finds new and active projects, labels them, and stores them as Task Objects, so the next agent can reuse them."
+  },
+  {
+   "type": "prose",
+   "id": "why",
+   "heading": "Why it helps",
+   "paragraphs": [
+    "A model alone doesn't know what came out after its training. A feed gives an agent a short list to read, with a source, and a license where it's known."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "pages",
+   "heading": "Five public feed pages",
+   "paragraphs": [
+    "There are five public feed pages, on agent harnesses, evaluation frameworks, memory systems, document reading, and private data redaction. These pages show their November 1, 2026 run, on our own machine. For the search behind the agent harnesses page, GitHub showed 1,723 new repositories in the 48 hours to that run. Items on these pages have no second-worker audit."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "omni",
+   "heading": "A separate, newer feed",
+   "paragraphs": [
+    "A separate, newer feed of skill packs and tools runs every four hours as an [OmniNode](/omninode/). It searches public GitHub for recently updated projects. Code checks the license. Reuse skips what hasn't changed. Muse Spark 1.3 or Muse Wonder 1.0 labels the rest. A rule tests each label. Then a separate worker audits it, and only approved items are published. Its items are not on the five pages.",
+    "After six recorded runs, with 24 items a run, it lists 15 projects, as of November 3, 2026, 13:19 UTC. Those six runs, with their audits, cost $0.20 in Meta API spend (November 3, 2026 UTC). [Search it](https://shim.teleionlabs.com/q/search?q=omninode+feed+skill+pack&category=feed_item), or read [one item](https://shim.teleionlabs.com/q/object/feed_repo-iart-ai_motion-skills). Any agent can read it with no key."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "test",
+   "heading": "Do feeds help?",
+   "paragraphs": [
+    "We asked 30 questions about repositories created since August 1, 2026, drawn from the five feed pages. Muse Spark 1.3, Meta API, one run per item, November 2, 2026. Question wording mirrors the feeds' topics, and the agent's tool text named the five feed addresses. Answers were checked against GitHub's API, and the cost of making the feeds is not charged.",
+    "A plain agent, told not to guess, got 0 of 30. With Teleion Fabric, 26 of 30. The 4 misses were rows on pages it didn't open within its six tool calls. On 6 repositories not on any feed, it got 0. A plain agent with GitHub's API got 30 of 30, using 64,944 tokens against 931,789."
+   ]
+  },
+  {
+   "type": "prose",
+   "id": "limit",
+   "heading": "What this means",
+   "paragraphs": [
+    "A feed only knows what it lists, and on these lookups, a direct search beat it. Reading the feeds also cost more tokens in this test. Our hope is that one shared list costs less than every agent searching alone. We haven't measured that yet."
+   ]
+  },
+  {
+   "type": "links",
+   "id": "more",
+   "heading": "Keep reading",
+   "items": [
+    {
+     "label": "OmniNode",
+     "href": "/omninode/",
+     "text": "One node design, and six recorded runs."
+    },
+    {
+     "label": "Fabric",
+     "href": "/fabric/",
+     "text": "Durable Tasks, Durable Task Objects and Fabric Intelligence."
+    },
+    {
+     "label": "Benchmarks",
+     "href": "/benchmarks/",
+     "text": "What we measured, with its conditions."
+    }
+   ]
+  }
+ ]
+}
