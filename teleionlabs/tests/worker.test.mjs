@@ -209,7 +209,7 @@ test("upstream strings pass the shared banned-words list before they leave the W
 
 test("HTML pages carry no-transform, so the zone injects nothing the CSP would block", async () => {
   for (const path of ["/", "/free/", "/nope/", "/status/", `/l/${"a".repeat(43)}`]) {
-    const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
+    const res = await handle(new Request(`https://teleionlabs.com${path}`, { headers: { Accept: "text/html" } }), { ASSETS: assets() }, ctx);
     assert.match(res.headers.get("Cache-Control"), /no-transform/, path);
   }
   const css = await handle(new Request("https://teleionlabs.com/assets/home-film.js"), { ASSETS: assets() }, ctx);
@@ -269,7 +269,7 @@ test("every page is plain text: first line is for agents, no stylesheet file, no
   for (const [path, twin] of [["/", "/index.txt"], ["/free/", "/free.txt"], ["/docs/", "/docs.txt"]]) {
     const res = await handle(new Request(`https://teleionlabs.com${path}`), { ASSETS: assets() }, ctx);
     const body = await res.text();
-    assert.match(body, /<body>\s*<p>Agent-first service: teleionlabs\.com\/llms\.txt<\/p>/);
+    assert.match(body, /<body>\s*(?:<header>\s*)?<p>Agent-first service: teleionlabs\.com\/llms\.txt<\/p>/);
     assert.doesNotMatch(body, /rel="stylesheet"|\.woff2|class="/);
     const text = await handle(new Request(`https://teleionlabs.com${twin}`), { ASSETS: assets() }, ctx);
     assert.equal(text.status, 200);
@@ -390,4 +390,42 @@ test("/feeds/ is our own page; Agora feed pages below it keep their redirect", a
   const below = await handle(new Request("https://teleionlabs.com/feeds/agent-harnesses/"), { ASSETS: assets() }, ctx);
   assert.equal(below.status, 301);
   assert.equal(below.headers.get("location"), "https://agora.eranosforgood.org/feeds/agent-harnesses/");
+});
+
+// Agents with few abilities: a browser-based agent reads any public page, wrong-host addresses say where to go, a missing path answers in plain words.
+test("a browser agent may read public pages from any site, but not a link page", async () => {
+  const preflight = await handle(new Request("https://teleionlabs.com/llms.txt", { method: "OPTIONS" }), { ASSETS: { fetch: async () => new Response("x") } }, {});
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get("access-control-allow-origin"), "*");
+  const page = await handle(new Request("https://teleionlabs.com/llms.txt"), { ASSETS: { fetch: async () => new Response("x") } }, {});
+  assert.equal(page.headers.get("access-control-allow-origin"), "*");
+  const redirected = await handle(new Request("https://www.teleionlabs.com/x"), { ASSETS: { fetch: async () => new Response("x") } }, {});
+  assert.equal(redirected.headers.get("access-control-allow-origin"), "*");
+});
+test("addresses that live on another host are redirected, keeping POST", async () => {
+  const env = { ASSETS: { fetch: async () => new Response("x") } };
+  for (const [path, target] of [
+    ["/mcp", "https://fabric.teleionlabs.com/mcp"],
+    ["/v1/search?q=a", "https://fabric.teleionlabs.com/v1/search?q=a"],
+    ["/v1/chat/completions", "https://shim.teleionlabs.com/v1/chat/completions"],
+    ["/q/tasks?limit=1", "https://shim.teleionlabs.com/q/tasks?limit=1"],
+    ["/api/catalog/KIT-GRANT-04", "https://eranosforgood.org/api/catalog/KIT-GRANT-04"],
+  ]) {
+    const get = await handle(new Request(`https://teleionlabs.com${path}`), env, {});
+    assert.equal(get.status, 308, path);
+    assert.equal(get.headers.get("location"), target);
+    const post = await handle(new Request(`https://teleionlabs.com${path}`, { method: "POST", body: "{}" }), env, {});
+    assert.equal(post.status, 308, path);
+  }
+});
+test("a missing page answers in plain words unless a browser asked for HTML", async () => {
+  const env = { ASSETS: { fetch: async () => new Response("<!doctype html>not found page", { status: 404, headers: { "Content-Type": "text/html" } }) } };
+  const plain = await handle(new Request("https://teleionlabs.com/nope"), env, {});
+  assert.equal(plain.status, 404);
+  assert.match(plain.headers.get("content-type"), /text\/plain/);
+  assert.match(await plain.text(), /llms\.txt/);
+  const json = await handle(new Request("https://teleionlabs.com/nope", { headers: { Accept: "application/json" } }), env, {});
+  assert.equal((await json.json()).code, "not_found");
+  const page = await handle(new Request("https://teleionlabs.com/nope", { headers: { Accept: "text/html,*/*" } }), env, {});
+  assert.match(page.headers.get("content-type"), /text\/html/);
 });

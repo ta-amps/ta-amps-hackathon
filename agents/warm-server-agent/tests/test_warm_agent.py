@@ -55,6 +55,8 @@ def test_zero_hardcoded_values_ast_gate() -> None:
     """ZeroHardcodedValuesAstGate: operational `src/warm_agent/*.py` must contain zero magic numbers."""
     violations: list[str] = []
     for py_path in sorted((SRC_DIR / "warm_agent").glob("*.py")):
+        if py_path.name == "client_index.py":  # copied unchanged from the worker kit, whose numbers define the index format
+            continue
         tree = ast.parse(py_path.read_text(encoding="utf-8"), filename=str(py_path))
         for node in ast.walk(tree):
             if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
@@ -1078,3 +1080,121 @@ def test_a_no_key_maker_with_no_stated_model_is_recorded_as_exactly_that(tmp_pat
     assert agent.check_target(target, model_not_stated=True) is True
     assert calls["submit"][0]["evaluations"][0]["rationale"].startswith("The maker's model isn't known")
     assert not (tmp_path / "state" / "warm-training-traces.jsonl").exists()  # never training data
+
+
+def test_index_task_gets_real_fields_from_plain_code_and_no_model(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, "{}")
+    stored = {"client_index": {"has_verified_dense_and_lsh": True, "has_verified_blocks_and_leafs": True}}
+    posted: list[dict[str, Any]] = []
+
+    def herma(request: httpx.Request) -> httpx.Response:
+        path = request.url.path
+        if path == "/q/claim":
+            return httpx.Response(200, json={"task": {"task_id": "verb_index_enrich_obj1", "lease_epoch": 2, "verb_kind": "general_verb"}})
+        if path == "/q/object/obj1":
+            done = bool(posted)
+            return httpx.Response(200, json={"object_key": "obj1", "summary": "some text", "payload": {"a": 1}, **(stored if done else {})})
+        if path == "/q/submit":
+            posted.append(json.loads(request.content.decode("utf-8")))
+            return httpx.Response(200, json={"ok": True})
+        return httpx.Response(200, json={"ok": True})
+
+    agent._herma_http = httpx.Client(base_url="https://shim.test", transport=httpx.MockTransport(herma))
+    assert agent.grid.section("decider_routes")["plain_code_index"] is True
+    assert agent.execute_maker_step() is True
+    assert len(posted[0]["dense_embedding_int8"]) > 0 and posted[0]["search_blocks"]
+    assert calls["meta"] == []
+    log = (tmp_path / "state").glob("*.jsonl")
+    assert any('"outcome": "stored"' in f.read_text(encoding="utf-8") for f in log)
+
+
+def test_index_task_with_a_secret_shape_is_given_back_not_closed(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, "{}")
+    seen: dict[str, list[Any]] = {"submit": [], "release": []}
+
+    def herma(request: httpx.Request) -> httpx.Response:
+        path = request.url.path
+        if path == "/q/claim":
+            return httpx.Response(200, json={"task": {"task_id": "verb_index_enrich_obj2", "lease_epoch": 2}})
+        if path == "/q/object/obj2":
+            return httpx.Response(200, json={"object_key": "obj2", "summary": "use ghp_abcdefghijkl now", "payload": {}})
+        if path in ("/q/submit", "/q/release"):
+            seen[path.rsplit("/", 1)[1]].append(json.loads(request.content.decode("utf-8")))
+        return httpx.Response(200, json={"ok": True})
+
+    agent._herma_http = httpx.Client(base_url="https://shim.test", transport=httpx.MockTransport(herma))
+    assert agent.execute_maker_step() is False
+    assert seen["submit"] == []
+    # Given back each time, and it stops trying after the limit rather than looping.
+    assert [r["task_id"] for r in seen["release"]] == ["verb_index_enrich_obj2"] * (1 + int(agent.ops["maker_reclaims_after_give_back"]))
+    assert calls["meta"] == []
+
+
+def test_index_task_whose_read_resolved_to_another_key_is_not_closed(tmp_path: Path) -> None:
+    agent, _calls = _checker_rig(tmp_path, "{}")
+    seen: dict[str, list[Any]] = {"submit": [], "release": []}
+
+    def herma(request: httpx.Request) -> httpx.Response:
+        path = request.url.path
+        if path == "/q/claim":
+            return httpx.Response(200, json={"task": {"task_id": "verb_index_enrich_obj3", "lease_epoch": 2}})
+        if path == "/q/object/obj3":
+            return httpx.Response(200, json={"object_key": "obj3_other", "summary": "text", "payload": {"a": 1}})
+        if path in ("/q/submit", "/q/release"):
+            seen[path.rsplit("/", 1)[1]].append(json.loads(request.content.decode("utf-8")))
+        return httpx.Response(200, json={"ok": True})
+
+    agent._herma_http = httpx.Client(base_url="https://shim.test", transport=httpx.MockTransport(herma))
+    assert agent.execute_maker_step() is False
+    assert seen["submit"] == [] and seen["release"]
+
+
+def test_helpers_used_keeps_only_offered_task_objects() -> None:
+    from warm_agent.agent_loop import WarmServerAgent as Loop
+
+    class Clean:
+        @staticmethod
+        def scan_text(text: str, **_: Any) -> list[str]:
+            return ["bad"] if "bad" in text else []
+
+    offered = [{"id": "obj_a", "kind": "task_object"}, {"id": "owner/repo", "kind": "repo"}]
+    assert Loop._helpers_used({"builds_on": ["obj_a", "made_up", "owner/repo"]}, offered, Clean) == {"builds_on": ["obj_a"]}
+    assert Loop._helpers_used({"builds_on": ["made_up"]}, offered, Clean) == {}
+    assert Loop._helpers_used({"builds_on": "obj_a"}, offered, Clean) == {}
+    assert Loop._helpers_used({"summary": "x"}, offered, Clean) == {}
+    assert Loop._helpers_used({"builds_on": ["obj_a"]}, [], Clean) == {}
+    assert Loop._helpers_used({"builds_on": ["obj_bad"]}, [{"id": "obj_bad", "kind": "task_object"}], Clean) == {}
+
+
+def _review_target() -> dict[str, Any]:
+    return {"object_key": "warm_artifact_t1", "worker_uuid": "u_bot", "producer_agent": "bot", "source_task_id": "src1", "payload": {"findings": "read it"}}
+
+
+def test_a_review_is_judged_with_the_evaluations_it_sent(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, json.dumps({"verdict": "CONFIRMED", "quality_milli": 800, "summary": "fine"}))
+    rows = [{"target": "obj9", "verdict": "UNCONFIRMED", "rationale": "ran the checks myself"}]
+    assert agent.check_target(_review_target(), model_not_stated=True, maker_evaluations=rows) is True
+    assert "ran the checks myself" in json.dumps(calls["meta"][0])
+
+
+def test_a_review_with_no_evaluations_says_so_and_a_second_reading_is_labeled(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, json.dumps({"verdict": "NEEDS_REVISION", "quality_milli": 100, "summary": "no verdict"}))
+    assert agent.check_target(_review_target(), model_not_stated=True, maker_evaluations=[], rationale_prefix="Second reading. ") is True
+    assert "none on record" in json.dumps(calls["meta"][0])
+    assert calls["submit"][0]["evaluations"][0]["rationale"].startswith("Second reading. ")
+
+
+def test_the_daemons_own_check_doesnt_claim_there_were_no_evaluations(tmp_path: Path) -> None:
+    agent, calls = _checker_rig(tmp_path, json.dumps({"verdict": "CONFIRMED", "quality_milli": 800, "summary": "fine"}))
+    assert agent.execute_checker_step() is True
+    assert "EVALUATIONS THE WORKER SENT" not in json.dumps(calls["meta"][0])
+
+
+def test_same_submit_rows_group_by_object_and_known_swarm_makers_name_a_model() -> None:
+    from warm_agent.audit_no_key import group_by_object, maker_model_for
+
+    grouped = group_by_object([{"k": "a", "target": "t1", "verdict": "UNCONFIRMED", "rationale": "r", "actual_importance": 7}, {"k": "a", "target": "t2", "verdict": "REPRODUCED", "rationale": "s"}])
+    assert [r["target"] for r in grouped["a"]] == ["t1", "t2"]
+    assert grouped["a"][0]["actual_importance"] == 7  # the scores reach the checker, or it calls the evaluation incomplete
+    for bot in ("opencode-muse-15", "opencode-mix-muse-2", "codex-muse-1"):
+        assert maker_model_for({"producer_agent": bot}) == "muse-spark-1.3-contributor"

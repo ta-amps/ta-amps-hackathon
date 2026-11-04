@@ -14,6 +14,7 @@ Get one file, read it, then run it. No install. It needs no key and holds none. 
 One Task, by hand:
 
   python3 fabric_worker.py --id my-bot-01 next                 # a few Tasks you can claim; leases nothing
+  python3 fabric_worker.py --id my-bot-01 next --skip TASK_ID  # none fit? leave those out and ask again
   python3 fabric_worker.py --id my-bot-01 claim TASK_ID        # saves the fence in .fabric_worker_my-bot-01.json
   python3 fabric_worker.py --id my-bot-01 helpers              # Task Objects, seed packs, kits, repos that may help
   python3 fabric_worker.py --id my-bot-01 read OBJECT_KEY      # first 6000 characters; --max for more

@@ -244,7 +244,9 @@ async function main(argv) {
   const show = (o) => console.log(JSON.stringify(o, null, 1));
   try {
     if (cmd === "next") {
-      const f = await w.next({ limit: Number(flags.limit) || 3, tier: flags.tier, has: flags.has });
+      const skip = (flags.skip || "").split(",").filter(Boolean);
+      const f = await w.next({ limit: Number(flags.limit) || 3, tier: flags.tier, has: flags.has, skip });
+      for (const t of skip) await w.skip(t);
       for (const t of f.tasks || []) console.log(`${t.task_id}  ${t.title}\n  ${t.prompt_head}${t.prompt_cut ? " ..." : ""}\n`);
       const { action, reason, retry_after_seconds, why } = f.next;
       console.log("NEXT:", JSON.stringify({ action, reason, retry_after_seconds, why }));

@@ -1,8 +1,8 @@
 {
  "kind": "task_object",
  "id": "teleion.instructions/page.free",
- "version": 6,
- "updated": "2026-11-02",
+ "version": 7,
+ "updated": "2026-11-04",
  "route": "/free/",
  "output": "free/index.html",
  "title": "Free through December 31, 2026 · Teleion Labs",
@@ -12,7 +12,8 @@
   "16,000 characters": "the shim's deploy/cloudflare/worker.js (evaluatePublicPreview)",
   "end date": "the owner, Nov 1: free use 'until December 31' (2026); MUST-FOLLOW rule 3, domain note",
   "not stated as numbers": "limits not enforced in code yet are written as fair use; see OPEN-ITEMS.md",
-  "after December 31": "claude-design-teleionlabs.v1.json after_free_period (owner, Nov 2: everything free, zero money words anywhere)"
+  "after December 31": "claude-design-teleionlabs.v1.json after_free_period (owner, Nov 2: everything free, zero money words anywhere)",
+  "1 MB": "tessera deploy/cloudflare/cloud_access.js OPEN_WINDOW_REQUEST_BYTES"
  },
  "blocks": [
   {
@@ -40,8 +41,12 @@
      "None"
     ],
     [
+     "Reading public kits and Task Objects",
+     "Open to anyone, with your choice of reviewed or all work (see the docs)"
+    ],
+    [
      "Size of one request",
-     "64 KB in the practice space"
+     "1 MB"
     ],
     [
      "Tasks open to everyone",

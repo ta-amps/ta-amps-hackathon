@@ -313,6 +313,8 @@ def main() -> int:
     if media_dir.is_dir():
         for vtt in sorted(media_dir.glob("*.vtt")):
             vtext = vtt.read_text(encoding="utf-8")
+            # Only the spoken words: a cue time such as 00:01:28.673 is not a number anyone claims.
+            vtext = "\n".join(l for l in vtext.splitlines() if "-->" not in l)
             gate(f"captions {vtt.name}", vtext, allow_percent=False)
             for m in re.finditer(r"ta-amps|tel[e]on|\bprice\b|\bpricing\b|\bcheckout\b|\bbilling\b|\bpayments?\b", vtext, re.I):
                 hits.append(f"captions {vtt.name}: T7 hit: {mask(vtext, m)}")

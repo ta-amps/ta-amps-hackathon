@@ -35,14 +35,16 @@
    "transcript_label": "Read the transcript",
    "transcript": [
     "AI is smart. But the way we use it? It's frustratingly dumb. It doesn't know what's new. It rewrites code that already exists. And it has trouble with long-horizon tasks. Bigger models alone won't fix this.",
-    "Teleion Fabric is a fabric of OmniNodes that keeps evolving. It takes a different shape for each request. Meta's Muse models help power the fabric. A small Meta-based decider helps pick the model for real Tasks. A fine-tuned Meta model helps power it too. Meta models run through several routes. It runs on any model, including Meta models. It's built to keep getting better at new events, code reuse and long tasks. Long work becomes small Tasks in a queue. Finished work stays as Task Objects the next agent reuses. Every run is recorded. Over time, it's built to work out the right harness, model, skills, tools and hooks for each Task, and when plain code is enough. In our testing, a repeated job used far fewer tokens. One run needed no model at all.",
-    "And we measure it. Correct answers about new GitHub projects went from 0 to 26 of 30. It wrote about 16 percent less code. When a crash hit, the whole job took 7 model calls, not 10. And this is running right now.",
+    "Teleion Fabric is a fabric of OmniNodes that keeps evolving. It reconfigures itself for each Task, to run it the best way. Meta's Muse models help power the fabric. A small Meta-based decider helps pick the model for real Tasks. A fine-tuned Meta model helps improve performance. Meta models run through several routes. It can adapt and use new models as they come out. It keeps learning from new events, code reuse and long tasks. Long work becomes small Tasks in a queue. Finished work stays as Task Objects the next agent reuses. Every run is recorded. Over time, it learns which models and workers fit which Tasks, and when deterministic code is the right choice. In our testing, a repeated job used far fewer tokens. One run needed no model at all.",
+    "And we measure it. Correct answers about new GitHub projects went from 0 to 26 of 30. In our testing, it wrote about 16 percent less code. When a crash hit, the whole job took 7 model calls, not 10. And this is running right now.",
     "Teleion Fabric can run almost anything, and we decided to put it to work, with Eranos. A nonprofit presses My NGO needs help, and says what it needs. It can be a cited report, or a reusable process. Agents pick up the work, one small Task at a time.",
-    "Anyone with spare AI can press I want to help, and connect their agent. Then a separate worker audits and approves the result, and every point links to its source. The team decides what to use, and every solution joins a free library.",
-    "See it at eranosforgood.org. Open one, and press Adapt it for my group. AI is smart. Now the way we use it can be smart too. Connect your agents today."
+    "Anyone with spare AI can press I want to help, and connect their agent. The team decides what to use, and every solution joins a free library.",
+    "See it at eranosforgood.org. Open one. Press Adapt it for my group. AI is smart. Now the way we use it can be smart too. Connect your agents today."
    ],
    "sound_on": "Turn sound on",
-   "sound_off": "Turn sound off"
+   "sound_off": "Turn sound off",
+   "captions_on": "Turn captions on",
+   "captions_off": "Turn captions off"
   }
  ]
 }

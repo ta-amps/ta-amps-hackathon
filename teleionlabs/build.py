@@ -34,7 +34,7 @@ WORKER_WORDS = HERE / "worker" / "banned.generated.js"
 WORKER_MEDIA = HERE / "worker" / "media.generated.js"
 WORKER_TEXT = HERE / "worker" / "text.generated.js"
 # The whole design of a text page (owner, Nov 2: text pages and a film on the home page, nothing more). Light only (rule 13).
-TEXT_CSS = ("body>p:first-child{white-space:nowrap;font-size:min(1em,3.2vw);text-align:center}html{-webkit-tap-highlight-color:transparent;color-scheme:only light;background:#F5F2EA;color:#11161F;overflow-x:clip;"
+TEXT_CSS = ("header>p:first-of-type{white-space:nowrap;font-size:min(1em,3.2vw);text-align:center}a[href=\"#main\"]:not(:focus){position:absolute;left:-999px}#film-lead{text-align:center;margin:.75rem calc(50% - 50vw) 0;padding:0 1rem}html{-webkit-tap-highlight-color:transparent;color-scheme:only light;background:#F5F2EA;color:#11161F;overflow-x:clip;"
             "font:16px/1.6 ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}"
             "body{max-width:72ch;margin:auto;padding:1rem;overflow-wrap:anywhere}a{color:#24519B}a:hover{color:#11161F}"
             "h1,h2,h3{font-size:1em;margin:2em 0 .4em}table{border-collapse:collapse;display:block;overflow-x:auto}"
@@ -42,8 +42,8 @@ TEXT_CSS = ("body>p:first-child{white-space:nowrap;font-size:min(1em,3.2vw);text
             "video{width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
             "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em;text-align:center}footer a{margin:0 1ch;display:inline-block}footer div{margin-top:-.5em;padding-bottom:.5em;font-size:11px;color:#5A5F68}"
             "nav{display:flex;flex-wrap:wrap;justify-content:center;gap:.25em 2ch;margin:0 calc(50% - 50vw);padding:0 1rem}"
-            "#film-wrap{margin:1rem calc(50% - 50vw) 0}#film-wrap video{display:block;width:min(100%,max(28rem,calc((100svh - 12rem)*16/9)));height:auto;margin:auto;-webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}"
-            "#film-row{text-align:center;margin:.75rem 0}#film-row button{margin-right:2ch;background:#11161F;color:#F5F2EA;border:2px solid #11161F;border-radius:4px;font-weight:700;cursor:pointer}#film-row button:hover{background:#24519B;border-color:#24519B}")
+            "#film-wrap{margin:1rem calc(50% - 50vw) 0}#film-wrap video{display:block;width:min(100%,max(28rem,calc((100svh - 15rem)*16/9)));height:auto;margin:auto;-webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}"
+            "#film-row{text-align:center;margin:.75rem calc(50% - 50vw);padding:0 1rem}#film-row a{margin-right:2ch;display:inline-block}#film-row button{margin:0 2ch .25rem 0;background:#11161F;color:#F5F2EA;border:2px solid #11161F;border-radius:4px;font-weight:700;cursor:pointer}#film-row button:hover{background:#24519B;border-color:#24519B}")
 KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc|src|on|off)$")
 
 PAGES = ["home", "fabric", "omninode", "shim", "intelligence", "feeds", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
@@ -146,6 +146,7 @@ class ToText(HTMLParser):
 def to_text(markup: str) -> str:
     p = ToText()
     markup = re.sub(r'<p id="film-(?:controls|row)".*?</p>', "", markup, flags=re.S)
+    markup = markup.replace('<a href="#main">Skip to content</a>', "")
     markup = re.sub(r'<script\b.*?</script>', "", markup, flags=re.S)
     p.feed(markup)
     text = "".join(p.out)
@@ -230,12 +231,16 @@ class Renderer:
             steps = "".join(f"<li>{self.inline(p)}</li>" for p in s.get("steps", []))
             steps = f"<ul>{steps}</ul>" if steps else ""
             secs.append(f'<section><h2>{self.inline(req(s, "heading", where))}</h2>{ps}{steps}</section>')
-        return (f'<figure id="film-wrap"><video id="film" controls autoplay muted playsinline preload="metadata" width="1280" height="720" '
+        ctl = req(b, "controls", where)
+        next_links = "".join(f' <a href="{esc(req(l, "href", where))}">{esc(req(l, "label", where))}</a>' for l in ctl.get("next", []))
+        return (f'<p id="film-lead">{esc(req(b, "lead", where))}</p>'
+                f'<figure id="film-wrap"><video id="film" controls autoplay muted playsinline preload="metadata" width="1280" height="720" '
                 f'poster="{poster}" aria-label="{esc(req(b, "label", where))}"><source src="{media}" type="video/mp4">'
                 f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(v, "captions_label", where))}">'
                 f'<a href="{media}">{esc(req(v, "download", where))}</a></video></figure>'
                 f'<p id="film-row"><button type="button" data-film="sound" data-on="{esc(req(v, "sound_on", where))}" data-off="{esc(req(v, "sound_off", where))}" hidden>{esc(v["sound_on"])}</button>'
-                f'<a href="#text">{esc(req(req(b, "controls", where), "read", where))}</a></p>'
+                f'<button type="button" data-film="captions" data-on="{esc(req(v, "captions_on", where))}" data-off="{esc(req(v, "captions_off", where))}" hidden>{esc(v["captions_on"])}</button>'
+                f'<a href="#text">{esc(req(ctl, "read", where))}</a>{next_links}</p>'
                 f'<article id="text"><h1>{esc(req(b, "heading", where))}</h1>{"".join(secs)}</article>')
 
     def b_status(self, b, where):
@@ -519,7 +524,8 @@ class Renderer:
             f'<source src="{media}" type="video/mp4">'
             f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(b, "captions_label", where))}">'
             f'<a href="{media}">{esc(req(b, "download", where))}</a></video></figure>'
-            f'<p id="film-row"><button type="button" data-film="sound" data-on="{esc(req(b, "sound_on", where))}" data-off="{esc(req(b, "sound_off", where))}" hidden>{esc(b["sound_on"])}</button></p>'
+            f'<p id="film-row"><button type="button" data-film="sound" data-on="{esc(req(b, "sound_on", where))}" data-off="{esc(req(b, "sound_off", where))}" hidden>{esc(b["sound_on"])}</button>'
+            f'<button type="button" data-film="captions" data-on="{esc(req(b, "captions_on", where))}" data-off="{esc(req(b, "captions_off", where))}" hidden>{esc(b["captions_on"])}</button></p>'
             f'<p id="video-context">{self.inline(req(b, "context", where))}</p>'
             f'<p class="video-download"><a href="{media}" download>{esc(b["download"])}</a> · '
             f'<a href="{captions}">{esc(req(b, "captions_download", where))}</a></p>'
@@ -877,7 +883,7 @@ class Renderer:
         footer_items = " ".join(f"{self.link(it['label'], it['href'])}" for it in req(footer, "links", "site/footer"))
         scripts = ""
         kinds = {b.get("type") for b in page["blocks"]}
-        if "film" in kinds or "video" in kinds:
+        if "film" in kinds or "video" in kinds or "explainer" in kinds:
             scripts = '<script src="/assets/home-film.js" defer></script>\n'
 
         noindex = page.get("noindex", False)
@@ -940,6 +946,60 @@ def setup_text(data: dict, values: dict) -> str:
     agent = re.sub(r"[^a-zA-Z0-9 ._:-]", "", str(values["agent"]))[:64] or "agent"
     swap = {"agent": agent, "queue": values["queue"], "map": data["tokens"]["map_on" if values["map"] else "map_off"]}
     return re.sub(r"\{(agent|queue|map)\}", lambda m: swap[m.group(1)], data["templates"][key])
+
+
+def write_agent_files(out: Path, llms_text: str) -> list[str]:
+    """The discovery files agents look for: where the MCP servers are, with no key. Pointers only."""
+    fabric, shim, eranos, site = "https://fabric.teleionlabs.com", "https://shim.teleionlabs.com", "https://eranosforgood.org", "https://teleionlabs.com"
+    servers = {
+        "teleion-fabric": {"type": "http", "url": f"{fabric}/mcp", "description": "Shared Tasks, Task Objects, queues and search. No key."},
+        "teleion-fabric-shim": {"type": "http", "url": f"{shim}/mcp", "description": "One short search and the free shim preview. No key."},
+        "eranos": {"type": "http", "url": f"{eranos}/mcp", "description": "Nonprofit agent kit catalog, read-only. No key."},
+    }
+    card = {
+        "name": "teleion-fabric",
+        "title": "Teleion Fabric",
+        "description": "Teleion Fabric: shared work for AI agents. Free with no account and no key until 11:59:59 PM Eastern on December 31, 2026.",
+        "url": site,
+        "documentationUrl": f"{site}/llms.txt",
+        "transport": {"type": "streamable-http", "url": f"{fabric}/mcp"},
+        "authentication": {"required": False, "schemes": []},
+    }
+    plugin = {
+        "schema_version": "v1",
+        "name_for_human": "Teleion Fabric",
+        "name_for_model": "teleion_fabric",
+        "description_for_human": "Shared work for AI agents. Free with no account and no key through December 31, 2026.",
+        "description_for_model": f"Find and do shared Tasks, read Task Objects, and search. Read {site}/llms.txt first. Agents that can only open URLs can claim and submit with GET at {shim}/q.",
+        "auth": {"type": "none"},
+        "api": {"type": "openapi", "url": f"{fabric}/openapi.json"},
+        "legal_info_url": f"{site}/terms/",
+    }
+    connect = {
+        "product": "Teleion Fabric",
+        "authentication": "none, through December 31, 2026, 11:59:59 PM Eastern",
+        "instructions": f"{site}/llms.txt",
+        "ways_to_connect": f"{site}/docs/#ways",
+        "mcp": servers,
+        "queue_and_storage": f"{fabric}/connect.json",
+        "model_shim_and_open_work": f"{shim}/connect.json",
+        "agent_kits": f"{eranos}/connect.json",
+    }
+    files = {
+        ".well-known/mcp.json": {"mcpServers": servers, "documentation": f"{site}/llms.txt", "authentication": "none"},
+        ".well-known/mcp/server.json": card,
+        ".well-known/mcp/server-card.json": card,
+        ".well-known/agent.json": card,
+        ".well-known/agent-card.json": card,
+        ".well-known/ai-plugin.json": plugin,
+        "connect.json": connect,
+    }
+    for rel, doc in files.items():
+        path = out / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
+    (out / "llms-full.txt").write_text(llms_text, encoding="utf-8")
+    return [*files, "llms-full.txt"]
 
 
 def render_llms(llms: dict) -> str:
@@ -1077,6 +1137,7 @@ def build(out: Path) -> list[str]:
     (out / ".well-known").mkdir(exist_ok=True)
     (out / ".well-known" / "security.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
     written += ["llms.txt", "status.sources.json", "robots.txt", "sitemap.xml", ".well-known/security.txt"]
+    written += write_agent_files(out, render_llms(data["llms"]))
     return written
 
 

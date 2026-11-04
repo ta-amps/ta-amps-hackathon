@@ -9,6 +9,7 @@ python3 tests/check_words.py >"$T/w" 2>&1 || { tail -4 "$T/w" | cut -c1-220; ech
 make test >"$T/t" 2>&1 || { grep -E '^not ok' "$T/t" | cut -c1-110; echo STOP tests; exit 1; }
 python3 tests/check_links.py >"$T/l" 2>&1 || { tail -4 "$T/l" | cut -c1-200; echo STOP links; exit 1; }
 git add -A content static/assets tools tests worker static/video-gallery static/video-gallery.txt; git diff --cached --quiet || git commit -qm "teleionlabs: gallery update [skip ci]"; R=$(git rev-parse --short=7 HEAD)
+LIVE=$(python3 "$L" live teleionlabs); git merge-base --is-ancestor "$LIVE" "$R" || { echo "STOP live $LIVE is not in this build; merge it first"; exit 1; }
 python3 "$L" acquire teleionlabs claude "$R" --minutes 15 --note "gallery" >/dev/null
 if ! timeout 3000 "$W" deploy --tag "$R" --message "source $R" >"$T/d" 2>&1; then tail -5 "$T/d" | cut -c1-200; echo STOP deploy, lock still held; exit 1; fi
 V=$(grep -oE 'Current Version ID: [0-9a-f-]+' "$T/d" | awk '{print $4}'); [ -n "$V" ] || { echo STOP no version, lock still held; exit 1; }

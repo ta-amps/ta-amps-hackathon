@@ -172,7 +172,45 @@ export async function statusResponse(request, env, ctx, now = () => new Date()) 
   return new Response(body, { headers: { ...type, "Cache-Control": "no-store" } });
 }
 
+// Everything here except a one-use link page is public text, so a browser-based agent may read it from any site.
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "*",
+  "Access-Control-Max-Age": "600",
+};
+// Addresses people and agents try here that live on another host. POST stays POST with 308.
+function elsewhere(pathname) {
+  if (pathname === "/mcp") return "https://fabric.teleionlabs.com";
+  if (/^\/v1\/(chat|responses|messages|context|provisions|conversations|dry-run|insights|memory|outcomes|receipts|sync|admin)(\/|$)/.test(pathname)) return "https://shim.teleionlabs.com";
+  if (pathname.startsWith("/v1/")) return "https://fabric.teleionlabs.com";
+  if (pathname === "/q" || pathname.startsWith("/q/") || pathname === "/help") return "https://shim.teleionlabs.com";
+  if (pathname === "/api/catalog" || pathname.startsWith("/api/catalog/")) return "https://eranosforgood.org";
+  return null;
+}
+function plainNotFound(url, accept) {
+  const path = url.pathname.length > 200 ? `${url.pathname.slice(0, 200)}...` : url.pathname;
+  const next = { detail: `No page at ${path}.`, start: `https://${APEX}/llms.txt`, ways_to_connect: `https://${APEX}/docs/#ways` };
+  if (accept.includes("json")) {
+    return new Response(JSON.stringify({ ok: false, code: "not_found", ...next }), { status: 404, headers: { "Content-Type": "application/json; charset=utf-8" } });
+  }
+  return new Response(`${next.detail}\nStart at ${next.start}\nWays to connect: ${next.ways_to_connect}\n`, { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+}
+
 export async function handle(request, env, ctx) {
+  const pathname = new URL(request.url).pathname;
+  // /api/network keeps its own narrower browser rule, like /q/network on the shim.
+  const isLinkPage = /^\/l\//.test(pathname) || pathname === "/api/network";
+  if (request.method === "OPTIONS" && !isLinkPage) {
+    return withHeaders(new Response(null, { status: 204, headers: CORS }));
+  }
+  const res = await serve(request, env, ctx);
+  if (isLinkPage) return res;
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  return res;
+}
+
+async function serve(request, env, ctx) {
   const url = new URL(request.url);
   const method = request.method.toUpperCase();
   const safe = method === "GET" || method === "HEAD";
@@ -199,6 +237,11 @@ export async function handle(request, env, ctx) {
     return withHeaders(new Response(null, { status: safe ? 301 : 308, headers: { Location: target.toString() } }));
   }
 
+  // The optional kit is a folder of plain files; its bare address opens the README.
+  if (url.pathname === "/kit" || url.pathname === "/kit/") {
+    return withHeaders(new Response(null, { status: safe ? 302 : 308, headers: { Location: `https://${APEX}/kit/README.txt` } }));
+  }
+
   // /video (without slash) and legacy /film paths redirect 301/308 to the durable /video/ page.
   if (url.pathname === "/video" || url.pathname === "/film" || url.pathname.startsWith("/film/")) {
     const target = new URL(`https://${APEX}/video/`);
@@ -216,6 +259,12 @@ export async function handle(request, env, ctx) {
     const target = new URL(`https://${OVERVIEW_HOST}${path}`);
     target.search = url.search;
     return withHeaders(new Response(null, { status: safe ? 301 : 308, headers: { Location: target.toString() } }));
+  }
+
+  const other = elsewhere(url.pathname);
+  if (other) {
+    const target = `${other}${url.pathname}${url.search}`;
+    return withHeaders(new Response(safe ? `This address lives at ${target}\n` : null, { status: 308, headers: { Location: target, "Content-Type": "text/plain; charset=utf-8" } }));
   }
 
   const link = url.pathname.match(/^\/l\/([^/]*)\/?$/);
@@ -248,6 +297,8 @@ export async function handle(request, env, ctx) {
   const assetRequest = twin ? new Request(new URL(twin, url), request) : request;
   const servedPath = twin || url.pathname;
   const rawAsset = await env.ASSETS.fetch(assetRequest);
+  const accept = (request.headers.get("Accept") || "").toLowerCase();
+  if (rawAsset.status === 404 && !accept.includes("text/html")) return withHeaders(plainNotFound(url, accept), { Vary: "Accept" });
   const asset = await maybeMediaRange(request, rawAsset, ctx);
   const extra = {};
   const mediaOk = asset.status === 200 || asset.status === 206;

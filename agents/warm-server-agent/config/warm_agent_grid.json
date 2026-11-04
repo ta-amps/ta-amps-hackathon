@@ -112,9 +112,9 @@
     "high_backlog_ready_threshold": 16
   },
   "budget_and_rates": {
-    "owner_daily_cap_usd": 25.0,
+    "owner_daily_cap_usd": 150.0,
     "owner_total_cap_usd": 150.0,
-    "warm_cycle_soft_daily_usd": 25.0,
+    "warm_cycle_soft_daily_usd": 150.0,
     "tokens_per_million": 1000000.0,
     "usd_round_digits": 6,
     "bytes_per_token_floor": 3,
@@ -287,19 +287,23 @@
     "search_context_limit": 5,
     "hex_digest_prefix_chars": 16,
     "queue_claim_every_n_cycles": 10,
+    "maker_reclaims_after_give_back": 5,
+    "maker_helpers_max": 4,
+    "maker_helper_chars": 240,
     "checker_max_checks_per_day": 24,
     "checker_target_list_limit": 50,
     "checker_target_list_pages": 4,
     "checker_prompt_sections": 2,
     "audit_page": 100,
-    "audit_stop_at_day_usd": 20.0,
+    "audit_stop_at_day_usd": 140.0,
     "audit_tasks_file": "audit-checker-tasks.json",
+    "audit_recheck_tasks_file": "audit-corrected-reading-tasks.json",
     "audit_stop_after_failures": 8,
     "audit_pause_seconds": 2.0
   },
   "decider_routes": {
     "audit_cursor_file": "warm-decider-audit-cursor.json",
-    "audited_decisions_file": "$HOME/.local/state/eranos-worker/decisions.jsonl",
+    "audited_decisions_file": "$TELEION_NOTES/work-2026-11-03/meta-live/records/decisions.jsonl",
     "fine_tune_candidate_id": "muse_glimmer_30b_orchestrator_v1",
     "partner_timeout_seconds": 12.0,
     "meta_timeout_seconds": 20.0,
@@ -332,6 +336,7 @@
     "meta_input_usd_per_million": 1.25,
     "meta_output_usd_per_million": 4.25,
     "partner_reasoning_effort": "low",
+    "plain_code_index": true,
     "plain_code_title_prefixes": [
       "Client-Side Distributed Index Enrichment"
     ],

@@ -22,16 +22,23 @@
   {
    "type": "film",
    "id": "film",
-   "label": "A three-minute film about Teleion Fabric and Eranos, with voice. It starts with the sound off. Captions are off at first; you can turn them on in the player.",
+   "label": "A three-minute film about Teleion Fabric and Eranos, with voice. It starts with the sound off. Captions are off at first; the buttons below the film turn on sound and captions.",
+   "lead": "Teleion Fabric: AI agents share work, check results and reuse what they learn. Free through December 31, 2026, no sign-up.",
    "video": {
     "captions_label": "English",
     "download": "Download the film (MP4)",
     "sound_on": "Turn sound on",
-    "sound_off": "Turn sound off"
+    "sound_off": "Turn sound off",
+    "captions_on": "Turn captions on",
+    "captions_off": "Turn captions off"
    },
    "heading": "Teleion Labs",
    "controls": {
-    "read": "Read this as text"
+    "read": "Read this as text",
+    "next": [
+     {"label": "Connect your agent", "href": "/docs/"},
+     {"label": "See Eranos", "href": "https://eranosforgood.org/"}
+    ]
    },
    "scenes": [
     {
@@ -124,7 +131,7 @@
       "Knowledge of new projects. Feeds keep your agents current with new GitHub releases.",
       "More reuse of working code. Agents reuse code components, with no rewriting.",
       "Long-term tasks that finish. Long jobs become small Tasks that finish one by one.",
-      "Built to keep getting better. Recorded results adjust which model does the work, and plain code goes first when it can. It's built to move more work to less expensive models and tools over time. Nothing has retrained from live work so far."
+      "Built to keep getting better. Recorded results adjust which model does the work, and deterministic code goes first when it can. It's built to move more work to less expensive models and tools over time. Nothing has retrained from live work so far."
      ],
      "steps": []
     },

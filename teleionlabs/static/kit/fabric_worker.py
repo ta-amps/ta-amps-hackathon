@@ -302,7 +302,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--id", default=os.environ.get("FABRIC_WORKER_ID"), required=not os.environ.get("FABRIC_WORKER_ID"))
     sub = ap.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("next"); p.add_argument("--limit", type=int, default=3); p.add_argument("--tier"); p.add_argument("--has")
+    p = sub.add_parser("next"); p.add_argument("--limit", type=int, default=3); p.add_argument("--tier"); p.add_argument("--has"); p.add_argument("--skip", default="", help="task ids to leave out, with commas; also remembered for this worker")
     p = sub.add_parser("claim"); p.add_argument("task_id", nargs="?")
     p = sub.add_parser("find"); p.add_argument("words", nargs="+"); p.add_argument("--kinds")
     sub.add_parser("helpers")
@@ -316,7 +316,9 @@ def main(argv=None):
     w = Worker(a.id)
     try:
         if a.cmd == "next":
-            found = w.next(limit=a.limit, tier=a.tier, has=a.has)
+            found = w.next(limit=a.limit, tier=a.tier, has=a.has, skip=[t for t in a.skip.split(",") if t])
+            for t in [t for t in a.skip.split(",") if t]:
+                w.skip(t)
             for t in found.get("tasks", []):
                 print(f"{t['task_id']}  {t['title']}\n  {t['prompt_head']}{' ...' if t.get('prompt_cut') else ''}\n")
             print("NEXT:", json.dumps({k: v for k, v in found["next"].items() if k in ("action", "reason", "retry_after_seconds", "why")}))
