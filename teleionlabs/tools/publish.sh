@@ -3,6 +3,7 @@
 set -euo pipefail
 export NODE_OPTIONS=--network-family-autoselection-attempt-timeout=3000
 cd "$(dirname "$0")/.."; N=${TELEION_NOTES:?set TELEION_NOTES to the local working notes}; L=$N/coordination-2026-10-31/deploy-locks/deploy_lock.py; W=$N/portal-worker/node_modules/.bin/wrangler; T=$(mktemp -d)
+[ "$(stat -c %s static/media/main-film-20261103.mp4)" -gt 1048576 ] || { echo "the real film is missing: copy it into static/media (see MEDIA.md)"; exit 1; }
 python3 build.py >/dev/null; python3 tools/make_gallery.py | tail -3 | cut -c1-140; python3 build.py >/dev/null
 python3 tests/check_words.py >"$T/w" 2>&1 || { tail -4 "$T/w" | cut -c1-220; echo STOP words; exit 1; }
 make test >"$T/t" 2>&1 || { grep -E '^not ok' "$T/t" | cut -c1-110; echo STOP tests; exit 1; }

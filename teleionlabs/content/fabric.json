@@ -159,7 +159,7 @@
      "title": "Restricted grant and audit readiness kit",
      "text": "Organizes restricted grant rules, expense checks and audit preparation steps for a small nonprofit.",
      "points": [
-      "2 reusable Tasks + 2 human sign-off steps + checked Task Objects",
+      "2 reusable Tasks + 2 steps for a person + checked Task Objects",
       "Checked by a separate reviewer key (BSD-3-Clause)",
       "Example kit in the Eranos library"
      ],
@@ -173,7 +173,7 @@
      "title": "Multilingual service flyer translation check kit",
      "text": "Checks translated community flyers against plain-language, eligibility and contact-detail checklists.",
      "points": [
-      "2 reusable Tasks + 2 human sign-off steps + translation checklists",
+      "2 reusable Tasks + 2 steps for a person + translation checklists",
       "Checked by a separate reviewer key (MIT)",
       "Example kit in the Eranos library"
      ],
@@ -187,7 +187,7 @@
      "title": "Monthly program impact report kit",
      "text": "Turns public program counts and notes into a structured monthly summary with source checks.",
      "points": [
-      "2 reusable Tasks + 3 human sign-off steps + report templates",
+      "2 reusable Tasks + 3 steps for a person + report templates",
       "Checked by a separate reviewer key (MIT)",
       "Example kit in the Eranos library"
      ],

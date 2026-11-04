@@ -2,16 +2,19 @@
 PYTHON ?= python3
 BASE ?= http://127.0.0.1:8799
 
-.PHONY: build test range-test words links check light-check
+.PHONY: film-fixture build test range-test words links check light-check
 
 build:
 	$(PYTHON) build.py
 
-test: build
+film-fixture:
+	$(PYTHON) tests/make_film_fixture.py
+
+test: film-fixture build
 	node --test tests/worker.test.mjs tests/worker_example.test.mjs tests/network.test.mjs tests/network_client.test.mjs
 
 # Real workerd streaming/Content-Length checks using the existing workspace install.
-range-test:
+range-test: film-fixture
 	node --test tests/media_range.test.mjs tests/network_runtime.test.mjs
 
 words: build
