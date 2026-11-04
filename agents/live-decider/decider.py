@@ -403,6 +403,9 @@ def run_search(n: int) -> int:
     return 0
 
 
+NO_MODEL_ROUTES = frozenset({"plain_code_rule", "rule_no_model", "?"})  # no model answered these
+
+
 def tally() -> dict[str, Any]:
     rows, runs = read_jsonl(DECISIONS), read_jsonl(RUNS)
     outcomes: dict[str, int] = {}
@@ -414,9 +417,11 @@ def tally() -> dict[str, Any]:
     secs = sorted(float(r["seconds"]) for r in answered)
     events = [r for r in read_jsonl(WARM_LOG) if r.get("kind") == "fabric_decision"]
     chosen: dict[str, int] = {}
+    decided_by_route: dict[str, int] = {}
     route_stats: dict[str, dict[str, Any]] = {}
     for e in events:
         chosen[e.get("model", "?")] = chosen.get(e.get("model", "?"), 0) + 1
+        decided_by_route[e.get("model_route", "?")] = decided_by_route.get(e.get("model_route", "?"), 0) + 1
         for a in e.get("attempts") or []:
             st = route_stats.setdefault(a.get("route", "?"), {"answered": 0, "other_outcomes": {}, "seconds": [], "cost_usd": 0.0})
             if a.get("outcome") == "answered":
@@ -454,9 +459,14 @@ def tally() -> dict[str, Any]:
             "latest": [{k: r.get(k) for k in ("task_id", "outcome", "object_id", "audit_pass", "seconds")} for r in rows[-30:]],
         },
         "live_route_list": {
-            "where": "The always-on warm agent, each real build Task it claims. Order: fine-tuned batch answer, Meta open model through partner credits, Muse Spark through the Meta API, then the rule.", "decisions": len(events), "models_chosen": chosen,
-            "decided_by_a_model": sum(1 for e in events if not e.get("fallback")), "fell_back_to_the_rule": sum(1 for e in events if e.get("fallback")),
-            "routes": route_stats, "task_object_given_to_a_maker_by_route": effect_routes, "maker_runs_after_a_decision": len(effects),
+            "where": "The always-on warm agent, each real build Task it claims, per decision on which model the maker runs. Least expensive first: a plain code rule when it can decide, then the fine-tuned batch answer, a Meta open model through partner credits, Muse Spark through the Meta API.",
+            "decisions": len(events),
+            "decided_by_plain_code_no_model": sum(n for route, n in decided_by_route.items() if route in NO_MODEL_ROUTES),
+            "decided_by_a_meta_model": sum(n for route, n in decided_by_route.items() if route not in NO_MODEL_ROUTES),
+            "decided_by_route": decided_by_route,
+            "fell_back_after_every_route_failed": sum(1 for e in events if e.get("fallback")),
+            "maker_model_chosen": chosen,
+            "routes_each_attempt_including_failures": route_stats, "task_object_given_to_a_maker_by_route": effect_routes, "maker_runs_after_a_decision": len(effects),
             "latest": [{k: e.get(k) for k in ("at", "task_id", "model", "model_route", "object_route", "route_object_id", "fallback", "seconds")} for e in events[-20:]],
         },
         "search_reorder": {
@@ -491,7 +501,7 @@ def publish() -> int:
         body["search_reorder"].pop("latest", None)
     f, m = body["fine_tuned_decider"], body["live_route_list"]
     summary = (f"Live record of Teleion Fabric's Meta-based deciding. Fine-tuned Muse Glimmer 30B answered on {f['model_answered']} real Tasks in "
-               f"{f['batches']} batches; {f['audit_passed']} of {f['audited']} answers passed a Muse Spark audit; {f['fine_tuned_picks_given_to_a_live_maker']} of its picks reached a live worker so far. Live route list: {m['decisions']} real Tasks.")
+               f"{f['batches']} batches; {f['audit_passed']} of {f['audited']} answers passed a Muse Spark audit; {f['fine_tuned_picks_given_to_a_live_maker']} of its picks reached a live worker so far. Choosing the maker's model on {m['decisions']} real Tasks: plain code with no model on {m['decided_by_plain_code_no_model']}, a Meta model on {m['decided_by_a_meta_model']}.")
     shim = Shim("fabric-decider", Path.home() / ".config/ta-amps/fabric-decider-identity.json")
     res = shim.publish({record_key: {"summary": summary, "category": "live_record", "search_hints": ["decider", "fine-tuned", "muse glimmer", "muse spark", "routing"], "payload": body}},
                        summary, f"fabric-decider-{int(time.time() // 900)}")

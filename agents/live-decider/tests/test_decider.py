@@ -38,6 +38,28 @@ def test_candidates_only_objects():
     assert d.candidates_from_search(rs) == [{"id": "o", "title": "T", "summary": "s s"}]
 
 
+def test_the_live_record_keeps_plain_code_apart_from_a_model(tmp_path, monkeypatch):
+    log = tmp_path / "warm.jsonl"
+    rows = [
+        {"kind": "fabric_decision", "task_id": "a", "model": "muse-spark-1.3", "model_route": "plain_code_rule", "fallback": False, "attempts": [{"route": "plain_code_rule", "outcome": "answered", "cost_usd": 0}]},
+        {"kind": "fabric_decision", "task_id": "b", "model": "muse-spark-1.3", "model_route": "plain_code_rule", "fallback": False, "attempts": [{"route": "plain_code_rule", "outcome": "answered", "cost_usd": 0}]},
+        {"kind": "fabric_decision", "task_id": "c", "model": "muse-spark-1.3", "model_route": "meta_api_muse_spark", "fallback": False, "attempts": [{"route": "baseten_meta_open_model", "outcome": "bad_answer"}, {"route": "meta_api_muse_spark", "outcome": "answered", "cost_usd": 0.003}]},
+        {"kind": "fabric_decision", "task_id": "d", "model": "muse-spark-1.3", "model_route": "rule_no_model", "fallback": True, "attempts": []},
+    ]
+    log.write_text("\n".join(json.dumps(r) for r in rows))
+    monkeypatch.setattr(d, "WARM_LOG", log)
+    for name in ("DECISIONS", "RUNS", "SEARCHES"):
+        monkeypatch.setattr(d, name, tmp_path / f"{name}.jsonl")
+    live = d.tally()["live_route_list"]
+    assert live["decisions"] == 4
+    assert live["decided_by_plain_code_no_model"] == 3
+    assert live["decided_by_a_meta_model"] == 1
+    assert live["decided_by_route"] == {"plain_code_rule": 2, "meta_api_muse_spark": 1, "rule_no_model": 1}
+    assert live["fell_back_after_every_route_failed"] == 1
+    assert "decided_by_a_model" not in live and "models_chosen" not in live
+    assert live["routes_each_attempt_including_failures"]["baseten_meta_open_model"]["answered"] == 0
+
+
 def test_publish_refuses_without_its_own_record_key(monkeypatch, capsys):
     monkeypatch.delenv("DECIDER_RECORD_KEY", raising=False)
     monkeypatch.setitem(sys.modules, "omninode_live.shim", None)  # importing it would fail: it must not get that far
