@@ -29,8 +29,17 @@ Some repository names and code still use older code names. The product is Teleio
 | --- | --- | --- |
 | Muse Spark 1.3 (Meta API) | Live workers: plan, build and review. 77% of build steps, from 15 outcomes, Nov 2 | https://teleionlabs.com/benchmarks.txt, "Model choices" |
 | Muse Wonder 1.0 (Meta API) | Live workers. 23% of build steps, from the same 15 outcomes | Same page |
-| Muse Glimmer 30B, fine-tuned | 99.3% against 94.0% on 150 held-out cases with a fixed budget. These are development results, because the test sets were reused. The adapter sits on a test endpoint, not in live routing | Same page |
+| Muse Glimmer 30B, fine-tuned | 99.3% against 94.0% on 150 held-out cases with a fixed budget. These are development results, because the test sets were reused. The adapter is batch only: 1 pick has reached a live worker so far | Same page |
 | `meta-models/muse-spark-open` on Baseten | Teacher in one training run: 19 of 20 calls, Nov 2 | Compute ledger |
+
+## What else is in this repository
+
+- [`omninode/`](omninode/README.md): the feed OmniNode, with its pre-step and rules.
+- [`agents/`](agents/warm-server-agent/README.md): the always-on server agent and the [live decider](agents/live-decider/README.md).
+- [`agent-prompt/`](agent-prompt/README.md): the prompt our worker bots start from.
+- [`tools/e2e/`](tools/e2e/README.md): the end-to-end test of the live public system.
+- [`film-engine/`](film-engine/README.md) and [`layout-lab/`](layout-lab/README.md): the code behind the films. No media.
+- [`docs/ROADMAP.md`](docs/ROADMAP.md): ideas we have not built.
 
 ## See it
 

@@ -1,0 +1,334 @@
+{
+  "schema_id": "teleion.infrastructure.warm_agent_grid.v1",
+  "grid_id": "warm_server_agent_node_grid",
+  "generation": 1,
+  "axes": [
+    {
+      "name": "poll_interval_seconds",
+      "kind": "integer_range",
+      "low": 5,
+      "high": 180,
+      "step": 5
+    },
+    {
+      "name": "http_timeout_seconds",
+      "kind": "integer_range",
+      "low": 10,
+      "high": 240,
+      "step": 10
+    },
+    {
+      "name": "default_max_output_tokens",
+      "kind": "integer_range",
+      "low": 256,
+      "high": 4096,
+      "step": 128
+    },
+    {
+      "name": "feedback_batch_limit",
+      "kind": "integer_range",
+      "low": 2,
+      "high": 25,
+      "step": 1
+    },
+    {
+      "name": "routing_strategy",
+      "kind": "choice",
+      "choices": [
+        "thompson_canary_hybrid",
+        "ucb_canary_hybrid",
+        "deterministic_exploit"
+      ]
+    },
+    {
+      "name": "enable_queue_claiming",
+      "kind": "boolean"
+    },
+    {
+      "name": "enable_bilateral_responder",
+      "kind": "boolean"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "timeout_exceeds_poll_floor",
+      "left_axis": "http_timeout_seconds",
+      "operator": "gte",
+      "right_axis": "poll_interval_seconds"
+    }
+  ],
+  "parameter_bounds": {
+    "poll_interval_seconds": {
+      "min": 2,
+      "max": 300
+    },
+    "http_timeout_seconds": {
+      "min": 5,
+      "max": 300
+    },
+    "default_max_output_tokens": {
+      "min": 128,
+      "max": 8192
+    },
+    "feedback_batch_limit": {
+      "min": 1,
+      "max": 50
+    },
+    "expansion_factor": 2
+  },
+  "cells": {
+    "interactive_warm_cell": {
+      "poll_interval_seconds": 90,
+      "http_timeout_seconds": 120,
+      "default_max_output_tokens": 2048,
+      "feedback_batch_limit": 10,
+      "routing_strategy": "thompson_canary_hybrid",
+      "enable_queue_claiming": true,
+      "enable_bilateral_responder": true
+    },
+    "high_backlog_cell": {
+      "poll_interval_seconds": 45,
+      "http_timeout_seconds": 90,
+      "default_max_output_tokens": 2560,
+      "feedback_batch_limit": 12,
+      "routing_strategy": "thompson_canary_hybrid",
+      "enable_queue_claiming": true,
+      "enable_bilateral_responder": true
+    },
+    "low_activity_conservation_cell": {
+      "poll_interval_seconds": 180,
+      "http_timeout_seconds": 200,
+      "default_max_output_tokens": 1792,
+      "feedback_batch_limit": 6,
+      "routing_strategy": "deterministic_exploit",
+      "enable_queue_claiming": true,
+      "enable_bilateral_responder": true
+    }
+  },
+  "regimes": {
+    "default": "interactive_warm_cell",
+    "high_backlog": "high_backlog_cell",
+    "idle_conservation": "low_activity_conservation_cell",
+    "high_backlog_ready_threshold": 16
+  },
+  "budget_and_rates": {
+    "owner_daily_cap_usd": 25.0,
+    "owner_total_cap_usd": 150.0,
+    "warm_cycle_soft_daily_usd": 6.0,
+    "tokens_per_million": 1000000.0,
+    "usd_round_digits": 6,
+    "bytes_per_token_floor": 3,
+    "input_token_safety_pad": 256,
+    "models": {
+      "muse-spark-1.3": {
+        "id": "muse-spark-1.3",
+        "model_display": "Muse Spark 1.3",
+        "base_url": "https://api.meta.ai/v1",
+        "reasoning_effort": "low",
+        "prices_usd_per_million": {
+          "input": 1.25,
+          "output": 4.25
+        },
+        "lineage_family": "muse_spark_1_3_base",
+        "fine_tune_adapter_id": null,
+        "training_data_digest": null
+      },
+      "muse-wonder-1.0": {
+        "id": "muse-wonder-1.0",
+        "model_display": "Muse Wonder 1.0",
+        "base_url": "https://api.meta.ai/v1",
+        "reasoning_effort": "low",
+        "prices_usd_per_million": {
+          "input": 4.0,
+          "output": 20.0
+        },
+        "lineage_family": "muse_wonder_1_0_independent_checker",
+        "fine_tune_adapter_id": null,
+        "training_data_digest": null
+      }
+    }
+  },
+  "canary_policy": {
+    "promotion_margin": 0.02,
+    "initial_rollout_share": 0.15,
+    "rollout_rungs": [
+      0.15,
+      0.35,
+      0.65,
+      1.0
+    ],
+    "min_canary_samples_per_rung": 4,
+    "min_live_pass_rate": 0.85,
+    "rollback_pass_rate_floor": 0.7,
+    "rolling_window_size": 12
+  },
+  "fine_tuned_candidates": [
+    {
+      "candidate_id": "muse_glimmer_30b_orchestrator_v1",
+      "display_name": "Muse Glimmer 30B, fine-tuned by ta-amps",
+      "role_scope": "maker_routing_and_retrieval",
+      "base_model": "meta-models/Muse-Glimmer-30B@a4e59da5",
+      "fine_tune_adapter_id": "glimmer-orchestrator-none-fix-r16",
+      "training_data_digest": "glimmer_multirole_4task_holdout_20261101",
+      "held_out_score": 0.9645,
+      "baseline_score": 0.5598,
+      "held_out_breakdown": {
+        "retrieval_hit1": 0.891,
+        "review_balanced_accuracy": 0.996,
+        "routing_f1": 0.978,
+        "tool_exact_match": 0.993
+      },
+      "training_cost_usd": 3.46,
+      "restore_pointer": "modal://ta-amps/glimmer-orchestrator-weights/none-fix",
+      "serving_endpoint": null
+    },
+    {
+      "candidate_id": "wave3_contriever_kkt_router_v1",
+      "display_name": "Wave-3 Contriever KKT-Diff Router",
+      "role_scope": "maker_lane_router",
+      "base_model": "facebook/contriever",
+      "fine_tune_adapter_id": "tessera_wave3_contriever_80caa0fc78ef0c58",
+      "training_data_digest": "nov2_herma_curated_256train_112id_36ood_36holdout",
+      "held_out_score": 1.0,
+      "baseline_score": 0.532,
+      "held_out_breakdown": {
+        "feed_lane_accuracy": 1.0,
+        "hosted_meta_eval_holdout_accuracy": 1.0,
+        "nothing_fits_abstention_rate": 1.0,
+        "mean_kkt_l1_error": 0.033384
+      },
+      "training_cost_usd": 0.0104,
+      "restore_pointer": "modal-volume://tessera-wave3-omninode-checkpoints/tessera_wave3_omninode_20261102T202814Z_80caa0fc78ef0c58"
+    },
+    {
+      "candidate_id": "wave3_pruned_decoder_decisioner_v1",
+      "display_name": "Wave-3 Pruned Decoder Five-Head Decisioner",
+      "role_scope": "maker_topology_decisioner",
+      "base_model": "Qwen/Qwen2.5-0.5B",
+      "fine_tune_adapter_id": "tessera_wave3_decoder18_lora16_80caa0fc78ef0c58",
+      "training_data_digest": "nov2_herma_curated_256train_112id_36ood_36holdout",
+      "held_out_score": 0.991071,
+      "baseline_score": 0.5118,
+      "held_out_breakdown": {
+        "combinator_topology_accuracy": 0.991071,
+        "ingress_regime_accuracy": 1.0,
+        "feed_lane_accuracy": 1.0,
+        "mean_kkt_l1_error": 0.032919
+      },
+      "training_cost_usd": 0.022,
+      "restore_pointer": "modal-volume://tessera-wave3-omninode-checkpoints/tessera_wave3_omninode_20261102T202814Z_80caa0fc78ef0c58"
+    }
+  ],
+  "personas": [
+    {
+      "persona_id": "concise_systems_architect",
+      "role": "maker",
+      "system_directive": "Answer directly with grounded facts, clear structure, and actionable steps. Never invent citations, hashes, or live service claims."
+    },
+    {
+      "persona_id": "bilateral_support_specialist",
+      "role": "bilateral",
+      "system_directive": "Unblock peer agents concisely using ONLY verified Teleion Fabric routes: Teleion Fabric's model shim at https://shim.teleionlabs.com (/connect.json, /mcp, /v1/conversations, /q/claim, /q/heartbeat, /q/submit, /q/feedback, /q/chat, /q/alternatives, /q/human-links, /bridge/<channel>/status, /bridge/<channel>/inbox) and Teleion Fabric at https://fabric.teleionlabs.com (/connect.json, /mcp, /v1/tasks/claim, /v1/tasks/heartbeat, /v1/tasks/submit, /v1/stores/main/records, /v1/human-links). Through December 31, 2026, no authentication, login, credential, or session setup is required. Never invent undocumented endpoints."
+    },
+    {
+      "persona_id": "independent_skeptical_verifier",
+      "role": "checker",
+      "system_directive": "Independently audit completeness, factual grounding, schema validity, and safety. Never rubber-stamp incomplete or ungrounded work."
+    }
+  ],
+  "tuner_policy": {
+    "prior_alpha": 2.0,
+    "prior_beta": 1.0,
+    "milli_pass_threshold": 750,
+    "milli_scale": 1000,
+    "score_percent_ceiling": 100,
+    "percent_to_milli_multiplier": 10,
+    "min_observations_before_reweight": 3,
+    "rng_seed_default": 20261102
+  },
+  "endpoints_and_paths": {
+    "herma_base_url": "https://shim.teleionlabs.com",
+    "tessera_base_url": "https://fabric.teleionlabs.com",
+    "default_bridge_channel": "warm-agent-hub",
+    "bridge_challenge_sum": "42",
+    "loopback_host": "127.0.0.1",
+    "loopback_port": 18791,
+    "meta_key_file": "$HOME/.config/ta-amps/eranos-worker/meta.env",
+    "meta_spend_ledger": "$HOME/.local/state/eranos-worker/meta-spend.json",
+    "credentials_dir": "$HOME/.config/eranos-worker",
+    "maker_credential_file": "warm-agent-maker.json",
+    "checker_credential_file": "warm-agent-checker.json",
+    "state_dir": "$HOME/.local/state/eranos-worker",
+    "wake_dir": "$HOME/.local/state/eranos-worker/wake",
+    "telemetry_log_file": "warm-agent.jsonl",
+    "transcript_log_file": "warm-agent-transcripts.jsonl",
+    "training_trace_file": "warm-training-traces.jsonl",
+    "canary_state_file": "warm-canary-registry.json",
+    "banned_words_path": "$TELEION_NOTES/coordination-2026-10-31/rules/banned-words.json",
+    "queue_wake_map": {
+      "eq01": "planner",
+      "eq02": "builder",
+      "eq03": "reviewer"
+    }
+  },
+  "operational_constants": {
+    "owner_rw_file_mode_decimal": 384,
+    "owner_rwx_dir_mode_decimal": 448,
+    "http_ok_low": 200,
+    "http_ok_high": 299,
+    "http_bad_request": 400,
+    "http_not_found": 404,
+    "http_server_error": 500,
+    "max_seen_ids_cache": 512,
+    "max_prompt_chars": 6000,
+    "max_summary_chars": 360,
+    "min_substantive_feedback_chars": 16,
+    "search_context_limit": 5,
+    "hex_digest_prefix_chars": 16,
+    "queue_claim_every_n_cycles": 10
+  },
+  "decider_routes": {
+    "partner_timeout_seconds": 12.0,
+    "meta_timeout_seconds": 20.0,
+    "search_timeout_seconds": 8.0,
+    "search_limit": 30,
+    "max_candidates": 6,
+    "title_chars": 100,
+    "summary_chars": 260,
+    "query_chars": 120,
+    "description_chars": 1500,
+    "why_chars": 160,
+    "error_chars": 80,
+    "seconds_digits": 2,
+    "usd_digits": 6,
+    "budget_stop_usd": 9.0,
+    "http_ok_below": 300,
+    "tokens_per_price_unit": 1000000,
+    "partner_input_usd_per_million": 0.25,
+    "partner_output_usd_per_million": 1.0,
+    "spend_file": "$TELEION_NOTES/work-2026-11-03/meta-live/spend.jsonl",
+    "fine_tune_routes_file": "$HOME/.local/state/eranos-worker/fabric-decider-routes.json",
+    "overall_deadline_seconds": 30.0,
+    "reserve_per_route_usd": 0.02,
+    "audit_reserve_usd": 0.02,
+    "ledger_lock_wait_seconds": 2.0,
+    "ledger_lock_poll_seconds": 0.05,
+    "search_max_bytes": 2000000,
+    "partner_max_output_tokens": 2000,
+    "meta_max_output_tokens": 1000,
+    "meta_input_usd_per_million": 1.25,
+    "meta_output_usd_per_million": 4.25,
+    "partner_reasoning_effort": "low",
+    "plain_code_title_prefixes": [
+      "Client-Side Distributed Index Enrichment"
+    ],
+    "object_ref_hosts": [
+      "shim.teleionlabs.com",
+      "fabric.teleionlabs.com"
+    ],
+    "tool_timeout_seconds": 6.0,
+    "tool_max_bytes": 200000,
+    "tool_result_chars": 1500,
+    "wonder_hold_usd": 0.1
+  }
+}
