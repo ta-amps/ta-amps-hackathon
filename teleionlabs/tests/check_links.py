@@ -105,8 +105,6 @@ def main() -> int:
                 continue
             path = parts.path or "/" + rel
             f = target_file(path) if parts.path else p
-            if not f.is_file() and MEDIA_BASE and path.startswith("/media/gallery-"):
-                continue  # The review gallery's own files: built at deploy time, never in git.
             if not f.is_file() and MEDIA_BASE and path.endswith(MEDIA_SUFFIXES):
                 # Video and voice files are not in git (see MEDIA.md): the live copy must answer instead.
                 external.setdefault(MEDIA_BASE + path, set()).add(rel)
@@ -127,6 +125,18 @@ def main() -> int:
         if "<" in u or u.endswith("..."):
             continue
         code_urls.setdefault(u, set()).add("llms.txt")
+
+    # The review gallery draws its cards from items.json, so every file it names must be in the build too.
+    items = DIST / "video-gallery/items.json"
+    if items.is_file():
+        for href in sorted(set(re.findall(r'"(/(?:media|video-gallery)/[^"]+)"', items.read_text(encoding="utf-8")))):
+            internal += 1
+            if target_file(href).is_file():
+                continue
+            if MEDIA_BASE and href.endswith(MEDIA_SUFFIXES):
+                external.setdefault(MEDIA_BASE + href, set()).add("video-gallery/items.json")
+                continue
+            bad.append(f"video-gallery/items.json: {href} -> missing")
 
     # This site's own absolute URLs resolve against the build: the live host may still serve the old site.
     for url in [u for u in code_urls if urlsplit(u).hostname == OWN_HOST]:

@@ -17,7 +17,7 @@ const OVERVIEW_HOST = "agora.eranosforgood.org";
 const STATUS_TTL_SECONDS = 60;
 const isTextFile = (path) => path.endsWith(".txt");
 // Retired pages: their job moved to the home film and the visitor's agent.
-const RETIRED = new Set(["/start", "/story", "/network"]);
+const RETIRED = new Set(["/start", "/story", "/network", "/experience", "/experience.txt"]);
 const OVERVIEW_PREFIXES = new Set([
   "judges", "how-it-works", "source", "library", "feeds", "scenarios",
   "models", "use-cases", "learning", "deploy", "studio", "accessibility",

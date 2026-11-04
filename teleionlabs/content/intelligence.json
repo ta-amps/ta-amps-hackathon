@@ -26,7 +26,7 @@
    "type": "page_head",
    "eyebrow": "Teleion Fabric",
    "title": "Fabric Intelligence",
-   "lead": "Fabric Intelligence is custom OmniNodes, powered by Meta models. They do deciding, shimming, and search and retrieval. Here's what runs today, what we've measured, and what we're still trying."
+   "lead": "Fabric Intelligence is custom OmniNodes that run on any model, including Meta models. They do deciding, shimming, and search and retrieval. Here's what runs today, what we've measured, and what we're still trying."
   },
   {
    "type": "prose",

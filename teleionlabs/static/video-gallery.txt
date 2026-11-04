@@ -2,7 +2,9 @@ Video gallery
 
 Every film and cut for review. These are candidates and rough work, not final films. A mix-and-match player and more films arrive here as they finish.
 
-#81 Cube fabric: Tasks left, fabric centered, Objects right, calm floor (Full cut, Isometric, Candidate): https://teleionlabs.com/media/gallery-cube-fabric-1-calm.mp4
+#85 Draft: one terminal under the fabric (Full cut, Isometric, Draft): https://teleionlabs.com/media/gallery-cube-term-center.mp4
+#83 Draft: two terminals under the fabric (Full cut, Isometric, Draft): https://teleionlabs.com/media/gallery-cube-term-both.mp4
+#84 Main film: cube fabric, then real clicks on the live site (Full cut, Real footage, Main): https://teleionlabs.com/media/gallery-cut-e-v8.mp4
 #79 Fabric Intelligence explained (Explainer, Isometric, Candidate): https://teleionlabs.com/media/gallery-deep-intelligence.mp4
 #80 Feeds explained (Explainer, Isometric, Candidate): https://teleionlabs.com/media/gallery-deep-feeds.mp4
 #74 Cube fabric: camera and cube-size versions (Stills, Isometric, Candidate): https://teleionlabs.com/media/gallery-cube-versions.jpg
@@ -10,8 +12,6 @@ Every film and cut for review. These are candidates and rough work, not final fi
 #78 Shimming explained (Explainer, Isometric, Candidate): https://teleionlabs.com/media/gallery-deep-shimming.mp4
 #76 OmniNode explained (Explainer, Isometric, Candidate): https://teleionlabs.com/media/gallery-deep-omninode.mp4
 #57 Ray-traced blocks: All six shots (Reel, Ray-traced, Candidate): https://teleionlabs.com/media/gallery-blocks-reel.mp4
-#66 Cut E v2 (Full cut, Real footage, Candidate): https://teleionlabs.com/media/gallery-cut-e-v2.mp4
-#64 OmniNodes optimizing across a very large grid (Scene, Isometric, Candidate): https://teleionlabs.com/media/gallery-omninode-grid-24s.mp4
 #54 Music: Felt piano and pads (ACE-Step) (Music, Music, Candidate): https://teleionlabs.com/media/gallery-music-ace-felt.mp3
 #50 Music: Sparse piano turning into warm low strings (ElevenLabs) (Music, Music, Candidate): https://teleionlabs.com/media/gallery-music-el-strings.mp3
 #48 Music: Warm pad drone, slow swells (ElevenLabs) (Music, Music, Candidate): https://teleionlabs.com/media/gallery-music-el-pads.mp3

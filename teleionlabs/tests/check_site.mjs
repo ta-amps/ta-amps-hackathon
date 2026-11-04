@@ -5,8 +5,8 @@
 //   layout  no sideways scroll; the first line is for agents; one footer row of links plus one line
 //   text    no stylesheet file, no font file, no images in the page
 //   console no console errors, page errors or CSP violations
-//   film    on the home page: the canvas shows and draws, its scenes add up to 180 s, and controls work
-//   scripts film code runs on / and /experience/ only, from this site; Three.js and the 3D world on /experience/ only
+//   film    on the home page: the video plays muted, Sound works; on /video/: the main film plays
+//   scripts from this site only; the only film script is /assets/home-film.js on the home page
 // Then axe per page and width: no serious or critical issue. Exit 1 on any failure.
 import { createRequire } from "node:module";
 import { readFile } from "node:fs/promises";
@@ -20,8 +20,7 @@ const { chromium } = require(PLAYWRIGHT);
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : dflt; };
 const BASE = opt("--base", "http://127.0.0.1:8799").replace(/\/$/, "");
-const PAGES = ["/", "/experience/", "/fabric/", "/omninode/", "/shimming/", "/fabric-intelligence/", "/feeds/", "/video/", "/benchmarks/", "/benchmarks/methodology/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"];
-const FILMS = ["/", "/experience/"];
+const PAGES = ["/", "/fabric/", "/omninode/", "/shimming/", "/fabric-intelligence/", "/feeds/", "/video/", "/benchmarks/", "/benchmarks/methodology/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"];
 const VIEWPORTS = [{ width: 1280, height: 720 }, { width: 390, height: 844 }];
 const PAPER = "rgb(245, 242, 234)";
 const failures = [];
@@ -58,39 +57,26 @@ for (const viewport of VIEWPORTS) for (const colorScheme of ["light", "dark"]) {
     if (!/only/.test(r.scheme) || !/light/.test(r.scheme) || /dark/.test(r.scheme)) fail(where, `color-scheme ${r.scheme}`);
     if (r.dark.length) fail(where, `dark element ${r.dark.join(",")}`);
     if (r.sideways) fail(where, "sideways scroll");
-    if (!r.first.startsWith("Teleion Labs is an agent-first")) fail(where, "first line isn't for agents");
+    if (!r.first.startsWith("Agent-first service")) fail(where, "first line isn't for agents");
     if (r.sheets || r.fonts || r.imgs) fail(where, `not text only: ${JSON.stringify([r.sheets, r.fonts, r.imgs])}`);
     if (r.footerRows !== 2) fail(where, `footer has ${r.footerRows} lines`);
     const scripts = await page.evaluate(() => [...document.scripts].map((s) => s.src).filter(Boolean).concat(performance.getEntriesByType("resource").filter((e) => /\.m?js(\?|$)/.test(e.name)).map((e) => e.name)));
     for (const src of scripts) {
       if (new URL(src).origin !== new URL(BASE).origin) fail(where, `script from another site ${src}`);
-      if (path !== "/experience/" && /film3d|three/.test(src)) fail(where, `3D code outside /experience/ ${src}`);
-      if (!FILMS.includes(path) && /film/.test(src)) fail(where, `film code on a text page ${src}`);
+      if (/film3d|three/.test(src)) fail(where, `3D code ${src}`);
+      if (/film/.test(src) && !(path === "/" && /\/assets\/home-film\.js$/.test(src))) fail(where, `film code on a text page ${src}`);
     }
-    if (FILMS.includes(path)) {
-      const film = await page.evaluate(() => {
-        const cv = document.getElementById("film");
-        const px = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
-        let ink = 0; for (let i = 0; i < px.length; i += 400) if (px[i] < 120) ink++;
-        return { hidden: cv.hidden, ink, secs: [...document.querySelectorAll("[data-seconds]")].reduce((a, s) => a + Number(s.dataset.seconds), 0) };
-      });
-      if (film.hidden) fail(where, "film hidden");
-      const ctl = await page.evaluate(() => { const b = document.getElementById("film-controls").getBoundingClientRect(); return { bottom: b.bottom, vh: innerHeight }; });
-      if (ctl.bottom > ctl.vh) fail(where, `controls end at ${Math.round(ctl.bottom)}, below the fold at ${ctl.vh}`);
-      if (film.secs !== 180) fail(where, `film is ${film.secs} s`);
-      const before = await page.textContent("#film-pos");
-      await page.click('[data-film="next"]');
-      await page.waitForTimeout(150);
-      if (before === (await page.textContent("#film-pos"))) fail(where, "next did nothing");
-      await page.waitForTimeout(1500);
-      const ink = await page.evaluate(() => { const cv = document.getElementById("film"); const px = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 0; i < px.length; i += 400) if (px[i] < 120) n++; return n; });
-      if (!ink) fail(where, "film draws nothing");
-      // Paused, then jumped: the scene shows at rest, so its heading is fully drawn at once.
-      await page.click('[data-film="pause"]');
-      await page.click('[data-film="next"]');
-      await page.waitForTimeout(150);
-      const rested = await page.evaluate(() => { const cv = document.getElementById("film"); const px = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 0; i < px.length; i += 400) if (px[i] < 120) n++; return n; });
-      if (!rested) fail(where, "a scene jumped to while paused is blank");
+    if (path === "/") {
+      await page.waitForTimeout(2500);
+      const v = await page.evaluate(() => { const e = document.querySelector("video#film"); return e && { t: e.currentTime, muted: e.muted, canvas: document.querySelectorAll("canvas").length }; });
+      if (!v || !(v.t > 0) || !v.muted || v.canvas) fail(where, `home video ${JSON.stringify(v)}`);
+      await page.click('[data-film="sound"]');
+      if (await page.evaluate(() => document.querySelector("video#film").muted)) fail(where, "Sound did nothing");
+    }
+    if (path === "/video/") {
+      await page.waitForTimeout(2500);
+      const v = await page.evaluate(() => { const e = document.querySelector("video"); return e && { t: e.currentTime, src: e.currentSrc }; });
+      if (!v || !(v.t > 0) || !/main-film/.test(v.src)) fail(where, `video page ${JSON.stringify(v)}`);
     }
     await page.close();
   }

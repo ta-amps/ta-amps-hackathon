@@ -32,20 +32,20 @@ WORD_CATEGORIES = ("always", "visible_text", "agent_apps_outside_models_page")
 WORKER_WORDS = HERE / "worker" / "banned.generated.js"
 WORKER_MEDIA = HERE / "worker" / "media.generated.js"
 WORKER_TEXT = HERE / "worker" / "text.generated.js"
-# The whole design of a text page (owner, Nov 2: text pages and a canvas home, nothing more). Light only (rule 13).
-TEXT_CSS = ("body>p:first-child{white-space:nowrap;font-size:min(1em,3.2vw)}html{color-scheme:only light;background:#F5F2EA;color:#11161F;overflow-x:clip;"
+# The whole design of a text page (owner, Nov 2: text pages and a film on the home page, nothing more). Light only (rule 13).
+TEXT_CSS = ("body>p:first-child{white-space:nowrap;font-size:min(1em,3.2vw);text-align:center}html{-webkit-tap-highlight-color:transparent;color-scheme:only light;background:#F5F2EA;color:#11161F;overflow-x:clip;"
             "font:16px/1.6 ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}"
             "body{max-width:72ch;margin:auto;padding:1rem;overflow-wrap:anywhere}a{color:#24519B}a:hover{color:#11161F}"
             "h1,h2,h3{font-size:1em;margin:2em 0 .4em}table{border-collapse:collapse;display:block;overflow-x:auto}"
             "th,td{padding:0 2ch .4em 0;text-align:left;vertical-align:top}pre{white-space:pre-wrap;background:#FFFDF8;padding:.5em}figure{margin:0}"
             "video{width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
-            "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em}footer a,nav a{margin-right:2ch;display:inline-block}"
-            "canvas{display:block;position:relative;left:50%;width:100vw;height:calc(100svh - 8rem);min-height:320px;margin-left:-50vw}"
-            "@media(max-width:700px){canvas{height:calc(100svh - 19rem)}}#film-controls{position:relative;z-index:2;box-sizing:border-box;min-height:5rem;margin:-5rem calc(50% - 50vw) 0;padding:.75rem 1rem;text-align:center;background:#F5F2EA;opacity:0;transition:opacity .2s;animation:film-hint 7s}#film-controls:hover,#film-controls:focus-within{opacity:1}@keyframes film-hint{0%,80%{opacity:1}100%{opacity:0}}@media(hover:none),(prefers-reduced-motion:reduce){#film-controls{opacity:1;animation:none;margin:0 calc(50% - 50vw)}}#film-controls button{margin:.25em}#film-controls a{white-space:nowrap}"
-            "@media(max-width:600px){canvas{height:calc(100svh - 19rem)}}")
-KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc|src)$")
+            "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em;text-align:center}footer a{margin:0 1ch;display:inline-block}"
+            "nav{display:flex;flex-wrap:wrap;justify-content:center;gap:.25em 2ch;margin:0 calc(50% - 50vw);padding:0 1rem}"
+            "#film-wrap{margin:1rem calc(50% - 50vw) 0}#film-wrap video{display:block;width:min(100%,max(28rem,calc((100svh - 12rem)*16/9)));height:auto;margin:auto;-webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}"
+            "#film-row{text-align:center;margin:.75rem 0}#film-row button{margin-right:2ch;background:#FFFDF8;color:#11161F;border:2px solid #11161F;border-radius:4px;font-weight:700;cursor:pointer}")
+KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc|src|on|off)$")
 
-PAGES = ["home", "experience", "fabric", "omninode", "shim", "intelligence", "feeds", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
+PAGES = ["home", "fabric", "omninode", "shim", "intelligence", "feeds", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
 REQUIRED = ["site", "llms", "link", *PAGES]
 
 
@@ -144,7 +144,7 @@ class ToText(HTMLParser):
 
 def to_text(markup: str) -> str:
     p = ToText()
-    markup = re.sub(r'<p id="film-controls".*?</p>', "", markup, flags=re.S)
+    markup = re.sub(r'<p id="film-(?:controls|row)".*?</p>', "", markup, flags=re.S)
     markup = re.sub(r'<script\b.*?</script>', "", markup, flags=re.S)
     p.feed(markup)
     text = "".join(p.out)
@@ -220,29 +220,21 @@ class Renderer:
         return fn(b, f"{where}/{b.get('id', kind)}")
 
     def b_film(self, b, where):
-        c, live = req(b, "controls", where), req(b, "live", where)
-        def marked(text, marks):
-            out = self.inline(text)
-            for word, colour in (marks or {}).items():
-                out = out.replace(esc(word), f'<b data-c="{esc(colour)}">{esc(word)}</b>')
-            return out
+        # The home page plays the rendered film: muted on arrival, with a Sound button; the scenes are its text, below it.
+        v = req(b, "video", where)
+        media, captions, poster = esc(req(v, "media", where)), esc(req(v, "captions", where)), esc(req(v, "poster", where))
         secs = []
         for s in req(b, "scenes", where):
-            m = s.get("marks")
-            ps = "".join(f"<p>{marked(p, m)}</p>" for p in s.get("paragraphs", []))
-            steps = "".join(f"<li>{marked(p, m)}</li>" for p in s.get("steps", []))
+            ps = "".join(f"<p>{self.inline(p)}</p>" for p in s.get("paragraphs", []))
+            steps = "".join(f"<li>{self.inline(p)}</li>" for p in s.get("steps", []))
             steps = f"<ul>{steps}</ul>" if steps else ""
-            secs.append(f'<section data-scene="{esc(s["kind"])}" data-seconds="{int(s["seconds"])}"><h2>{marked(req(s, "heading", where), m)}</h2>{ps}{steps}</section>')
-        buttons = "".join(f'<button type="button" data-film="{k}">{esc(c[k])}</button>' for k in ("back", "pause", "next")) + f'<button type="button" data-film="sound" data-src="{esc(b.get("audio", ""))}">{esc(c["sound_on"])}</button>'
-        words = {**c, **{f"live_{k}": v for k, v in live.items()}, "labels": req(b, "labels", where)}
-        if b.get("world"):
-            words["world"] = b["world"]
-        link3d = b.get("link3d")
-        extra = f' <a href="{esc(link3d["href"])}">{esc(link3d["label"])}</a>' if link3d else ""
-        blob = json.dumps(words, ensure_ascii=False).replace("<", "\\u003c")
-        return (f'<canvas id="film" role="img" aria-label="{esc(req(b, "label", where))}" hidden></canvas>'
-                f'<p id="film-controls" hidden>{buttons} <span id="film-pos"></span> <a href="#text">{esc(c["read"])}</a>{extra}</p>'
-                f'<script id="film-words" type="application/json">{blob}</script>'
+            secs.append(f'<section><h2>{self.inline(req(s, "heading", where))}</h2>{ps}{steps}</section>')
+        return (f'<figure id="film-wrap"><video id="film" controls autoplay muted playsinline preload="metadata" width="1280" height="720" '
+                f'poster="{poster}" aria-label="{esc(req(b, "label", where))}"><source src="{media}" type="video/mp4">'
+                f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(v, "captions_label", where))}">'
+                f'<a href="{media}">{esc(req(v, "download", where))}</a></video></figure>'
+                f'<p id="film-row"><button type="button" data-film="sound" data-on="{esc(req(v, "sound_on", where))}" data-off="{esc(req(v, "sound_off", where))}" hidden>{esc(v["sound_on"])}</button>'
+                f'<a href="#text">{esc(req(req(b, "controls", where), "read", where))}</a></p>'
                 f'<article id="text"><h1>{esc(req(b, "heading", where))}</h1>{"".join(secs)}</article>')
 
     def b_status(self, b, where):
@@ -521,10 +513,10 @@ class Renderer:
         transcript = "".join(f'<p>{self.inline(p)}</p>' for p in req(b, "transcript", where))
         return (
             '<div class="wrap video-body"><figure class="video-player">'
-            f'<video controls playsinline preload="none" width="1920" height="1080" poster="{esc(req(b, "poster", where))}" '
+            f'<video controls autoplay muted playsinline preload="metadata" width="1280" height="720" poster="{esc(req(b, "poster", where))}" '
             f'aria-label="{esc(req(b, "label", where))}" aria-describedby="video-context">'
             f'<source src="{media}" type="video/mp4">'
-            f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(b, "captions_label", where))}" default>'
+            f'<track kind="captions" src="{captions}" srclang="en" label="{esc(req(b, "captions_label", where))}">'
             f'<a href="{media}">{esc(req(b, "download", where))}</a></video>'
             f'<figcaption id="video-context">{self.inline(req(b, "context", where))}</figcaption></figure>'
             f'<p class="video-download"><a href="{media}" download>{esc(b["download"])}</a> · '
@@ -884,7 +876,7 @@ class Renderer:
         scripts = ""
         kinds = {b.get("type") for b in page["blocks"]}
         if "film" in kinds:
-            scripts = '<script src="/assets/film.js" defer></script>\n'
+            scripts = '<script src="/assets/home-film.js" defer></script>\n'
 
         noindex = page.get("noindex", False)
         canonical = self.origin + ("/" if noindex else route)
@@ -1008,15 +1000,12 @@ def build(out: Path) -> list[str]:
     write_worker_words(*shared_words())
     write_worker_media()
     data = {name: load(name) for name in REQUIRED}
-    # The 3D page tells the same film: it takes the home page's scenes and adds its own labels.
-    home_film = next(b for b in data["home"]["blocks"] if b.get("type") == "film")
-    data["experience"]["blocks"] = [{**{k: v for k, v in home_film.items() if k != "link3d"}, **b} if b.get("same_as") == "home" else b for b in data["experience"]["blocks"]]
     site = data["site"]
     r = Renderer(site)
     layout = (TEMPLATES / "layout.html").read_text(encoding="utf-8")
     if out.exists():
         shutil.rmtree(out)
-    keep = {"film.js", "film3d.js", "three-0.187.0.min.js", "network-geo.json", "favicon.svg", "favicon-32.png", "apple-touch-icon.png", "og-teleion-1200x630.png", "video-poster-teleion.svg", "video-preview.svg"}
+    keep = {"home-film.js", "network-geo.json", "favicon.svg", "favicon-32.png", "apple-touch-icon.png", "og-teleion-1200x630.png", "video-poster-teleion.svg", "video-preview.svg"}
     def ignore(folder, names):
         if Path(folder) == STATIC:
             return [n for n in names if n == "fonts"]

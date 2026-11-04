@@ -187,52 +187,56 @@
  ],
  "picks": [
   [
-   "cube-fabric-1-calm",
-   "Your cube fabric, 2:55: Tasks left, fabric centered, Task Objects right, and a shape that changes with each Task. Cursor and highlights on Eranos are coming next."
+   "cut-e-v8",
+   "The main film, now on the home page: the cube fabric, then real clicks on the live site."
   ],
   [
-   "cut-e-v2",
-   "Real browser footage of Eranos in motion. Its technical clips are the older look; the next version swaps in the cube fabric."
+   "cube-term-center",
+   "Draft. The cube fabric with one agent terminal under it, in the center."
+  ],
+  [
+   "cube-term-both",
+   "Draft. The cube fabric with two terminals under it: the Task queue and Task Objects."
   ],
   [
    "deep-omninode",
-   "The OmniNode tab film. Has six recorded runs where tokens fall from 9,094 to 1,872 as reuse grows, on one repeated job."
+   "Explainer: OmniNode. Has six recorded runs where tokens fall from 9,094 to 1,872 as reuse grows, on one repeated job."
   ],
   [
    "deep-intelligence",
-   "The Fabric Intelligence tab film: decisioning, fine-tuning, and weight editing as work in progress."
+   "Explainer: Fabric Intelligence: decisioning, fine-tuning, and weight editing as work in progress."
   ],
   [
-   "omninode-grid-24s",
-   "Claude Design's large grid. You said it's okay, and that the middle blocks need a clear meaning."
+   "deep-shimming",
+   "Explainer: Shimming."
   ],
   [
-   "blocks-reel",
-   "Ray-traced blocks for communications. Could anchor the explainers or a hero moment."
+   "deep-feeds",
+   "Explainer: Feeds."
   ],
   [
    "style-tabletop",
-   "A different direction: a physical tabletop. Earlier script; compare the look."
+   "A different look: a physical tabletop. Earlier script; compare the look."
   ],
   [
    "style-papercut",
-   "Layered paper, warm and human. Earlier script; compare the look."
+   "A different look: layered paper, warm and human. Earlier script; compare the look."
   ],
   [
-   "music-el-pads",
-   "The steadiest music under the voice. Is the voice, music level and pronunciation right?"
+   "blocks-reel",
+   "A different look: ray-traced blocks for communications. Could anchor the explainers or a hero moment."
   ]
  ],
  "site_videos": [
-  "cube-fabric-1-calm",
-  "cut-e-v2",
+  "cut-e-v8",
+  "cube-term-center",
+  "cube-term-both",
   "deep-omninode",
   "deep-intelligence",
   "deep-shimming",
   "deep-feeds",
-  "omninode-grid-24s",
-  "blocks-reel",
   "style-tabletop",
-  "style-papercut"
+  "style-papercut",
+  "blocks-reel"
  ]
 }
