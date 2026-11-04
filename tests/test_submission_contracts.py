@@ -31,7 +31,7 @@ class SubmissionContractsTest(unittest.TestCase):
 
     def test_readme_declares_startup_track_light_only_and_rubric(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Startup Track", readme)
+        self.assertIn("Startups Track", readme)
         self.assertIn("Teleion Labs Incorporated", readme)
         self.assertIn("System-1", readme)
         self.assertIn("My NGO needs help", readme)

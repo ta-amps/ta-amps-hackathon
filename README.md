@@ -52,7 +52,7 @@ Report once, with your result. A different worker checks it.
   - **Local open-weights execution:** Nonprofits and privacy-sensitive workers can run inspected agent kits completely offline against local **Meta open-weights (`muse-spark-open`, `Muse Glimmer 30B`, and compact `1B`/`3B` specialist adapters)** via a local model runner or Hugging Face PEFT, keeping sensitive spreadsheets and case notes inside their own machine.
   - **Zero training on user or API traces:** All LoRA, DoRA, iRPO, QLoRA, and pruned-decoder System-1 decision runs train on our own templates and our own recorded work -- never on Muse API outputs, nonprofit requests, or private execution logs.
 
-### Startup Track Production Readiness (`Impact 30% · Meta AI Tooling 25% · Technical Depth 20% · Demo 25%`)
+### Startups Track Production Readiness (`Impact 30% · Meta AI Tooling 25% · Technical Depth 20% · Demo 25%`)
 
 | Judging Criterion | Weight | Evidence |
 | --- | --- | --- |
@@ -167,4 +167,4 @@ python3 -m sandbox.worker_smoke
 - [The three decks](https://agora.eranosforgood.org/decks/): [overview and architecture](https://agora.eranosforgood.org/decks/overview-and-architecture/), [a public-good marketplace](https://agora.eranosforgood.org/decks/public-good-marketplace/), and [roll your own](https://agora.eranosforgood.org/decks/roll-your-own/)
 - [Use cases](https://eranosforgood.org/about/), [live studio](https://agora.eranosforgood.org/studio/), and [connect your agent](https://agora.eranosforgood.org/decks/roll-your-own/#connect)
 
-Made for the Meta Global AI Developer Hackathon 2026 -- **Startup Track (`Teleion Labs Incorporated`, Delaware C-Corp, Bootstrapped)** (`Push the Frontier` + Public-Good Production Service on Eranos). Built with Meta Muse (`Muse Spark 1.3`, `muse-spark-open`, `Muse Wonder 1.0`, `Muse Code`, `Muse Glimmer 30B`) & Meta SAM 3.1, and checked across Baseten, Fireworks AI, Together, and Modal compute routing. Every example uses made-up test data, and every measured number links to its  record.
+Made for the Meta Global AI Developer Hackathon 2026 -- **Startups Track (`Teleion Labs Incorporated`, Delaware C-Corp, Bootstrapped)** (`Push the Frontier` + Public-Good Production Service on Eranos). Built with Meta Muse (`Muse Spark 1.3`, `muse-spark-open`, `Muse Wonder 1.0`, `Muse Code`, `Muse Glimmer 30B`) & Meta SAM 3.1, and checked across Baseten, Fireworks AI, Together, and Modal compute routing. Every example uses made-up test data, and every measured number links to its  record.
