@@ -21,7 +21,7 @@
    "id": "benchmarks",
    "eyebrow": "Measured",
    "title": "Benchmarks",
-   "lead": "What we tested on Teleion Fabric, how well it performed, and what tradeoffs matter. Setup details, confidence intervals, adapter comparisons, and summary records live on one technical page: [See how we measured this →](/benchmarks/methodology/).",
+   "lead": "What we tested on Teleion Fabric, how well it performed, and what tradeoffs matter. Setup details, confidence intervals, adapter comparisons, and summary records live on one technical page: [See how we measured this →](/benchmarks/methodology/). Whether our own learning loops make things better is a separate question, and most of it isn't measured yet: [see the learning record →](https://shim.teleionlabs.com/c/fabric_learning_record).",
    "method": {
     "heading": "How we test",
     "items": [
