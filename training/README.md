@@ -97,7 +97,7 @@ model.load_adapter("./adapters/lora.shim-retriever", adapter_name="retrieve")
 model.load_adapter("./adapters/lora.builder-toolcalls", adapter_name="build")
 model.load_adapter("./adapters/lora.verifier-dpo", adapter_name="review")
 
-# Zero extra base-model VRAM; switch specialist weights per leased Tessera verb kind:
+# Zero extra base-model VRAM; switch specialist weights per leased Teleion Fabric verb kind:
 model.set_adapter("review")
 ```
 
@@ -143,7 +143,7 @@ python3 templates/finetune-meta-lora/train_lora_template.py \
   --dataset templates/finetune-meta-lora/sample_practice_tasks.json \
   --dry-run-manifest /tmp/lora-dry-run-receipt.json
 
-# 2. Full Tessera continuous tuning loop on a local CUDA GPU:
+# 2. Full Teleion Fabric continuous tuning loop on a local CUDA GPU:
 git clone https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine.git
 cd tessera-infrastructure-work-and-storage-engine
 make check

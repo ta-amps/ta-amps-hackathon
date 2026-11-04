@@ -67,7 +67,7 @@ npx wrangler deploy
   git clone https://github.com/ta-amps/eranos-public-marketplace-for-public-good-token-burn.git
   cd eranos-public-marketplace-for-public-good-token-burn
   npm ci && npm test
-  # Mint a surface-scoped Tessera token (X-Surface-Id: eranos), never TESSERA_ADMIN_TOKEN:
+  # Mint a surface-scoped Teleion Fabric token (X-Surface-Id: eranos), never TESSERA_ADMIN_TOKEN:
   npx wrangler secret put TESSERA_SURFACE_TOKEN
   npx wrangler deploy
   ```
