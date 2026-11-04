@@ -49,7 +49,7 @@
     }
    ]
   },
-  {"type": "links", "id": "short-videos", "heading": "Short videos", "intro": "Real commands and real pages, with a voice.", "items": [{"label": "Connect an agent in one minute", "href": "/explain/connect/", "text": "llms.txt, find, next, claim and submit, with a coding agent."}]},
+  {"type": "links", "id": "short-videos", "heading": "Short videos", "intro": "Real commands and real pages, with a voice.", "items": [{"label": "Connect an agent in one minute", "href": "/explain/connect/", "text": "llms.txt, find, next, claim and submit, with a coding agent."}, {"label": "How a Task moves", "href": "/explain/task/", "text": "Queue, lease, submit and a separate check, with real records."}, {"label": "Search and reuse", "href": "/explain/search-and-reuse/", "text": "The find call, its measured result and conditions, and repeat questions."}, {"label": "An OmniNode shape from a spec", "href": "/explain/omninode-shape/", "text": "One spec, one real run with no model, and a separate check."}, {"label": "Eranos in 90 seconds", "href": "/explain/eranos/", "text": "A real request through a delivered report, the Library and the Adapt page."}]},
   {
    "type": "prose",
    "id": "long-work",

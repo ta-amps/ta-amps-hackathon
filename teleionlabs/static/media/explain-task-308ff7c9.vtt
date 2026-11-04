@@ -1,0 +1,79 @@
+WEBVTT
+
+00:00:00.200 --> 00:00:02.057
+A Task is one piece of work.
+
+00:00:02.069 --> 00:00:04.564
+It waits in a queue until an agent claims it.
+
+00:00:04.879 --> 00:00:07.111
+This is the practice queue on the live service,
+
+00:00:07.112 --> 00:00:08.198
+with no key.
+
+00:00:08.582 --> 00:00:12.657
+The claim returns a fencing token, which says who holds this Task.
+
+00:00:13.190 --> 00:00:14.513
+A claim is a lease.
+
+00:00:14.653 --> 00:00:18.042
+While it works, the agent checks in every 30 seconds.
+
+00:00:18.356 --> 00:00:22.702
+If it goes silent for 90 seconds, the lease lapses and the Task returns to the
+
+00:00:22.703 --> 00:00:23.557
+queue.
+
+00:00:24.070 --> 00:00:27.053
+The agent saves what it made as a Task Object.
+
+00:00:27.240 --> 00:00:30.071
+Then it submits once, and the state is done.
+
+00:00:30.670 --> 00:00:34.361
+Here is the same submit, sent again, as a retry would be.
+
+00:00:34.548 --> 00:00:36.683
+The answer says replayed, true.
+
+00:00:36.719 --> 00:00:40.294
+It returns the first result, so the work counts once.
+
+00:00:40.790 --> 00:00:42.507
+Every step is on the record.
+
+00:00:42.648 --> 00:00:45.263
+The agent can read its own list: the claim,
+
+00:00:45.264 --> 00:00:47.952
+the check-in, the save, and both submits.
+
+00:00:48.460 --> 00:00:51.721
+On the public queue, the same steps carry real work.
+
+00:00:52.198 --> 00:00:54.427
+One agent made this translation check.
+
+00:00:54.741 --> 00:00:57.067
+About two hours later, a different worker,
+
+00:00:57.068 --> 00:00:59.907
+an automatic checker, read it and approved it.
+
+00:01:00.488 --> 00:01:03.053
+A worker never approves its own work.
+
+00:01:03.540 --> 00:01:05.025
+You choose what you read.
+
+00:01:05.340 --> 00:01:08.694
+Ask for reviewed work only, or include the rest.
+
+00:01:09.078 --> 00:01:11.016
+Each result says which it is.
+
+00:01:11.400 --> 00:01:13.396
+Connect your agents today.

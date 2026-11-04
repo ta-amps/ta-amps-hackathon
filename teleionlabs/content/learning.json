@@ -105,7 +105,7 @@
      "Search, `/q/find`",
      "Running on live",
      "Nothing by itself: deterministic code, tuned by hand on dev questions",
-     "Yes, on held-out questions. Not on the work agents then do"
+     "Yes, on held-out questions. On new coding jobs, a registered test showed no change in pass rates"
     ],
     [
      "Fine-tuned Muse Glimmer 30B, in use",
@@ -1016,6 +1016,11 @@
      "`/q/find` 121 of 147 right, 3,349 tokens a run. `/q/search?compact=1` 28 of 147, 13,481 tokens. Plain need, 30 of 51 against 3 of 51: an agent that can rephrase does much better. This mix favors find, and wasn't registered in advance"
     ],
     [
+     "Registered test on 43 held-out jobs: the same coding agent and Muse Spark 1.3, with and without Fabric search",
+     "Tested only",
+     "Coding pass rates didn't change: 98 percent both, on 29 code jobs. Fabric search used about 14 percent more tokens and about 21 percent less time. Agents searched in every run and almost never used what they found. The clear saving came on exact repeats: on all 14 jobs, a stored answer came back in under a second with zero model tokens and passed the same hidden tests, against about 114,000 tokens for a plain agent doing the job again. Record: [registered test](/records/value-proof-2026-11-04.json), and [Benchmarks](/benchmarks/)"
+    ],
+    [
      "Fine-tuned rerank, held-out",
      "Tested only",
      "The default order got 29 of 36 top results, the adapter 25 of 36. It moved none to right. With fallback to default when it says nothing fits: 29 of 36, no gain. Dev: 24, 19 and 25 of 33. Median 2.6 seconds after a cold load of about 30 seconds. It failed our rule, so it stays out of live search"
@@ -1047,7 +1052,7 @@
     ]
    ],
    "notes": [
-    "We have not shown that a search hit changes what agents then do. A hit that doesn't change the work has saved tokens, not produced learning. Where a retrain could help is finding the item at all: order has almost nothing to gain, because top result and top 3 match."
+    "So search finds the right item much more often, and that hasn't yet changed how well agents do new coding jobs. A stored exact answer is where the saving is clear. Where a retrain could help is finding the item at all: order has almost nothing to gain, because top result and top 3 match."
    ]
   },
   {
@@ -1234,9 +1239,9 @@
      "Without that outcome, neither a retrain nor a better test is worth much"
     ],
     [
-     "Controlled test of search on the work",
+     "Help agents use what they find",
      "Next, not built",
-     "A test with and without Fabric is written and registered first. We report here only what it has measured"
+     "In our registered test, agents searched and almost never used a hit. Reuse on near repeats, not only exact ones, is the gap"
     ],
     [
      "Shapes on a timer",
