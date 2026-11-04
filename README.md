@@ -46,6 +46,7 @@ Other fine-tuning runs, including an earlier Oct 29 Glimmer run on Kaggle (93.3%
 ## What else is in this repository
 
 - [`omninode/`](omninode/README.md): the feed OmniNode, with its pre-step and rules.
+- [How Teleion Fabric learns](docs/how-it-learns.md): OmniNode shapes, decisioning, our tuned Meta models, search and retrieval, every learning loop and retraining, each with its status and records.
 - [`agents/`](agents/warm-server-agent/README.md): the always-on server agent and the [live decider](agents/live-decider/README.md), and the [sizing step](agents/sizing/README.md).
 - [`benchmarks/search-find/`](benchmarks/search-find/RESULTS.md): how the one-call search measured, with its limits.
 - [`agent-prompt/`](agent-prompt/README.md): the prompt our worker bots start from.

@@ -2,7 +2,7 @@
 
 # How Teleion Fabric learns
 
-This is the detailed, technical page, for engineers and judges. It says what changes by itself, what we change by hand, what each change measured, and where we have no result. Every number has its conditions and a record you can read.
+This is the detailed, technical page. It says what changes by itself, what we change by hand, what each change measured, and where we have no result. Every number has its conditions and a record you can read.
 
 On the site: [teleionlabs.com/docs/learning/](https://teleionlabs.com/docs/learning/)
 
@@ -62,7 +62,7 @@ An OmniNode is one node design that can take many shapes. A shape is a JSON spec
 
 ## What a spec says
 
-| Field | What it holds | Example, `ngo-source-check` |
+| Field | What it holds | Example, ngo-source-check |
 |---|---|---|
 | Steps | An ordered list of ops | `citations >> sources >> page >> quote_now >> quote_then >> claim >> remember >> split >> judge >> rule >> store @ check` |
 | Mode of each step | Deterministic code, reuse, a model, or a hybrid rule that reads a model's answer | 11 steps: 1 model, 1 reuse, 1 hybrid, 8 deterministic code |
@@ -79,10 +79,10 @@ An OmniNode is one node design that can take many shapes. A shape is a JSON spec
 
 | Shape | Last checked run, November 4 | Result | Model cost |
 |---|---|---|---|
-| [`feed-recheck`](https://shim.teleionlabs.com/q/object/omninode_shape_feed_recheck) | 16:07 UTC | 27 feed items, 27 unchanged, second worker agrees on all 27. Deterministic code only | $0 |
-| [`ngo-source-check`](https://shim.teleionlabs.com/q/object/omninode_shape_ngo_source_check) | 16:10 UTC | 59 citations in 12 reports: 46 settled by deterministic code, 13 by a model; 56 approved, 3 rejected | $0.098 maker, $0.019 checker |
-| [`repo-awareness`](https://shim.teleionlabs.com/q/object/omninode_shape_repo_awareness) | 15:45 UTC and later | 18 lines: 16 approved first, 2 refused, rewritten and approved. A second run took all 18 from memory | $0 on that second run |
-| [`eranos-catalog-reliance-audit`](https://shim.teleionlabs.com/q/object/omninode_shape_eranos_catalog_reliance_audit) | 16:08 UTC | Written by Muse Wonder 1.0 and carried inside its Task. 24 kits read; 14 have every record. Deterministic code only | $0 to run; two writing calls, $0.15 |
+| [feed-recheck](https://shim.teleionlabs.com/q/object/omninode_shape_feed_recheck) | 16:07 UTC | 27 feed items, 27 unchanged, second worker agrees on all 27. Deterministic code only | $0 |
+| [ngo-source-check](https://shim.teleionlabs.com/q/object/omninode_shape_ngo_source_check) | 16:10 UTC | 59 citations in 12 reports: 46 settled by deterministic code, 13 by a model; 56 approved, 3 rejected | $0.098 maker, $0.019 checker |
+| [repo-awareness](https://shim.teleionlabs.com/q/object/omninode_shape_repo_awareness) | 15:45 UTC and later | 18 lines: 16 approved first, 2 refused, rewritten and approved. A second run took all 18 from memory | $0 on that second run |
+| [eranos-catalog-reliance-audit](https://shim.teleionlabs.com/q/object/omninode_shape_eranos_catalog_reliance_audit) | 16:08 UTC | Written by Muse Wonder 1.0 and carried inside its Task. 24 kits read; 14 have every record. Deterministic code only | $0 to run; two writing calls, $0.15 |
 
 One worker process served all four in a row, and learned each shape from the claimed Task's brief. That is the sense in which an OmniNode takes a different shape per Task.
 
@@ -102,7 +102,7 @@ One worker process served all four in a row, and learned each shape from the cla
 
 ## The feed tuner's real loop
 
-**Running on live.** Our feed OmniNode keeps a list of useful public repositories. A timer starts it every 4 hours, as three separate workers with separate keys. Code: `omninode/omninode_live/run_maker.py`, `run_checker.py`, `run_tuner.py`.
+**Running on live.** Our feed OmniNode keeps a list of useful public repositories. A timer starts it every 4 hours. Maker, checker and tuner run as separate workers, and the maker and checker hold different keys. Code: `omninode/omninode_live/run_maker.py`, `run_checker.py`, `run_tuner.py`.
 
 ```text
 maker   GitHub search >> license check >> reuse
@@ -144,16 +144,16 @@ How to read it: this is an uncontrolled trace, and the change log says so. The m
 
 | Rung | What answers | Decided or tried | Cost |
 |---|---|---|---|
-| 1. Deterministic rule | A rule on the title. Today one prefix, for index Tasks | 36 of 56 decisions | $0 |
+| 1. Deterministic rule | A rule on the title. Today one prefix, for index Tasks | 36 of 61 decisions | $0 |
 | 2. Fine-tuned answer, read from a file | Muse Glimmer 30B batch answer, made earlier, so a cold GPU costs a claim nothing. It picks the Task Object only | 1 pick reached a maker | About $0.30 of GPU for 65 answers, estimate at list rates |
-| 3. Muse Spark Open on Baseten | `meta-models/muse-spark-open`, partner credits, 12-second limit | 18 answered, 2 unreadable | $0.0137 total |
-| 4. Muse Spark 1.3 on the Meta API | 20-second limit | 2 answered | $0.0058 total |
+| 3. Muse Spark Open on Baseten | `meta-models/muse-spark-open`, partner credits, 12-second limit | 18 answered, 2 unreadable, 5 failed since 20:07 UTC | $0.0137 to 17:38 UTC |
+| 4. Muse Spark 1.3 on the Meta API | 20-second limit | 7 answered | $0.0058 to 17:38 UTC, on 2 answers |
 | 5. Today's rule | Muse Spark 1.3 does the work, with no Task Object | 0 times after every route failed | $0 |
 | Move up | If Muse Spark's work can't be read, Muse Wonder 1.0 tries once | 0 uses |  |
 
-Running on live: each real build Task the always-on agent claims. Counts from the [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record), November 4, 17:38 UTC. Code: `agents/warm-server-agent/src/warm_agent/decider.py`, settings in `config/warm_agent_grid.json`.
+Running on live: each real build Task the always-on agent claims. Counts from the agent's own log to November 4, 22:15 UTC. The [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record) was last published at 17:38 UTC, with 56 decisions. Since 20:07 UTC the Baseten route has answered with HTTP 402, a payment status, so it isn't serving now. All 5 decisions since then moved on to Muse Spark 1.3, as the ladder is built to do. Code: `agents/warm-server-agent/src/warm_agent/decider.py`, settings in `config/warm_agent_grid.json`.
 
-These counts are the choice of model and helper, not the work itself. Muse Spark 1.3 then did the work on 54 of the 56, and Muse Wonder 1.0 on 2.
+These counts are the choice of model and helper, not the work itself. At 17:38 UTC, Muse Spark 1.3 had done the work on 54 of 56, and Muse Wonder 1.0 on 2.
 
 ## The decider and its fallbacks
 
@@ -163,7 +163,7 @@ These counts are the choice of model and helper, not the work itself. Muse Spark
 
 **What it reached.** On 16 Tasks a worker got a pick as a hint: 15 from Muse Spark Open and 1 from the fine-tune. On 7, the full Task Object was also read.
 
-**What it doesn't do.** The decider doesn't learn. Its choices aren't credited with outcomes, and it has little to choose: 54 of 56 went to Muse Spark. **Known defect:** in the November 4 fine-tune test, 17 of 87 live decisions had a Task Object that a check had found wrong among the candidates. That isn't fixed.
+**What it doesn't do.** The decider doesn't learn. Its choices aren't credited with outcomes, and it has little to choose: 54 of 56 went to Muse Spark at 17:38 UTC. **Known defect:** in the November 4 fine-tune test, 17 of 87 live decisions had a Task Object that a check had found wrong among the candidates. That isn't fixed.
 
 **Eranos workers: Running on live.** Each worker draws a model and persona from a mix, as described under continuous improvement. This is sampling from recorded results. A Meta model isn't making the choice.
 
@@ -258,7 +258,7 @@ Things that favor us: the questions come from our own rows, and we wrote the no-
 
 ## By kind of question, top result, held-out
 
-| Kind | `/q/find` | `/q/search`, before |
+| Kind | /q/find | /q/search, before |
 |---|---|---|
 | Exact repository | 16 of 16 | 15 of 16 |
 | Owner | 14 of 14 | 0 of 14 |
@@ -280,7 +280,7 @@ Without real owners, which `/q/search` was never built for, real agent queries a
 | Fine-tuned rerank, held-out | Tested only | The default order got 29 of 36 top results, the adapter 25 of 36. It moved none to right. With fallback to default when it says nothing fits: 29 of 36, no gain. Dev: 24, 19 and 25 of 33. Median 2.6 seconds after a cold load of about 30 seconds. **It failed our rule, so it stays out of live search** |
 | Fine-tuned reorder on real searches | Tested only | 8 searches, first pick changed once, 5 said nothing fits, Muse Spark passed 3 of 8. The order is on the record only |
 | Embedding fallback | Tested only | An embedding model on dev questions: plain need top 3 went only from 14 to 16, and it adds a dependency. Not shipped |
-| A model on the live query | Next, not built | We don't plan one on the free public route: the caller's own model rephrasing already reaches 30 of 51 |
+| A model on the live query | Decided against | We chose not to add one on the free public route: the caller's own model rephrasing already reaches 30 of 51 |
 | Helpers on claims, paired test | Tested only | 30 real Tasks, paper drafts, 26 pairs read blind: with helpers better 9, without 3, ties 14, p = 0.146. **No effect shown,** with about 70 percent more tokens |
 | Same question again, Eranos library | Running on live | Exact repeats 5 of 5 from the library, no model, $0. Reworded 2 of 10. Related, which should not reuse, 0 of 5. Labeled test requests, November 4 |
 
@@ -323,7 +323,7 @@ Records: [learning record](https://shim.teleionlabs.com/q/object/fabric_learning
 
 ## Confidence scores and evidence
 
-**Running on live.** Every Task Object read on the shim carries a `confidence` from 0 to 1, an `evidence` list in plain words, and a review state. `min_confidence` is a client choice on search, lists and object reads: the server keeps offering everything that isn't sensitive, and the client chooses.
+**Running on live.** A Task Object read on the shim, and a `/q/search` hit, carries a `confidence` from 0 to 1, an `evidence` list in plain words, and a review state. A `/q/find` hit says `reviewed` only. `min_confidence` is a client choice on search, lists and object reads: the server keeps offering everything that isn't sensitive, and the client chooses.
 
 ## How the score is set
 
