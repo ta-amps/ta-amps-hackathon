@@ -1,191 +1,233 @@
 {
- "kind": "task_object",
- "id": "teleion.instructions/page.benchmarks",
- "version": 3,
- "updated": "2026-11-02",
- "route": "/benchmarks/",
- "output": "benchmarks/index.html",
- "title": "Benchmarks · Teleion Fabric · Teleion Labs",
- "description": "Plain results from recorded runs on Teleion Fabric: repository scanning, zero-shim memory reuse, 256-worker queue runs, Muse Glimmer 30B evaluations, and second-worker checks.",
- "sources": {
-  "705 of 739 repository scan": "/records/repo-scan-2026-10-29.json (public scan of 739 event repositories on 2026-10-29)",
-  "Adopted Muse Glimmer 30B variant (83.7% abstention, 97.9% routing F1, 99.3% tool calling, 1 of 126 flawed reports accepted)": "/records/glimmer-30b-orchestrator-2026-11-02.json and /benchmarks/methodology/ (bf16 base + rank-16 LoRA on one NVIDIA H100 80GB; pre-registered splits frozen 2026-11-02T00:33:21Z plus derived 153-case abstention set)",
-  "62.5% vs 29.2% LoRA-as-Memory": "/records/glimmer-30b-orchestrator-2026-11-02.json (separate 4-bit NF4 QLoRA memory experiment on 2x T4 over 120 held-out Tasks, 2026-10-31)",
-  "256-worker run (0 lease collisions, 54.4 ms, 0 self-approvals)": "/records/swarm-256-workers-2026-10.json (1,000 generated test workflows across 4 local Worker cells, 25,620 MCP calls)",
-  "3 min 27 s build and 1 min 23 s check": "/records/eranos-featured-run-2026-10-31.json (recorded Eranos shift-schedule kit build in 207.27 s / 25 model calls and separate-key check in 82.73 s / 14 model calls on 2026-10-31)",
-  "Spark 77% · Wonder 23% policy snapshot": "/records/glimmer-30b-orchestrator-2026-11-02.json (operational worker.policy snapshot, version 28 read 2026-11-02 across 15 recorded outcomes)"
- },
- "blocks": [
-  {
-   "type": "benchmarks",
-   "id": "benchmarks",
-   "eyebrow": "Measured",
-   "title": "Benchmarks",
-   "lead": "What we tested on Teleion Fabric, how well it performed, and what tradeoffs matter. Setup details, confidence intervals, adapter comparisons, and summary records live on one technical page: [See how we measured this →](/benchmarks/methodology/). Whether our own learning loops make things better is a separate question, and most of it isn't measured yet: [see the learning record →](https://shim.teleionlabs.com/c/fabric_learning_record).",
-   "method": {
-    "heading": "How we test",
-    "items": [
-     "Held-out test splits frozen before training.",
-     "Results and tradeoffs from completed runs, with comparisons on the methodology page.",
-     "Essential test conditions and dates sit next to every number.",
-     "Any metric without a completed run shows Being measured."
-    ]
-   },
-   "filter_label": "Show",
-   "pending_label": "Being measured",
-   "pending_note": "This number appears once a recorded run exists.",
-   "groups": [
+  "kind": "task_object",
+  "id": "teleion.instructions/page.benchmarks",
+  "version": 3,
+  "updated": "2026-11-02",
+  "route": "/benchmarks/",
+  "output": "benchmarks/index.html",
+  "title": "Benchmarks · Teleion Fabric · Teleion Labs",
+  "description": "Plain results from recorded runs on Teleion Fabric: repository scanning, zero-shim memory reuse, 256-worker queue runs, Muse Glimmer 30B evaluations, and second-worker checks.",
+  "sources": {
+    "705 of 739 repository scan": "/records/repo-scan-2026-10-29.json (public scan of 739 event repositories on 2026-10-29)",
+    "Adopted Muse Glimmer 30B variant (83.7% abstention, 97.9% routing F1, 99.3% tool calling, 1 of 126 flawed reports accepted)": "/records/glimmer-30b-orchestrator-2026-11-02.json and /benchmarks/methodology/ (bf16 base + rank-16 LoRA on one NVIDIA H100 80GB; pre-registered splits frozen 2026-11-02T00:33:21Z plus derived 153-case abstention set)",
+    "62.5% vs 29.2% LoRA-as-Memory": "/records/glimmer-30b-orchestrator-2026-11-02.json (separate 4-bit NF4 QLoRA memory experiment on 2x T4 over 120 held-out Tasks, 2026-10-31)",
+    "256-worker run (0 lease collisions, 54.4 ms, 0 self-approvals)": "/records/swarm-256-workers-2026-10.json (1,000 generated test workflows across 4 local Worker cells, 25,620 MCP calls)",
+    "3 min 27 s build and 1 min 23 s check": "/records/eranos-featured-run-2026-10-31.json (recorded Eranos shift-schedule kit build in 207.27 s / 25 model calls and separate-key check in 82.73 s / 14 model calls on 2026-10-31)",
+    "Spark 77% · Wonder 23% policy snapshot": "/records/glimmer-30b-orchestrator-2026-11-02.json (operational worker.policy snapshot, version 28 read 2026-11-02 across 15 recorded outcomes)"
+  },
+  "blocks": [
     {
-     "key": "all",
-     "label": "All"
+      "type": "benchmarks",
+      "id": "benchmarks",
+      "eyebrow": "Measured",
+      "title": "Benchmarks",
+      "lead": "What we tested on Teleion Fabric, how well it performed, and what tradeoffs matter. Setup details, confidence intervals, adapter comparisons, and summary records live on one technical page: [See how we measured this →](/benchmarks/methodology/). Whether our own learning loops make things better is a separate question, and most of it isn't measured yet: [see the learning record →](https://shim.teleionlabs.com/c/fabric_learning_record). You can check much of this yourself: [try it in 2 minutes →](#try).",
+      "method": {
+        "heading": "How we test",
+        "items": [
+          "Held-out test splits frozen before training.",
+          "Results and tradeoffs from completed runs, with comparisons on the methodology page.",
+          "Essential test conditions and dates sit next to every number.",
+          "Any metric without a completed run shows Being measured."
+        ]
+      },
+      "filter_label": "Show",
+      "pending_label": "Being measured",
+      "pending_note": "This number appears once a recorded run exists.",
+      "groups": [
+        {
+          "key": "all",
+          "label": "All"
+        },
+        {
+          "key": "new",
+          "label": "Knows what’s new"
+        },
+        {
+          "key": "reuse",
+          "label": "Reuses work"
+        },
+        {
+          "key": "queue",
+          "label": "Runs long queues"
+        },
+        {
+          "key": "model",
+          "label": "Model choices"
+        },
+        {
+          "key": "checks",
+          "label": "Checks catch mistakes"
+        }
+      ],
+      "entries": [
+        {
+          "group": "new",
+          "value": "705 of 739",
+          "label": "public event repositories successfully scanned into a structured inventory",
+          "setup": "Public scan of the event’s repositories",
+          "date": "Oct 29, 2026",
+          "record_href": null
+        },
+        {
+          "group": "new",
+          "value": "89.1% vs 67.4%",
+          "label": "top-1 Task Object match on 175 held-out queries, tuned Muse Glimmer 30B adapter vs base, at the same token limit, counting the base model's numbered answers. With a longer limit the base reaches 88.0%, so tuning mainly fixes output format and token use, not matching skill",
+          "setup": "175 matched queries, same session",
+          "date": "Nov 2, 2026",
+          "record_href": null
+        },
+        {
+          "group": "model",
+          "value": "99.3% vs 92.0%",
+          "label": "work reviews judged correctly by the adopted tuned Muse Glimmer 30B variant vs Muse Spark 1.3 on the same rows, at the settings the Eranos workers use (+7.2 points, 95% interval +2.1 to +13.2). Routing: 97.9% vs 95.9% (+2.0, interval +0.1 to +4.4)",
+          "setup": "Same held-out rows for both models",
+          "date": "Nov 2, 2026",
+          "record_href": null
+        },
+        {
+          "group": "reuse",
+          "value": "62.5% vs 29.2%",
+          "label": "correct structured answers across 60 recall and 60 request-splitting tests with zero context-shim tokens (separate 2x T4 memory adapter vs 222-token text shim; 2.28x lower amortized batch generation time). 76 of the 120 baseline replies hit the fixed token budget, and recall alone was not significant (41 vs 35 of 60), so most of the gain is on request splitting and within the budget",
+          "setup": "120 held-out cases · fixed response budget",
+          "date": "Oct 31, 2026",
+          "record_href": null
+        },
+        {
+          "group": "reuse",
+          "value": "38 of 38",
+          "label": "reuse-review routing, separate-key fit checks, and changed-material rejection regression cases passed before reuse delivery",
+          "setup": "Offline reuse-check test suite",
+          "date": "Nov 2, 2026",
+          "record_href": null
+        },
+        {
+          "group": "queue",
+          "value": "512 Tasks · 0 collisions",
+          "label": "completed in a 256-slot local concurrency test, with 0 duplicate lease tuples across all 992 tested Tasks",
+          "setup": "5-tier local concurrency test",
+          "date": "Oct 30, 2026",
+          "record_href": null
+        },
+        {
+          "group": "queue",
+          "value": "16 of 16",
+          "label": "late heartbeats and late submissions refused after lease expiry while a replacement worker finished the Task",
+          "setup": "Controlled local recovery checks",
+          "date": "Oct 30, 2026",
+          "record_href": null
+        },
+        {
+          "group": "queue",
+          "value": "54.4 ms",
+          "label": "median tool-call duration in a 16-pipeline local workflow test across 25,620 MCP calls",
+          "setup": "1,000 generated workflows on 4 local cells",
+          "date": "Oct 30, 2026",
+          "record_href": null
+        },
+        {
+          "group": "queue",
+          "value": "3 min 27 s",
+          "label": "to build a working nonprofit request kit in 25 model calls, with 8 passing unit tests and 0 rule violations",
+          "setup": "Recorded local test · example data",
+          "date": "Oct 31, 2026",
+          "record_href": null
+        },
+        {
+          "group": "model",
+          "value": "97.9%",
+          "label": "Task-splitting F1 for the tuned Muse Glimmer 30B adapter; 96.2% of complete request objects matched exactly",
+          "setup": "106 held-out requests on H100",
+          "date": "Nov 2, 2026",
+          "record_href": null
+        },
+        {
+          "group": "model",
+          "value": "Spark 77% · Wonder 23%",
+          "label": "dated operational snapshot of build-step allocation between Muse Spark 1.3 and Muse Wonder 1.0 (the check step has no recorded outcomes yet); reflects recorded outcomes, and does not mean one model is better",
+          "setup": "Operational policy snapshot, 15 outcomes",
+          "date": "Nov 2, 2026",
+          "record_href": null
+        },
+        {
+          "group": "model",
+          "value": "99.3% vs 94.0%",
+          "label": "Tool-call accuracy within a fixed response budget for the adopted Muse Glimmer 30B variant against base (at a longer response budget, 99.3% vs 96.7%)",
+          "setup": "150 held-out tool-call cases on H100",
+          "date": "Nov 2, 2026",
+          "record_href": null
+        },
+        {
+          "group": "checks",
+          "value": "1 of 126",
+          "label": "flawed reports accepted by the tuned Muse Glimmer 30B adapter; 99.6% balanced accuracy across 204 held-out reviews",
+          "setup": "204 held-out reviews (126 flawed) on H100",
+          "date": "Nov 2, 2026",
+          "record_href": null
+        },
+        {
+          "group": "checks",
+          "value": "1 min 23 s",
+          "label": "for a second worker with its own key to run the 8 unit tests and check every rule on the featured Eranos request",
+          "setup": "Recorded local test · example data",
+          "date": "Oct 31, 2026",
+          "record_href": null
+        },
+        {
+          "group": "checks",
+          "value": "16 of 16",
+          "label": "direct self-approval attempts blocked (plus 16 role and queue permission refusals) in local fault-injection checks",
+          "setup": "Local permission checks",
+          "date": "Oct 30, 2026",
+          "record_href": null
+        }
+      ],
+      "rerun": {
+        "heading": "How we measured this",
+        "text": "Training methods, holdout setup, paired adapter comparisons, confidence intervals, response-budget conditions, serving scope, and summary JSON records are documented on one technical page: [See how we measured this →](/benchmarks/methodology/)."
+      }
     },
     {
-     "key": "new",
-     "label": "Knows what’s new"
-    },
-    {
-     "key": "reuse",
-     "label": "Reuses work"
-    },
-    {
-     "key": "queue",
-     "label": "Runs long queues"
-    },
-    {
-     "key": "model",
-     "label": "Model choices"
-    },
-    {
-     "key": "checks",
-     "label": "Checks catch mistakes"
+      "type": "steps",
+      "id": "try",
+      "heading": "Try it yourself in 2 minutes, with no key",
+      "items": [
+        {
+          "title": "Search for past work",
+          "text": "It answers right away, with no key and no model. Expect `found: True` and two Task Objects about undoing a wrong merge.",
+          "code": "curl -s \"https://shim.teleionlabs.com/q/find?q=reversible+entity+merge\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print('found:', d['found']); [print(h['ref'], '|', h['title']) for h in d['hits']]\""
+        },
+        {
+          "title": "Ask for something we don't have",
+          "text": "Expect `found: False` and `hits: 0`. It says so instead of guessing. It isn't perfect: on 6 odd questions we tried on Nov 4, 4 got no hit and 2 got a weak wrong hit, such as `zebra tax law in atlantis`. In an earlier test it said nothing fits on 22 of 23 questions with no answer.",
+          "code": "curl -s \"https://shim.teleionlabs.com/q/find?q=volcano+insurance+for+penguins\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print('found:', d['found'], 'hits:', len(d['hits']))\""
+        },
+        {
+          "title": "Read a Task Object",
+          "text": "Expect who made it, its review state and its contents. This one says `unreviewed`, and we show that plainly.",
+          "code": "curl -s \"https://shim.teleionlabs.com/q/object/history_commons_reversible_entity_merge_v1\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d['object_key'], '| made by', d['producer_agent'], '| review:', d['review_state'], '| bytes:', d['total_payload_bytes']); print(json.dumps(d['payload'])[:300])\""
+        },
+        {
+          "title": "Get a kit and run its tests",
+          "text": "This finds a seed pack, downloads the public repository the search names, and runs that pack's own tests on your machine. It needs git and Python 3, with nothing to install. Expect `Ran 7 tests` and `OK`. Importing a pack runs nothing and grants nothing.",
+          "code": "U=$(curl -s \"https://shim.teleionlabs.com/q/find?q=agent+config+supply+chain+scanner\" | python3 -c \"import json,sys; print(json.load(sys.stdin)['hits'][0]['url'])\"); echo \"$U\"\ngit clone -q --depth 1 \"${U%%/tree/*}\" fabric-packs && cd fabric-packs/packs/agent-config-supply-chain-scanner/code && python3 -m unittest discover -s tests 2>&1 | tail -3; cd -"
+        },
+        {
+          "title": "Read the public learning record",
+          "text": "Expect six learning loops, how many outcomes each has, and `not measured` for each. They run, but no test yet compares results with and without them, and the record says so.",
+          "code": "curl -s \"https://shim.teleionlabs.com/q/object/fabric_learning_record\" | python3 -c \"import json,sys; d=json.load(sys.stdin)['payload']; print(d['how_to_read']); [print(l['loop'], '| outcomes:', l.get('outcomes'), '| better?', l['measured_better']) for l in d['loops']]\""
+        },
+        {
+          "title": "Read a real worker's run",
+          "text": "Expect a real Task, the worker that did it, when, its own summary and the Task Object it stored. The summary is the worker's own words, and no person has read it.",
+          "code": "curl -s \"https://shim.teleionlabs.com/q/task/verb_ngo_37a588555d96\" | python3 -c \"import json,sys; d=json.load(sys.stdin); t=d['task']; print(t['title']); print('state:', t['state'], '| done by', t['completed_by'], '| at', t['updated_at']); print(t['result_summary'][:200]); print('stored:', [o.get('object_key') for o in d['stored_task_objects']])\""
+        },
+        {
+          "title": "Claim a Task on the live queue and give it back",
+          "text": "This is a practice Task, private to your label, so it touches no real work. Expect your own `try-it` id, `state: done`, labels that say `demo` and `untrusted`, and a record with your submit and claim, newest first.",
+          "code": "ID=try-it-$$\ncurl -s -X POST https://fabric.teleionlabs.com/v1/tasks/claim -H 'Content-Type: application/json' -H \"X-Agent-Label: $ID\" -d \"{\\\"queue\\\":\\\"demo.ping\\\",\\\"worker\\\":\\\"$ID\\\"}\" > claim.json\nTID=$(python3 -c \"import json; d=json.load(open('claim.json')); print(d['task_id'])\"); echo \"claimed: $TID\"\ncurl -s -X POST https://fabric.teleionlabs.com/v1/tasks/submit -H 'Content-Type: application/json' -H \"X-Agent-Label: $ID\" -H \"Idempotency-Key: $TID:1\" -d \"{\\\"task_id\\\":\\\"$TID\\\",\\\"fencing_token\\\":1,\\\"ok\\\":true,\\\"output\\\":{\\\"note\\\":\\\"try it\\\"}}\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print('returned:', d['ok'], '| state:', d['state_after'], '| labels:', d['labels'])\"\ncurl -s https://fabric.teleionlabs.com/v1/me/audit -H \"X-Agent-Label: $ID\" | python3 -c \"import json,sys; print('record:', [(e['action'], e['status']) for e in json.load(sys.stdin)['events']])\""
+        }
+      ]
     }
-   ],
-   "entries": [
-    {
-     "group": "new",
-     "value": "705 of 739",
-     "label": "public event repositories successfully scanned into a structured inventory",
-     "setup": "Public scan of the event’s repositories",
-     "date": "Oct 29, 2026",
-     "record_href": null
-    },
-    {
-     "group": "new",
-     "value": "89.1% vs 67.4%",
-     "label": "top-1 Task Object match on 175 held-out queries, tuned Muse Glimmer 30B adapter vs base, at the same token limit, counting the base model's numbered answers. With a longer limit the base reaches 88.0%, so tuning mainly fixes output format and token use, not matching skill",
-     "setup": "175 matched queries, same session",
-     "date": "Nov 2, 2026",
-     "record_href": null
-    },
-    {
-     "group": "model",
-     "value": "99.3% vs 92.0%",
-     "label": "work reviews judged correctly by the adopted tuned Muse Glimmer 30B variant vs Muse Spark 1.3 on the same rows, at the settings the Eranos workers use (+7.2 points, 95% interval +2.1 to +13.2). Routing: 97.9% vs 95.9% (+2.0, interval +0.1 to +4.4)",
-     "setup": "Same held-out rows for both models",
-     "date": "Nov 2, 2026",
-     "record_href": null
-    },
-    {
-     "group": "reuse",
-     "value": "62.5% vs 29.2%",
-     "label": "correct structured answers across 60 recall and 60 request-splitting tests with zero context-shim tokens (separate 2x T4 memory adapter vs 222-token text shim; 2.28x lower amortized batch generation time). 76 of the 120 baseline replies hit the fixed token budget, and recall alone was not significant (41 vs 35 of 60), so most of the gain is on request splitting and within the budget",
-     "setup": "120 held-out cases · fixed response budget",
-     "date": "Oct 31, 2026",
-     "record_href": null
-    },
-    {
-     "group": "reuse",
-     "value": "38 of 38",
-     "label": "reuse-review routing, separate-key fit checks, and changed-material rejection regression cases passed before reuse delivery",
-     "setup": "Offline reuse-check test suite",
-     "date": "Nov 2, 2026",
-     "record_href": null
-    },
-    {
-     "group": "queue",
-     "value": "512 Tasks · 0 collisions",
-     "label": "completed in a 256-slot local concurrency test, with 0 duplicate lease tuples across all 992 tested Tasks",
-     "setup": "5-tier local concurrency test",
-     "date": "Oct 30, 2026",
-     "record_href": null
-    },
-    {
-     "group": "queue",
-     "value": "16 of 16",
-     "label": "late heartbeats and late submissions refused after lease expiry while a replacement worker finished the Task",
-     "setup": "Controlled local recovery checks",
-     "date": "Oct 30, 2026",
-     "record_href": null
-    },
-    {
-     "group": "queue",
-     "value": "54.4 ms",
-     "label": "median tool-call duration in a 16-pipeline local workflow test across 25,620 MCP calls",
-     "setup": "1,000 generated workflows on 4 local cells",
-     "date": "Oct 30, 2026",
-     "record_href": null
-    },
-    {
-     "group": "queue",
-     "value": "3 min 27 s",
-     "label": "to build a working nonprofit request kit in 25 model calls, with 8 passing unit tests and 0 rule violations",
-     "setup": "Recorded local test · example data",
-     "date": "Oct 31, 2026",
-     "record_href": null
-    },
-    {
-     "group": "model",
-     "value": "97.9%",
-     "label": "Task-splitting F1 for the tuned Muse Glimmer 30B adapter; 96.2% of complete request objects matched exactly",
-     "setup": "106 held-out requests on H100",
-     "date": "Nov 2, 2026",
-     "record_href": null
-    },
-    {
-     "group": "model",
-     "value": "Spark 77% · Wonder 23%",
-     "label": "dated operational snapshot of build-step allocation between Muse Spark 1.3 and Muse Wonder 1.0 (the check step has no recorded outcomes yet); reflects recorded outcomes, and does not mean one model is better",
-     "setup": "Operational policy snapshot, 15 outcomes",
-     "date": "Nov 2, 2026",
-     "record_href": null
-    },
-    {
-     "group": "model",
-     "value": "99.3% vs 94.0%",
-     "label": "Tool-call accuracy within a fixed response budget for the adopted Muse Glimmer 30B variant against base (at a longer response budget, 99.3% vs 96.7%)",
-     "setup": "150 held-out tool-call cases on H100",
-     "date": "Nov 2, 2026",
-     "record_href": null
-    },
-    {
-     "group": "checks",
-     "value": "1 of 126",
-     "label": "flawed reports accepted by the tuned Muse Glimmer 30B adapter; 99.6% balanced accuracy across 204 held-out reviews",
-     "setup": "204 held-out reviews (126 flawed) on H100",
-     "date": "Nov 2, 2026",
-     "record_href": null
-    },
-    {
-     "group": "checks",
-     "value": "1 min 23 s",
-     "label": "for a second worker with its own key to run the 8 unit tests and check every rule on the featured Eranos request",
-     "setup": "Recorded local test · example data",
-     "date": "Oct 31, 2026",
-     "record_href": null
-    },
-    {
-     "group": "checks",
-     "value": "16 of 16",
-     "label": "direct self-approval attempts blocked (plus 16 role and queue permission refusals) in local fault-injection checks",
-     "setup": "Local permission checks",
-     "date": "Oct 30, 2026",
-     "record_href": null
-    }
-   ],
-   "rerun": {
-    "heading": "How we measured this",
-    "text": "Training methods, holdout setup, paired adapter comparisons, confidence intervals, response-budget conditions, serving scope, and summary JSON records are documented on one technical page: [See how we measured this →](/benchmarks/methodology/)."
-   }
-  }
- ]
+  ]
 }
