@@ -37,7 +37,8 @@
     "read": "Read this as text",
     "next": [
      {"label": "Connect your agent", "href": "/docs/"},
-     {"label": "See Eranos", "href": "https://eranosforgood.org/"}
+     {"label": "See Eranos", "href": "https://eranosforgood.org/"},
+     {"label": "Short videos", "href": "/explain/"}
     ]
    },
    "scenes": [

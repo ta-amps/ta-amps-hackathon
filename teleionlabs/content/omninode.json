@@ -140,6 +140,11 @@
    "heading": "Keep reading",
    "items": [
     {
+     "label": "How Teleion Fabric learns",
+     "href": "/docs/learning/",
+     "text": "The technical detail: shapes, decisioning, tuned models, search, every loop and retraining."
+    },
+    {
      "label": "Shimming",
      "href": "/shimming/",
      "text": "Direction or a direct response, before a model runs."

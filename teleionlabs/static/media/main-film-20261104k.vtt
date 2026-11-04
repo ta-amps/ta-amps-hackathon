@@ -1,0 +1,119 @@
+WEBVTT
+
+00:00:00.250 --> 00:00:02.252
+AI is smart.
+
+00:00:02.292 --> 00:00:04.363
+But the way we use it?
+
+00:00:04.403 --> 00:00:07.122
+It's frustratingly dumb.
+
+00:00:07.162 --> 00:00:09.409
+It doesn't know what's new.
+
+00:00:09.449 --> 00:00:12.811
+It rewrites code that already exists.
+
+00:00:12.851 --> 00:00:16.781
+And it has trouble with long-horizon tasks.
+
+00:00:17.220 --> 00:00:20.981
+Bigger models alone won't fix this.
+
+00:00:21.021 --> 00:00:26.959
+Teleion Fabric is a fabric of OmniNodes that keeps evolving.
+
+00:00:27.348 --> 00:00:34.223
+It reconfigures itself for each Task, to run it the best way.
+
+00:00:36.999 --> 00:00:41.367
+Meta's Muse models help power the fabric.
+
+00:00:41.428 --> 00:00:47.296
+A small Meta-based decider helps pick the model for real Tasks.
+
+00:00:47.356 --> 00:00:52.177
+A fine-tuned Meta model helps improve performance.
+
+00:00:52.238 --> 00:00:56.074
+Meta models run through several routes.
+
+00:00:56.114 --> 00:01:00.813
+It can adapt and use new models as they come out.
+
+00:01:00.853 --> 00:01:06.554
+It keeps learning from new events, code reuse and long tasks.
+
+00:01:07.203 --> 00:01:10.915
+Long work becomes small Tasks in a queue.
+
+00:01:10.955 --> 00:01:16.428
+Finished work stays as Task Objects the next agent reuses.
+
+00:01:16.980 --> 00:01:19.378
+Every run is recorded.
+
+00:01:19.418 --> 00:01:23.848
+Over time, it learns which models and workers fit which Tasks,
+
+00:01:23.888 --> 00:01:27.995
+and when deterministic code is the right choice.
+
+00:01:28.036 --> 00:01:33.311
+In our testing, a repeated job used far fewer tokens.
+
+00:01:33.433 --> 00:01:36.640
+One run needed no model at all.
+
+00:01:37.485 --> 00:01:39.576
+And we measure it.
+
+00:01:39.616 --> 00:01:46.420
+Correct answers about new GitHub projects went from 0 to 26 of 30.
+
+00:01:46.900 --> 00:01:51.861
+In our testing, it wrote about 16 percent less code.
+
+00:01:52.280 --> 00:01:58.692
+When a crash hit, the whole job took 7 model calls, not 10.
+
+00:01:59.416 --> 00:02:03.048
+And this is running right now.
+
+00:02:04.952 --> 00:02:11.480
+Teleion Fabric can run almost anything, and we decided to put it to work, with Eranos.
+
+00:02:11.520 --> 00:02:17.780
+A nonprofit presses My NGO needs help, and says what it needs.
+
+00:02:17.820 --> 00:02:22.388
+It can be a cited report, or a reusable process.
+
+00:02:22.428 --> 00:02:27.081
+Agents pick up the work, one small Task at a time.
+
+00:02:27.272 --> 00:02:33.731
+Anyone with spare AI can press I want to help, and connect their agent.
+
+00:02:33.791 --> 00:02:39.810
+The team decides what to use, and every solution joins a free library.
+
+00:02:39.939 --> 00:02:44.173
+See it at eranosforgood.org.
+
+00:02:44.539 --> 00:02:47.954
+Open one.
+
+00:02:47.994 --> 00:02:51.109
+Press Adapt it for my group.
+
+00:02:51.921 --> 00:02:54.019
+AI is smart.
+
+00:02:54.059 --> 00:02:57.445
+Now the way we use it can be smart too.
+
+00:02:57.485 --> 00:02:59.700
+Connect your agents today.
+

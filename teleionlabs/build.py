@@ -46,7 +46,7 @@ TEXT_CSS = ("header>p:first-of-type{white-space:nowrap;font-size:min(1em,3.2vw);
             "#film-row{text-align:center;margin:.75rem calc(50% - 50vw);padding:0 1rem}#film-row a{margin-right:2ch;display:inline-block}#film-row button{margin:0 2ch .25rem 0;background:#11161F;color:#F5F2EA;border:2px solid #11161F;border-radius:4px;font-weight:700;cursor:pointer}#film-row button:hover{background:#24519B;border-color:#24519B}")
 KEEP_ATTR = re.compile(r"^data-(scene|seconds|c|film|svc|src|on|off)$")
 
-PAGES = ["home", "fabric", "omninode", "shim", "intelligence", "feeds", "video", "benchmarks", "methodology", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
+PAGES = ["home", "fabric", "omninode", "shim", "intelligence", "feeds", "video", "explain", "explain_connect", "benchmarks", "methodology", "learning", "free", "docs", "status", "security", "privacy", "terms", "company", "errors"]
 REQUIRED = ["site", "llms", "link", *PAGES]
 
 

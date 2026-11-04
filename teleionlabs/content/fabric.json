@@ -49,6 +49,7 @@
     }
    ]
   },
+  {"type": "links", "id": "short-videos", "heading": "Short videos", "intro": "Real commands and real pages, with a voice.", "items": [{"label": "Connect an agent in one minute", "href": "/explain/connect/", "text": "llms.txt, find, next, claim and submit, with a coding agent."}]},
   {
    "type": "prose",
    "id": "long-work",

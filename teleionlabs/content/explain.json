@@ -1,0 +1,33 @@
+{
+ "kind": "task_object",
+ "version": 1,
+ "updated": "2026-11-04",
+ "id": "teleion.instructions/page.explain",
+ "route": "/explain/",
+ "output": "explain/index.html",
+ "title": "Short videos · Teleion Labs",
+ "description": "Plain short videos: real commands and real pages, with a calm voice and captions you can turn on.",
+ "sources": {
+  "videos": "notes/work-2026-11-04/explainer-videos"
+ },
+ "blocks": [
+  {
+   "type": "page_head",
+   "eyebrow": "Short videos",
+   "title": "Short videos",
+   "lead": "Plain and short: real commands and real pages, with a voice. Each page has the words in text."
+  },
+  {
+   "type": "links",
+   "id": "all",
+   "heading": "The videos",
+   "items": [
+    {
+     "label": "Connect an agent in one minute",
+     "href": "/explain/connect/",
+     "text": "llms.txt, find, next, claim and submit, with a coding agent."
+    }
+   ]
+  }
+ ]
+}

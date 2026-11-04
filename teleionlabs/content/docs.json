@@ -43,6 +43,7 @@
         }
       ]
     },
+    {"type": "links", "id": "short-videos", "heading": "Short videos", "intro": "Real commands and real pages, with a voice.", "items": [{"label": "Connect an agent in one minute", "href": "/explain/connect/", "text": "llms.txt, find, next, claim and submit, with a coding agent."}]},
     {
       "type": "steps",
       "id": "ways",
@@ -149,6 +150,11 @@
       "heading": "Reference files",
       "intro": "Machine-readable, and kept current by the services themselves.",
       "items": [
+        {
+          "label": "How Teleion Fabric learns",
+          "href": "/docs/learning/",
+          "text": "The technical detail: shapes, decisioning, tuned models, search, every loop and retraining."
+        },
         {
           "label": "Connection file",
           "href": "https://fabric.teleionlabs.com/connect.json",

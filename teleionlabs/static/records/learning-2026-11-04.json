@@ -1,0 +1,225 @@
+{
+ "kind": "benchmark_record",
+ "id": "teleion.records/learning-2026-11-04",
+ "recorded_on": "2026-11-04",
+ "title": "Snapshot behind How Teleion Fabric learns: numbers with no live record of their own",
+ "note": "Copied from our internal result notes and live records on November 4, 2026, about 22:00 UTC. Live counts move.",
+ "feed_tuner_change_log": [
+  {
+   "tuner_version": 1,
+   "at": "20261103T004935Z",
+   "outcomes": 4,
+   "muse_spark_share": 0.4497,
+   "stage": "evaluated"
+  },
+  {
+   "tuner_version": 2,
+   "at": "20261103T005254Z",
+   "outcomes": 12,
+   "muse_spark_share": 0.8512,
+   "stage": "evaluated"
+  },
+  {
+   "tuner_version": 3,
+   "at": "20261103T012000Z",
+   "outcomes": 17,
+   "muse_spark_share": 0.7105,
+   "batch": 10,
+   "stage": "promoted"
+  },
+  {
+   "tuner_version": 10,
+   "at": "20261104T041723Z",
+   "outcomes": 21,
+   "muse_spark_share": 0.6438,
+   "batch": 12,
+   "stage": "promoted"
+  },
+  {
+   "tuner_version": 14,
+   "at": "20261104T145559Z",
+   "outcomes": 21,
+   "muse_spark_share": 0.6567,
+   "batch": 12,
+   "stage": "evaluated"
+  },
+  {
+   "tuner_version": 15,
+   "at": "20261104T150455Z",
+   "outcomes": 33,
+   "muse_spark_share": 0.3867,
+   "batch": 14,
+   "stage": "promoted"
+  },
+  {
+   "tuner_version": 16,
+   "at": "20261104T172159Z",
+   "outcomes": 45,
+   "muse_spark_share": 0.358,
+   "batch": 14,
+   "stage": "evaluated"
+  },
+  {
+   "tuner_version": 17,
+   "at": "20261104T211938Z",
+   "outcomes": 49,
+   "muse_spark_share": 0.3982,
+   "batch": 14,
+   "stage": "evaluated"
+  }
+ ],
+ "eranos_policy_22_00_utc": {
+  "tuner_version": 80,
+  "outcomes": 202,
+  "outcomes_and_reward": {
+   "make-spark-quick": [
+    81,
+    64.9
+   ],
+   "make-t17": [
+    29,
+    19.8
+   ],
+   "make-wonder-careful, dropped": [
+    27,
+    15.8
+   ],
+   "make-spark-careful, dropped": [
+    12,
+    3.8
+   ],
+   "make-t60": [
+    2,
+    1.8
+   ],
+   "make-t79": [
+    3,
+    2.9
+   ],
+   "check-spark-skeptical": [
+    19,
+    12.6
+   ],
+   "check-spark-literal": [
+    15,
+    9.7
+   ],
+   "check-wonder-literal": [
+    13,
+    9.2
+   ],
+   "check-t76": [
+    1,
+    1.0
+   ]
+  },
+  "mix_make": {
+   "make-spark-quick": 0.8037,
+   "make-t17": 0.0963,
+   "make-t60": 0.05,
+   "make-t79": 0.05
+  },
+  "mix_check": {
+   "check-wonder-literal": 0.369,
+   "check-spark-literal": 0.29,
+   "check-spark-skeptical": 0.241,
+   "check-t76": 0.05,
+   "check-t77": 0.05
+  },
+  "note": "The learning record generated at 22:00 UTC holds an earlier mix and counts 220 outcomes; the policy record is the one the workers read."
+ },
+ "shapes_16_20_utc": {
+  "runs_on_record": 23,
+  "runs_failed": 5,
+  "sidecar": {
+   "answers": 76,
+   "skips": 0
+  },
+  "citations_read_more_than_once": {
+   "total": 13,
+   "kept": 7,
+   "changed": 6,
+   "second_worker_approved_both_at_least": 3
+  }
+ },
+ "sizing": {
+  "conditions": "One separate worker, started by hand, November 4. Models $1.40; GPU $1.57 estimate at list rates. Nothing published to Fabric beyond the Tasks.",
+  "index_tasks": {
+   "always_on_agent": {
+    "closed": 96,
+    "fields_stored": 0
+   },
+   "sizing_worker": {
+    "tries": 304,
+    "finished": 215,
+    "fields_stored_and_read_back": 215,
+    "model_usd": 0,
+    "skipped_credential_shape": 80
+   }
+  },
+  "desk_tasks": {
+   "todays_prompt_muse_spark": {
+    "read": 14,
+    "finished": 0
+   },
+   "sized_muse_spark": {
+    "read": 24,
+    "finished": 0
+   },
+   "random_move_to_muse_wonder": {
+    "read": 10,
+    "finished": 1
+   },
+   "random_try_of_a_declined_task": {
+    "read": 5,
+    "finished": 0
+   }
+  },
+  "table_2": {
+   "held_out_past_tasks": 9,
+   "mean_reward_before": -0.2456,
+   "mean_reward_after": -0.1751,
+   "trial": {
+    "table_2_tasks": 6,
+    "table_2_mean_reward": -0.1529,
+    "table_1_tasks": 8,
+    "table_1_mean_reward": -0.1516,
+    "finished": 0
+   },
+   "decision": "no promotion, no rollback"
+  },
+  "fine_tune_share": {
+   "answers": 10,
+   "picks": 2,
+   "nothing_fits": 8,
+   "muse_spark_passed": 10,
+   "picks_reached_a_maker": 0
+  },
+  "kit_sizing_shadow": {
+   "requests": 38,
+   "sized_kit_needed": 3,
+   "sized_no_tested_class_fits": 19,
+   "sized_cited_answer": 16,
+   "note": "Not acted on. No tested class fits was wrong on 6 of 18 finished requests."
+  }
+ },
+ "training_data_kept_out": {
+  "found_wrong": 114,
+  "test_or_trial": 38,
+  "credential_shape": 30,
+  "marked_invented_or_wrong": 49,
+  "over_six_rows_for_one_object": 55,
+  "no_place_for_right_answer": 6,
+  "personal_data_layer_texts": 2781,
+  "texts_changed": 0
+ },
+ "v2_variant_choice_on_dev_of_52": {
+  "a": 40,
+  "c": 40,
+  "b": 38,
+  "deterministic": 36,
+  "older_adapter": 23,
+  "muse_spark_open": 18,
+  "always_none": 15
+ }
+}
