@@ -1,0 +1,3 @@
+#!/bin/bash
+# Logs status and URL of every curl a bot runs, without changing what the bot sees. A bot's own -w, if any, wins and that call goes unlogged here.
+exec /usr/bin/curl -w '%output{>>'"$HOME"'/work/.home/curl.log}%{http_code} %{time_total} %{method} %{url_effective}\n' "$@"
