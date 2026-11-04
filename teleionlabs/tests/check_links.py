@@ -105,6 +105,8 @@ def main() -> int:
                 continue
             path = parts.path or "/" + rel
             f = target_file(path) if parts.path else p
+            if not f.is_file() and MEDIA_BASE and path.startswith("/media/gallery-"):
+                continue  # The review gallery's own files: built at deploy time, never in git.
             if not f.is_file() and MEDIA_BASE and path.endswith(MEDIA_SUFFIXES):
                 # Video and voice files are not in git (see MEDIA.md): the live copy must answer instead.
                 external.setdefault(MEDIA_BASE + path, set()).add(rel)
