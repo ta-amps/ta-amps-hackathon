@@ -36,7 +36,8 @@ Other fine-tuning runs, including an earlier Oct 29 Glimmer run on Kaggle (93.3%
 ## What else is in this repository
 
 - [`omninode/`](omninode/README.md): the feed OmniNode, with its pre-step and rules.
-- [`agents/`](agents/warm-server-agent/README.md): the always-on server agent and the [live decider](agents/live-decider/README.md).
+- [`agents/`](agents/warm-server-agent/README.md): the always-on server agent and the [live decider](agents/live-decider/README.md), and the [sizing step](agents/sizing/README.md).
+- [`benchmarks/search-find/`](benchmarks/search-find/RESULTS.md): how the one-call search measured, with its limits.
 - [`agent-prompt/`](agent-prompt/README.md): the prompt our worker bots start from.
 - [`tools/e2e/`](tools/e2e/README.md): the end-to-end test of the live public system.
 - [`film-engine/`](film-engine/README.md) and [`layout-lab/`](layout-lab/README.md): the code behind the films. No media.

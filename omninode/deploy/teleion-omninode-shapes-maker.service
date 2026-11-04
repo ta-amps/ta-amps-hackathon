@@ -1,0 +1,22 @@
+[Unit]
+Description=Teleion Fabric OmniNode shapes: maker (specs in omninode.shape.*.spec)
+After=network-online.target 
+Wants=network-online.target 
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/.config/eranos-worker/planner.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONPATH=/opt/teleion/omninode:/opt/teleion/omninode/.deps:/opt/teleion/notes/work-2026-11-02/omninode-warm-dag-and-resilience-grid:/opt/teleion/eranos
+Environment=OMNINODE_CHECKER_KEY_ID=k_b08fe09a559f
+Environment=OMNINODE_LABEL=omninode-shaped-maker
+WorkingDirectory=/opt/teleion/omninode
+ExecStart=/opt/teleion/eranos/.venv/bin/python -m omninode_live.run_shape make --shapes feed-recheck ngo-source-check repo-awareness
+Nice=10
+IOSchedulingClass=idle
+CPUQuota=50%
+MemoryMax=512M
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+TimeoutStartSec=1500

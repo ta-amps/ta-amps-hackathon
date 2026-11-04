@@ -1,0 +1,11 @@
+[Unit]
+Description=Teleion Fabric OmniNode shapes, every 6 hours. Not installed: enabling it is the owner's call.
+
+[Timer]
+OnCalendar=*-*-* 02/6:47:00
+RandomizedDelaySec=300
+Persistent=false
+Unit=teleion-omninode-shapes-checker.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,106 @@
+{
+ "big": {
+  "min_complexity_milli": 830,
+  "min_prompt_chars": 1400,
+  "terms": []
+ },
+ "budgets": {
+  "default": {
+   "big": {
+    "max_output_tokens": 6000,
+    "usd": 0.15
+   },
+   "small": {
+    "max_output_tokens": 4000,
+    "usd": 0.03
+   }
+  }
+ },
+ "changes": [
+  "needs_people_terms + trial: 6 of 6 needed people, none passed",
+  "needs_people_terms + real: 5 of 5 needed people, none passed",
+  "needs_people_terms + host: 3 of 3 needed people, none passed",
+  "needs_people_terms + ocavr: 3 of 3 needed people, none passed",
+  "needs_people_terms + checklist: 3 of 3 needed people, none passed",
+  "needs_people_terms + log: 3 of 3 needed people, none passed"
+ ],
+ "goal": "More Tasks really finished per dollar",
+ "held_out_new": {
+  "declined_failed": 3,
+  "declined_passed": 0,
+  "mean_reward": -0.1751,
+  "n": 9,
+  "other_size_no_observation": 1,
+  "would_cut_passed": 0
+ },
+ "held_out_old": {
+  "declined_failed": 0,
+  "declined_passed": 0,
+  "mean_reward": -0.2456,
+  "n": 9,
+  "other_size_no_observation": 2,
+  "would_cut_passed": 0
+ },
+ "made_by": "tuner.py",
+ "needs_people_terms": [
+  "checklist",
+  "field",
+  "host",
+  "log",
+  "ocavr",
+  "printed",
+  "real",
+  "trial"
+ ],
+ "objects": {
+  "max": 3,
+  "min_score": 2.0
+ },
+ "parent": 1,
+ "plain_code": [
+  {
+   "handler": "client_index",
+   "task_id_prefix": "verb_index_enrich_",
+   "why": "the Task asks for numbers and hashes that the worker kit's plain code computes; a model only writes about them"
+  }
+ ],
+ "reward": {
+  "per_second": 0.0,
+  "per_usd": 10.0
+ },
+ "similar": {
+  "min_jaccard": 0.5,
+  "min_n": 2
+ },
+ "skills": [
+  {
+   "id": "no_made_up_results",
+   "text": "If the Task needs people, a place, a device or a run you can't do, say that plainly and don't write a result as if it happened.",
+   "when_any": [
+    "trial",
+    "drill",
+    "pilot",
+    "interview",
+    "survey",
+    "measure",
+    "benchmark",
+    "test",
+    "run"
+   ]
+  },
+  {
+   "id": "use_named_objects",
+   "text": "Build on the Task Objects given. Name each one you used.",
+   "when_any": [
+    "object",
+    "pack",
+    "checklist",
+    "template",
+    "harness"
+   ]
+  }
+ ],
+ "split_salt": "sizing-v1",
+ "trained_on": 20,
+ "version": 2
+}

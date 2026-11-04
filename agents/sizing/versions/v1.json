@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "parent": null,
+  "made_by": "by hand, first table",
+  "goal": "More Tasks really finished per dollar",
+  "reward": {"per_usd": 10.0, "per_second": 0.0},
+  "plain_code": [
+    {"task_id_prefix": "verb_index_enrich_", "handler": "client_index", "why": "the Task asks for numbers and hashes that the worker kit's plain code computes; a model only writes about them"}
+  ],
+  "needs_people_terms": ["field", "printed"],
+  "similar": {"min_jaccard": 0.5, "min_n": 2},
+  "big": {"min_complexity_milli": 830, "min_prompt_chars": 1400, "terms": []},
+  "objects": {"max": 3, "min_score": 2.0},
+  "skills": [
+    {"id": "no_made_up_results", "when_any": ["trial", "drill", "pilot", "interview", "survey", "measure", "benchmark", "test", "run"], "text": "If the Task needs people, a place, a device or a run you can't do, say that plainly and don't write a result as if it happened."},
+    {"id": "use_named_objects", "when_any": ["object", "pack", "checklist", "template", "harness"], "text": "Build on the Task Objects given. Name each one you used."}
+  ],
+  "budgets": {"default": {"small": {"max_output_tokens": 4000, "usd": 0.03}, "big": {"max_output_tokens": 6000, "usd": 0.15}}},
+  "split_salt": "sizing-v1"
+}

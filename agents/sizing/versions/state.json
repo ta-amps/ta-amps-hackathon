@@ -1,0 +1,34 @@
+{
+ "active": 1,
+ "canary": null,
+ "history": [
+  {
+   "at": "2026-11-04T15:36:20Z",
+   "changes": [
+    "needs_people_terms + trial: 6 of 6 needed people, none passed",
+    "needs_people_terms + real: 5 of 5 needed people, none passed",
+    "needs_people_terms + host: 3 of 3 needed people, none passed",
+    "needs_people_terms + ocavr: 3 of 3 needed people, none passed",
+    "needs_people_terms + checklist: 3 of 3 needed people, none passed",
+    "needs_people_terms + log: 3 of 3 needed people, none passed"
+   ],
+   "event": "canary_started",
+   "version": 2
+  },
+  {
+   "active": 1,
+   "active_mean": -0.1516,
+   "active_n": 8,
+   "at": "2026-11-04T17:11:07Z",
+   "canary": 2,
+   "canary_mean": -0.1529,
+   "canary_n": 6,
+   "event": "ended_no_evidence",
+   "run": "20261104T170518Z",
+   "version": 2
+  }
+ ],
+ "refused_changes": [
+  "[\"needs_people_terms + checklist: 3 of 3 needed people, none passed\", \"needs_people_terms + host: 3 of 3 needed people, none passed\", \"needs_people_terms + log: 3 of 3 needed people, none passed\", \"needs_people_terms + ocavr: 3 of 3 needed people, none passed\", \"needs_people_terms + real: 5 of 5 needed people, none passed\", \"needs_people_terms + trial: 6 of 6 needed people, none passed\"]"
+ ]
+}

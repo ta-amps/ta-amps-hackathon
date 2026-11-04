@@ -1,0 +1,38 @@
+{
+ "schema": "teleion.omninode.shape.v1",
+ "id": "feed-recheck",
+ "title": "OmniNode shape: feed recheck, plain code only",
+ "goal": "Find approved feed items whose source has changed since a second worker approved them, with no model call.",
+ "reward": {"plain": "one point for a finding a different worker reads the same way; zero model spend"},
+ "invariants": ["maker_is_not_checker", "spend_ceiling_before_model", "every_attempt_recorded", "third_party_text_is_data"],
+ "budget_usd_per_day": 0,
+ "memory": {"store": "omninode.shape_items", "reads": ["omninode.feed_items"]},
+ "sidecar": null,
+ "parameters": {},
+ "composition": "items >> reread >> compare >> store @ check",
+ "steps": [
+  {"id": "items", "op": "rows_from_records", "mode": "code", "args": {"store": "omninode.feed_items", "where": [{"field": "check.verdict", "op": "eq", "value": "approve"}],
+   "fields": {"repo": "$0.full_name", "was_license": "$0.license", "was_description": "$0.description", "was_topics": "$0.topics", "feed_public_object": "$0.public_object"}, "key_fields": ["repo"], "must_find": true}},
+  {"id": "reread", "op": "github_repo", "mode": "code", "args": {"repo_field": "repo", "prefix": "now_"}},
+  {"id": "compare", "op": "classify", "mode": "code", "args": {"rules": [
+   {"name": "gone", "when": [{"field": "github_state", "op": "eq", "value": "gone"}], "set": {"status": "plain_decided", "finding": "repo_gone"}},
+   {"name": "license", "when": [{"field": "now_license", "op": "differs_from", "value": "was_license"}], "set": {"status": "plain_decided", "finding": "license_changed"}},
+   {"name": "text", "when": [{"field": "now_description", "op": "differs_from", "value": "was_description"}], "set": {"status": "plain_decided", "finding": "description_changed"}},
+   {"name": "same", "set": {"status": "plain_decided", "finding": "unchanged"}}]}},
+  {"id": "store", "op": "store_items", "mode": "code", "args": {"only_status": ["plain_decided"]}}
+ ],
+ "check": {
+  "composition": "load >> reread >> agree >> verdict",
+  "steps": [
+   {"id": "load", "op": "load_run_rows", "mode": "code", "args": {}},
+   {"id": "reread", "op": "github_repo", "mode": "code", "args": {"repo_field": "repo", "prefix": "now_"}},
+   {"id": "agree", "op": "classify", "mode": "code", "args": {"rules": [
+    {"name": "gone again", "when": [{"field": "finding", "op": "eq", "value": "repo_gone"}, {"field": "github_state", "op": "eq", "value": "gone"}], "set": {"verdict": "approve", "check_reason": "The second read also finds the repository gone."}},
+    {"name": "license again", "when": [{"field": "finding", "op": "eq", "value": "license_changed"}, {"field": "now_license", "op": "differs_from", "value": "was_license"}], "set": {"verdict": "approve", "check_reason": "The second read also finds another license."}},
+    {"name": "text again", "when": [{"field": "finding", "op": "eq", "value": "description_changed"}, {"field": "now_description", "op": "differs_from", "value": "was_description"}], "set": {"verdict": "approve", "check_reason": "The second read also finds other text."}},
+    {"name": "same again", "when": [{"field": "finding", "op": "eq", "value": "unchanged"}, {"field": "now_license", "op": "same_as", "value": "was_license"}, {"field": "now_description", "op": "same_as", "value": "was_description"}], "set": {"verdict": "approve", "check_reason": "The second read finds no change."}},
+    {"name": "differs", "set": {"verdict": "reject", "check_reason": "The second read does not match the first."}}]}},
+   {"id": "verdict", "op": "store_verdicts", "mode": "code", "args": {}}
+  ]
+ }
+}
