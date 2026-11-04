@@ -169,7 +169,7 @@ Run the complete local developer sandbox offline with zero cloud credentials, or
 
 - **[`training/README.md`](training/README.md):** Open-weights QLoRA (`bitsandbytes` + `peft`), DoRA, iRPO, SpinQuant, and bf16 multi-LoRA training pipeline, [`requirements-train.txt`](training/requirements-train.txt), PEFT `adapter_config.json` manifests, and `adapters/source.json`.
 - **[`eval/README.md`](eval/README.md):** Pre-registered holdout benchmarks, LoRA-as-Memory & local worker-benchmark records, paired bootstrap confidence intervals, negative-result promotion guards, and SVG charts ([`tool-call-accuracy.svg`](eval/tool-call-accuracy.svg), [`schema-and-json-validity.svg`](eval/schema-and-json-validity.svg), [`glimmer-30b-lora-memory.svg`](eval/glimmer-30b-lora-memory.svg), [`horizontal-scaling-256-workers.svg`](eval/horizontal-scaling-256-workers.svg), [`vertical-modular-architecture.svg`](eval/vertical-modular-architecture.svg)).
-- **[`Dockerfile`](Dockerfile), [`docker-compose.yml`](docker-compose.yml) & [`.env.example`](.env.example):** Deterministic `python:3.12-slim` checks, local developer sandbox containers, and zero-secret environment variable template (`MODEL_API_KEY`, `BASETEN_API_KEY`).
+- **[`Dockerfile`](Dockerfile), [`docker-compose.yml`](docker-compose.yml) & [`.env.example`](.env.example):** Deterministic `python:3.12-slim` checks, local developer sandbox containers, and zero-secret environment variable template (`MODEL_API_KEY`, `BASETEN_API_KEY`, `FIREWORKS_API_KEY`, `TOGETHER_API_KEY`).
 - **[`hackathon/`](hackathon/README.md):** Reusable handbook, submission templates, and public-safety checks (`make check`) for hackathon teams.
 
 ```bash
