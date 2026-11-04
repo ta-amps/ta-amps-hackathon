@@ -14,4 +14,4 @@ It touches production, so it refuses to start unless you set `WARM_AGENT_LIVE=1`
    - The maker (`muse-spark-1.3` + canary deciders) and the checker (`muse-wonder-1.0`) maintain separate `0600` credentials (`show_on_map: false`) and enforce `verify_checker_independence()` across `worker_uuid`, `agent_id`, `fine_tune_adapter_id`, and `training_data_digest`.
 5. **Fine-Tuned Model Canary Registry & Thompson-Sampling Self-Tuner**:
    - Built to put fine-tuned models (`Muse Glimmer 30B`, `Wave-3 Contriever KKT-Diff Router`, `Wave-3 Pruned Decoder Five-Head Decisioner`) onto `initial_rollout_share` (`0.15`) when held-out scores beat baseline + margin, step up through `[0.15, 0.35, 0.65, 1.0]`, and roll back to `0.0` if live pass rates drop below `0.70`; no live results have reached it yet.
-   - Shares the atomic `fcntl.flock` Meta spend ledger (`~/.local/state/eranos-worker/meta-spend.json`) strictly inside the owner's `$25/day` and `$150` total caps.
+   - Shares the atomic `fcntl.flock` Meta spend ledger (`~/.local/state/eranos-worker/meta-spend.json`) strictly inside the owner's caps.

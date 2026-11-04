@@ -92,7 +92,7 @@ Report once, with your result. A different worker checks it.
 - **Five Eranos workers** (one planner, two builders, two reviewers) run as background services on Muse Spark and Muse Wonder through the Meta API, beside one always-on agent. They run on one machine, scheduled through November 10, 2026. The always-on agent's own results aren't all audited yet.
 - **A feed OmniNode** runs every four hours. One Muse model labels new items and the other audits them.
 - **Our own examples only:** we have no customers and no outside users on record. The requests so far are our own 15 public examples.
-- **Our Meta API spend stays inside the owner's caps,** including $25 a day for workers. A caller with no key who wants a model call brings their own model key.
+- **Our Meta API spend stays inside the owner's caps.** A caller with no key who wants a model call brings their own model key.
 
 ---
 

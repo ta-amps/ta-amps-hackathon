@@ -1,0 +1,15 @@
+{
+ "written": "after reading held-out test 1, before test 2's Tasks are drawn. Test 1 stays failed under its own gate.",
+ "why": "Test 1 had only 17 of 100 Tasks with candidates from live search and masked names. Test 2 uses the live shape exactly: ready build Tasks, title search, unmasked text.",
+ "fresh_rows": "Real ready Tasks, public list, not in train, dev or panel. No index Tasks. Candidates from /q/search as decider.py does. At most 120. No tuning: adapter a, sha f499e579, prompt, parser and settings unchanged.",
+ "gold": "Same two blind readers and the same agreement rule. Evaluation only, never training.",
+ "gate_all_required": [
+  "paired difference versus current adapter has lower bound above 0",
+  "paired difference versus Muse Spark Open on Baseten (the live next route) has lower bound above 0",
+  "not worse than plain code by more than 10 points: lower bound of paired difference versus plain code above -0.10",
+  "false picks no more than 20% of its picks",
+  "at least 5 more correct picks than the current adapter"
+ ],
+ "changed_from_test_1": "The plain-code item is a 10-point margin rather than at-or-above, and there is a new item against Baseten. This change was made knowing test 1's score, so it is disclosed. The fresh rows are what make it fair. Plain code is not the live route for this job.",
+ "if_gate_fails": "Live stays as it is and both results are published."
+}

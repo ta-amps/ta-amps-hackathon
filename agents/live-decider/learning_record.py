@@ -5,7 +5,6 @@ Every number comes from a live read or a record on this machine at the moment it
 from __future__ import annotations
 
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -207,28 +206,77 @@ def checks_of_warm_work() -> dict[str, Any]:
     return {
         "before_the_fix": {"claims_refused_for_having_no_target": refused, "answers_on_record": len(old), "answers_saying_there_was_nothing_to_check": sum(1 for t in old if NOTHING.search(str(t.get("output_sanitized")))), "note": "Those answers were given a Task's activity numbers, not any work."},
         "since_the_fix": own_checker_counts() or verdicts,
-        "note_on_that_count": "Plain Muse Wonder, a different worker from the maker. Most no-key makers don't say which model they used, so those read different worker, model not known. A judge's reading, not a measure of real-world quality.",
+        "note_on_that_count": "Each object's latest verdict. Reviews were first read without the evaluations they sent, which wrongly failed some; those got a second reading, and both verdicts stay on record. Plain Muse Wonder, a different worker from the maker. Most no-key makers don't say which model they used, so those read different worker, model not known. A judge's reading, not a measure of real-world quality.",
     }
 
 
 def own_checker_counts() -> dict[str, Any] | None:
-    """Read-only counts from your shim database, when these settings name it. Without them, the caller's counts stand."""
+    """Read-only counts from the shim's database: what the checker's verdicts are on stored work."""
     where, database, checker = (os.environ.get(n, "").strip() for n in ("LEARNING_D1_DIR", "LEARNING_D1_DATABASE", "WARM_AGENT_CHECKER_NAME"))
     since = os.environ.get("LEARNING_CHECKS_SINCE", "2026-11-04T14:50").strip()
     if not (where and database and checker) or not re.fullmatch(r"[\w.-]+", checker) or not re.fullmatch(r"[\dT:-]+", since):
-        return None
+        return None  # without these settings the caller's counts stand
     sql = (
-        "SELECT CASE WHEN e.rationale LIKE 'The maker%' THEN 'model_not_known' ELSE 'model_known' END m, e.verification_verdict v, COUNT(*) n "
-        f"FROM herma_evaluations e WHERE e.evaluator_agent_id='{checker}' AND e.target_kind='object' AND e.created_at >= '{since}' GROUP BY 1,2"
+        "SELECT e.target_id t, e.id i, e.verification_verdict v, e.rationale r FROM herma_evaluations e "
+        f"WHERE e.evaluator_agent_id='{checker}' AND e.target_kind='object' AND e.created_at >= '{since}' ORDER BY e.id"
     )
-    out = subprocess.run(["npx", "-y", "wrangler@4.154.0", "d1", "execute", database, "--remote", "--json", "--command", sql], cwd=where, capture_output=True, text=True, timeout=90).stdout
+    out = subprocess.run(["npx", "-y", "wrangler@4.154.0", "d1", "execute", database, "--remote", "--json", "--command", sql], cwd=where, capture_output=True, text=True, timeout=120).stdout
     rows = json.JSONDecoder().raw_decode(out[out.index("["):])[0][0]["results"]
-    result: dict[str, Any] = {"passed": 0, "failed": 0, "maker_model_not_known": 0}
+    latest: dict[str, dict[str, Any]] = {}
+    second = {"read_again": 0, "first_refused_then_passed": 0, "refused_both_times": 0}
     for r in rows:
-        result["passed" if r["v"] == "CONFIRMED" else "failed"] += r["n"]
-        if r["m"] == "model_not_known":
-            result["maker_model_not_known"] += r["n"]
+        again = str(r["r"]).startswith("Second reading")
+        if again:
+            second["read_again"] += 1
+            if latest.get(r["t"], {}).get("v") == "REFUTED":
+                second["first_refused_then_passed" if r["v"] == "CONFIRMED" else "refused_both_times"] += 1
+        latest[r["t"]] = r
+    result: dict[str, Any] = {"objects_read": len(latest), "passed": 0, "failed": 0, "maker_model_not_known": 0, "second_readings": second}
+    for r in latest.values():
+        result["passed" if r["v"] == "CONFIRMED" else "failed"] += 1
+        if "maker's model isn't known" in str(r["r"]):
+            result["maker_model_not_known"] += 1
     return result
+
+
+def shape_loops() -> list[dict[str, Any]]:
+    """Newer spec-driven OmniNode shapes. Their reward signal is weak, and the record says so."""
+    out = []
+    for shape in ("ngo-source-check", "repo-awareness"):
+        value = fabric(f"/v1/stores/eranos.instructions/records/omninode.shape.{shape}.spec")["value"]
+        model = (value.get("parameters") or {}).get("model") or {}
+        log = value.get("change_log") or []
+        out.append({
+            "shape": shape,
+            "outcomes": (model.get("inputs") or {}).get("outcomes"),
+            "mix": model.get("mix"),
+            "last_change": log[-1].get("at") if log else None,
+            "measured_better": NOT_MEASURED,
+            "finding": "An uncontrolled trace, and a weak signal.",
+        })
+    return out
+
+
+def fine_tune_retrain() -> dict[str, Any]:
+    """The Nov 4 retrain of the Task Object pick, from its own result files. It stays off live; the record says why."""
+    rec = Path(os.environ.get("FINETUNE_RECORDS", str(REPO / "agents/finetune-v2/records")))
+    if not (rec / "results-2.json").exists():
+        return {}
+    one, two, model = (json.loads((rec / n).read_text()) for n in ("results.json", "results-2.json", "MODEL-RECORD.json"))
+    arm = lambda d, n: {k: d.get(n, {}).get(k) for k in ("n", "correct", "pick", "right_pick", "false_pick", "missed", "invalid")}
+    names = {"new_fine_tune": "new_adapter", "fine_tune_in_small_use": "current_adapter", "muse_spark_open": "baseten_open", "plain_word_score_no_model": "plain_code", "always_say_nothing_fits": "always_none"}
+    return {
+        "what": "A new Muse Glimmer 30B fine-tune for one job: given a real Task and a list of Task Objects, pick one or say nothing fits.",
+        "live": False,
+        "why_not_live": "It beat the fine-tune in small use and Muse Spark Open, and failed the bar we wrote down before each test, because a plain word score with no model did as well or better. Live is unchanged.",
+        "model": {"base": "Muse Glimmer 30B, revision a4e59da5", "adapter_id": model["adapter_sha256"][:8], "weights": "private", "rows": model["train"]["rows_used"], "training_data_id": model["train"]["train_sha256"][:8], "training_usd_estimate": model["train"]["usd_estimate"], "row_sources": model["data_manifest"]["train_sources"], "labels": "From our own records and rule code; none written by a model. Text in the rows includes work written by our Muse workers."},
+        "test_1": {"tasks": "100 real Tasks; 6 left out because the two readers disagreed. Names of earlier work hidden in the text; only 17 Tasks had candidates from live search.", "bar_passed": one["gate_pass"], "arms": {k: arm(one["arms"][v], "panel_held") for k, v in names.items()}, "new_vs_plain_points_range": one["paired"]["panel_held: new vs plain_code"]["ci95"], "new_vs_small_use_points_range": one["paired"]["panel_held: new vs current_adapter"]["ci95"]},
+        "test_1_records_that_name_their_own_earlier_work": {k: arm(one["arms"][v], "held_refs") for k, v in names.items()},
+        "test_2": {"tasks": f"{two['rows']} fresh real ready Tasks, the same reads the live decider makes; 5 left out because the readers disagreed. The bar was written after test 1 and the change is on our record.", "bar_passed": two["gate_pass"], "arms": {k: {x: two["arms"][v].get(x) for x in ("n", "correct", "pick", "right_pick", "false_pick", "missed", "invalid")} for k, v in names.items()}, "new_vs_plain_points_range": two["paired"]["new vs plain_code"]["ci95"], "new_vs_small_use_points_range": two["paired"]["new vs current_adapter"]["ci95"], "new_vs_muse_spark_open_points_range": two["paired"]["new vs baseten_open"]["ci95"]},
+        "how_right_was_judged": "Two independent readers, Muse Wonder 1.0 and a model from another provider, read each Task and list blind, and answers count only where they agree. That is a judge's reading, not whether a worker's result got better. Neither reader's answers entered training.",
+        "cost_usd_estimate": model["spend"]["total_usd"],
+        "more_data": "Only 343 real rows went into training, and the job has no record yet of whether a pick helped the worker. A better test needs that outcome.",
+    }
 
 
 def build() -> dict[str, Any]:
@@ -241,6 +289,8 @@ def build() -> dict[str, Any]:
         "generated_at": iso(time.time()),
         "how_to_read": 'A timer firing is not counted. "not measured" means no test compares results with and without the loop. All real work here is our own fleet\'s or our own example requests; no outside users are on record.',
         "loops": [shim_scoring(), kit_bandit(), feed_tuner(), eranos_tuner(history), variant_writing(history), fine_tune_switch()],
+        "newer_shapes": shape_loops(),
+        "fine_tune_retrain_november_4": fine_tune_retrain(),
         "negative_findings": {
             "checks_of_the_always_on_agent": checks_of_warm_work(),
             "retraining": {"tasks_waiting": len(retrain), "admitted_as_training_examples": sum(1 for t in traces if t.get("training_admitted")), "of_traces": len(traces), "note": "No model has retrained from these Tasks: nobody claims them."},

@@ -1,0 +1,1 @@
+{"chosen": "a", "written": "before any held-out answer of a new adapter exists", "basis": "dev.jsonl + panel_dev only. Correct of 52: a 40, c 40, b 38, plain code 36, current adapter 23, Muse Spark Open 18, always none 15. False picks: a 7 of 35 picks, c 9 of 37, b 10 of 40. a ties c on accuracy with the fewest false picks and keeps the seed-pack rows.", "dev_is_small": true}
