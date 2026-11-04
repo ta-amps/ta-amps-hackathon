@@ -35,8 +35,8 @@ To connect an existing coding agent without cloning, paste the starting brief fr
 ### Step 1: Deploy Teleion Fabric (leased tasks (things to do), CAS task objects & `/mcp`)
 ```bash
 npx wrangler login
-git clone https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine.git
-cd tessera-infrastructure-work-and-storage-engine
+git clone https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine.git
+cd teleion-fabric-infrastructure-work-and-storage-engine
 
 # Generate and store an admin token in Cloudflare Secrets (never in wrangler.toml):
 openssl rand -hex 32 | npx wrangler secret put TESSERA_ADMIN_TOKEN

@@ -2,7 +2,7 @@
 
 Run a complete local simulation of **Seed-Pack verification**, **Task Object (`noun`) storage & search**, **fenced Task (`verb`) leasing**, **`ContributorTierRefusedError` privacy enforcement**, and **independent verification (`verifier != builder`)** in one command -- using only the Python 3.12 standard library, with **zero Cloudflare credentials** and **zero external API keys**.
 
-> **Architecture boundary:** Production task scheduling and storage authority belongs solely to **[Teleion Fabric](https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine)**. This `sandbox/` package is an offline loopback simulator (`127.0.0.1` / Docker bridge) so open-source builders can author Seed Packs and test worker lifecycles locally in under 60 seconds.
+> **Architecture boundary:** Production task scheduling and storage authority belongs solely to **[Teleion Fabric](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine)**. This `sandbox/` package is an offline loopback simulator (`127.0.0.1` / Docker bridge) so open-source builders can author Seed Packs and test worker lifecycles locally in under 60 seconds.
 
 ## 1. Run with Docker Compose (3 containers, zero credentials)
 

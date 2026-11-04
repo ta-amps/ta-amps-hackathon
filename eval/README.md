@@ -64,5 +64,5 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 ## Raw Records & Reproducible Verifiers
 
 - **Muse Glimmer 30B Evidence Bundle:** [`agora/evidence/glimmer-30b-2026-10-29/`](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/glimmer-30b-2026-10-29)
-- **Llama 3.2 1B & 3B Evidence JSONs:** [`tessera/examples/continuous_tuning/evidence/`](https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine/tree/main/examples/continuous_tuning/evidence)
+- **Llama 3.2 1B & 3B Evidence JSONs:** [`tessera/examples/continuous_tuning/evidence/`](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine/tree/main/examples/continuous_tuning/evidence)
 - **Adapter Configs, Step-by-Step Kaggle/Llama Guides & Source Digests:** [`../training/README.md`](../training/README.md)

@@ -1,6 +1,6 @@
 # Open-Weights Fine-Tuning: Muse Glimmer 30B QLoRA, Modular Llama 3.2 LoRAs & Governed Meta API Loop
 
-`ta-amps` treats continuous fine-tuning and specialist adapter routing as ordinary **tasks (things to do)** (`verbs`) and **task objects** (`nouns`) on [Teleion Fabric](https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine), without adding a separate model registry, server-side training daemon, or task authority.
+`ta-amps` treats continuous fine-tuning and specialist adapter routing as ordinary **tasks (things to do)** (`verbs`) and **task objects** (`nouns`) on [Teleion Fabric](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine), without adding a separate model registry, server-side training daemon, or task authority.
 
 > **Scope and honesty boundary:** Every training and evaluation example in the measured adapter runs below comes from owned deterministic synthetic MIT repository templates. No Muse API outputs, provider completions, nonprofit files, or private execution traces entered training. Base weights and derived LoRA/QLoRA `.safetensors` weights remain private under their respective licenses (*Built with Llama* under the Llama 3.2 Community License). Adapters are recorded as unadmitted candidate manifests, not deployed hosted endpoints or general-capability claims.
 
@@ -144,8 +144,8 @@ python3 templates/finetune-meta-lora/train_lora_template.py \
   --dry-run-manifest /tmp/lora-dry-run-receipt.json
 
 # 2. Full Teleion Fabric continuous tuning loop on a local CUDA GPU:
-git clone https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine.git
-cd tessera-infrastructure-work-and-storage-engine
+git clone https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine.git
+cd teleion-fabric-infrastructure-work-and-storage-engine
 make check
 python3 -m venv .venv-train && . .venv-train/bin/activate
 pip install -r ../teleionlabs-teleion-fabric/training/requirements-train.txt
@@ -157,6 +157,6 @@ PYTHONPATH=src:. python -m examples.continuous_tuning.cli tick \
 
 ## Primary Evidence Bundles
 
-- **Llama 3.2 1B & 3B Continuous Tuning Method & Records:** [`tessera/docs/continuous-tuning.md`](https://github.com/ta-amps/tessera-infrastructure-work-and-storage-engine/blob/main/docs/continuous-tuning.md)
+- **Llama 3.2 1B & 3B Continuous Tuning Method & Records:** [`tessera/docs/continuous-tuning.md`](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine/blob/main/docs/continuous-tuning.md)
 - **Muse Glimmer 30B 2xT4 QLoRA Records & Pre-Registered Holdout:** [`agora/evidence/glimmer-30b-2026-10-29/README.md`](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/blob/main/evidence/glimmer-30b-2026-10-29/README.md)
 - **Evaluation Charts, LoRA-as-Memory Benchmark & Holdout Guard Analysis:** [`../eval/README.md`](../eval/README.md)
