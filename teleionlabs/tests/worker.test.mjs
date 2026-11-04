@@ -3,11 +3,13 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { handle, passesWordList, SECURITY_HEADERS } from "../worker/lib.js";
+import { handle, passesWordList, patientAsset, SECURITY_HEADERS } from "../worker/lib.js";
 import entry from "../worker/index.js";
 
 const DIST = fileURLToPath(new URL("../dist/", import.meta.url));
-const FILM = JSON.parse(await readFile(new URL("../content/site.json", import.meta.url), "utf8")).main_film;
+const SITE = JSON.parse(await readFile(new URL("../content/site.json", import.meta.url), "utf8"));
+const FILM = SITE.main_film;
+const POSTER = SITE.main_film_poster || FILM;
 
 function assets() {
   return {
@@ -281,7 +283,7 @@ test("every page is plain text: first line is for agents, no stylesheet file, no
 test("the home page plays the rendered film as a video, keeps its words as text, and loads no canvas film", async () => {
   const res = await handle(new Request("https://teleionlabs.com/"), { ASSETS: assets() }, ctx);
   const body = await res.text();
-  assert.match(body, new RegExp(`<video id="film" controls autoplay muted playsinline preload="metadata"[^>]* poster="/media/${FILM}\\.jpg"`));
+  assert.match(body, new RegExp(`<video id="film" controls autoplay muted playsinline preload="metadata"[^>]* poster="/media/${POSTER}\\.jpg"`));
   assert.match(body, new RegExp(`<source src="/media/${FILM}\\.mp4" type="video/mp4">`));
   assert.match(body, new RegExp(`<track kind="captions" src="/media/${FILM}\\.vtt"(?![^>]*default)[^>]*>`));
   assert.match(body, /<script src="\/assets\/home-film\.js" defer>/);
@@ -292,7 +294,7 @@ test("the home page plays the rendered film as a video, keeps its words as text,
 
 test("/video/ plays the main film with its captions off by default, and the old preview is gone", async () => {
   const body = await (await handle(new Request("https://teleionlabs.com/video/"), { ASSETS: assets() }, ctx)).text();
-  assert.match(body, new RegExp(`<video id="film" controls autoplay muted playsinline[^>]* poster="/media/${FILM}\\.jpg"`));
+  assert.match(body, new RegExp(`<video id="film" controls autoplay muted playsinline[^>]* poster="/media/${POSTER}\\.jpg"`));
   assert.match(body, new RegExp(`<source src="/media/${FILM}\\.mp4"`));
   assert.match(body, new RegExp(`<track kind="captions" src="/media/${FILM}\\.vtt"(?![^>]*default)[^>]*>`));
   assert.doesNotMatch(body, /fabric-preview/);
@@ -317,6 +319,24 @@ test("the footer shows the required Muse Spark Open line and the notice is plain
   assert.equal(txt.status, 200);
   assert.match(txt.headers.get("content-type"), /^text\/plain/);
   assert.match(await txt.text(), /Built with Muse Spark Open/);
+});
+
+test("a slow or failed read of a film asks again, and a hopeless one answers 503 in time", async () => {
+  const req = new Request("https://teleionlabs.com/media/x.mp4");
+  let calls = 0;
+  const hangs = { fetch: () => { calls += 1; return calls === 1 ? new Promise(() => {}) : Promise.resolve(new Response("ok")); } };
+  assert.equal(await (await patientAsset({ ASSETS: hangs }, req, [5, 10], 500)).text(), "ok");
+  calls = 0;
+  const fails = { fetch: async () => { calls += 1; return calls === 1 ? new Response("x", { status: 500 }) : new Response("ok"); } };
+  assert.equal(await (await patientAsset({ ASSETS: fails }, req, [5, 10], 500)).text(), "ok");
+  const dead = { fetch: async () => new Response("x", { status: 500 }) };
+  assert.equal((await patientAsset({ ASSETS: dead }, req, [1, 2], 500)).status, 503);
+  const never = { fetch: () => new Promise(() => {}) };
+  const t = Date.now();
+  assert.equal((await patientAsset({ ASSETS: never }, req, [1, 2], 30)).status, 503);
+  assert.ok(Date.now() - t < 400);
+  const missing = { fetch: async () => new Response("no", { status: 404 }) };
+  assert.equal((await patientAsset({ ASSETS: missing }, req, [5], 500)).status, 404);
 });
 
 test("the sitemap and the build drop the retired 3D page and its film code", async () => {

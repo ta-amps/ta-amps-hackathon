@@ -1075,7 +1075,7 @@ def build(out: Path) -> list[str]:
     data = {name: load(name) for name in REQUIRED}
     # One name for the main film, in content/site.json. /media/ is cached for a year, so each new cut takes a new name.
     film = req(data["site"], "main_film", "site")
-    files = {"media": f"/media/{film}.mp4", "captions": f"/media/{film}.vtt", "poster": f"/media/{film}.jpg"}
+    files = {"media": f"/media/{film}.mp4", "captions": f"/media/{film}.vtt", "poster": f"/media/{data['site'].get('main_film_poster') or film}.jpg"}
     for page in ("home", "video"):
         for b in data[page]["blocks"]:
             if b.get("type") == "film": b["video"].update(files)

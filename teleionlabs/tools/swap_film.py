@@ -2,12 +2,11 @@
 """Put a new main film on the home page and /video/. Usage: tools/swap_film.py <source.mp4> <new-name>, for example
 tools/swap_film.py .../review/cube-main-3.mp4 main-film-20261104c. Captions come from the .vtt and .srt named cube-main
 beside the source, or pass --captions <stem>. Stops if film_qa, the 179-180 s length or film_gate fails. Then run tools/publish.sh.
-The new name must be new: /media/ is cached for a year. Earlier films stay in static/media, so a rollback is one line, main_film in content/site.json, then tools/publish.sh. Poster is taken at 70 s; --poster-at changes it."""
-import os
+The new name must be new: /media/ is cached for a year. Earlier films stay in static/media, so a rollback is one line, main_film in content/site.json, then tools/publish.sh. Poster is taken at 2 s, an opening frame; --poster-at changes it."""
 import argparse, json, re, shutil, subprocess, sys
 from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
-NOTES = Path(os.environ["TELEION_NOTES"])
+NOTES = Path.home() / "meta_hacakthon/notes"
 FF = Path.home() / ".local/share/aidr-tools/ffmpeg-7.0.2-amd64-static/ffmpeg"
 QA = NOTES / "work-2026-11-02/claude-real-demo-film/film_qa.py"
 GATE = NOTES / "work-2026-11-03/iso-film/tools/film_gate.py"
@@ -16,7 +15,7 @@ SMALL = NOTES / "work-2026-11-03/mass/site-small"
 MEDIA = HERE / "static/media"
 # Where the /video/ transcript starts a new paragraph, when the script has these lines.
 BREAKS = ["Teleion Fabric is a fabric", "And we measure it.", "Teleion Fabric can run almost anything", "Anyone with spare AI", "See it at eranosforgood.org"]
-a = argparse.ArgumentParser(); a.add_argument("source", type=Path); a.add_argument("name"); a.add_argument("--captions", default="cube-main"); a.add_argument("--poster-at", type=int, default=70)
+a = argparse.ArgumentParser(); a.add_argument("source", type=Path); a.add_argument("name"); a.add_argument("--captions", default="cube-main"); a.add_argument("--poster-at", type=int, default=2)
 a = a.parse_args()
 vtt, srt = a.source.with_name(a.captions + ".vtt"), a.source.with_name(a.captions + ".srt")
 for f in (a.source, vtt, srt):
@@ -40,6 +39,7 @@ if mp4.stat().st_size > 25 * 2**20: mp4.unlink(); sys.exit("STOP: the web copy i
 shutil.copy(vtt, MEDIA / f"{a.name}.vtt")
 subprocess.run([str(FF), "-nostdin", "-v", "error", "-y", "-ss", str(a.poster_at), "-i", str(mp4), "-frames:v", "1", "-q:v", "4", str(MEDIA / f"{a.name}.jpg")], check=True)
 # The one line that names the film.
+site = re.sub(r'\n *"main_film_poster": "[^"]*",', "", site)  # A poster override belongs to the film it was made for.
 site_file.write_text(site.replace(f'"main_film": "{old}"', f'"main_film": "{a.name}"'))
 # The transcript follows the captions.
 text = " ".join(l.strip() for l in srt.read_text().splitlines() if l.strip() and "-->" not in l and not l.strip().isdigit())

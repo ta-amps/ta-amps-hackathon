@@ -61,6 +61,32 @@ function withHeaders(response, extra = {}) {
   return res;
 }
 
+// A cold read of a large film can hang for 47 s and then fail at one Cloudflare location. Ask again while the first
+// read runs, take the first good answer, and answer 503 at the limit so the page's own retry can run.
+export async function patientAsset(env, request, again = [6000, 14000], limit = 25000) {
+  const asks = [];
+  const ask = () => { const p = Promise.resolve().then(() => env.ASSETS.fetch(new Request(request))).then((r) => { if (r.status >= 500) throw new Error(`asset ${r.status}`); return r; }); asks.push(p); return p; };
+  const timers = [];
+  const answer = new Promise((resolve, reject) => {
+    ask().then(resolve, () => {});
+    let failed = 0;
+    const watch = (p) => p.catch(() => { failed += 1; if (failed > again.length) reject(new Error("no asset")); });
+    watch(asks[0]);
+    for (const ms of again) timers.push(setTimeout(() => { const p = ask(); p.then(resolve, () => {}); watch(p); }, ms));
+    timers.push(setTimeout(() => reject(new Error("asset timeout")), limit));
+  });
+  try {
+    const winner = await answer;
+    for (const p of asks) p.then((r) => { if (r !== winner) r.body?.cancel().catch(() => {}); }, () => {});
+    return winner;
+  } catch {
+    for (const p of asks) p.then((r) => r.body?.cancel().catch(() => {}), () => {});
+    return new Response("The film is warming up. Please try again.", { status: 503, headers: { "Retry-After": "2", "Content-Type": "text/plain; charset=utf-8" } });
+  } finally {
+    timers.forEach(clearTimeout);
+  }
+}
+
 function cacheControlFor(pathname) {
   if (pathname.startsWith("/fonts/") || pathname.startsWith("/media/")) return "public, max-age=31536000, immutable";
   if (pathname.startsWith("/assets/") || pathname === "/favicon.svg" || pathname === "/favicon.ico") return "public, max-age=3600";
@@ -296,7 +322,7 @@ async function serve(request, env, ctx) {
   const twin = wantsText ? (url.pathname === "/" ? "/index.txt" : `${url.pathname.replace(/\/$/, "")}.txt`) : null;
   const assetRequest = twin ? new Request(new URL(twin, url), request) : request;
   const servedPath = twin || url.pathname;
-  const rawAsset = await env.ASSETS.fetch(assetRequest);
+  const rawAsset = url.pathname.startsWith("/media/") ? await patientAsset(env, assetRequest) : await env.ASSETS.fetch(assetRequest);
   const accept = (request.headers.get("Accept") || "").toLowerCase();
   if (rawAsset.status === 404 && !accept.includes("text/html")) return withHeaders(plainNotFound(url, accept), { Vary: "Accept" });
   const asset = await maybeMediaRange(request, rawAsset, ctx);

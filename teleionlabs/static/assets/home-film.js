@@ -8,12 +8,18 @@
   if (!v || !b) return;
   const wrap = v.parentElement;
   let keep = !matchMedia("(hover:hover)").matches; // No hover on a phone: the player's controls stay, and hide themselves as it plays.
-  const show = (on) => { v.controls = keep || on; };
+  let started = false; // Until the film moves, the controls stay: on a slow first load they carry the spinner and a way to press play.
+  const show = (on) => { v.controls = keep || !started || on; };
   const stay = () => { keep = true; show(true); };
   const label = () => { b.textContent = v.muted ? b.dataset.on : b.dataset.off; b.setAttribute("aria-pressed", String(!v.muted)); };
   b.addEventListener("click", () => { v.muted = !v.muted; if (v.paused) v.play().catch(stay); });
   v.addEventListener("volumechange", label);
   v.addEventListener("ended", stay);
+  v.addEventListener("playing", () => { if (!started) { started = true; show(wrap.matches(":hover")); } });
+  // A failed load gets two more tries, then the controls and the download link stay.
+  const src = v.querySelector("source");
+  let tries = 0;
+  if (src) src.addEventListener("error", () => { if (tries++ < 2) setTimeout(() => { v.load(); if (!still) v.play().catch(stay); }, 1500); else stay(); });
   wrap.addEventListener("mouseenter", () => show(true));
   wrap.addEventListener("mouseleave", () => show(false));
   addEventListener("keydown", (e) => { if (e.key === "Tab") stay(); });
