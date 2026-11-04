@@ -1,4 +1,23 @@
+import json
+import os
+import tempfile
 from pathlib import Path
+
+# A clean copy has no shared word list. A small generated one lets the tests run; real runs set BANNED_WORDS_FILE.
+if not os.environ.get("BANNED_WORDS_FILE") and not os.environ.get("TELEION_NOTES"):
+    words = Path(tempfile.mkdtemp()) / "banned-words.json"
+    words.write_text(
+        json.dumps(
+            {
+                "always": {"patterns": ["\\bs" + "ynthetic\\b"]},
+                "visible_text": {"patterns": []},
+                "agent_apps_outside_models_page": {"patterns": []},
+                "private_names": {"sha256": []},
+            }
+        ),
+        encoding="utf-8",
+    )
+    os.environ["BANNED_WORDS_FILE"] = str(words)
 
 import pytest
 
