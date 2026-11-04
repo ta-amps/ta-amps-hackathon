@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Put a new main film on the home page and /video/. Usage: tools/swap_film.py <source.mp4> <new-name>, for example
 tools/swap_film.py .../review/cube-main-3.mp4 main-film-20261104c. Captions come from the .vtt and .srt named cube-main
-beside the source, or pass --captions <stem>. Stops if the film gate fails. Then run tools/publish.sh.
+beside the source, or pass --captions <stem>. Stops if film_qa, the 179-180 s length or film_gate fails. Then run tools/publish.sh.
 The new name must be new: /media/ is cached for a year. Earlier films stay in static/media, so a rollback is one line, main_film in content/site.json, then tools/publish.sh. Poster is taken at 70 s; --poster-at changes it."""
 import os
 import argparse, json, re, shutil, subprocess, sys
@@ -10,6 +10,7 @@ HERE = Path(__file__).resolve().parent.parent
 NOTES = Path(os.environ["TELEION_NOTES"])
 FF = Path.home() / ".local/share/aidr-tools/ffmpeg-7.0.2-amd64-static/ffmpeg"
 QA = NOTES / "work-2026-11-02/claude-real-demo-film/film_qa.py"
+GATE = NOTES / "work-2026-11-03/iso-film/tools/film_gate.py"
 INBOX = NOTES / "work-2026-11-03/gallery-inbox.jsonl"
 SMALL = NOTES / "work-2026-11-03/mass/site-small"
 MEDIA = HERE / "static/media"
@@ -25,8 +26,14 @@ site_file = HERE / "content/site.json"; site = site_file.read_text()
 old = json.loads(site)["main_film"]
 if old == a.name or (MEDIA / f"{a.name}.mp4").exists(): sys.exit(f"{a.name} is already used; /media/ is cached for a year, so pick a new name")
 if subprocess.run(["git", "status", "--porcelain"], cwd=HERE, capture_output=True, text=True).stdout.strip(): sys.exit("commit or set aside other changes first")
-print("film gate..."); q = subprocess.run([sys.executable, str(QA), str(a.source), str(srt)])
-if q.returncode: sys.exit("STOP: the film gate failed; nothing changed")
+print("film_qa..."); q = subprocess.run([sys.executable, str(QA), str(a.source), str(srt)])
+if q.returncode: sys.exit("STOP: film_qa failed; nothing changed")
+# MUST-FOLLOW: 179-180 s. film_gate checks the length it is given, so the length rule is checked here, and film_gate checks the rest, true peak included.
+info = subprocess.run([str(FF), "-hide_banner", "-i", str(a.source)], capture_output=True, text=True).stderr
+d = re.search(r"Duration: (\d+):(\d+):([\d.]+)", info); seconds = int(d[1]) * 3600 + int(d[2]) * 60 + float(d[3])
+if not 179 <= seconds <= 180.1: sys.exit(f"STOP: {seconds:.2f} s is outside 179-180 s; nothing changed")
+print("film_gate..."); g = subprocess.run([sys.executable, str(GATE), str(a.source), "--seconds", f"{seconds:.2f}"])
+if g.returncode: sys.exit("STOP: film_gate failed; nothing changed")
 mp4 = MEDIA / f"{a.name}.mp4"
 subprocess.run([str(FF), "-nostdin", "-y", "-loglevel", "error", "-i", str(a.source), "-vf", "scale=1280:-2", "-c:v", "libx264", "-preset", "slow", "-crf", "29", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", str(mp4)], check=True)
 if mp4.stat().st_size > 25 * 2**20: mp4.unlink(); sys.exit("STOP: the web copy is over 25 MiB; nothing changed")
