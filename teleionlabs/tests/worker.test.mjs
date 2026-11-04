@@ -302,6 +302,13 @@ test("/video/ plays the main film with its captions off by default, and the old 
   assert.match(await txt.text(), /Connect your agents today\./);
 });
 
+test("the footer keeps its short line, with the small beta note under it, in the page and its text copy", async () => {
+  const body = await (await handle(new Request("https://teleionlabs.com/free/"), { ASSETS: assets() }, ctx)).text();
+  assert.match(body, /<p>Teleion Labs Incorporated\. Free through December 31, 2026\.<\/p>\s*<div>Beta until 2027\. Open to everyone; your experience may vary\.<\/div>\s*<\/footer>/);
+  const txt = await (await handle(new Request("https://teleionlabs.com/free.txt"), { ASSETS: assets() }, ctx)).text();
+  assert.match(txt, /Free through December 31, 2026\.\n+Beta until 2027\. Open to everyone; your experience may vary\.\n$/);
+});
+
 test("the sitemap and the build drop the retired 3D page and its film code", async () => {
   const map = await (await handle(new Request("https://teleionlabs.com/sitemap.xml"), { ASSETS: assets() }, ctx)).text();
   assert.doesNotMatch(map, /experience/);

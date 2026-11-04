@@ -39,7 +39,7 @@ TEXT_CSS = ("body>p:first-child{white-space:nowrap;font-size:min(1em,3.2vw);text
             "h1,h2,h3{font-size:1em;margin:2em 0 .4em}table{border-collapse:collapse;display:block;overflow-x:auto}"
             "th,td{padding:0 2ch .4em 0;text-align:left;vertical-align:top}pre{white-space:pre-wrap;background:#FFFDF8;padding:.5em}figure{margin:0}"
             "video{width:100%;height:auto}input,button{font:inherit;min-height:44px;padding:0 1ch}"
-            "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em;text-align:center}footer a{margin:0 1ch;display:inline-block}"
+            "blockquote{white-space:pre-line;margin:1em 0;padding:.5em 1ch;background:#FFFDF8}input{box-sizing:border-box;width:100%}footer{margin-top:3em;font-size:.875em;text-align:center}footer a{margin:0 1ch;display:inline-block}footer div{margin-top:-.5em;padding-bottom:.5em;font-size:11px;color:#5A5F68}"
             "nav{display:flex;flex-wrap:wrap;justify-content:center;gap:.25em 2ch;margin:0 calc(50% - 50vw);padding:0 1rem}"
             "#film-wrap{margin:1rem calc(50% - 50vw) 0}#film-wrap video{display:block;width:min(100%,max(28rem,calc((100svh - 12rem)*16/9)));height:auto;margin:auto;-webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 2.5%,#000 97.5%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}"
             "#film-row{text-align:center;margin:.75rem 0}#film-row button{margin-right:2ch;background:#11161F;color:#F5F2EA;border:2px solid #11161F;border-radius:4px;font-weight:700;cursor:pointer}#film-row button:hover{background:#24519B;border-color:#24519B}")
@@ -897,6 +897,7 @@ class Renderer:
             "nav_label": req(nav, "label", "site/nav"),
             "footer_label": req(footer, "label", "site/footer"),
             "footer_line": req(footer, "line", "site/footer"),
+            "footer_beta": req(footer, "beta", "site/footer"),
         }
         raw = {
             "banner": banner,
