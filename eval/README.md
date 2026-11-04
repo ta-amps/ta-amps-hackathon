@@ -12,9 +12,9 @@ Every model-tuning round in `ta-amps` is scored by a deterministic evaluation Ta
 | --- | --- | --- | --- | --- | --- |
 | **Muse Glimmer 30B** | 4-bit `bitsandbytes` QLoRA (`2x T4`) | Pre-registered fresh holdout | `93.3%` | **`99.3%`** | `+6.0%` (`95% CI [+2.0%, +10.7%]`), **12/12 checks passed** |
 | **Muse Glimmer 30B** | 4-bit `bitsandbytes` QLoRA (`2x T4`) | Frozen unseen-family test | `87.3%` | **`98.7%`** | `+11.3%` (`95% CI [+5.3%, +18.0%]`), 8/8 reload match |
-| **Llama 3.2 3B Instruct** | `bf16` `peft` LoRA (`1x RTX 3060`) | Frozen unseen-family test | `52.0%` | **`72.7%`** | `+20.7%` (`95% CI [+12.0%, +29.3%]`), Round 1 promoted |
-| **Llama 3.2 3B Instruct** | `bf16` `peft` LoRA (`1x RTX 3060`) | Round 2 candidate (rejected) | `72.7%` (champ) | `79.3%` | **Rejected by gate:** schema validity fell `0.025` (limit `0.020`) |
-| **Llama 3.2 1B Instruct** | `bf16` `peft` LoRA (`1x RTX 3060`) | Frozen unseen-family test | `12.0%` | **`50.7%`** | `+38.7%` cumulative by Round 3; Round 4 rejected on schema drop |
+| **Meta open model (3B)** | `bf16` `peft` LoRA (`1x RTX 3060`) | Frozen unseen-family test | `52.0%` | **`72.7%`** | `+20.7%` (`95% CI [+12.0%, +29.3%]`), Round 1 promoted |
+| **Meta open model (3B)** | `bf16` `peft` LoRA (`1x RTX 3060`) | Round 2 candidate (rejected) | `72.7%` (champ) | `79.3%` | **Rejected by gate:** schema validity fell `0.025` (limit `0.020`) |
+| **Meta open model (1B)** | `bf16` `peft` LoRA (`1x RTX 3060`) | Frozen unseen-family test | `12.0%` | **`50.7%`** | `+38.7%` cumulative by Round 3; Round 4 rejected on schema drop |
 
 ![Schema Validity, JSON Validity, and Stringified-Argument Elimination](schema-and-json-validity.svg)
 
@@ -46,7 +46,7 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 
 ![Vertical 4-Tier Compute Cascade and Modular Specialist LoRAs](vertical-modular-architecture.svg)
 
-### Measured 15-Adapter Data-Scaling & Subspace Orthogonality (`Llama-3.2-3B-Instruct`, Free Kaggle `2x T4`)
+### Measured 15-Adapter Data-Scaling & Subspace Orthogonality (Meta open model (3B), Free Kaggle `2x T4`)
 
 
 
@@ -59,10 +59,10 @@ Can a PEFT LoRA adapter (`r=16, alpha=32`, trained in `48` steps on free Kaggle 
 
 1. **Disjoint Tool Families & Three-Fingerprint De-duplication:** Tool-call training prompts only expose `lease`, `verb discovery`, `records`, and `access` tools while holdouts test unseen `buckets` and `feeds` families. Curation hashes exact text, normalized request, and slot-masked template shape so zero evaluation shapes leak into training.
 2. **Pre-Registered SHA-256 Holdouts:** Both the 150-row Glimmer tool-call holdout (`0ce30e9f...`) and the 120-row Glimmer LoRA-as-Memory holdout (`a5f59267...`) were SHA-256-pinned before any GPU scored them.
-3. **Negative Results Caught by the Gate:** On both Llama 3.2 1B (Round 2 and Round 4) and Llama 3.2 3B (Round 2, despite `79.3%` exact match), candidates that hurt schema validity or failed paired bootstrap bounds were automatically kept out by `decide_promotion`.
+3. **Negative Results Caught by the Gate:** On both Meta open model (1B) (Round 2 and Round 4) and Meta open model (3B) (Round 2, despite `79.3%` exact match), candidates that hurt schema validity or failed paired bootstrap bounds were automatically kept out by `decide_promotion`.
 
 ## Raw Records & Reproducible Verifiers
 
 - **Muse Glimmer 30B Evidence Bundle:** [`agora/evidence/glimmer-30b-2026-10-29/`](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/tree/main/evidence/glimmer-30b-2026-10-29)
-- **Llama 3.2 1B & 3B Evidence JSONs:** [`tessera/examples/continuous_tuning/evidence/`](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine/tree/main/examples/continuous_tuning/evidence)
-- **Adapter Configs, Step-by-Step Kaggle/Llama Guides & Source Digests:** [`../training/README.md`](../training/README.md)
+- **Meta open models (1B and 3B) Evidence JSONs:** [`tessera/examples/continuous_tuning/evidence/`](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine/tree/main/examples/continuous_tuning/evidence)
+- **Adapter Configs, Step-by-Step Kaggle and Open-Model Guides & Source Digests:** [`../training/README.md`](../training/README.md)

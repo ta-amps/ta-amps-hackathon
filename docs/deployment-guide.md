@@ -11,7 +11,7 @@ You do not need to deploy the entire `ta-amps` ecosystem to use its primitives. 
 | **A. Seed Packs Only** | `0` servers (stdlib Python + git) | `< 60s` | Loading reusable **task objects (`nouns.json`)**, **tasks (things to do) (`verbs.json`)**, and deterministic QA verifiers (`109` seed packs, `1,819` task objects, `581` tasks (things to do)) into `Muse Code`, `Claude Code`, `OpenCode`, `Codex`, `Cursor`, or `Pi`. |
 | **B. Cloudflare Edge Stack** | Cloudflare Workers + Durable Objects + D1 + Pages (`$0` free tier) | `~5 min` | Running a private or public **Teleion Fabric** work/CAS engine + **The Teleion Fabric shim** context shim + **Eranos / Agora** surfaces on `*.workers.dev` or a custom domain. |
 | **C. Docker / VPS / Air-Gapped** | Docker Engine (`docker compose up`) on Linux, macOS, Fly.io, Railway, or ECS | `~2 min` | Strict data residency, air-gapped CI runners, sovereign NGO deployments, or local offline development. |
-| **D. Meta Open-Weight GPU + LoRAs** | Kaggle `2x Tesla T4` (`$0` quota), local GPU (`PEFT`), `vLLM`, or `api.meta.ai` | `~10 min` | Training and serving **LoRA-as-Memory** (`Muse-Glimmer-30B` QLoRA) and role-switched **Modular LoRAs** (`Llama-3.2 1B/3B` PEFT) plus contributor-tier made-up benchmark verification. |
+| **D. Meta Open-Weight GPU + LoRAs** | Kaggle `2x Tesla T4` (`$0` quota), local GPU (`PEFT`), `vLLM`, or `api.meta.ai` | `~10 min` | Training and serving **LoRA-as-Memory** (`Muse-Glimmer-30B` QLoRA) and role-switched **Modular LoRAs** (Meta open models, 1B and 3B, with PEFT) plus contributor-tier made-up benchmark verification. |
 
 ---
 
@@ -97,7 +97,7 @@ Full manifests, SHA-256 source, and promotion gates live in [`../training/README
    - Attach `peft` LoRA (`r=16, alpha=32, dropout=0.05` across `364` attention/MLP projections; `95.8M` trainable params), verify `8/8` fresh-reload parity, and gate promotion via `tool-call-specialist.promotion` v1 (`bf0fa821717c2400...`).
    - Measured Kaggle `2xT4` results: **`93.3% -> 99.3%`** on the 150-row MCP tool-call holdout, and **`0.0% (Base) / 29.2% (BM25 Shim) -> 62.5% (LoRA-as-Memory at 0 shim tokens)`** (`2.28x` faster `p50`) on the 120-row post-cutoff task-object + NGO intake holdout.
 
-2. **Train & Serve Role-Switched Modular `Llama 3.2 1B / 3B` LoRAs (`PEFT` + `vLLM`)**:
+2. **Train & Serve Role-Switched Modular LoRAs on Meta Open Models, 1B and 3B (`PEFT` + `vLLM`)**:
    ```bash
    # Dry-run receipt on CPU (zero GPU required), then train on local CUDA or Kaggle GPU:
    python3 templates/finetune-meta-lora/train_lora_template.py \
@@ -124,7 +124,7 @@ Full manifests, SHA-256 source, and promotion gates live in [`../training/README
 3. **Connect `api.meta.ai` Competition Credits (`muse-spark-1.3-contributor`, `Muse Wonder`, `Muse Code`, `nanoMuse`)**:
    - Export `LLM_API_KEY` / `META_API_KEY` strictly inside isolated worker environments (never on public surfaces or in `.toml` files).
    - For made-up or public-domain tasks, pass `--model muse-spark-1.3-contributor` (`$0.10 / $0.20` per 1M input/output tokens, `$0.002` per 1M cached input tokens) behind a file-locked budget gate (`CAP_USD <= 2.00`) and issue **distinct Teleion Fabric keys** (`builder_key_id != reviewer_key_id`) so `Muse Code` builds kits in `eq02` and `nanoMuse` independently verifies them in `eq03`.
-   - Enforce contributor-tier privacy firewalls (`ContributorTierRefusedError` in Eranos and `HTTP 403 contributor_tier_refused` in the Teleion Fabric shim) so private or NGO-owned task objects never touch `*contributor*` endpoints, and run sensitive NGO kits offline on local `Llama 3.2 1B/3B` weights.
+   - Enforce contributor-tier privacy firewalls (`ContributorTierRefusedError` in Eranos and `HTTP 403 contributor_tier_refused` in the Teleion Fabric shim) so private or NGO-owned task objects never touch `*contributor*` endpoints, and run sensitive NGO kits offline on local Meta open-model weights (1B and 3B).
 
 ---
 

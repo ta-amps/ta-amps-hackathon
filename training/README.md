@@ -1,4 +1,4 @@
-# Open-Weights Fine-Tuning: Muse Glimmer 30B QLoRA, Modular Llama 3.2 LoRAs & Governed Meta API Loop
+# Open-Weights Fine-Tuning: Muse Glimmer 30B QLoRA, Modular Meta open model LoRAs & Governed Meta API Loop
 
 `ta-amps` treats continuous fine-tuning and specialist adapter routing as ordinary **tasks (things to do)** (`verbs`) and **task objects** (`nouns`) on [Teleion Fabric](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine), without adding a separate model registry, server-side training daemon, or task authority.
 
@@ -10,8 +10,8 @@
 | --- | --- | --- | --- | --- |
 | **Muse Glimmer 30B** (`glimmer-30b-qlora`) | 4-bit NF4 `bitsandbytes` QLoRA (`peft` `r=16, alpha=32`, 364 modules, 95.8M trainable params) | Free cloud **2x NVIDIA T4 16 GB** (Kaggle, `$0`) | Typed Teleion Fabric MCP tool calls & refusal reasons on unseen tool families (`n=150`) | **93.3% -> 99.3%** strict exact match (`+6.0%`, 95% CI `[+2.0%, +10.7%]`, `100.0%` valid JSON, 12/12 promotion checks) |
 | **Muse Glimmer 30B** (`glimmer-30b-lora-memory`) | 2-GPU layer-24 sharded `fp16` `peft` LoRA-as-Memory (`r=16, alpha=32`, 364 modules, 95.8M trainable params, 48 steps) | Free cloud **2x NVIDIA T4 16 GB** (Kaggle, peak `10.5` / `11.6 GiB`, `$0`) | **LoRA-as-Memory** (`0` shim tokens) on post-cutoff 2026 task objects + NGO intake splits (`n=120`) | **0.0% (Base) / 29.2% (BM25 Shim) -> 62.5% (LoRA-as-Memory at 0 shim tokens)** (`+33.3 pp` vs BM25 Shim, 95% CI `[+22.5, +44.2]` pp, `100.0%` valid schema, **`2.28x` faster p50** `19.75s -> 8.67s`, `100.0%` `builder != reviewer` & contributor-tier safety) |
-| **Llama 3.2 3B Instruct** (`llama-3.2-3b-lora` & `llama-3.2-3b-modular-swarm`) | `bf16`/`fp16` `peft` LoRA (`r=16, alpha=32`, 24.3M trainable params) + 15-adapter `64/256/1,600` SFT/DPO swarm scaling & TIES subspace audit | Single local **RTX 3060 12 GB** & free Kaggle **2x T4** (`$0`) | Continuous tool-call tuning (`n=150`) + 4-role specialist swarm (`decomposer`, `retriever`, `builder`, `verifier-dpo`) | **52.0% -> 72.7%** tool-call exact match (`17.5% -> 0.0%` stringified args); **15/15** swarm adapters trained (`max_abs_diff == 0.0` disabled vs base), decomposer probe CE **`1.310 -> 0.368`** (`-71.9%`), verifier DPO margin **`+13.64 -> +20.12 -> +24.54`**, specialist LoRA orthogonality **`|cos| <= 0.00054`** (Stage 4 batched `max_new_tokens=1472` decode hit T4 VRAM OOM after TIES merge saved; zero unmeasured decode scores claimed) |
-| **Llama 3.2 1B Instruct** (`llama-3.2-1b-lora`) | `bf16` `peft` LoRA + multi-LoRA parametric memory (`load_adapter` / `set_adapter`, 11.3M trainable params) | Single local **RTX 3060 12 GB** (`4.75 GB` peak) | Continuous multi-round tuning + hot-swappable specialist routing (`n=150`) | **12.0% -> 50.7%** strict exact match across 3 rounds (`8.3% -> 0.0%` stringified values); 3 named adapters on 1 base checked at **80/80** byte-identical parity |
+| **Meta open model (3B)** | `bf16`/`fp16` `peft` LoRA (`r=16, alpha=32`, 24.3M trainable params) + 15-adapter `64/256/1,600` SFT/DPO swarm scaling & TIES subspace audit | Single local **RTX 3060 12 GB** & free Kaggle **2x T4** (`$0`) | Continuous tool-call tuning (`n=150`) + 4-role specialist swarm (`decomposer`, `retriever`, `builder`, `verifier-dpo`) | **52.0% -> 72.7%** tool-call exact match (`17.5% -> 0.0%` stringified args); **15/15** swarm adapters trained (`max_abs_diff == 0.0` disabled vs base), decomposer probe CE **`1.310 -> 0.368`** (`-71.9%`), verifier DPO margin **`+13.64 -> +20.12 -> +24.54`**, specialist LoRA orthogonality **`|cos| <= 0.00054`** (Stage 4 batched `max_new_tokens=1472` decode hit T4 VRAM OOM after TIES merge saved; zero unmeasured decode scores claimed) |
+| **Meta open model (1B)** | `bf16` `peft` LoRA + multi-LoRA parametric memory (`load_adapter` / `set_adapter`, 11.3M trainable params) | Single local **RTX 3060 12 GB** (`4.75 GB` peak) | Continuous multi-round tuning + hot-swappable specialist routing (`n=150`) | **12.0% -> 50.7%** strict exact match across 3 rounds (`8.3% -> 0.0%` stringified values); 3 named adapters on 1 base checked at **80/80** byte-identical parity |
 
 ## Directory Contents
 
@@ -78,9 +78,9 @@
 
 ---
 
-## Step-by-Step Guide 2: Modular Role-Switched LoRAs on Llama 3.2 1B & 3B
+## Step-by-Step Guide 2: Modular Role-Switched LoRAs on Meta open models (1B and 3B)
 
-Instead of training one monolithic fine-tune where DAG decomposition, retrieval pointers, MCP tool syntax, and verification rubrics interfere with one another, `ta-amps` treats each specialist PEFT adapter as a named **task object** (`noun`) attached to one shared `Llama-3.2-1B-Instruct` or `Llama-3.2-3B-Instruct` base model in VRAM:
+Instead of training one monolithic fine-tune where DAG decomposition, retrieval pointers, MCP tool syntax, and verification rubrics interfere with one another, `ta-amps` treats each specialist PEFT adapter as a named **task object** (`noun`) attached to one shared 1B or 3B Meta open base model in VRAM:
 
 - `lora.task-decomposer`: Decomposes plain-English intake briefs (`verb.decompose_dag`) into bounded build and review sub-tasks (`builder != reviewer`, `eq02 -> eq03`).
 - `lora.shim-retriever`: Selects compact the Teleion Fabric shim `[NOUN/VERB CONTEXT]` pointers or answers directly (`respond_directly`) in `< 50 ms`.
@@ -129,8 +129,8 @@ Meta's `api.meta.ai` platform (`muse-spark-1.3-contributor` at `$0.10 / $0.20` p
    - **Builder (`Muse Code` on `muse-spark-1.3-contributor` via `/v1/responses`):** Claims an `eq02` `build` task under a fenced lease, fetches the made-up input task object, writes stdlib Python code + unit tests + README, runs acceptance checks, stores 4 content-addressed task objects (`put_record`), and submits with SHA-256 digests (`receipt_hash`).
    - **Independent Reviewer (`nanoMuse` on `muse-spark-1.3-contributor` via `/v1/chat/completions`):** Using a **distinct scoped API key** (`reviewer_key_id != builder_key_id`), claims the dependent `eq03` `review` task, recomputes every SHA-256 digest and `blob_sha256` from scratch, re-executes the unit tests and coverage checks in an isolated workspace, writes the `kit.reviews` task object, and submits an independent verdict (`approve` or `refuse`) while holding final publication for a human operator.
 3. **Measured Made-Up Curation vs. Proposed Live Distillation (Honesty Boundary):**
-   - **Measured today:** All open-weights LoRA/QLoRA runs (`Muse Glimmer 30B` and `Llama 3.2 1B/3B`) trained **100% on owned deterministic made-up MIT Python generators** -- zero `api.meta.ai` completions entered those adapter weights, ensuring clean open-weights licensing. Meanwhile, our `256`-worker OpenCode/MCP swarm benchmark (`1,000` made-up workflows, `25,620` MCP calls at `54.4 ms` p50, `$0.0007` spend) and real `Muse Code` + `nanoMuse` `api.meta.ai` E2E runs prove the multi-harness execution, receipting, and `noun.negative_tombstone` DPO pair-collection plumbing end to end.
-   - **Proposed next step (governed production loop):** When organizations or opted-in contributors explicitly authorize trace learning under Standard (non-contributor) mode and license-compatible terms, Teleion Fabric's curation task (`curate_dataset`) filters checked multi-step frontier records (`ok: true` + independent `approved: true`) alongside rejected attempts (`ok: false` tombstones) into three-fingerprint-deduplicated SFT and DPO rounds for Tier 1 (`Llama 3.2`) and Tier 2 (`Muse Glimmer 30B`) adapters.
+   - **Measured today:** All open-weights LoRA/QLoRA runs (`Muse Glimmer 30B` and Meta open models (1B and 3B)) trained **100% on owned deterministic made-up MIT Python generators** -- zero `api.meta.ai` completions entered those adapter weights, ensuring clean open-weights licensing. Meanwhile, our `256`-worker OpenCode/MCP swarm benchmark (`1,000` made-up workflows, `25,620` MCP calls at `54.4 ms` p50, `$0.0007` spend) and real `Muse Code` + `nanoMuse` `api.meta.ai` E2E runs prove the multi-harness execution, receipting, and `noun.negative_tombstone` DPO pair-collection plumbing end to end.
+   - **Proposed next step (governed production loop):** When organizations or opted-in contributors explicitly authorize trace learning under Standard (non-contributor) mode and license-compatible terms, Teleion Fabric's curation task (`curate_dataset`) filters checked multi-step frontier records (`ok: true` + independent `approved: true`) alongside rejected attempts (`ok: false` tombstones) into three-fingerprint-deduplicated SFT and DPO rounds for Tier 1 (Meta open model) and Tier 2 (`Muse Glimmer 30B`) adapters.
 
 ---
 
@@ -150,13 +150,13 @@ make check
 python3 -m venv .venv-train && . .venv-train/bin/activate
 pip install -r ../teleionlabs-teleion-fabric/training/requirements-train.txt
 PYTHONPATH=src:. python -m examples.continuous_tuning.cli tick \
-  --root ./tuning-runs/llama-3.2-1b \
+  --root ./tuning-runs/meta-open-1b \
   --base examples/continuous_tuning/recipes/base-llama-3.2-1b-instruct.json \
   --base-path "$TUNING_BASE_PATH" --backend hf
 ```
 
 ## Primary Evidence Bundles
 
-- **Llama 3.2 1B & 3B Continuous Tuning Method & Records:** [`tessera/docs/continuous-tuning.md`](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine/blob/main/docs/continuous-tuning.md)
+- **Meta open models (1B and 3B) Continuous Tuning Method & Records:** [`tessera/docs/continuous-tuning.md`](https://github.com/ta-amps/teleion-fabric-infrastructure-work-and-storage-engine/blob/main/docs/continuous-tuning.md)
 - **Muse Glimmer 30B 2xT4 QLoRA Records & Pre-Registered Holdout:** [`agora/evidence/glimmer-30b-2026-10-29/README.md`](https://github.com/ta-amps/agora-public-overview-architecture-setup-and-contribution/blob/main/evidence/glimmer-30b-2026-10-29/README.md)
 - **Evaluation Charts, LoRA-as-Memory Benchmark & Holdout Guard Analysis:** [`../eval/README.md`](../eval/README.md)

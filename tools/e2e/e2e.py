@@ -16,6 +16,12 @@ it claims a canary Task. Run them only against a copy you own, or when you own t
 Output: RESULTS.md and results.json beside this file. Exit 0 only when no check failed.
 """
 import argparse, html, json, os, re, sys, time, uuid
+
+# HELP_BEFORE_ANYTHING: --help only prints this file's usage. It reads no setting, opens no connection and runs no stage.
+if {"-h", "--help"} & set(sys.argv[1:]):
+    print(__doc__)
+    print("Options: --stages a,b  --max-pages N  --claim-real")
+    raise SystemExit(0)
 from collections import deque
 from datetime import datetime, timezone
 from html.parser import HTMLParser

@@ -1,6 +1,6 @@
 # Template 3: Fine-Tune a Meta Specialist LoRA Adapter
 
-Use this starter folder to train a hot-swappable **PEFT LoRA task object** on **Meta Llama 3.2 1B / 3B Instruct** (`bf16` on 1 local GPU or `fp16` on Kaggle `2xT4`) or a **4-bit NF4 QLoRA / LoRA-as-Memory** specialist on **Muse Glimmer 30B** (free Kaggle `2x NVIDIA Tesla T4` GPUs, `32 GB` total VRAM) from owned made-up MIT task templates.
+Use this starter folder to train a hot-swappable **PEFT LoRA task object** on **Meta open models (1B and 3B)** (`bf16` on 1 local GPU or `fp16` on Kaggle `2xT4`) or a **4-bit NF4 QLoRA / LoRA-as-Memory** specialist on **Muse Glimmer 30B** (free Kaggle `2x NVIDIA Tesla T4` GPUs, `32 GB` total VRAM) from owned made-up MIT task templates.
 
 - **Full measured runs, step-by-step Kaggle/vLLM/Meta-API guides & SHA-256 source:** [`../../training/README.md`](../../training/README.md) and [`../../eval/README.md`](../../eval/README.md)
 - **Starter script:** [`train_lora_template.py`](train_lora_template.py)
@@ -14,17 +14,17 @@ python3 templates/finetune-meta-lora/train_lora_template.py \
   --dry-run-manifest /tmp/lora-dry-run-receipt.json
 ```
 
-## 2. Train Role-Switched Modular PEFT LoRA on Llama 3.2 1B / 3B Instruct
+## 2. Train Role-Switched Modular PEFT LoRA on Meta open models (1B and 3B)
 
 ```bash
 pip install -r training/requirements-train.txt
 python3 templates/finetune-meta-lora/train_lora_template.py \
   --base-model meta-llama/Llama-3.2-3B-Instruct \
   --dataset templates/finetune-meta-lora/sample_practice_tasks.json \
-  --output-dir /tmp/llama32-3b-specialist-lora
+  --output-dir /tmp/meta-open-3b-specialist-lora
 ```
 
-Attach multiple specialist task objects (`decompose`, `retrieve`, `build`, `review`) to one shared `Llama 3.2` checkpoint via `peft` `load_adapter()` / `set_adapter(role)` or `vllm serve --enable-lora --lora-modules ...` with zero extra base-model VRAM.
+Attach multiple specialist task objects (`decompose`, `retrieve`, `build`, `review`) to one shared Meta open model checkpoint via `peft` `load_adapter()` / `set_adapter(role)` or `vllm serve --enable-lora --lora-modules ...` with zero extra base-model VRAM.
 
 ## 3. Train 4-bit NF4 QLoRA (`--qlora-4bit`) on Muse Glimmer 30B (Free Kaggle 2xT4)
 
