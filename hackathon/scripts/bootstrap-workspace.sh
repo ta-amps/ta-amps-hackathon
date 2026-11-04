@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Clone this kit and your own repos side by side into one workspace folder.
-# The kit is the hackathon/ folder of the ta-amps/ta-amps-hackathon repo, so it lands in ta-amps-hackathon/hackathon/.
+# The kit is the hackathon/ folder of the ta-amps/teleionlabs-teleion-fabric repo, so it lands in teleionlabs-teleion-fabric/hackathon/.
 # Usage: scripts/bootstrap-workspace.sh WORKSPACE_DIR [REPO ...]
 #   REPO is owner/name (cloned from GitHub) or any git URL.
 # Example: scripts/bootstrap-workspace.sh ~/hackathon you/your-app you/your-backend
 # Uses `gh repo clone` for owner/name when gh is installed and signed in, otherwise git over HTTPS.
 set -euo pipefail
 
-KIT="ta-amps/ta-amps-hackathon"
+KIT="ta-amps/teleionlabs-teleion-fabric"
 WORKSPACE="${1:?usage: scripts/bootstrap-workspace.sh WORKSPACE_DIR [REPO ...]}"
 shift
 
@@ -40,8 +40,8 @@ for repo in "$@"; do clone "$repo"; done
 cat <<EOT
 
 Workspace ready in $(pwd). Next:
-  1. ta-amps-hackathon/hackathon/scripts/check-prereqs.sh
-  2. In each of your repos, install the agent templates: ta-amps-hackathon/hackathon/agents/README.md
-  3. Plan with ta-amps-hackathon/hackathon/guides/ten-day-plan.md; check rules with guides/compliance-checklist.md
+  1. teleionlabs-teleion-fabric/hackathon/scripts/check-prereqs.sh
+  2. In each of your repos, install the agent templates: teleionlabs-teleion-fabric/hackathon/agents/README.md
+  3. Plan with teleionlabs-teleion-fabric/hackathon/guides/ten-day-plan.md; check rules with guides/compliance-checklist.md
   4. Keep keys in each repo's .env (gitignored); never paste them into a chat.
 EOT

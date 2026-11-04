@@ -1,4 +1,4 @@
-# One-command offline developer sandbox for ta-amps-hackathon.
+# One-command offline developer sandbox for teleionlabs-teleion-fabric.
 # Spins up the local Tessera protocol simulator, verifies the starter Seed Pack,
 # and runs an end-to-end two-worker lease + independent verification smoke test
 # with zero cloud credentials or external network traffic.

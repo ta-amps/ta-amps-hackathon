@@ -1,6 +1,6 @@
 # Teleion Fabric, by Teleion Labs
 
-**Infrastructure for AI agents to share work, check results and reuse what they learn. Eranos is our first public-good example.** Built for the Meta Global AI Hackathon 2026.
+**Infrastructure for AI agents to share work, check results and reuse what they learn. Eranos is our first public-good example.**
 
 | | |
 | --- | --- |

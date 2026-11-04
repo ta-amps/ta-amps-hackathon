@@ -1,4 +1,4 @@
-# Reproducible verification and offline developer sandbox container for ta-amps-hackathon.
+# Reproducible verification and offline developer sandbox container for teleionlabs-teleion-fabric.
 # Runs public-safety, architecture, index parity, documentation, unit checks, and the
 # two-worker local sandbox smoke test offline with zero cloud credentials.
 FROM python:3.12-slim

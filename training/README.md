@@ -148,7 +148,7 @@ git clone https://github.com/ta-amps/tessera-infrastructure-work-and-storage-eng
 cd tessera-infrastructure-work-and-storage-engine
 make check
 python3 -m venv .venv-train && . .venv-train/bin/activate
-pip install -r ../ta-amps-hackathon/training/requirements-train.txt
+pip install -r ../teleionlabs-teleion-fabric/training/requirements-train.txt
 PYTHONPATH=src:. python -m examples.continuous_tuning.cli tick \
   --root ./tuning-runs/llama-3.2-1b \
   --base examples/continuous_tuning/recipes/base-llama-3.2-1b-instruct.json \

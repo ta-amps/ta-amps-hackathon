@@ -1,5 +1,5 @@
 {
-  "$schema": "https://github.com/ta-amps/ta-amps-hackathon/blob/main/hackathon/agents/schemas/architecture.schema.json",
+  "$schema": "https://github.com/ta-amps/teleionlabs-teleion-fabric/blob/main/hackathon/agents/schemas/architecture.schema.json",
   "schema_version": 1,
   "name": "my-app",
   "summary": "<One paragraph: what it is, for whom, and the main idea.>",

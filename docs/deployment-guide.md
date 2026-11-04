@@ -77,8 +77,8 @@ npx wrangler deploy
 ## 4. Slice C: Self-Hosted Docker Compose, VPS, Fly.io, or Kubernetes
 
 ```bash
-git clone https://github.com/ta-amps/ta-amps-hackathon.git
-cd ta-amps-hackathon
+git clone https://github.com/ta-amps/teleionlabs-teleion-fabric.git
+cd teleionlabs-teleion-fabric
 docker compose up --build -d
 ```
 

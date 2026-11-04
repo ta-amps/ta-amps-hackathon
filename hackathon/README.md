@@ -54,8 +54,8 @@ follows them.
 ## Quick start
 
 ```bash
-git clone https://github.com/ta-amps/ta-amps-hackathon.git
-cd ta-amps-hackathon/hackathon
+git clone https://github.com/ta-amps/teleionlabs-teleion-fabric.git
+cd teleionlabs-teleion-fabric/hackathon
 make check          # leak and secret scan, JSON and link checks, tool tests, index freshness (stdlib only)
 ```
 
@@ -71,7 +71,7 @@ scripts/bootstrap-workspace.sh ~/hackathon you/your-app you/your-backend
 
 ## Using it with coding agents
 
-- Clone it next to your code repos and point your AGENTS.md at `../ta-amps-hackathon/hackathon/...` for shared context.
+- Clone it next to your code repos and point your AGENTS.md at `../teleionlabs-teleion-fabric/hackathon/...` for shared context.
   Agents read it; they don't edit it from a code-repo session.
 - **Claude Code:** copy [agents/claude/](agents/README.md) into your repo's `.claude/`, rename
   `settings.template.json` to `settings.json` and `guard.example.json` to `guard.json`, then adapt the protected paths.

@@ -32,7 +32,7 @@ handoffs; they are requirements, not optional guidance:
   because it runs on a server.
 
 For newcomers, explain the system with the plain four-part text and diagram in
-`../ta-amps-hackathon/hackathon/guides/nouns-and-verbs.md`.
+`../teleionlabs-teleion-fabric/hackathon/guides/nouns-and-verbs.md`.
 
 Seed packs bundle nouns and verb templates/seeds. They are not another primitive
 or runtime. Exporting/importing data does not execute, activate, admit or publish
@@ -93,5 +93,5 @@ Never break these. If a task seems to need it, stop and ask <owner>.
 
 ## Where to look
 
-- Shared hackathon context: `../ta-amps-hackathon/hackathon/` (event rules, Meta platform notes, the project plan).
-- The four-part explanation and diagram for your README: `../ta-amps-hackathon/hackathon/guides/nouns-and-verbs.md`.
+- Shared hackathon context: `../teleionlabs-teleion-fabric/hackathon/` (event rules, Meta platform notes, the project plan).
+- The four-part explanation and diagram for your README: `../teleionlabs-teleion-fabric/hackathon/guides/nouns-and-verbs.md`.
