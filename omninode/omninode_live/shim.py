@@ -41,8 +41,13 @@ class Shim:
         r = self.http.post("/q/submit", headers={"X-Herma-Worker-Token": who["worker_token"], "X-Herma-Model": "muse-spark-1.3"},
                            json={"agent_id": who["agent_id"], "worker_uuid": who["worker_uuid"], "task_id": "self_seed",
                                  "idempotency_key": idempotency_key, "summary": summary[:600], "task_objects": rows})
-        readable = [key for key in objects if self.http.get(f"/q/object/{key}").status_code == 200]
-        return {"status": r.status_code, "ok": r.status_code < 300 and len(readable) == len(objects), "readable": sorted(readable), "sent": len(objects)}
+        # A key that belongs to another worker is saved under a key of its own, with a 200, and the default read doesn't move.
+        body = r.json() if r.status_code < 300 else {}
+        rows_back = body.get("stored_task_objects")
+        stored = {row.get("object_key") for row in rows_back or []}
+        redirected = sorted(key for key in objects if key not in stored) if rows_back and not body.get("idempotent_replay") else []
+        readable = [key for key in objects if key not in redirected and self.http.get(f"/q/object/{key}").status_code == 200]
+        return {"status": r.status_code, "ok": r.status_code < 300 and len(readable) == len(objects), "readable": sorted(readable), "redirected": redirected, "sent": len(objects)}
 
 
 def public_key(item_key: str) -> str:

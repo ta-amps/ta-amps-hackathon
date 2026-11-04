@@ -325,6 +325,21 @@ def test_shim_submit_sends_an_array_and_reports_what_it_could_read_back(tmp_path
     assert shimmod.public_key("repo-a.b--c") == "feed_repo-a_b_c"
 
 
+def test_a_key_saved_under_another_name_is_not_reported_as_ok(tmp_path):
+    from omninode_live import shim as shimmod
+
+    def handle(request):
+        if request.method == "POST":
+            return httpx.Response(200, json={"ok": True, "stored_task_objects": [{"object_key": "one__by_a"}]})
+        return httpx.Response(200, json={})
+
+    cred = tmp_path / "c.json"
+    cred.write_text(json.dumps({"agent_id": "a", "worker_uuid": "w", "worker_token": "t"}))
+    s = shimmod.Shim("a", cred, http=httpx.Client(base_url="https://x.invalid", transport=httpx.MockTransport(handle)))
+    out = s.publish({"one": {"summary": "s"}}, "s", "i")
+    assert out["ok"] is False and out["redirected"] == ["one"]
+
+
 def test_a_failed_label_waits_before_it_is_paid_for_again_and_a_new_digest_does_not():
     fabric, log = FakeFabric("k_maker"), []
     run(fabric, log, run_id="r1", bad=True)
