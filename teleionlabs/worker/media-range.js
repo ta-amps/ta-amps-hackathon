@@ -1,9 +1,9 @@
 // Compatibility fallback for build-allowlisted media. Native partial/conditional
 // responses pass through. No full-file buffering, new storage or remote fetches.
-import { MEDIA_BYTES } from "./media.generated.js";
+import { MAIN_FILM, MEDIA_BYTES } from "./media.generated.js";
 // ASSETS may omit Content-Length inside the Worker and add it only at the HTTP
 // boundary. This exact asset's size is checked against the file by the tests.
-export const VIDEO_BYTES = MEDIA_BYTES["/media/main-film-20261104a.mp4"];
+export const VIDEO_BYTES = MEDIA_BYTES[MAIN_FILM];
 const MAX_BYTES = 25 * 1024 * 1024;
 const WRITE_CHUNK = 64 * 1024;
 

@@ -7,6 +7,7 @@ import { handle, passesWordList, SECURITY_HEADERS } from "../worker/lib.js";
 import entry from "../worker/index.js";
 
 const DIST = fileURLToPath(new URL("../dist/", import.meta.url));
+const FILM = JSON.parse(await readFile(new URL("../content/site.json", import.meta.url), "utf8")).main_film;
 
 function assets() {
   return {
@@ -170,7 +171,7 @@ test("/benchmarks/, /video/, /media/*.vtt, /records/*.json, /favicon.ico and og:
   const vid = await handle(new Request("https://teleionlabs.com/video/"), { ASSETS: assets() }, ctx);
   assert.equal(vid.status, 200);
   assert.match(vid.headers.get("Content-Security-Policy"), /media-src 'self'/);
-  const vtt = await handle(new Request("https://teleionlabs.com/media/main-film-20261104a.vtt"), { ASSETS: assets() }, ctx);
+  const vtt = await handle(new Request(`https://teleionlabs.com/media/${FILM}.vtt`), { ASSETS: assets() }, ctx);
   assert.equal(vtt.status, 200);
   assert.equal(vtt.headers.get("Content-Type"), "text/vtt; charset=utf-8");
   assert.match(vtt.headers.get("Cache-Control"), /immutable/);
@@ -235,7 +236,7 @@ test("/api/status: the Worker keeps a 60 s copy at the edge; browsers get no-sto
 });
 
 test("/media/*.mp4 supports HTTP 206 byte-range seeking, 416 unsatisfiable ranges, and HEAD Accept-Ranges", async () => {
-  for (const name of ["main-film-20261104a.mp4"]) {
+  for (const name of [`${FILM}.mp4`]) {
     const raw = await readFile(`${DIST}media/${name}`);
     const head = await handle(new Request(`https://teleionlabs.com/media/${name}`, { method: "HEAD", headers: {Range: "bytes=1-2"} }), { ASSETS: assets() }, ctx);
     assert.equal(head.status, 200, name);
@@ -280,9 +281,9 @@ test("every page is plain text: first line is for agents, no stylesheet file, no
 test("the home page plays the rendered film as a video, keeps its words as text, and loads no canvas film", async () => {
   const res = await handle(new Request("https://teleionlabs.com/"), { ASSETS: assets() }, ctx);
   const body = await res.text();
-  assert.match(body, /<video id="film" controls autoplay muted playsinline preload="metadata"[^>]* poster="\/media\/main-film-20261104a\.jpg"/);
-  assert.match(body, /<source src="\/media\/main-film-20261104a\.mp4" type="video\/mp4">/);
-  assert.match(body, /<track kind="captions" src="\/media\/main-film-20261104a\.vtt"(?![^>]*default)[^>]*>/);
+  assert.match(body, new RegExp(`<video id="film" controls autoplay muted playsinline preload="metadata"[^>]* poster="/media/${FILM}\\.jpg"`));
+  assert.match(body, new RegExp(`<source src="/media/${FILM}\\.mp4" type="video/mp4">`));
+  assert.match(body, new RegExp(`<track kind="captions" src="/media/${FILM}\\.vtt"(?![^>]*default)[^>]*>`));
   assert.match(body, /<script src="\/assets\/home-film\.js" defer>/);
   assert.doesNotMatch(body, /<canvas|\/assets\/film(3d)?\.js|film-words|data-seconds/);
   assert.doesNotMatch(body, /See it in 3D/i);
@@ -291,9 +292,9 @@ test("the home page plays the rendered film as a video, keeps its words as text,
 
 test("/video/ plays the main film with its captions off by default, and the old preview is gone", async () => {
   const body = await (await handle(new Request("https://teleionlabs.com/video/"), { ASSETS: assets() }, ctx)).text();
-  assert.match(body, /<video id="film" controls autoplay muted playsinline[^>]* poster="\/media\/main-film-20261104a\.jpg"/);
-  assert.match(body, /<source src="\/media\/main-film-20261104a\.mp4"/);
-  assert.match(body, /<track kind="captions" src="\/media\/main-film-20261104a\.vtt"(?![^>]*default)[^>]*>/);
+  assert.match(body, new RegExp(`<video id="film" controls autoplay muted playsinline[^>]* poster="/media/${FILM}\\.jpg"`));
+  assert.match(body, new RegExp(`<source src="/media/${FILM}\\.mp4"`));
+  assert.match(body, new RegExp(`<track kind="captions" src="/media/${FILM}\\.vtt"(?![^>]*default)[^>]*>`));
   assert.doesNotMatch(body, /fabric-preview/);
   assert.match(body, /<button type="button" data-film="sound"[^>]* hidden>Turn sound on<\/button>/);
   assert.match(body, /<script src="\/assets\/home-film\.js" defer>/);

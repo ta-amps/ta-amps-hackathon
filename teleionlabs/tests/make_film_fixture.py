@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Write a small stand-in film for the media tests when the real one isn't here. Video files aren't kept in git (MEDIA.md)."""
 import hashlib
-import re
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-NAME = re.search(r'MEDIA_BYTES\["/media/([^"]+)"\]', (ROOT / "worker/media-range.js").read_text(encoding="utf-8")).group(1)
+NAME = json.loads((ROOT / "content/site.json").read_text(encoding="utf-8"))["main_film"] + ".mp4"
 FILM = ROOT / "static/media" / NAME
 SIZE = 2 * 2**20
 

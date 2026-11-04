@@ -24,9 +24,6 @@
    "id": "film",
    "label": "A three-minute film about Teleion Fabric and Eranos, with voice. It starts with the sound off. Captions are off at first; you can turn them on in the player.",
    "video": {
-    "media": "/media/main-film-20261104a.mp4",
-    "captions": "/media/main-film-20261104a.vtt",
-    "poster": "/media/main-film-20261104a.jpg",
     "captions_label": "English",
     "download": "Download the film (MP4)",
     "sound_on": "Turn sound on",

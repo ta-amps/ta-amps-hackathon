@@ -10,7 +10,7 @@ import { VIDEO_BYTES } from "../worker/media-range.js";
 const require = createRequire(import.meta.url);
 const installed = process.env.MINIFLARE || fileURLToPath(new URL("../../../../portal-worker/node_modules/miniflare", import.meta.url));
 const { Miniflare, Log, LogLevel, convertV4MiniflareOptions } = require(installed);
-const PATH = "/media/main-film-20261104a.mp4";
+const PATH = `/media/${JSON.parse(await readFile(new URL("../content/site.json", import.meta.url), "utf8")).main_film}.mp4`;
 const helper = await readFile(new URL("../worker/media-range.js", import.meta.url), "utf8");
 let mf;
 
