@@ -5,7 +5,7 @@ Combines four authorized server-agent roles in one warm process:
 2. Bilateral agent-to-agent responder (`/bridge/*` peer channels and `/q/feedback` roadblock triage).
 3. Operations & queue-wake agent (`tessera` + `herma` health checks and `eranos-worker` wake pokes).
 4. Dual-principal queue maker (`muse-spark-1.3` + canary deciders) & independent checker (`muse-wonder-1.0`)
-   enforcing strict principal, fine-tune, and training-data independence (`MUST-FOLLOW.md`).
+   enforcing strict principal, fine-tune, and training-data independence.
 """
 
 from __future__ import annotations

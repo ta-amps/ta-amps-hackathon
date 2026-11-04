@@ -26,7 +26,6 @@ import httpx
 
 HERE = Path(__file__).resolve()
 REPO = HERE.parents[2]
-NOTES = Path(os.environ.get("TELEION_NOTES", "/nonexistent"))
 sys.path[:0] = [str(REPO / "agents/warm-server-agent/src"), str(REPO / "omninode")]
 
 SHIM = os.environ.get("DECIDER_SHIM_URL", "https://shim.teleionlabs.com")
@@ -36,11 +35,10 @@ WARM_LOG = STATE / "warm-agent.jsonl"
 DECISIONS = HERE.parent / "records/decisions.jsonl"
 RUNS = HERE.parent / "records/runs.jsonl"
 SPEND = HERE.parent / "spend.jsonl"
-HOLDOUT = NOTES / "claude-work-2026-10-31/glimmer-orchestrator/data/orchestrator-v1/holdout-retrieval.jsonl"
-MODAL_PY = NOTES / "work-2026-11-03/weight-edit-test/.venv-driver/bin/python"
-MODAL_CLI = NOTES / "work-2026-11-03/weight-edit-test/.venv-driver/bin/modal"
+HOLDOUT = Path(os.environ.get("DECIDER_HOLDOUT", "/nonexistent"))
+MODAL_PY = Path(os.environ.get("DECIDER_MODAL_PYTHON", sys.executable))
+MODAL_CLI = Path(os.environ.get("DECIDER_MODAL_CLI", "modal"))
 SEARCHES = HERE.parent / "records/search-orders.jsonl"
-RECORD_KEY = "fabric_decider_live_record"
 SHARE_PCT = 15
 GLIMMER_ROUTE = "fine_tuned_glimmer_30b_modal_batch"
 BUDGET_USD, STOP_USD = 10.0, 9.0
@@ -477,6 +475,10 @@ def tally() -> dict[str, Any]:
 
 
 def publish() -> int:
+    record_key = os.environ.get("DECIDER_RECORD_KEY", "").strip()
+    if not record_key:  # no default: a copy of this code must not write to anyone's existing record by accident
+        print("set DECIDER_RECORD_KEY to your own record key to publish", file=sys.stderr)
+        return 2
     from omninode_live.shim import Shim
     from warm_agent.banned_words_guard import BannedWordsGuard
     from warm_agent.grid_config import load_warm_agent_grid
@@ -491,7 +493,7 @@ def publish() -> int:
     summary = (f"Live record of Teleion Fabric's Meta-based deciding. Fine-tuned Muse Glimmer 30B answered on {f['model_answered']} real Tasks in "
                f"{f['batches']} batches; {f['audit_passed']} of {f['audited']} answers passed a Muse Spark audit; {f['fine_tuned_picks_given_to_a_live_maker']} of its picks reached a live worker so far. Live route list: {m['decisions']} real Tasks.")
     shim = Shim("fabric-decider", Path.home() / ".config/ta-amps/fabric-decider-identity.json")
-    res = shim.publish({RECORD_KEY: {"summary": summary, "category": "live_record", "search_hints": ["decider", "fine-tuned", "muse glimmer", "muse spark", "routing"], "payload": body}},
+    res = shim.publish({record_key: {"summary": summary, "category": "live_record", "search_hints": ["decider", "fine-tuned", "muse glimmer", "muse spark", "routing"], "payload": body}},
                        summary, f"fabric-decider-{int(time.time() // 900)}")
     print(json.dumps({"published": res, "summary": summary}))
     return 0 if res["ok"] else 1

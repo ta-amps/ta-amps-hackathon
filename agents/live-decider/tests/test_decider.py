@@ -36,3 +36,10 @@ def test_spend_counts_open_reservation():
 def test_candidates_only_objects():
     rs = [{"artifact_kind": "durable_task", "id": "t"}, {"artifact_kind": "task_object", "id": "o", "title": "T", "summary": "s  s"}]
     assert d.candidates_from_search(rs) == [{"id": "o", "title": "T", "summary": "s s"}]
+
+
+def test_publish_refuses_without_its_own_record_key(monkeypatch, capsys):
+    monkeypatch.delenv("DECIDER_RECORD_KEY", raising=False)
+    monkeypatch.setitem(sys.modules, "omninode_live.shim", None)  # importing it would fail: it must not get that far
+    assert d.publish() == 2
+    assert "DECIDER_RECORD_KEY" in capsys.readouterr().err

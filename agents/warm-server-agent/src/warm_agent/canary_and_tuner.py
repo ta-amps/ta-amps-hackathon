@@ -1,7 +1,7 @@
 """Fine-tuned model canary registry, automatic held-out promotion, gradual rollout, auto-rollback,
 independent maker/checker lineage verification, and Thompson-sampling self-tuner.
 
-Implements MUST-FOLLOW.md (November 2, 2026):
+The rules:
 - Automatic promotion when held-out score beats baseline + margin.
 - Starts on a small share of live work (`initial_rollout_share`) and advances across `rollout_rungs`,
   switching back to `0.0` automatically if live results drop below `rollback_pass_rate_floor`.

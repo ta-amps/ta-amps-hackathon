@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""The film gate for the 180 s home film: notes/work-2026-11-02/claude-real-demo-film/film_qa.py, adapted, each change named.
- - Duration: exactly 180 s (+0.1), not 170-178: MUST-FOLLOW's home-film rule; submission cuts need the original gate.
+"""The film gate for the 180 s home film.
+ - Duration: exactly 180 s (+0.1), for the home film. Submission cuts have their own gate.
  - No hackathon line anywhere (owner, Nov 3).
  - Numbers and Meta models: on real pages and labels, checked in the page text, not in captions.
  Added: on-screen words go through the shared list; loudness and true peak are reported. film_gate.py <mp4> [--seconds N]"""

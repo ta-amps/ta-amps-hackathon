@@ -560,7 +560,7 @@ def eranos():
 
 def names_stage():
     import subprocess
-    out = subprocess.run([sys.executable, str(HERE / "oldnames.py")], capture_output=True, text=True, timeout=400)
+    out = subprocess.run([sys.executable, str(HERE / "oldnames.py")] + (["--write"] if ARGS.write else []), capture_output=True, text=True, timeout=400)
     last = out.stdout.strip().splitlines()[-1] if out.stdout.strip() else out.stderr[-200:]
     check("names", "no old product name on any public route", out.returncode == 0, f"python3 {HERE / 'oldnames.py'}", last)
     r = req("OPTIONS", FABRIC + "/v1/tasks", headers={"origin": ERANOS, "access-control-request-method": "POST", "access-control-request-headers": "x-tessera-namespace"})
@@ -664,7 +664,7 @@ def browser():
 def report():
     fails = [r for r in results if not r["ok"]]
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
-    lines = [f"# End-to-end results, {now}", "", f"Run `{RUN}`, stages {ARGS.stages}. {len(results) - len(fails)} passed, {len(fails)} failed. Rerun: `python3 notes/work-2026-11-03/e2e/e2e.py`.", ""]
+    lines = [f"# End-to-end results, {now}", "", f"Run `{RUN}`, stages {ARGS.stages}. {len(results) - len(fails)} passed, {len(fails)} failed. Rerun: `python3 e2e.py`.", ""]
     if fails:
         lines += ["## Failures", ""]
         for r in fails:

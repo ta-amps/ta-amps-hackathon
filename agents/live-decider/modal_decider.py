@@ -12,10 +12,12 @@ import sys
 import time
 from pathlib import Path
 
+import os
+
 import modal
 
 _P = Path(__file__).resolve()  # in the container this file sits at /root, with none of the local tree around it
-COMMON = (_P.parents[2] if len(_P.parents) > 2 else _P.parent) / "claude-work-2026-10-29/glimmer-kaggle/tools/glimmer_common.py"
+COMMON = Path(os.environ.get("GLIMMER_COMMON", "/nonexistent"))  # the shared model helper, when you have it locally
 PER_S = 0.001097 + 4 * 0.0000131 + 48 * 0.00000222  # H100 + 4 cores + 48 GiB, Modal list price read Nov 3
 TIMEOUT_S = 600
 app = modal.App("glimmer-decider")
