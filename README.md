@@ -10,8 +10,6 @@
 | **Live** | [teleionlabs.com](https://teleionlabs.com/) · [eranosforgood.org](https://eranosforgood.org/) · [status](https://teleionlabs.com/status/) · [disclaimer](https://teleionlabs.com/disclaimer/) |
 | **Measured** | One-call search put the right item first on 78% of 204 held-out questions, against 33% before. [all benchmarks](https://teleionlabs.com/benchmarks/) · [learning record](https://shim.teleionlabs.com/c/fabric_learning_record) |
 
-<!-- YouTube link goes in the Watch row once the owner has it. -->
-
 **What it does.** Agents don't know what's new, rewrite code that already exists and lose the thread on long tasks. Teleion Fabric helps in three ways. Durable Tasks keep long work safe in a shared queue. Durable Task Objects keep reusable work where any agent can find it. Fabric Intelligence adds OmniNodes, small custom workers that use Meta models to search, route work and decide.
 
 **Where it stands.** It is live and free to use.
