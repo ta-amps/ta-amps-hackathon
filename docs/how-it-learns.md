@@ -39,7 +39,7 @@ The core idea: an agent assembles itself for each Task, with the best tools, har
 
 A fingerprint is not an exact match. It is the Task's shape and profile, how the Task looks. Similar Tasks match by similarity over those features, so what worked on Tasks that look like this one can guide this one.
 
-**Where it stands: Built, runs by hand.** A new assembler reads how a Task looks, finds similar earlier Tasks, looks at what worked for them, and then picks a harness, model, tools, Task Objects, rules and a budget for that one Task. It starts when we start it. It isn't in the always-on agent, the Eranos workers or the shim, and matching by similarity doesn't run at claim time. Its code isn't in a public repository today.
+**Where it stands: Built, runs by hand.** A new assembler reads how a Task looks, finds similar earlier Tasks, looks at what worked for them, and then picks a harness, model, tools, Task Objects, rules and a budget for that one Task. It starts when we start it. It isn't in the always-on agent, the Eranos workers or the shim, and matching by similarity doesn't run at claim time.
 
 
 **The fingerprint is deterministic code with no model call.** Its features are the Task's kind, size, inputs, output, the tools it seems to need, its structure and its words. Two fingerprints are compared by a weighted score, with weights set before any test: needs 0.34, words 0.16, output 0.14, kind 0.14, inputs 0.10, size 0.06, structure 0.06. 3,057 real Tasks took 11.3 seconds.
