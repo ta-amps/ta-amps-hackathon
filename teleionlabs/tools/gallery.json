@@ -191,18 +191,6 @@
    "The main film, now on the home page and /video/: the cube fabric with real agent runs, then real clicks on Eranos. Captions are off at first; turn the sound on."
   ],
   [
-   "deep-omninode",
-   "Explainer: OmniNode. Has six recorded runs where tokens fall from 9,094 to 1,872 as reuse grows, on one repeated job."
-  ],
-  [
-   "deep-intelligence",
-   "Explainer: Fabric Intelligence: decisioning, fine-tuning, and weight editing as work in progress."
-  ],
-  [
-   "deep-shimming",
-   "Explainer: Shimming."
-  ],
-  [
    "style-tabletop",
    "A different look: a physical tabletop. Earlier script; compare the look."
   ],
@@ -217,9 +205,6 @@
  ],
  "site_videos": [
   "cube-main-13",
-  "deep-omninode",
-  "deep-intelligence",
-  "deep-shimming",
   "style-tabletop",
   "style-papercut",
   "blocks-reel"

@@ -43,7 +43,7 @@
   {
    "type": "prose",
    "id": "conditions",
-   "heading": "What this shows, and what it does not",
+   "heading": "Conditions",
    "paragraphs": [
     "The practice steps ran on a private practice queue on the live service on November 4, 2026. The real Task Object shown came from one agent's run that day. The check on it is one model reading the work, not a person, and not a field test."
    ]

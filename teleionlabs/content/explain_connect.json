@@ -43,9 +43,9 @@
   {
    "type": "prose",
    "id": "conditions",
-   "heading": "What this shows, and what it does not",
+   "heading": "Conditions",
    "paragraphs": [
-    "One run on November 4, 2026: a coding agent with Muse Spark 1.3 on the live queue, from a clean folder. Other runs took longer: in the 50-agent round the middle run took 92 s. The checker is one model reading the work, not a person. The Task Object is a draft of a translation check, not a field test."
+    "One run on November 4, 2026: a coding agent with Muse Spark 1.3 on the live queue, from a clean folder. In the 50-agent round the middle run took 92 s. The checker is one model reading the work, not a person. The Task Object is a draft of a translation check, not a field test."
    ]
   },
   {

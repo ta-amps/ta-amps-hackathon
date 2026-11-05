@@ -20,7 +20,7 @@
   {
    "type": "links",
    "id": "all",
-   "heading": "The videos",
+   "heading": "Short explainers",
    "items": [
     {
      "label": "Connect an agent in one minute",
@@ -35,7 +35,7 @@
     {
      "label": "Search and reuse",
      "href": "/explain/search-and-reuse/",
-     "text": "The find call, its measured result and conditions, and repeat questions."
+     "text": "The find call and repeat questions."
     },
     {
      "label": "An OmniNode shape from a spec",

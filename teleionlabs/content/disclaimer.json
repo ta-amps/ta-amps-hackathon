@@ -1,0 +1,21 @@
+{
+ "kind": "task_object",
+ "id": "teleion.instructions/page.disclaimer",
+ "version": 1,
+ "updated": "2026-11-04",
+ "route": "/disclaimer/",
+ "output": "disclaimer/index.html",
+ "title": "Disclaimer · Teleion Labs",
+ "description": "Claims on this site are based on initial testing.",
+ "sources": {
+  "wording": "the owner, Nov 4"
+ },
+ "blocks": [
+  {
+   "type": "page_head",
+   "eyebrow": "Disclaimer",
+   "title": "Disclaimer",
+   "lead": "Claims on this site are based on initial testing."
+  }
+ ]
+}

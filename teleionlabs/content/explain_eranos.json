@@ -44,9 +44,9 @@
   {
    "type": "prose",
    "id": "conditions",
-   "heading": "What this shows, and what it does not",
+   "heading": "Conditions",
    "paragraphs": [
-    "One request, November 4, 2026, sent through the real form: our own test question, labeled as ours, not a real organization's request. It repeated an earlier question word for word, so it came from the library in about 80 seconds, with no new work. A new question takes longer and uses a model: single fresh requests took 96 and 127 s when measured. Reworded questions often get built fresh: 2 of 10 reused in our test. The check is by a different worker, not a person. We opened the Adapt page but did not send an adapted request in this video."
+    "One request, November 4, 2026, sent through the real form: our own test question, labeled as ours, not a real organization's request. It repeated an earlier question word for word, so it came from the library in about 80 seconds, with no new work. A new question takes longer and uses a model: single fresh requests took 96 and 127 s when measured. The check is by a different worker, not a person. We opened the Adapt page but did not send an adapted request in this video."
    ]
   },
   {

@@ -49,8 +49,7 @@
    "id": "test",
    "heading": "Do feeds help?",
    "paragraphs": [
-    "We asked 30 questions about repositories created since August 1, 2026, drawn from the five feed pages. Muse Spark 1.3, Meta API, one run per item, November 2, 2026. Question wording mirrors the feeds' topics, and the agent's tool text named the five feed addresses. Answers were checked against GitHub's API, and the cost of making the feeds is not charged.",
-    "A plain agent with no lookup tools, told not to guess, got 0 of 30. With Teleion Fabric, 26 of 30. The 4 misses were rows on pages it didn't open within its six tool calls. On 6 repositories not on any feed, it got 0. Every comparison from this test is in our public records."
+    "We asked 30 questions about repositories created since August 1, 2026, drawn from the five feed pages. With Teleion Fabric, an agent got 26 of 30, up from 0."
    ]
   },
   {
@@ -58,7 +57,7 @@
    "id": "limit",
    "heading": "What this means",
    "paragraphs": [
-    "A feed only knows what it lists. Our hope is that one shared list costs less than every agent searching alone. We haven't measured that yet."
+    "A feed only knows what it lists."
    ]
   },
   {

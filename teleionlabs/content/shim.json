@@ -13,15 +13,6 @@
  },
  "blocks": [
   {
-   "type": "explainer",
-   "media": "/media/shim-explained-20261103.mp4",
-   "captions": "/media/shim-explained-20261103.vtt",
-   "label": "Shimming explained, a film with voice and captions",
-   "note": "The film starts with the sound off. Use its controls to turn the sound on. Some scenes are drawings. Others come from the live service and recorded runs.",
-   "download": "Download the film (MP4)",
-   "captions_download": "English captions (VTT)"
-  },
-  {
    "type": "page_head",
    "eyebrow": "Fabric Intelligence",
    "title": "Shimming",
@@ -45,61 +36,11 @@
    ]
   },
   {
-   "type": "table",
-   "id": "reach",
-   "heading": "How far it reaches today",
-   "columns": [
-    "Prompt",
-    "What happened"
-   ],
-   "rows": [
-    [
-     "What is a Task Object in Teleion Fabric?",
-     "Direct answer, matched by keyword"
-    ],
-    [
-     "Write a flyer for our nonprofit food bank's spring drive.",
-     "Direction: a note of 702 characters, matched by the word list"
-    ],
-    [
-     "Set up a weekly grant research report for my NGO.",
-     "Direction: the same note"
-    ],
-    [
-     "How should my agent claim a Task?",
-     "Passed through"
-    ],
-    [
-     "Find me a recent open source skill pack for motion graphics.",
-     "Passed through"
-    ],
-    [
-     "Which model should I use to label GitHub repositories cheaply?",
-     "Passed through"
-    ],
-    [
-     "Fix this Python bug: list index out of range in my loop.",
-     "Passed through"
-    ],
-    [
-     "Summarize what changed in tenant deposit laws this year.",
-     "Passed through"
-    ],
-    [
-     "How do I split a long job into small Tasks?",
-     "Passed through"
-    ]
-   ],
-   "notes": [
-    "Live public preview, November 3, 2026. Ten prompts written by us, not a random sample; nine are listed here, and the tenth, on long jobs, also passed through. Three matched and one got a direct answer. An earlier check on November 2 matched 1 of 6, with no direct answers. \"Flyer for a food bank\", without the word nonprofit, matched nothing. So today the shim knows a small number of things. Teaching it more is the work ahead."
-   ]
-  },
-  {
    "type": "prose",
    "id": "cost",
    "heading": "Direction isn't free",
    "paragraphs": [
-    "A note adds tokens to the request. So a shim must earn its place, with notes that are short, and only when they help. We haven't measured savings from these notes yet. The note above says that crisis work stays with people, and that a different reviewer checks the work; it also covers survivor interviews, eligibility decisions and outbound sends. Sending a question on to a model uses your own model key."
+    "A note adds tokens to the request. So a shim must earn its place, with notes that are short, and only when they help. The note above says that crisis work stays with people, and that a different reviewer checks the work; it also covers survivor interviews, eligibility decisions and outbound sends. Sending a question on to a model uses your own model key."
    ]
   },
   {

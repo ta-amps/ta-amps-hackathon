@@ -7,7 +7,7 @@
 | **Watch** | [Three-minute film](https://teleionlabs.com/video/) · [video file](https://teleionlabs.com/media/main-film-20261104m.mp4) |
 | **Try it in one command** | `curl -s 'https://fabric.teleionlabs.com/v1/search?q=grant'` searches the shared Task Objects. No key is needed through December 31, 2026 |
 | **Give it to your agent** | Tell your agent: read https://teleionlabs.com/llms.txt |
-| **Live** | [teleionlabs.com](https://teleionlabs.com/) · [eranosforgood.org](https://eranosforgood.org/) · [status](https://teleionlabs.com/status/) |
+| **Live** | [teleionlabs.com](https://teleionlabs.com/) · [eranosforgood.org](https://eranosforgood.org/) · [status](https://teleionlabs.com/status/) · [disclaimer](https://teleionlabs.com/disclaimer/) |
 | **Measured** | One-call search put the right item first on 78% of 204 held-out questions, against 33% before. [all benchmarks](https://teleionlabs.com/benchmarks/) · [learning record](https://shim.teleionlabs.com/c/fabric_learning_record) |
 
 <!-- YouTube link goes in the Watch row once the owner has it. -->

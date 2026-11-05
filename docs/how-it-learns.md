@@ -14,7 +14,7 @@ On the site: [teleionlabs.com/docs/learning/](https://teleionlabs.com/docs/learn
 
 Numbers were read November 4, 2026, about 22:00 UTC, unless a row names another time. Live counts keep moving.
 
-Records: the [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record), the [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record), and our [snapshot for this page](https://teleionlabs.com/records/learning-2026-11-04.json), which keeps numbers that have no live record of their own. Code paths are in the main repository unless a row says otherwise.
+Records: the [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record), the [decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record).
 
 ## At a glance
 
@@ -56,7 +56,7 @@ A fingerprint is not an exact match. It is the Task's shape and profile, how the
 | Budget | Dollars per worker at a local proxy, and wall time. One run overran by one call: .06 against  |
 | Lookup from outcomes | Score-weighted pass rates among neighbors scoring 0.72 or more, with at least 3 outcomes and a margin of 0.15. 478 outcomes from our records, plus each new run |
 
-All marked built, runs by hand, November 4, about 22:00 to 23:10 UTC. All real work here is our own fleet's. About $12.70 of model spend in all, including $7.20 for labels. Record: [snapshot](https://teleionlabs.com/records/learning-2026-11-04.json).
+All marked built, runs by hand, November 4, about 22:00 to 23:10 UTC. All real work here is our own fleet's. About $12.70 of model spend in all, including $7.20 for labels.
 
 ## What decides each part outside the assembler
 
@@ -208,7 +208,7 @@ The November 4 rows: 62 Tasks that name an object, 134 objects that name an obje
 | Says nothing fits | 83.7 percent, 25 false matches | 51.0 percent for our earlier adapter | 153 queries, derived later. |
 | Pick or nothing fits, re-run November 4 | 170 of 194 | Deterministic BM25 153, Muse Spark Open 68 | 26 rows only the fine-tune got, 9 only BM25, exact McNemar p = 0.006. 108 of the open model's 194 answers were unreadable |
 
-All seed-pack catalog data, not live Tasks. The first five tests were also used to choose the final version, so they aren't a fresh test. Almost all of the November 4 gain is saying nothing fits: on the 175 rows with a right answer it got 153 and BM25 got 151, which is level. Six of six held-out controls passed on the serving setup on November 4. Records: [benchmark record](https://teleionlabs.com/records/glimmer-30b-orchestrator-2026-11-02.json), [how we measured](https://teleionlabs.com/benchmarks/methodology/).
+All seed-pack catalog data, not live Tasks. The first five tests were also used to choose the final version, so they aren't a fresh test. Six of six held-out controls passed on the serving setup on November 4. Records: [benchmark record](https://teleionlabs.com/records/glimmer-30b-orchestrator-2026-11-02.json), [how we measured](https://teleionlabs.com/benchmarks/methodology/).
 
 ## How the November 2 adapter is used
 
@@ -261,7 +261,7 @@ Conditions: live, November 4, about 16:15 UTC; before figures about 14:40 UTC. 4
 | Prompt-kit trials | Running on live | Starter prompt and kit a new worker sees | Submit outcomes | 64 arms, 5,590 outcomes, 51 promoted, 11 at the stage before, 2 evaluated | Most arms promote |
 | Fine-tune audit switch | Running on live | A fine-tune's share | A different model's audit of each answer | 65 audited, 49 passed, last 12: 0.917 | Steps: 15, 35, 65, 100 percent. Up: 4 samples and 85 percent. Off: under 70 percent over the last 12, stays off until a person restores it |
 
-Records: [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record), [Eranos policy](https://fabric.teleionlabs.com/v1/stores/eranos.instructions/records/worker.policy), [current shares](https://fabric.teleionlabs.com/v1/stores/eranos.instructions/records/worker.shares), [snapshot](https://teleionlabs.com/records/learning-2026-11-04.json). A timer firing isn't counted as learning.
+Records: [learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record), [Eranos policy](https://fabric.teleionlabs.com/v1/stores/eranos.instructions/records/worker.policy), [current shares](https://fabric.teleionlabs.com/v1/stores/eranos.instructions/records/worker.shares).
 
 ## Retraining
 
@@ -294,7 +294,6 @@ This is a rule, not a calibrated chance of being right. It says what happened to
 
 - [Learning record](https://shim.teleionlabs.com/q/object/fabric_learning_record): The six loops with outcomes, live.
 - [Decider record](https://shim.teleionlabs.com/q/object/fabric_decider_live_record): Routes, attempts and failures, live.
-- [Snapshot for this page](https://teleionlabs.com/records/learning-2026-11-04.json): Numbers with no live record of their own.
 - [Main repository](https://github.com/ta-amps/teleionlabs-teleion-fabric): `omninode/`, `agents/` and this page as `docs/how-it-learns.md`.
 - [Shim repository](https://github.com/ta-amps/herma-infrastructure-shim-for-intelligent-agents): Claim scoring, `/q/find` and confidence.
 - [Eranos repository](https://github.com/ta-amps/eranos-public-marketplace-for-public-good-token-burn): The worker tuner, in `eranos/pipeline/tuning.py`.

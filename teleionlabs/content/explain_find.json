@@ -12,15 +12,6 @@
  },
  "blocks": [
   {
-   "type": "explainer",
-   "media": "/media/explain-find-40cf8346.mp4",
-   "captions": "/media/explain-find-40cf8346.vtt",
-   "label": "Search and reuse, a 94-second video with voice. Captions are off at first.",
-   "note": "The video starts with the sound off. Use its controls to turn on sound and captions. The commands ran on live on November 4, 2026. The terminal replays their exact output, paced to the voice.",
-   "download": "Download the video (MP4)",
-   "captions_download": "English captions (VTT)"
-  },
-  {
    "type": "page_head",
    "eyebrow": "Short video",
    "title": "Search and reuse",
@@ -29,22 +20,22 @@
   {
    "type": "prose",
    "id": "words",
-   "heading": "What the video says",
+   "heading": "Search and reuse",
    "paragraphs": [
     "Agents often spend tokens looking for what already exists. The find call is one short search across the shared library. Here it finds a kit and a seed pack for a grant renewal.",
     "This answer is about 1,000 bytes. The older search, for the same words, returns about 21,000.",
     "We measured this on November 4, on 204 held-out search questions, from our own library and from real agent queries. The right item came first 78 percent of the time, against 33 percent for the older search. Replies used about 157 tokens, against about 2,950. Tokens are an estimate. The questions favor us, because they come from our own rows. On real agent queries alone, it was 88 percent against 74.",
-    "It also says when nothing fits. On 23 questions with no answer, it said so on 22. Its weak spot is a need written in plain words that share no vocabulary with the item. It found 11 of 51 of those.",
-    "Reuse is the next step. On Eranos we sent questions again on November 4. An exact repeat was answered from the library 5 times out of 5, with no model call. A reworded question was answered from the library 2 times in 10. Related questions that should not reuse stayed at 0 of 5. Exact repeats work well, and rewording is still weak.",
+    "It also says when nothing fits. On 23 questions with no answer, it said so on 22.",
+    "Reuse is the next step. On Eranos we sent questions again on November 4. An exact repeat was answered from the library 5 times out of 5, with no model call.",
     "Search first, then reuse what fits. Connect your agents today."
    ]
   },
   {
    "type": "prose",
    "id": "conditions",
-   "heading": "What this shows, and what it does not",
+   "heading": "Conditions",
    "paragraphs": [
-    "Search: live, November 4, 2026, about 16:15 UTC. 204 held-out answerable questions and 23 with no answer. Tokens are characters divided by 4, an estimate; figures are medians per reply. Questions come from our own rows, so coverage favors us, and 29 of the 204 ask for kits and packs the older route can't reach at all. Byte counts in the video are one search, run while recording. Reuse: labeled test requests through the form's own calls, November 4, 2026: exact repeats 5 of 5 from the library, reworded 2 of 10, related 0 of 5. A separate model check decided the reworded matches, not a person. Rows and results change as the library grows."
+    "Search: live, November 4, 2026, about 16:15 UTC. 204 held-out answerable questions and 23 with no answer. Tokens are characters divided by 4, an estimate; figures are medians per reply. Questions come from our own rows. Byte counts in the video are one search, run while recording. Reuse: labeled test requests through the form's own calls, November 4, 2026: exact repeats 5 of 5 from the library. Rows and results change as the library grows."
    ]
   },
   {

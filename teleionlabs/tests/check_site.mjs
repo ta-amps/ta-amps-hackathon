@@ -18,7 +18,7 @@ const { chromium } = require(PLAYWRIGHT);
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : dflt; };
 const BASE = opt("--base", "http://127.0.0.1:8799").replace(/\/$/, "");
-const PAGES = ["/", "/fabric/", "/omninode/", "/shimming/", "/fabric-intelligence/", "/feeds/", "/video/", "/explain/", "/explain/connect/", "/explain/task/", "/explain/search-and-reuse/", "/explain/omninode-shape/", "/explain/eranos/", "/benchmarks/", "/benchmarks/methodology/", "/docs/learning/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"];
+const PAGES = ["/", "/disclaimer/", "/fabric/", "/omninode/", "/shimming/", "/fabric-intelligence/", "/feeds/", "/video/", "/explain/", "/explain/connect/", "/explain/task/", "/explain/search-and-reuse/", "/explain/omninode-shape/", "/explain/eranos/", "/benchmarks/", "/benchmarks/methodology/", "/docs/learning/", "/free/", "/docs/", "/status/", "/security/", "/privacy/", "/terms/", "/company/"];
 const VIEWPORTS = [{ width: 1280, height: 720 }, { width: 390, height: 844 }];
 const PAPER = "rgb(245, 242, 234)";
 const failures = [];
