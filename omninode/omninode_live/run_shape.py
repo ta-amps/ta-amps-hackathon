@@ -51,7 +51,7 @@ def load_spec(fabric: Any, shape_id: str) -> tuple[dict[str, Any], int]:
 
 
 def ledger_for(spec: dict[str, Any]) -> core.TwoLedgers:
-    return core.TwoLedgers(Ledger(core.SHARED_LEDGER, daily_usd=25.0, total_usd=100000.0),
+    return core.TwoLedgers(Ledger(core.SHARED_LEDGER, daily_usd=145.0, total_usd=145.0),  # owner, Nov 4: no daily cap, stop at $145 total
                            Ledger(LEDGER, daily_usd=min(float(spec["budget_usd_per_day"]), shapes.MAX_BUDGET_USD), total_usd=100000.0))
 
 
@@ -78,8 +78,10 @@ def context(fabric: Any, spec: dict[str, Any], version: int, run_id: str, heartb
 
 
 def compact(row: dict[str, Any]) -> dict[str, Any]:
-    drop = {"description", "topics"}
-    return {k: v for k, v in row.items() if not k.startswith("_") and k not in drop}
+    if row.get("status") != "awaiting_check":  # only rows the checker reads keep everything; others keep their name and reason, so a run with thousands of rows fits one record
+        return {k: v for k, v in row.items() if k in ("key", "status", "finding", "check_reason", "report", "claim_id", "source_id", "repo")}
+    drop = {"description", "topics", "trace"}  # the checker and tuner read the full row from the item store; the run's record stays small
+    return {k: (v[:300] if isinstance(v, str) else v) for k, v in row.items() if not k.startswith("_") and k not in drop}
 
 
 def run_make(fabric: Any, spec: dict[str, Any], version: int | None, run_id: str, task_id: str, token: int, heartbeat: Any, checker_key_id: str) -> dict[str, Any]:
@@ -113,6 +115,7 @@ def run_make(fabric: Any, spec: dict[str, Any], version: int | None, run_id: str
               "error": result.diagnostics.get("error_code") if not result.ok else None, "status_counts": shapes.status_counts(rows),
               "counts": shapes.mode_counts(rows, ctx.attempts), "sidecar": sidecar_report, "draws": ctx.draws, "attempts": ctx.attempts,
               "github_calls": ctx.github.calls, "items": [compact(r) for r in rows]}
+    print(json.dumps({"record_bytes": len(json.dumps(record)), "rows": len(rows), "attempts_bytes": len(json.dumps(ctx.attempts))}), file=sys.stderr, flush=True)
     if version is None:
         record["spec"] = spec
     tags = ["kind:instructions", "kind:omninode_run"]

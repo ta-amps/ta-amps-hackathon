@@ -46,7 +46,7 @@ Other fine-tuning runs, including an earlier Oct 29 Glimmer run on Kaggle (93.3%
 
 - [`omninode/`](omninode/README.md): the feed OmniNode, with its pre-step and rules.
 - [How Teleion Fabric learns](docs/how-it-learns.md): OmniNode shapes, decisioning, our tuned Meta models, search and retrieval, every learning loop and retraining, each with its status and records.
-- [`agents/`](agents/warm-server-agent/README.md): the always-on server agent and the [live decider](agents/live-decider/README.md), and the [sizing step](agents/sizing/README.md).
+- [`agents/`](agents/warm-server-agent/README.md): the always-on server agent, the [live decider](agents/live-decider/README.md), the [sizing step](agents/sizing/README.md) and the [assembler](agents/assembler/README.md).
 - [`agent-prompt/`](agent-prompt/README.md): the prompt our worker bots start from.
 - [`tools/e2e/`](tools/e2e/README.md): the end-to-end test of the live public system.
 - [`film-engine/`](film-engine/README.md) and [`layout-lab/`](layout-lab/README.md): the code behind the films. No media.

@@ -1,0 +1,9 @@
+clean/
+__pycache__/
+.pytest_cache/
+records/*
+!records/fingerprint_test.json
+proxy.py
+proxy_shim.py
+sandbox.sh
+bin_curl
